@@ -1,135 +1,82 @@
-# Turborepo starter
+# GFED Medusa Storefront
 
-This Turborepo starter is maintained by the Turborepo core team.
+This is a Turborepo monorepo containing the GFED Medusa storefront source code. This monorepo uses `pnpm` package manager.
 
-## Using this example
+## Pre-requisites
 
-Run the following command:
+Before you begin, ensure you have the following installed:
 
-```sh
-npx create-turbo@latest
-```
+- [Node.js](https://nodejs.org/en/download) (v20+)
+- [pnpm](https://pnpm.io/installation)
 
 ## What's inside?
 
-This Turborepo includes the following packages/apps:
+This monorepo includes the following packages/apps:
 
-### Apps and Packages
+### Apps
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+- `@apps/mf-home`: a [Next.js](https://nextjs.org/) app containing the storefront's content pages
+- `@apps/mf-products`: a [Next.js](https://nextjs.org/) app containing the storefront's product detail pages and listing pages
+- `@apps/mf-account`: a [Next.js](https://nextjs.org/) app containing the storefront's account and user pages
+- `@apps/mf-checkout`: a [Next.js](https://nextjs.org/) app containing the storefront's basket and checkout pages
+- `@apps/storybook`: a Storybook application for documenting and testing components
+- `@apps/sanity-studio`: a Sanity Studio instance for managing content in the GFED Medusa Storefront
+
+### Packages
+
+- `@gfed-medusa/lib-ui`: a React `shadcn` component library shared by all microfrontend applications
+- `@gfed-medusa/lib-common`: a Next.js library containing components and common resources shared by all microfrontend applications
+- `@gfed-medusa/lib-home`: a Next.js component library for `@apps/mf-home`
+- `@gfed-medusa/lib-products`: a Next.js component library for `@apps/mf-products`
+- `@gfed-medusa/lib-account`: a Next.js component library for `@apps/mf-account`
+- `@gfed-medusa/lib-checkout`: a Next.js component library for `@apps/mf-checkout`
+- `@packages/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
+- `@packages/jest-config`: `prettier` configurations used throughout the monorepo
+- `@packages/prettier-config`: `prettier` configurations used throughout the monorepo
+- `@packages/typescript-config`: `tsconfig.json`s used throughout the monorepo
 
 Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
 
 ### Build
 
 To build all apps and packages, run the following command:
 
-```
-cd my-turborepo
-
+```zsh
 # With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
 turbo build
 
 # Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
 pnpm exec turbo build
 ```
 
 You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
 
-```
+```zsh
 # With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+turbo build --filter=@apps/mf-home
 
 # Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
+pnpm exec turbo build --filter=@apps/mf-home
 ```
 
 ### Develop
 
 To develop all apps and packages, run the following command:
 
-```
-cd my-turborepo
-
+```zsh
 # With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
 turbo dev
 
 # Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
 pnpm exec turbo dev
 ```
 
 You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
 
-```
+```zsh
 # With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+turbo dev --filter=@apps/mf-home
 
 # Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
+pnpm exec turbo dev --filter=@apps/mf-home
 ```
-
-### Remote Caching
-
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
-
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)

@@ -1,0 +1,6 @@
+.medusa
+.next
+
+node_modules
+
+pnpm-lock.yaml
