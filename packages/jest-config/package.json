@@ -1,14 +1,19 @@
 {
-  "name": "@mds/jest-config",
+  "name": "@packages/jest-config",
   "private": true,
   "version": "0.0.0",
   "exports": {
     "./base": {
       "types": "./base.d.ts",
       "default": "./base.js"
+    },
+    "./react": {
+      "types": "./react.d.ts",
+      "default": "./react.js"
     }
   },
   "devDependencies": {
-    "jest": "^29.7.0"
+    "jest": "^29.7.0",
+    "ts-jest": "^29.4.6"
   }
 }
