@@ -1,3 +1,4 @@
+export * from './icons';
 export * from './input/input';
 export * from './quantity-selector/quantity-selector';
 export * from './rating-count/rating-count';
