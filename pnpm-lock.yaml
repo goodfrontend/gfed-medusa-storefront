@@ -36,6 +36,15 @@ importers:
       '@eslint/js':
         specifier: ^9.39.1
         version: 9.39.1
+      '@packages/eslint-config':
+        specifier: workspace:*
+        version: link:../../packages/eslint-config
+      '@packages/prettier-config':
+        specifier: workspace:*
+        version: link:../../packages/prettier-config
+      '@packages/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
       '@storybook/addon-a11y':
         specifier: ^10.1.4
         version: 10.1.7(storybook@10.1.7(@testing-library/dom@10.4.1)(prettier@3.6.2)(react-dom@19.2.1(react@19.2.1))(react@19.2.1))
