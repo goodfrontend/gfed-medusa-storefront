@@ -24,7 +24,7 @@ importers:
   apps/storybook:
     dependencies:
       '@gfed-medusa/sf-lib-ui':
-        specifier: workspace:*
+        specifier: ^1.0.0
         version: link:../../packages/sf-lib-ui
       react:
         specifier: ^19.2.0
