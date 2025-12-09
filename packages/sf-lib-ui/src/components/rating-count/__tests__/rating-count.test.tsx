@@ -1,6 +1,6 @@
 import { getByTestId, render } from '@testing-library/react';
 
-import { RatingCount } from '../rating-count';
+import { RatingCount } from '..';
 
 describe('RatingCount Component', () => {
   it('Renders minimal rating', () => {

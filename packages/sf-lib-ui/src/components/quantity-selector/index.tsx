@@ -7,7 +7,7 @@ import { Minus, Plus } from 'lucide-react';
 
 import { Button } from '@/components/button';
 import { BaseInput } from '@/components/input/base-input';
-import { cn } from '@/lib';
+import { cn } from '@/lib/utils';
 
 type QuantitySelectorProps = VariantProps<typeof quantitySelectorVariants> &
   VariantProps<typeof buttonVariants> &

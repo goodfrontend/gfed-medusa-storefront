@@ -1,13 +1,8 @@
 import { defineConfig } from 'tsup';
 
 export default defineConfig({
-  entry: {
-    index: 'src/index.ts',
-    'icons/index': 'src/components/icons/index.ts',
-    'lib/index': 'src/lib/index.ts',
-    'types/index': 'src/types/index.ts',
-  },
-  format: ['esm', 'cjs'], // Generate both ESM and CommonJS formats
+  entry: ['src/**/*.ts', 'src/**/*.tsx', '!src/**/*.test.tsx'],
+  format: ['esm'],
   dts: true, // Generate TypeScript declaration files (.d.ts) for each entry
   splitting: true, // Enable code splitting (for ESM output)
   sourcemap: true,

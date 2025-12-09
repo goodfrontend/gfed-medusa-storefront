@@ -2,7 +2,7 @@
 
 import { type VariantProps, cva } from 'class-variance-authority';
 
-import { cn } from '@/lib';
+import { cn } from '@/lib/utils';
 
 const variantSelector = cva('flex gap-1', {
   variants: {
@@ -73,7 +73,7 @@ export interface VariantSelectorProps
   className?: string;
 }
 
-export function VariantSelector({
+function VariantSelector({
   options,
   value,
   onChange,
@@ -120,3 +120,5 @@ export function VariantSelector({
     </div>
   );
 }
+
+export { VariantSelector };
