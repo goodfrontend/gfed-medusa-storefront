@@ -22,14 +22,14 @@
   "exports": {
     "./components/*": {
       "types": [
+        "./dist/components/*.d.ts",
         "./dist/components/*/index.d.ts",
-        "./dist/components/*/*.d.ts",
-        "./dist/components/*.d.ts"
+        "./dist/components/*/*.d.ts"
       ],
       "default": [
+        "./dist/components/*.js",
         "./dist/components/*/index.js",
-        "./dist/components/*/*.js",
-        "./dist/components/*.js"
+        "./dist/components/*/*.js"
       ]
     },
     "./icons/*": {
