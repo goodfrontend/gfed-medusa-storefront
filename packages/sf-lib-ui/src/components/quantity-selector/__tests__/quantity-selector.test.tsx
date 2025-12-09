@@ -1,6 +1,6 @@
 import { fireEvent, getByTestId, render } from '@testing-library/react';
 
-import { QuantitySelector } from '../quantity-selector';
+import { QuantitySelector } from '..';
 
 describe('Quantity-Selector component', () => {
   it('renders the correct default value', () => {

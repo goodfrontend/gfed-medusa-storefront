@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 
-import { VariantSelector } from '../variant-selector';
+import { VariantSelector } from '..';
 
 describe('VariantSelector component', () => {
   it('Displays correct number of items based on the provided options', () => {

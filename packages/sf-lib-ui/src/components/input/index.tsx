@@ -6,7 +6,7 @@ import { type VariantProps, cva } from 'class-variance-authority';
 import { Loader2 } from 'lucide-react';
 
 import { BaseInput } from '@/components/input/base-input';
-import { cn } from '@/lib';
+import { cn } from '@/lib/utils';
 
 const inputContainerVariants = cva(
   'relative flex flex-col-reverse w-full group/input',
@@ -50,7 +50,7 @@ export interface InputProps
 }
 
 /* eslint-disable react/display-name */
-export const Input = forwardRef<HTMLInputElement, InputProps>(
+const Input = forwardRef<HTMLInputElement, InputProps>(
   (
     {
       label,
@@ -113,3 +113,5 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     );
   }
 );
+
+export { Input, BaseInput };

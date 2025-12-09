@@ -1,7 +1,7 @@
 import { VariantProps, cva } from 'class-variance-authority';
 import { Star } from 'lucide-react';
 
-import { cn } from '@/lib';
+import { cn } from '@/lib/utils';
 
 const iconVariant = cva([], {
   variants: {
