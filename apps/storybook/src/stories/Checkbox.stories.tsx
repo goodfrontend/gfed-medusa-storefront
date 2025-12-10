@@ -1,4 +1,9 @@
-import { useEffect, useState, type ComponentProps } from 'react';
+import {
+  useEffect,
+  useState,
+  type ChangeEventHandler,
+  type ComponentProps,
+} from 'react';
 
 import { CheckboxWithLabel } from '@gfed-medusa/sf-lib-ui/components/checkbox';
 import type { Meta, StoryObj } from '@storybook/react-vite';
@@ -31,12 +36,10 @@ const CheckboxStory = (args: ComponentProps<typeof CheckboxWithLabel>) => {
     setChecked(args.checked ?? false);
   }, [args.checked]);
 
-  const handleChange = () => {
-    setChecked((prev) => {
-      const next = !prev;
-      args.onChange?.();
-      return next;
-    });
+  const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+    const next = event.target.checked;
+    setChecked(next);
+    args.onChange?.(event);
   };
 
   return (

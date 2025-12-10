@@ -46,14 +46,14 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             name={name}
             placeholder=" "
             required={required}
-            className="border-ui-border-base bg-ui-bg-field hover:bg-ui-bg-field-hover focus:shadow-borders-interactive-with-active mt-0 block h-11 w-full appearance-none rounded-md border px-4 pt-4 pb-1 focus:ring-0 focus:outline-none"
+            className="border-ui-border-base bg-ui-bg-field hover:bg-ui-bg-field-hover focus:shadow-borders-interactive-with-active peer mt-0 block h-11 w-full appearance-none rounded-md border px-4 pt-4 pb-1 placeholder-transparent focus:ring-0 focus:outline-none"
             {...props}
             ref={inputRef}
           />
           <label
             htmlFor={name}
             onClick={() => inputRef.current?.focus()}
-            className="origin-0 text-ui-fg-subtle absolute top-3 -z-1 mx-3 flex items-center justify-center px-1 transition-all duration-300"
+            className="origin-0 text-ui-fg-subtle absolute left-3 top-0 z-10 flex cursor-text items-center bg-ui-bg-field px-1 text-xs transition-all duration-300 -translate-y-1/2 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:-translate-y-1/2 peer-focus:text-xs peer-focus:text-ui-fg-base"
           >
             {label}
             {required && <span className="text-rose-500">*</span>}

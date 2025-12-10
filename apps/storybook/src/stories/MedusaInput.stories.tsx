@@ -1,4 +1,4 @@
-import { useEffect, useState, type ComponentProps } from 'react';
+import { type ComponentProps, useEffect, useState } from 'react';
 
 import { MedusaInput } from '@gfed-medusa/sf-lib-ui/components/medusa-input';
 import type { Meta, StoryObj } from '@storybook/react-vite';
@@ -11,12 +11,11 @@ const meta = {
     layout: 'centered',
   },
   args: {
-    label: 'Password',
-    name: 'password',
-    type: 'password',
-    topLabel: 'Account',
-    required: true,
-    value: 'supersecret',
+    label: 'Full name',
+    name: 'fullName',
+    type: 'text',
+    value: 'Jane Doe',
+    required: false,
   },
   argTypes: {
     type: {
@@ -54,14 +53,13 @@ export const Default: Story = {
   render: (args) => <MedusaInputStory {...args} />,
 };
 
-export const TextField: Story = {
+export const PasswordField: Story = {
   args: {
-    label: 'Full name',
-    name: 'fullName',
-    type: 'text',
-    value: 'Jane Doe',
-    required: false,
-    topLabel: 'Profile',
+    label: 'Password',
+    name: 'password',
+    type: 'password',
+    required: true,
+    value: 'supersecret',
   },
   render: (args) => <MedusaInputStory {...args} />,
 };

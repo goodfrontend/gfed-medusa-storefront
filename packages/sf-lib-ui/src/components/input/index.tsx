@@ -24,7 +24,7 @@ const inputContainerVariants = cva(
 );
 
 const labelVariants = cva(
-  'text-muted-foreground absolute transition-all duration-200 cursor-text select-none truncate text-sm peer-placeholder-shown:text-base peer-focus:text-sm px-1',
+  'absolute left-3 top-0 z-10 flex items-center bg-background px-1 text-xs text-muted-foreground transition-all duration-200 cursor-text select-none truncate -translate-y-1/2 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:-translate-y-1/2 peer-focus:text-xs',
   {
     variants: {
       variant: {
@@ -101,8 +101,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             htmlFor={id}
             className={cn(
               labelVariants({ variant }),
-              'top-2 left-3 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-focus:top-2 peer-focus:translate-y-0',
-              hasValue && '-top-2 translate-y-0',
+              hasValue && 'top-0 -translate-y-1/2 text-xs',
               labelClassName
             )}
           >
