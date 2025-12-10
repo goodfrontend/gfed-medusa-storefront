@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from '@storybook/react';
 import { Button } from '@gfed-medusa/sf-lib-ui/components/button';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 
 const meta = {
-  title: 'Components/Button',
+  title: 'UI/Components/Button',
   component: Button,
   tags: ['autodocs'],
   parameters: {
@@ -45,20 +45,6 @@ export const Outline: Story = {
   },
 };
 
-export const Ghost: Story = {
-  args: {
-    variant: 'ghost',
-    children: 'Ghost',
-  },
-};
-
-export const Link: Story = {
-  args: {
-    variant: 'link',
-    children: 'Link',
-  },
-};
-
 export const Sizes: Story = {
   args: {
     children: 'Button',
@@ -73,6 +59,9 @@ export const Sizes: Story = {
       </Button>
       <Button {...args} size="lg">
         Large
+      </Button>
+      <Button {...args} size="icon">
+        Icon
       </Button>
     </div>
   ),
