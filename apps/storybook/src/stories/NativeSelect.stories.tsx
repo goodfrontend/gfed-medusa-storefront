@@ -1,4 +1,4 @@
-import { useEffect, useState, type ComponentProps } from 'react';
+import { type ComponentProps, useEffect, useState } from 'react';
 
 import NativeSelect from '@gfed-medusa/sf-lib-ui/components/native-select';
 import type { Meta, StoryObj } from '@storybook/react-vite';
@@ -50,5 +50,14 @@ const NativeSelectStory = (args: ComponentProps<typeof NativeSelect>) => {
 };
 
 export const Default: Story = {
+  render: (args) => <NativeSelectStory {...args} />,
+};
+
+export const Disabled: Story = {
+  args: {
+    placeholder: 'Choose an option',
+    defaultValue: '',
+    disabled: true,
+  },
   render: (args) => <NativeSelectStory {...args} />,
 };
