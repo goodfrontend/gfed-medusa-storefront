@@ -8,4 +8,5 @@ export default defineConfig({
     '!src/**/*.test.ts',
   ],
   dts: true,
+  fixedExtension: false,
 });
