@@ -1,6 +1,6 @@
 {
   "name": "@gfed-medusa/sf-lib-ui",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": false,
   "type": "module",
   "module": "./dist/index.js",
@@ -21,16 +21,8 @@
   ],
   "exports": {
     "./components/*": {
-      "types": [
-        "./dist/components/*/index.d.ts",
-        "./dist/components/*/*.d.ts",
-        "./dist/components/*.d.ts"
-      ],
-      "default": [
-        "./dist/components/*/index.js",
-        "./dist/components/*/*.js",
-        "./dist/components/*.js"
-      ]
+      "types": "./dist/components/*/index.d.ts",
+      "default": "./dist/components/*/index.js"
     },
     "./icons/*": {
       "types": "./dist/icons/*.d.ts",
