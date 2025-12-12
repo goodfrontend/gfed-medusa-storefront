@@ -1,4 +1,4 @@
-import { forwardRef, useImperativeHandle, useMemo, useRef } from 'react';
+import React, { useImperativeHandle, useMemo, useRef } from 'react';
 
 import NativeSelect, {
   NativeSelectProps,
@@ -6,7 +6,7 @@ import NativeSelect, {
 
 import { Region } from '@/types/graphql';
 
-const CountrySelect = forwardRef<
+const CountrySelect = React.forwardRef<
   HTMLSelectElement,
   NativeSelectProps & {
     region?: Region | null;
