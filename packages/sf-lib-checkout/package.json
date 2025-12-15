@@ -20,8 +20,16 @@
   },
   "exports": {
     "./components/*": {
-      "types": "./dist/components/*",
-      "default": "./dist/components/*"
+      "types": "./dist/components/*/index.d.ts",
+      "default": "./dist/components/*/index.js"
+    },
+    "./lib/*": {
+      "types": "./dist/lib/*.d.ts",
+      "default": "./dist/lib/*.js"
+    },
+    "./templates/*": {
+      "types": "./dist/templates/*.d.ts",
+      "default": "./dist/templates/*.js"
     }
   },
   "scripts": {
