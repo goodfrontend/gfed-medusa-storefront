@@ -9,7 +9,9 @@ import { SearchModal } from '../search-modal';
 import { SideMenu } from '../side-menu';
 
 async function Nav() {
-  const regions = await listRegions().then((regions: Region[]) => regions);
+  const regions = await listRegions()
+    .then((regions: Region[]) => regions)
+    .catch(() => null);
 
   return (
     <div className="group sticky inset-x-0 top-0 z-50">

@@ -49,9 +49,9 @@
     "@apollo/client": "^4.0.9",
     "@gfed-medusa/sf-lib-ui": "^1.1.0",
     "@headlessui/react": "^2.2.9",
-    "@medusajs/icons": "^2.12.1",
     "@medusajs/js-sdk": "^2.12.1",
     "@medusajs/types": "^2.12.1",
+    "@medusajs/icons": "^2.12.1",
     "@medusajs/ui": "^4.0.29",
     "class-variance-authority": "^0.7.1",
     "isomorphic-dompurify": "^2.34.0",
@@ -89,6 +89,7 @@
     "next": "^15.3.8",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "tailwindcss": "^4.1.18"
+    "tailwindcss": "^4.1.18",
+    "@medusajs/ui": "^4.0.29"
   }
 }
