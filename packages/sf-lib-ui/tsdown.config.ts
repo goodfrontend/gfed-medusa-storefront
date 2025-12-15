@@ -10,6 +10,9 @@ export default defineConfig({
   dts: true,
   fixedExtension: false,
   unbundle: true, // the consumer should do the bundling (e.g. next.js should handle this)
-  external: ['react', 'react-dom', 'next'],
   platform: 'browser',
+  external: ['react', 'react-dom', 'next'],
+  copy: {
+    from: './src/styles',
+  },
 });

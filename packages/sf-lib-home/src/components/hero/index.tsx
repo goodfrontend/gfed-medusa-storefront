@@ -8,13 +8,13 @@ export function Hero() {
         <span>
           <Heading
             level="h1"
-            className="text-ui-fg-base text-3xl leading-10 font-normal"
+            className="text-ui-fg-base text-3xl font-normal leading-10"
           >
             Ecommerce Starter Template
           </Heading>
           <Heading
             level="h2"
-            className="text-ui-fg-subtle text-3xl leading-10 font-normal"
+            className="text-ui-fg-subtle text-3xl font-normal leading-10"
           >
             Powered by Medusa and Next.js
           </Heading>
