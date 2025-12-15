@@ -12,9 +12,9 @@
     "check-types": "next typegen && tsc --noEmit"
   },
   "dependencies": {
-    "@gfed-medusa/sf-lib-common": "1.0.0",
-    "@gfed-medusa/sf-lib-home": "1.0.0",
-    "@gfed-medusa/sf-lib-ui": "1.1.1",
+    "@gfed-medusa/sf-lib-common": "1.1.1",
+    "@gfed-medusa/sf-lib-home": "1.1.0",
+    "@gfed-medusa/sf-lib-ui": "1.1.2",
     "next": "^15.3.8",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

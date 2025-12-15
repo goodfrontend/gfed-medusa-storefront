@@ -1,10 +1,8 @@
 {
   "name": "@gfed-medusa/sf-lib-common",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": false,
   "type": "module",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "license": "MIT",
   "files": [
     "dist",
