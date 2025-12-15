@@ -1,6 +1,7 @@
 // to be removed once Order and Region resolvers are implemented, the normalizers will then be used within the resolvers theselves
-import { Order, Region } from '@lib/gql/generated-types/graphql';
 import { HttpTypes } from '@medusajs/types';
+
+import { Order, Region } from '@/lib/gql/generated-types/graphql';
 
 const toISO = (d: string | Date | undefined) =>
   d instanceof Date ? d.toISOString() : (d ?? '');

@@ -5,8 +5,9 @@ import { mapKeys } from 'lodash';
 import { CountrySelect } from '@gfed-medusa/sf-lib-common/components/country-select';
 import { CheckboxWithLabel as Checkbox } from '@gfed-medusa/sf-lib-ui/components/checkbox';
 import { Input } from '@gfed-medusa/sf-lib-ui/components/input';
-import { Address, Cart, Customer } from '@lib/gql/generated-types/graphql';
 import { Container } from '@medusajs/ui';
+
+import { Address, Cart, Customer } from '@/lib/gql/generated-types/graphql';
 
 import AddressSelect from '../address-select';
 

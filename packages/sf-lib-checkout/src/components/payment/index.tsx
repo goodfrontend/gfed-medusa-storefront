@@ -4,18 +4,19 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
-import PaymentContainer, {
-  StripeCardContainer,
-} from '@components/payment-container';
 import { ErrorMessage } from '@gfed-medusa/sf-lib-common/components/error-message';
 import { Divider } from '@gfed-medusa/sf-lib-ui/components/divider';
 import { RadioGroup } from '@headlessui/react';
-import { isStripe as isStripeFunc, paymentInfoMap } from '@lib/constants';
-import { initiatePaymentSession } from '@lib/data/cart';
-import { Cart } from '@lib/gql/generated-types/graphql';
-import { camelToSnakeCase } from '@lib/util/normalizeFunctions';
 import { CheckCircleSolid, CreditCard } from '@medusajs/icons';
 import { Button, Container, Heading, Text, clx } from '@medusajs/ui';
+
+import PaymentContainer, {
+  StripeCardContainer,
+} from '@/components/payment-container';
+import { isStripe as isStripeFunc, paymentInfoMap } from '@/lib/constants';
+import { initiatePaymentSession } from '@/lib/data/cart';
+import { Cart } from '@/lib/gql/generated-types/graphql';
+import { camelToSnakeCase } from '@/lib/util/normalizeFunctions';
 
 const Payment = ({
   cart,

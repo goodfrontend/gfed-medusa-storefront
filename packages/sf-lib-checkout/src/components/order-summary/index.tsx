@@ -1,5 +1,6 @@
 import { convertToLocale } from '@gfed-medusa/sf-lib-common/lib/utils/money';
-import { Order } from '@lib/gql/generated-types/graphql';
+
+import { Order } from '@/lib/gql/generated-types/graphql';
 
 type OrderSummaryProps = {
   order: Order;

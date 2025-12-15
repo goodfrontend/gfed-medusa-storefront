@@ -8,12 +8,13 @@ import { ErrorMessage } from '@gfed-medusa/sf-lib-common/components/error-messag
 import { SubmitButton } from '@gfed-medusa/sf-lib-common/components/submit-button';
 import { Divider } from '@gfed-medusa/sf-lib-ui/components/divider';
 import { Spinner } from '@gfed-medusa/sf-lib-ui/icons/spinner';
-import { setAddresses } from '@lib/data/cart';
-import { Customer } from '@lib/gql/generated-types/graphql';
-import { Cart } from '@lib/gql/generated-types/graphql';
-import compareAddresses from '@lib/util/compare-addresses';
 import { CheckCircleSolid } from '@medusajs/icons';
 import { Heading, Text, useToggleState } from '@medusajs/ui';
+
+import { setAddresses } from '@/lib/data/cart';
+import { Customer } from '@/lib/gql/generated-types/graphql';
+import { Cart } from '@/lib/gql/generated-types/graphql';
+import compareAddresses from '@/lib/util/compare-addresses';
 
 import BillingAddress from '../billing_address';
 import ShippingAddress from '../shipping-address';

@@ -2,14 +2,15 @@
 
 import React from 'react';
 
-import Help from '@components/help';
-import Items from '@components/items';
-import OrderDetails from '@components/order-details';
-import OrderSummary from '@components/order-summary';
-import ShippingDetails from '@components/shipping-details';
 import { LocalizedClientLink } from '@gfed-medusa/sf-lib-common/components/localized-client-link';
-import { Order } from '@lib/gql/generated-types/graphql';
 import { XMark } from '@medusajs/icons';
+
+import Help from '@/components/help';
+import Items from '@/components/items';
+import OrderDetails from '@/components/order-details';
+import OrderSummary from '@/components/order-summary';
+import ShippingDetails from '@/components/shipping-details';
+import { Order } from '@/lib/gql/generated-types/graphql';
 
 type OrderDetailsTemplateProps = {
   order: Order;

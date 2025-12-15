@@ -1,11 +1,11 @@
-import Addresses from '@components/addresses';
-import Payment from '@components/payment';
-import Review from '@components/review';
-import Shipping from '@components/shipping';
-import { listCartShippingMethods } from '@lib/data/fulfillment';
-import { listCartPaymentMethods } from '@lib/data/payment';
-import { Customer } from '@lib/gql/generated-types/graphql';
-import { Cart } from '@lib/gql/generated-types/graphql';
+import Addresses from '@/components/addresses';
+import Payment from '@/components/payment';
+import Review from '@/components/review';
+import Shipping from '@/components/shipping';
+import { listCartShippingMethods } from '@/lib/data/fulfillment';
+import { listCartPaymentMethods } from '@/lib/data/payment';
+import { Customer } from '@/lib/gql/generated-types/graphql';
+import { Cart } from '@/lib/gql/generated-types/graphql';
 
 export default async function CheckoutForm({
   cart,

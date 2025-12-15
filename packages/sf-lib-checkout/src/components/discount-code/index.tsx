@@ -6,9 +6,10 @@ import { ErrorMessage } from '@gfed-medusa/sf-lib-common/components/error-messag
 import { SubmitButton } from '@gfed-medusa/sf-lib-common/components/submit-button';
 import { convertToLocale } from '@gfed-medusa/sf-lib-common/lib/utils/money';
 import { Trash } from '@gfed-medusa/sf-lib-ui/icons/trash';
-import { applyPromotions, submitPromotionForm } from '@lib/data/cart';
-import { Cart } from '@lib/gql/generated-types/graphql';
 import { Badge, Heading, Input, Label, Text } from '@medusajs/ui';
+
+import { applyPromotions, submitPromotionForm } from '@/lib/data/cart';
+import { Cart } from '@/lib/gql/generated-types/graphql';
 
 type DiscountCodeProps = {
   cart: Cart;

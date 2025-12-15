@@ -2,15 +2,16 @@ import { Fragment, useMemo } from 'react';
 
 import { Radio } from '@gfed-medusa/sf-lib-ui/components/radio';
 import { Listbox, Transition } from '@headlessui/react';
+import { ChevronUpDown } from '@medusajs/icons';
+import { HttpTypes } from '@medusajs/types';
+import { clx } from '@medusajs/ui';
+
 import {
   Address,
   CustomerAddress,
   Maybe,
-} from '@lib/gql/generated-types/graphql';
-import compareAddresses from '@lib/util/compare-addresses';
-import { ChevronUpDown } from '@medusajs/icons';
-import { HttpTypes } from '@medusajs/types';
-import { clx } from '@medusajs/ui';
+} from '@/lib/gql/generated-types/graphql';
+import compareAddresses from '@/lib/util/compare-addresses';
 
 type AddressSelectProps = {
   addresses?: Maybe<Maybe<CustomerAddress>[]>;

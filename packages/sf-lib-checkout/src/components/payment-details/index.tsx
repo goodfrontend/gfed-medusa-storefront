@@ -1,8 +1,9 @@
 import { convertToLocale } from '@gfed-medusa/sf-lib-common/lib/utils/money';
 import { Divider } from '@gfed-medusa/sf-lib-ui/components/divider';
-import { isStripe, paymentInfoMap } from '@lib/constants';
-import { Order } from '@lib/gql/generated-types/graphql';
 import { Container, Heading, Text } from '@medusajs/ui';
+
+import { isStripe, paymentInfoMap } from '@/lib/constants';
+import { Order } from '@/lib/gql/generated-types/graphql';
 
 type PaymentDetailsProps = {
   order: Order;

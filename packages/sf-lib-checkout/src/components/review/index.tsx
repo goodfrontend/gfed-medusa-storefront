@@ -2,8 +2,9 @@
 
 import { useSearchParams } from 'next/navigation';
 
-import { Cart } from '@lib/gql/generated-types/graphql';
 import { Heading, Text, clx } from '@medusajs/ui';
+
+import { Cart } from '@/lib/gql/generated-types/graphql';
 
 import PaymentButton from '../payment-button';
 
@@ -27,7 +28,7 @@ const Review = ({ cart }: { cart: Cart }) => {
           className={clx(
             'text-3xl-regular flex flex-row items-baseline gap-x-2',
             {
-              'pointer-events-none select-none opacity-50': !isOpen,
+              'pointer-events-none opacity-50 select-none': !isOpen,
             }
           )}
         >
@@ -38,7 +39,7 @@ const Review = ({ cart }: { cart: Cart }) => {
         <>
           <div className="mb-6 flex w-full items-start gap-x-1">
             <div className="w-full">
-              <Text className="txt-medium-plus mb-1 text-ui-fg-base">
+              <Text className="txt-medium-plus text-ui-fg-base mb-1">
                 By clicking the Place Order button, you confirm that you have
                 read, understand and accept our Terms of Use, Terms of Sale and
                 Returns Policy and acknowledge that you have read Medusa

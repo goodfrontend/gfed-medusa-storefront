@@ -1,12 +1,13 @@
 import React, { type JSX, useContext, useMemo } from 'react';
 
-import SkeletonCardDetails from '@components/skeleton-card-details';
 import { Radio } from '@gfed-medusa/sf-lib-ui/components/radio';
 import { Radio as RadioGroupOption } from '@headlessui/react';
-import { isManual } from '@lib/constants';
 import { Text, clx } from '@medusajs/ui';
 import { CardElement } from '@stripe/react-stripe-js';
 import { StripeCardElementOptions } from '@stripe/stripe-js';
+
+import SkeletonCardDetails from '@/components/skeleton-card-details';
+import { isManual } from '@/lib/constants';
 
 import PaymentTest from '../payment-test';
 import { StripeContext } from '../payment-wrapper/stripe-wrapper';

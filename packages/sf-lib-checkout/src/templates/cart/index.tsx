@@ -1,8 +1,9 @@
-import EmptyCartMessage from '@components/empty-cart-message';
-import SignInPrompt from '@components/sign-in-prompt';
 import { Divider } from '@gfed-medusa/sf-lib-ui/components/divider';
-import { Customer } from '@lib/gql/generated-types/graphql';
-import { Cart } from '@lib/gql/generated-types/graphql';
+
+import EmptyCartMessage from '@/components/empty-cart-message';
+import SignInPrompt from '@/components/sign-in-prompt';
+import { Customer } from '@/lib/gql/generated-types/graphql';
+import { Cart } from '@/lib/gql/generated-types/graphql';
 
 import ItemsTemplate from './items';
 import Summary from './summary';

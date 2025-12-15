@@ -2,11 +2,12 @@
 
 import { useState } from 'react';
 
+import { Button, Text } from '@medusajs/ui';
+
 import {
   acceptTransferRequest,
   declineTransferRequest,
-} from '@lib/data/orders';
-import { Button, Text } from '@medusajs/ui';
+} from '@/lib/data/orders';
 
 type TransferStatus = 'pending' | 'success' | 'error';
 

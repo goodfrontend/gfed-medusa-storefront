@@ -1,5 +1,6 @@
-import { Order } from '@lib/gql/generated-types/graphql';
 import { Text } from '@medusajs/ui';
+
+import { Order } from '@/lib/gql/generated-types/graphql';
 
 type OrderDetailsProps = {
   order: Order;
@@ -31,7 +32,7 @@ const OrderDetails = ({ order, showStatus }: OrderDetailsProps) => {
           {new Date(order.createdAt).toDateString()}
         </span>
       </Text>
-      <Text className="mt-2 text-ui-fg-interactive">
+      <Text className="text-ui-fg-interactive mt-2">
         Order number: <span data-testid="order-id">{order.displayId}</span>
       </Text>
 

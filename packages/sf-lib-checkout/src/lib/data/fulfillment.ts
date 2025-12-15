@@ -1,6 +1,6 @@
 'use server';
 
-import { sdk } from '@lib/config';
+import { sdk } from '@gfed-medusa/sf-lib-common/lib/config/medusa';
 import { HttpTypes } from '@medusajs/types';
 
 import { getAuthHeaders, getCacheOptions } from './cookies';

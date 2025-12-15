@@ -1,9 +1,10 @@
-import Item from '@components/item';
-import SkeletonLineItem from '@components/skeleton-line-item';
 import { Divider } from '@gfed-medusa/sf-lib-ui/components/divider';
-import { Order } from '@lib/gql/generated-types/graphql';
-import repeat from '@lib/util/repeat';
 import { Table } from '@medusajs/ui';
+
+import Item from '@/components/item';
+import SkeletonLineItem from '@/components/skeleton-line-item';
+import { Order } from '@/lib/gql/generated-types/graphql';
+import repeat from '@/lib/util/repeat';
 
 type ItemsProps = {
   order: Order;

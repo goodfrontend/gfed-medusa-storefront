@@ -9,12 +9,13 @@ import { convertToLocale } from '@gfed-medusa/sf-lib-common/lib/utils/money';
 import { Divider } from '@gfed-medusa/sf-lib-ui/components/divider';
 import { Radio as MedusaRadio } from '@gfed-medusa/sf-lib-ui/components/radio';
 import { Radio, RadioGroup } from '@headlessui/react';
-import { setShippingMethod } from '@lib/data/cart';
-import { calculatePriceForShippingOption } from '@lib/data/fulfillment';
-import { Cart } from '@lib/gql/generated-types/graphql';
 import { CheckCircleSolid, Loader } from '@medusajs/icons';
 import { HttpTypes } from '@medusajs/types';
 import { Button, Heading, Text, clx } from '@medusajs/ui';
+
+import { setShippingMethod } from '@/lib/data/cart';
+import { calculatePriceForShippingOption } from '@/lib/data/fulfillment';
+import { Cart } from '@/lib/gql/generated-types/graphql';
 
 /* eslint-disable react/prop-types */
 

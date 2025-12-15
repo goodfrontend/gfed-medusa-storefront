@@ -1,7 +1,8 @@
 import { convertToLocale } from '@gfed-medusa/sf-lib-common/lib/utils/money';
 import { Divider } from '@gfed-medusa/sf-lib-ui/components/divider';
-import { Order } from '@lib/gql/generated-types/graphql';
 import { Heading, Text } from '@medusajs/ui';
+
+import { Order } from '@/lib/gql/generated-types/graphql';
 
 type ShippingDetailsProps = {
   order: Order;

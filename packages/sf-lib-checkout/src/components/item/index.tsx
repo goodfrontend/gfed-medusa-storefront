@@ -2,8 +2,6 @@
 
 import { useState } from 'react';
 
-import CartItemSelect from '@components/cart-item-select';
-import LineItemUnitPrice from '@components/line-item-unit-price';
 import { DeleteButton } from '@gfed-medusa/sf-lib-common/components/delete-button';
 import { ErrorMessage } from '@gfed-medusa/sf-lib-common/components/error-message';
 import { LineItemOptions } from '@gfed-medusa/sf-lib-common/components/line-item-options';
@@ -11,9 +9,12 @@ import { LineItemPrice } from '@gfed-medusa/sf-lib-common/components/line-item-p
 import { LocalizedClientLink } from '@gfed-medusa/sf-lib-common/components/localized-client-link';
 import { Thumbnail } from '@gfed-medusa/sf-lib-common/components/thumbnail';
 import { Spinner } from '@gfed-medusa/sf-lib-ui/icons/spinner';
-import { updateLineItem } from '@lib/data/cart';
-import { LineItem } from '@lib/gql/generated-types/graphql';
 import { Table, Text, clx } from '@medusajs/ui';
+
+import CartItemSelect from '@/components/cart-item-select';
+import LineItemUnitPrice from '@/components/line-item-unit-price';
+import { updateLineItem } from '@/lib/data/cart';
+import { LineItem } from '@/lib/gql/generated-types/graphql';
 
 type ItemProps = {
   item: LineItem;

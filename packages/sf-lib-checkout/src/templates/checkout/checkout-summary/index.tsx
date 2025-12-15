@@ -1,9 +1,10 @@
-import CartTotals from '@components/cart-totals';
-import DiscountCode from '@components/discount-code';
 import { Divider } from '@gfed-medusa/sf-lib-ui/components/divider';
-import { Cart } from '@lib/gql/generated-types/graphql';
 import { Heading } from '@medusajs/ui';
-import ItemsPreviewTemplate from '@templates/cart/preview';
+
+import CartTotals from '@/components/cart-totals';
+import DiscountCode from '@/components/discount-code';
+import { Cart } from '@/lib/gql/generated-types/graphql';
+import ItemsPreviewTemplate from '@/templates/cart/preview';
 
 const CheckoutSummary = ({ cart }: { cart: Cart }) => {
   return (

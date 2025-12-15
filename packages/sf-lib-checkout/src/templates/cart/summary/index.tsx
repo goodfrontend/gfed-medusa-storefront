@@ -1,11 +1,12 @@
 'use client';
 
-import CartTotals from '@components/cart-totals';
-import DiscountCode from '@components/discount-code';
 import { LocalizedClientLink } from '@gfed-medusa/sf-lib-common/components/localized-client-link';
 import { Divider } from '@gfed-medusa/sf-lib-ui/components/divider';
-import { Cart } from '@lib/gql/generated-types/graphql';
 import { Button, Heading } from '@medusajs/ui';
+
+import CartTotals from '@/components/cart-totals';
+import DiscountCode from '@/components/discount-code';
+import { Cart } from '@/lib/gql/generated-types/graphql';
 
 type SummaryProps = {
   cart: Cart;

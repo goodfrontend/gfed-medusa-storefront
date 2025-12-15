@@ -1,14 +1,15 @@
 import { cookies as nextCookies } from 'next/headers';
 
-import CartTotals from '@components/cart-totals';
-import Help from '@components/help';
-import Items from '@components/items';
-import OnboardingCta from '@components/onboarding-cta';
-import OrderDetails from '@components/order-details';
-import PaymentDetails from '@components/payment-details';
-import ShippingDetails from '@components/shipping-details';
-import { Order } from '@lib/gql/generated-types/graphql';
 import { Heading } from '@medusajs/ui';
+
+import CartTotals from '@/components/cart-totals';
+import Help from '@/components/help';
+import Items from '@/components/items';
+import OnboardingCta from '@/components/onboarding-cta';
+import OrderDetails from '@/components/order-details';
+import PaymentDetails from '@/components/payment-details';
+import ShippingDetails from '@/components/shipping-details';
+import { Order } from '@/lib/gql/generated-types/graphql';
 
 type OrderCompletedTemplateProps = {
   order: Order;

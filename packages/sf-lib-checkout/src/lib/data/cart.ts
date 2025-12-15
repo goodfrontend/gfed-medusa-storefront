@@ -5,7 +5,9 @@ import { redirect } from 'next/navigation';
 
 import { sdk } from '@gfed-medusa/sf-lib-common/lib/config/medusa';
 import medusaError from '@gfed-medusa/sf-lib-common/lib/utils/medusa-error';
-import { graphqlFetch, graphqlMutation } from '@lib/gql/apollo-client';
+import { HttpTypes } from '@medusajs/types';
+
+import { graphqlFetch, graphqlMutation } from '@/lib/gql/apollo-client';
 import {
   AddShippingMethodMutation,
   AddShippingMethodMutationVariables,
@@ -26,7 +28,7 @@ import {
   UpdateCartMutationVariables,
   UpdateLineItemMutation,
   UpdateLineItemMutationVariables,
-} from '@lib/gql/generated-types/graphql';
+} from '@/lib/gql/generated-types/graphql';
 import {
   ADD_SHIPPING_METHOD_MUTATION,
   APPLY_PROMOTIONS_MUTATION,
@@ -36,9 +38,8 @@ import {
   DELETE_LINE_ITEM_MUTATION,
   UPDATE_CART_MUTATION,
   UPDATE_LINE_ITEM_MUTATION,
-} from '@lib/gql/mutations/cart';
-import { GET_CART_QUERY } from '@lib/gql/queries/cart';
-import { HttpTypes } from '@medusajs/types';
+} from '@/lib/gql/mutations/cart';
+import { GET_CART_QUERY } from '@/lib/gql/queries/cart';
 
 import {
   getAuthHeaders,

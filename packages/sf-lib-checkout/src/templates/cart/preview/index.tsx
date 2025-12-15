@@ -1,10 +1,11 @@
 'use client';
 
-import Item from '@components/item';
-import SkeletonLineItem from '@components/skeleton-line-item';
-import { Cart } from '@lib/gql/generated-types/graphql';
-import repeat from '@lib/util/repeat';
 import { Table, clx } from '@medusajs/ui';
+
+import Item from '@/components/item';
+import SkeletonLineItem from '@/components/skeleton-line-item';
+import { Cart } from '@/lib/gql/generated-types/graphql';
+import repeat from '@/lib/util/repeat';
 
 type ItemsTemplateProps = {
   cart: Cart;

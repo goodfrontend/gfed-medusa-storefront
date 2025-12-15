@@ -1,6 +1,7 @@
 import { convertToLocale } from '@gfed-medusa/sf-lib-common/lib/utils/money';
-import { LineItem } from '@lib/gql/generated-types/graphql';
 import { clx } from '@medusajs/ui';
+
+import { LineItem } from '@/lib/gql/generated-types/graphql';
 
 type LineItemUnitPriceProps = {
   item: LineItem;

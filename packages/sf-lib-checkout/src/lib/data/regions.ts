@@ -1,10 +1,11 @@
 'use server';
 
-import { sdk } from '@lib/config';
-import { Region } from '@lib/gql/generated-types/graphql';
-import medusaError from '@lib/util/medusa-error';
-import { normalizeRegion } from '@lib/util/normalizeFunctions';
+import { sdk } from '@gfed-medusa/sf-lib-common/lib/config/medusa';
+import medusaError from '@gfed-medusa/sf-lib-common/lib/utils/medusa-error';
 import { HttpTypes } from '@medusajs/types';
+
+import { Region } from '@/lib/gql/generated-types/graphql';
+import { normalizeRegion } from '@/lib/util/normalizeFunctions';
 
 import { getCacheOptions } from './cookies';
 

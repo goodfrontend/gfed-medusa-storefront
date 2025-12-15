@@ -1,9 +1,10 @@
 'use server';
 
-import { sdk } from '@lib/config';
-import medusaError from '@lib/util/medusa-error';
-import { normalizeOrder } from '@lib/util/normalizeFunctions';
+import { sdk } from '@gfed-medusa/sf-lib-common/lib/config/medusa';
+import medusaError from '@gfed-medusa/sf-lib-common/lib/utils/medusa-error';
 import { HttpTypes } from '@medusajs/types';
+
+import { normalizeOrder } from '@/lib/util/normalizeFunctions';
 
 import { getAuthHeaders, getCacheOptions } from './cookies';
 

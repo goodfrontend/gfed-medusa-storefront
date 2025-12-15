@@ -3,11 +3,12 @@
 import React, { useState } from 'react';
 
 import { ErrorMessage } from '@gfed-medusa/sf-lib-common/components/error-message';
-import { isManual, isStripe } from '@lib/constants';
-import { placeOrder } from '@lib/data/cart';
-import { Cart } from '@lib/gql/generated-types/graphql';
 import { Button } from '@medusajs/ui';
 import { useElements, useStripe } from '@stripe/react-stripe-js';
+
+import { isManual, isStripe } from '@/lib/constants';
+import { placeOrder } from '@/lib/data/cart';
+import { Cart } from '@/lib/gql/generated-types/graphql';
 
 type PaymentButtonProps = {
   cart: Cart;

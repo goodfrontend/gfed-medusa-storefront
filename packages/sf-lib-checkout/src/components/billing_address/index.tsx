@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 
 import { CountrySelect } from '@gfed-medusa/sf-lib-common/components/country-select';
 import { Input } from '@gfed-medusa/sf-lib-ui/components/input';
-import { Cart } from '@lib/gql/generated-types/graphql';
+
+import { Cart } from '@/lib/gql/generated-types/graphql';
 
 const BillingAddress = ({ cart }: { cart: Cart }) => {
   const [formData, setFormData] = useState<Record<string, string>>({

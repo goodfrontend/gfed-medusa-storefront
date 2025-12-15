@@ -2,10 +2,11 @@
 
 import React from 'react';
 
-import { isStripe } from '@lib/constants';
-import { Cart } from '@lib/gql/generated-types/graphql';
-import { camelToSnakeCase } from '@lib/util/normalizeFunctions';
 import { loadStripe } from '@stripe/stripe-js';
+
+import { isStripe } from '@/lib/constants';
+import { Cart } from '@/lib/gql/generated-types/graphql';
+import { camelToSnakeCase } from '@/lib/util/normalizeFunctions';
 
 import StripeWrapper from './stripe-wrapper';
 
