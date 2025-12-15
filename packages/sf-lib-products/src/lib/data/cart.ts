@@ -6,6 +6,7 @@ import { graphqlFetch, graphqlMutation } from '@gfed-medusa/sf-lib-common/lib/gq
 import {
   getCacheTag,
   getCartId,
+  setCartId,
 } from '@gfed-medusa/sf-lib-common/lib/data/cookies';
 import {
   Cart,
@@ -19,7 +20,6 @@ import {
   UpdateCartMutationVariables,
 } from '@gfed-medusa/sf-lib-common/types/graphql';
 
-import { setCartId } from './cookies';
 import { getRegion } from './regions';
 import { GET_CART_QUERY } from '@/lib/gql/queries/cart';
 import {
