@@ -1,6 +1,6 @@
 // sort-imports-ignore
-import './global.css';
 import '@gfed-medusa/sf-lib-ui/styles.css';
+import './global.css';
 
 import { Metadata } from 'next';
 import { ApolloClientProvider } from '@gfed-medusa/sf-lib-common/lib/context/apollo-context';
@@ -16,9 +16,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" data-mode="light">
       <body>
-        <ApolloClientProvider>{children}</ApolloClientProvider>
+        <main>
+          <ApolloClientProvider>{children}</ApolloClientProvider>
+        </main>
       </body>
     </html>
   );
