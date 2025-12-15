@@ -9,7 +9,7 @@ This Sanity studio is configured to manage content for the Medusa e-commerce sto
 ## Project Structure
 
 ```
-apps/sanity/
+apps/sanity-studio/
 ├── schemas/            # Content type definitions
 │   ├── partials/       # partial Content type definitions
 │   └── index.ts        # Schema exports
@@ -51,7 +51,7 @@ From the project root:
 pnpm install
 
 # Navigate to sanity app
-cd apps/sanity
+cd apps/sanity-studio
 ```
 
 ### Development
