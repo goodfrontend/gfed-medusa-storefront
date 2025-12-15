@@ -51,7 +51,8 @@
     "@medusajs/types": "^2.12.1",
     "@stripe/react-stripe-js": "^1.7.2",
     "@stripe/stripe-js": "^1.29.0",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "server-only": "^0.0.1"
   },
   "peerDependencies": {
     "next": "^15.3.6",
