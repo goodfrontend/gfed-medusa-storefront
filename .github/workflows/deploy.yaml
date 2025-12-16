@@ -1,0 +1,58 @@
+name: Deploy to Render
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  deployments: write
+
+jobs:
+  detect-changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    outputs:
+      home: ${{ steps.changes.outputs.home }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          base: ${{ github.event.before || 'HEAD^' }}
+          filters: |
+            home:
+              - 'apps/mf-home/**'
+              - 'packages/**'
+              - 'turbo.json'
+              - 'pnpm-lock.yaml'
+
+  home-smoke:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.home == 'true'
+    uses: ./.github/workflows/_deploy-render.yaml
+    with:
+      app: home-smoke
+    secrets:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+
+  home-qa:
+    needs: [detect-changes, home-smoke]
+    if: needs.detect-changes.outputs.home == 'true'
+    uses: ./.github/workflows/_deploy-render.yaml
+    with:
+      app: home-qa
+    secrets:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+
+  home-production:
+    needs: [detect-changes, home-qa]
+    if: needs.detect-changes.outputs.home == 'true'
+    uses: ./.github/workflows/_deploy-render.yaml
+    with:
+      app: home-prod
+    secrets:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
