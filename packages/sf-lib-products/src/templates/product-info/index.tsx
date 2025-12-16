@@ -1,6 +1,6 @@
 import { Product } from '@/types/graphql';
 import { Heading, Text } from '@medusajs/ui';
-import LocalizedClientLink from '@gfed-medusa/sf-lib-common/components/localized-client-link';
+import { LocalizedClientLink } from '@gfed-medusa/sf-lib-common/components/localized-client-link';
 
 type ProductInfoProps = {
   product: Product;
