@@ -1,0 +1,32 @@
+projects:
+  - name: gfed-storefront-project
+    environments:
+      - name: production
+        services:
+          - type: web
+            runtime: docker
+            plan: free
+            name: home-prod
+            region: oregon
+            autoDeployTrigger: off
+            dockerfilePath: ./apps/mf-home/Dockerfile
+
+      - name: smoke
+        services:
+          - type: web
+            runtime: docker
+            plan: free
+            name: home-smoke
+            region: oregon
+            autoDeployTrigger: off
+            dockerfilePath: ./apps/mf-home/Dockerfile
+
+      - name: qa
+        services:
+          - type: web
+            runtime: docker
+            plan: free
+            name: home-qa
+            region: oregon
+            autoDeployTrigger: off
+            dockerfilePath: ./apps/mf-home/Dockerfile
