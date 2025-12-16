@@ -1,9 +1,10 @@
 import { Metadata } from 'next';
+
 import '@/styles/globals.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:8001'
+    process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3001'
   ),
 };
 

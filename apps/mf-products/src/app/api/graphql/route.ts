@@ -3,7 +3,7 @@ import { NextRequest } from 'next/server';
 const BFF_URL =
   process.env.NEXT_PUBLIC_BFF_URL ?? 'http://localhost:4000/graphql';
 
-const allowedOrigin = process.env.API_GRAPHQL_CORS ?? 'http://localhost:8001';
+const allowedOrigin = process.env.API_GRAPHQL_CORS ?? 'http://localhost:3001';
 
 function corsHeaders(origin: string) {
   return {

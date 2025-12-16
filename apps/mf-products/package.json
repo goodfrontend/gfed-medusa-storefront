@@ -4,17 +4,17 @@
   "private": true,
   "description": "Products microfrontend for Medusa storefront",
   "scripts": {
-    "dev": "next dev --turbopack -p 8001",
+    "dev": "next dev --turbopack -p 3001",
     "build": "next build",
-    "start": "next start -p 8001",
+    "start": "next start -p 3001",
     "lint": "next lint",
     "type:check": "tsc --noEmit --incremental false"
   },
   "dependencies": {
     "@apollo/client": "^4.0.4",
-    "@gfed-medusa/sf-lib-common": "workspace:*",
-    "@gfed-medusa/sf-lib-products": "workspace:*",
-    "@gfed-medusa/sf-lib-ui": "workspace:*",
+    "@gfed-medusa/sf-lib-common": "^1.1.0",
+    "@gfed-medusa/sf-lib-products": "^1.0.0",
+    "@gfed-medusa/sf-lib-ui": "^1.1.1",
     "@headlessui/react": "^2.2.0",
     "@medusajs/icons": "2.10.3",
     "@medusajs/types": "2.10.3",
