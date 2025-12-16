@@ -2,9 +2,9 @@
 
 import { useActionState } from 'react';
 
+import { ErrorMessage } from '@gfed-medusa/sf-lib-common/components/error-message';
 import { LocalizedClientLink } from '@gfed-medusa/sf-lib-common/components/localized-client-link';
 import { SubmitButton } from '@gfed-medusa/sf-lib-common/components/submit-button';
-import { ErrorMessage } from '@gfed-medusa/sf-lib-common/error-message';
 import { MedusaInput } from '@gfed-medusa/sf-lib-ui/components/medusa-input';
 
 import { signup } from '@/lib/data/customer';

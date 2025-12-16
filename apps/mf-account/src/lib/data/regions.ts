@@ -2,10 +2,9 @@
 
 import { sdk } from '@gfed-medusa/sf-lib-common/lib/config/medusa';
 import { medusaError } from '@gfed-medusa/sf-lib-common/lib/utils/medusa-error';
+import { normalizeRegion } from '@gfed-medusa/sf-lib-common/lib/utils/normalize-functions';
+import { Region } from '@gfed-medusa/sf-lib-common/types/graphql';
 import { HttpTypes } from '@medusajs/types';
-
-import { Region } from '@/lib/gql/generated-types/graphql';
-import { normalizeRegion } from '@/lib/util/normalizeFunctions';
 
 import { getCacheOptions } from './cookies';
 
@@ -24,20 +23,6 @@ export const listRegions = async () => {
     .catch(medusaError);
 };
 
-export const retrieveRegion = async (id: string) => {
-  const next = {
-    ...(await getCacheOptions(['regions', id].join('-'))),
-  };
-
-  return sdk.client
-    .fetch<{ region: HttpTypes.StoreRegion }>(`/store/regions/${id}`, {
-      method: 'GET',
-      next,
-      cache: 'force-cache',
-    })
-    .then(({ region }) => (region ? normalizeRegion(region) : null))
-    .catch(medusaError);
-};
 const regionMap = new Map<string, Region>();
 
 export const getRegion = async (
@@ -63,7 +48,7 @@ export const getRegion = async (
       : (regionMap.get('us') ?? null);
 
     return region;
-  } catch (e: any) {
+  } catch {
     return null;
   }
 };

@@ -1,7 +1,7 @@
 'use server';
 
 import { sdk } from '@gfed-medusa/sf-lib-common/lib/config/medusa';
-import medusaError from '@gfed-medusa/sf-lib-common/lib/utils/medusa-error';
+import { medusaError } from '@gfed-medusa/sf-lib-common/lib/utils/medusa-error';
 import { HttpTypes } from '@medusajs/types';
 
 import { normalizeOrder } from '@/lib/util/normalizeFunctions';

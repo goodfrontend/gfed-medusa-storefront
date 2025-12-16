@@ -4,20 +4,20 @@ import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
+import { sdk } from '@gfed-medusa/sf-lib-common/lib/config/medusa';
 import {
   getAuthHeaders,
   getCacheTag,
   getCartId,
   removeCartId,
-} from '@gfed-medusa/sf-lib-common/data/cookies';
-import { sdk } from '@gfed-medusa/sf-lib-common/lib/config';
+} from '@gfed-medusa/sf-lib-common/lib/data/cookies';
 import { graphqlMutation } from '@gfed-medusa/sf-lib-common/lib/gql/apollo-client';
 import {
   createServerApolloClient,
   graphqlFetch,
 } from '@gfed-medusa/sf-lib-common/lib/gql/apollo-client';
 import { TRANSFER_CART_MUTATION } from '@gfed-medusa/sf-lib-common/lib/gql/mutations/cart';
-import medusaError from '@gfed-medusa/sf-lib-common/lib/util/medusa-error';
+import { medusaError } from '@gfed-medusa/sf-lib-common/lib/utils/medusa-error';
 import {
   TransferCartMutation,
   TransferCartMutationVariables,

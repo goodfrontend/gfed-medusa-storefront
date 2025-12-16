@@ -1,8 +1,8 @@
 import { FormEvent } from 'react';
 
 import { useMutation } from '@apollo/client/react';
+import { ErrorMessage } from '@gfed-medusa/sf-lib-common/components/error-message';
 import { SubmitButton } from '@gfed-medusa/sf-lib-common/components/submit-button';
-import { ErrorMessage } from '@gfed-medusa/sf-lib-common/error-message';
 import { MedusaInput } from '@gfed-medusa/sf-lib-ui/components/medusa-input';
 
 import { postLogin } from '@/lib/data/customer';
