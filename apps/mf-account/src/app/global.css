@@ -1,0 +1,8 @@
+@config "../../tailwind.config.ts";
+@import 'tailwindcss';
+@source "../../node_modules/@gfed-medusa/sf-lib-common";
+@source "../../node_modules/@gfed-medusa/sf-lib-ui";
+@source "../../node_modules/@gfed-medusa/sf-lib-home";
+@source "../../node_modules/@gfed-medusa/sf-lib-account";
+@source "../../node_modules/@gfed-medusa/sf-lib-checkout";
+@source "../../node_modules/@medusajs/ui";

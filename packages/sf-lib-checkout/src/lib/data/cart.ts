@@ -4,7 +4,7 @@ import { revalidateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 import { sdk } from '@gfed-medusa/sf-lib-common/lib/config/medusa';
-import medusaError from '@gfed-medusa/sf-lib-common/lib/utils/medusa-error';
+import { medusaError } from '@gfed-medusa/sf-lib-common/lib/utils/medusa-error';
 import { HttpTypes } from '@medusajs/types';
 
 import { graphqlFetch, graphqlMutation } from '@/lib/gql/apollo-client';

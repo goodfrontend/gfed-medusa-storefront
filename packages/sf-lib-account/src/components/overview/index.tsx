@@ -1,6 +1,6 @@
 import { LocalizedClientLink } from '@gfed-medusa/sf-lib-common/components/localized-client-link';
-import { ChevronDown } from '@gfed-medusa/sf-lib-common/icons/chevron-down';
 import { convertToLocale } from '@gfed-medusa/sf-lib-common/lib/utils/money';
+import { ChevronDown } from '@gfed-medusa/sf-lib-ui/icons/chevron-down';
 import { Container } from '@medusajs/ui';
 
 import { Customer, Order } from '@/types/graphql';
