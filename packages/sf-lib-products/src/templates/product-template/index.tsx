@@ -3,7 +3,7 @@ import React, { Suspense } from 'react';
 import { notFound } from 'next/navigation';
 
 import { Product } from '@/types/graphql';
-import { HttpTypes } from '@medusajs/types';
+import { Region } from '@gfed-medusa/sf-lib-common/types/graphql';
 import ImageGallery from '@/components/image-gallery';
 import ProductActions from '@/components/product-actions';
 import ProductOnboardingCta from '@/components/product-onboarding-cta';
@@ -16,7 +16,7 @@ import ProductActionsWrapper from '../product-actions-wrapper';
 
 type ProductTemplateProps = {
   product?: Product | null;
-  region: HttpTypes.StoreRegion;
+  region: Region;
   countryCode: string;
   breadcrumbs?: React.ReactNode;
 };

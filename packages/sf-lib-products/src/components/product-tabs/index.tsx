@@ -1,9 +1,9 @@
 'use client';
 
 import { Product } from '@/types/graphql';
-import Back from '@gfed-medusa/sf-lib-ui/icons/back';
-import FastDelivery from '@gfed-medusa/sf-lib-ui/icons/fast-delivery';
-import Refresh from '@gfed-medusa/sf-lib-ui/icons/refresh';
+import { Back } from '@gfed-medusa/sf-lib-ui/icons/back';
+import { FastDelivery } from '@gfed-medusa/sf-lib-ui/icons/fast-delivery';
+import { Refresh } from '@gfed-medusa/sf-lib-ui/icons/refresh';
 
 import Accordion from './accordion';
 

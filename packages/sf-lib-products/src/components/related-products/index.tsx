@@ -5,7 +5,7 @@ import {
   Product as ProductType,
 } from '@/types/graphql';
 
-import Product from '@gfed-medusa/sf-lib-common/components/product-preview';
+import { ProductPreview } from '@gfed-medusa/sf-lib-common/components/product-preview';
 
 type RelatedProductsProps = {
   product: ProductType;
@@ -64,7 +64,7 @@ export default async function RelatedProducts({
       <ul className="grid grid-cols-2 gap-x-6 gap-y-8 small:grid-cols-3 medium:grid-cols-4">
         {products?.map((product) => (
           <li key={product?.id}>
-            <Product product={product as ProductType} />
+            <ProductPreview product={product as ProductType} />
           </li>
         ))}
       </ul>

@@ -9,4 +9,5 @@ export default defineConfig({
   ],
   dts: true,
   fixedExtension: false,
+  unbundle: true,
 });
