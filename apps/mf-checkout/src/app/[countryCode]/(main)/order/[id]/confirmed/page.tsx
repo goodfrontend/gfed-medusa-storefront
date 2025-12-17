@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { retrieveOrder } from '@gfed-medusa/sf-lib-checkout/lib/data/orders';
-import OrderCompletedTemplate from '@gfed-medusa/sf-lib-checkout/templates/order/order-completed-template';
+import OrderCompletedTemplate from '@gfed-medusa/sf-lib-checkout/templates/order-completed-template';
 
 type Props = {
   params: Promise<{ id: string }>;
