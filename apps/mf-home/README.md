@@ -2,10 +2,10 @@
 
 ## Storefront Development Server Setup Instructions
 
-1. Set up the environment variables. Copy the `.env.sample` to a local `.env` and update the values as needed.
+1. Set up the environment variables. Copy the `.env.template` to a local `.env` and update the values as needed.
 
    ```bash
-   cp .env.sample .env
+   cp .env.template .env
    ```
 
 2. Start the development server:

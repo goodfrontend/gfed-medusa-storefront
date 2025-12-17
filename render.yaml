@@ -6,27 +6,75 @@ projects:
           - type: web
             runtime: docker
             plan: free
-            name: home-prod
+            name: sf-home-prod
             region: oregon
             autoDeployTrigger: off
             dockerfilePath: ./apps/mf-home/Dockerfile
+
+          - type: web
+            runtime: docker
+            plan: free
+            name: sf-account-prod
+            region: oregon
+            autoDeployTrigger: off
+            dockerfilePath: ./apps/mf-account/Dockerfile
+
+          - type: web
+            runtime: docker
+            plan: free
+            name: sf-products-prod
+            region: oregon
+            autoDeployTrigger: off
+            dockerfilePath: ./apps/mf-products/Dockerfile
 
       - name: smoke
         services:
           - type: web
             runtime: docker
             plan: free
-            name: home-smoke
+            name: sf-home-smoke
             region: oregon
             autoDeployTrigger: off
             dockerfilePath: ./apps/mf-home/Dockerfile
+
+          - type: web
+            runtime: docker
+            plan: free
+            name: sf-account-smoke
+            region: oregon
+            autoDeployTrigger: off
+            dockerfilePath: ./apps/mf-account/Dockerfile
+
+          - type: web
+            runtime: docker
+            plan: free
+            name: sf-products-smoke
+            region: oregon
+            autoDeployTrigger: off
+            dockerfilePath: ./apps/mf-products/Dockerfile
 
       - name: qa
         services:
           - type: web
             runtime: docker
             plan: free
-            name: home-qa
+            name: sf-home-qa
             region: oregon
             autoDeployTrigger: off
             dockerfilePath: ./apps/mf-home/Dockerfile
+
+          - type: web
+            runtime: docker
+            plan: free
+            name: sf-account-qa
+            region: oregon
+            autoDeployTrigger: off
+            dockerfilePath: ./apps/mf-account/Dockerfile
+
+          - type: web
+            runtime: docker
+            plan: free
+            name: sf-products-qa
+            region: oregon
+            autoDeployTrigger: off
+            dockerfilePath: ./apps/mf-products/Dockerfile

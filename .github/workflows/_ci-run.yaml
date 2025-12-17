@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  workflow_call:
+    inputs:
+      app:
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  verify:
+    name: Verify ${{ inputs.app }}
+    runs-on: ubuntu-latest
+    env:
+      APP_PATH: ./apps/${{ inputs.app }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.0.0
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Load CI env for app
+        run: |
+          ENV_FILE="$APP_PATH/.env.template"
+
+          if [ ! -d "$APP_PATH" ]; then
+            echo "::error::App directory not found: $APP_PATH"
+            exit 1
+          fi
+
+          if [ ! -f "$ENV_FILE" ]; then
+            echo "::error::.env.template missing for $APP_PATH"
+            exit 1
+          fi
+
+          grep -vE '^\s*#|^\s*$' "$ENV_FILE" >> "$GITHUB_ENV"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build --filter="$APP_PATH"
+
+      - name: Lint
+        run: pnpm lint --filter="$APP_PATH"
+
+      - name: Type check
+        run: pnpm check-types --filter="$APP_PATH"

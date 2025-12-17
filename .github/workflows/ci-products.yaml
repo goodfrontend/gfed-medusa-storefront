@@ -1,9 +1,9 @@
-name: CI - Home
+name: CI - Products
 
 on:
   pull_request:
     paths:
-      - "apps/mf-home/**"
+      - "apps/mf-products/**"
       - "packages/**"
       - "turbo.json"
       - "pnpm-lock.yaml"
@@ -22,4 +22,4 @@ jobs:
   verify:
     uses: ./.github/workflows/_ci-run.yaml
     with:
-      app: mf-home
+      app: mf-products

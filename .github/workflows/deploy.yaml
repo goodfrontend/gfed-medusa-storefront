@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       home: ${{ steps.changes.outputs.home }}
+      account: ${{ steps.changes.outputs.account }}
+      products: ${{ steps.changes.outputs.products }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -29,13 +31,23 @@ jobs:
               - 'packages/**'
               - 'turbo.json'
               - 'pnpm-lock.yaml'
+            account:
+              - 'apps/mf-account/**'
+              - 'packages/**'
+              - 'turbo.json'
+              - 'pnpm-lock.yaml'
+            products:
+              - 'apps/mf-products/**'
+              - 'packages/**'
+              - 'turbo.json'
+              - 'pnpm-lock.yaml'
 
   home-smoke:
     needs: detect-changes
     if: needs.detect-changes.outputs.home == 'true'
     uses: ./.github/workflows/_deploy-render.yaml
     with:
-      app: home-smoke
+      app: sf-home-smoke
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
@@ -44,7 +56,7 @@ jobs:
     if: needs.detect-changes.outputs.home == 'true'
     uses: ./.github/workflows/_deploy-render.yaml
     with:
-      app: home-qa
+      app: sf-home-qa
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
@@ -53,6 +65,60 @@ jobs:
     if: needs.detect-changes.outputs.home == 'true'
     uses: ./.github/workflows/_deploy-render.yaml
     with:
-      app: home-prod
+      app: sf-home-prod
+    secrets:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+
+  products-smoke:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.products == 'true'
+    uses: ./.github/workflows/_deploy-render.yaml
+    with:
+      app: sf-products-smoke
+    secrets:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+
+  products-qa:
+    needs: [detect-changes, products-smoke]
+    if: needs.detect-changes.outputs.products == 'true'
+    uses: ./.github/workflows/_deploy-render.yaml
+    with:
+      app: sf-products-qa
+    secrets:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+
+  products-production:
+    needs: [detect-changes, products-qa]
+    if: needs.detect-changes.outputs.products == 'true'
+    uses: ./.github/workflows/_deploy-render.yaml
+    with:
+      app: sf-products-prod
+    secrets:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+
+  account-smoke:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.account == 'true'
+    uses: ./.github/workflows/_deploy-render.yaml
+    with:
+      app: sf-account-smoke
+    secrets:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+
+  account-qa:
+    needs: [detect-changes, account-smoke]
+    if: needs.detect-changes.outputs.account == 'true'
+    uses: ./.github/workflows/_deploy-render.yaml
+    with:
+      app: sf-account-qa
+    secrets:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+
+  account-production:
+    needs: [detect-changes, account-qa]
+    if: needs.detect-changes.outputs.account == 'true'
+    uses: ./.github/workflows/_deploy-render.yaml
+    with:
+      app: sf-account-prod
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
