@@ -44,5 +44,8 @@ COPY --from=installer /app/apps/mf-home/package.json .
 COPY --from=installer --chown=nextjs:nodejs /app/apps/mf-home/.next/standalone ./
 COPY --from=installer --chown=nextjs:nodejs /app/apps/mf-home/.next/static ./apps/mf-home/.next/static
 COPY --from=installer --chown=nextjs:nodejs /app/apps/mf-home/public ./apps/mf-home/public
- 
+
+ENV NODE_ENV=production
+ENV HOSTNAME=0.0.0.0
+
 CMD node apps/mf-home/server.js
