@@ -51,11 +51,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build
+        run: pnpm build --filter=@gfed-medusa/mf-home
+
       - name: Lint
         run: pnpm lint --filter=@gfed-medusa/mf-home
 
       - name: Type check
         run: pnpm check-types --filter=@gfed-medusa/mf-home
-
-      - name: Build
-        run: pnpm build --filter=@gfed-medusa/mf-home
