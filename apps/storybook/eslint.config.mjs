@@ -7,4 +7,7 @@ import { reactInternalConfig } from '@packages/eslint-config/react-internal';
 export default [
   ...reactInternalConfig,
   ...storybook.configs['flat/recommended'],
+  {
+    ignores: ['./storybook-static'],
+  },
 ];

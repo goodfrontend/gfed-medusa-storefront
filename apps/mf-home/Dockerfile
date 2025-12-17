@@ -27,6 +27,7 @@ RUN pnpm install \
  
 COPY --from=builder /app/out/full/ .
 COPY turbo.json turbo.json
+RUN mkdir -p /app/apps/mf-home/public
  
 RUN turbo run build --filter=@gfed-medusa/mf-home...
  
