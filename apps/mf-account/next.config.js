@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  basePath: '/account',
+  assetPrefix: '/account-assets',
   output: 'standalone',
   serverExternalPackages: ['jsdom'],
   images: {
