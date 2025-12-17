@@ -1,0 +1,50 @@
+{
+  "$schema": "https://turborepo.com/microfrontends/schema.json",
+  "options": {
+    "localProxyPort": 3024
+  },
+  "applications": {
+    "@gfed-medusa/mf-home": {
+      "packageName": "@gfed-medusa/mf-home",
+      "development": {
+        "local": {
+          "port": 3000
+        }
+      }
+    },
+    "@gfed-medusa/mf-products": {
+      "packageName": "@gfed-medusa/mf-products",
+      "development": {
+        "local": {
+          "port": 3001
+        }
+      },
+      "routing": [
+        {
+          "group": "products",
+          "paths": [
+            "/p/:locale/categories/:path*",
+            "/p/:locale/collections/:path*",
+            "/p/:locale/products/:path*",
+            "/p/:locale/store/:path*",
+            "/p/:locale/:path*"
+          ]
+        }
+      ]
+    },
+    "@gfed-medusa/mf-account": {
+      "packageName": "@gfed-medusa/mf-account",
+      "development": {
+        "local": {
+          "port": 3002
+        }
+      },
+      "routing": [
+        {
+          "group": "account",
+          "paths": ["/account/:locale/:path*"]
+        }
+      ]
+    }
+  }
+}

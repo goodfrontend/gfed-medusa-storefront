@@ -4,7 +4,7 @@
   "private": true,
   "description": "Products microfrontend for Medusa storefront",
   "scripts": {
-    "dev": "next dev --turbopack -p 3001",
+    "dev": "next dev --port $(turbo get-mfe-port)",
     "build": "next build",
     "start": "next start -p 3001",
     "lint": "next lint",

@@ -16,4 +16,4 @@
    pnpm run dev
    ```
 
-   This will open the storefront app in [http://localhost:8000](http://localhost:8000).
+   This will open the storefront app in [http://localhost:3002](http://localhost:3002).
