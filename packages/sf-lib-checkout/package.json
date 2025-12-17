@@ -1,6 +1,6 @@
 {
   "name": "@gfed-medusa/sf-lib-checkout",
-  "version": "1.1.1",
+  "version": "2.0.0",
   "private": false,
   "type": "module",
   "module": "./dist/index.js",
@@ -27,9 +27,9 @@
       "types": "./dist/lib/*.d.ts",
       "default": "./dist/lib/*.js"
     },
-    "./templates": {
-      "types": "./dist/templates/index.d.ts",
-      "default": "./dist/templates/index.js"
+    "./templates/*": {
+      "types": "./dist/templates/*/index.d.ts",
+      "default": "./dist/templates/*/index.js"
     }
   },
   "scripts": {

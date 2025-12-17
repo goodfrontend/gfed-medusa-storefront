@@ -4,7 +4,7 @@ import { Heading } from '@medusajs/ui';
 import CartTotals from '@/components/cart-totals';
 import DiscountCode from '@/components/discount-code';
 import { Cart } from '@/lib/gql/generated-types/graphql';
-import ItemsPreviewTemplate from '@/templates/cart/preview';
+import ItemsPreviewTemplate from '@/templates/preview';
 
 const CheckoutSummary = ({ cart }: { cart: Cart }) => {
   return (
