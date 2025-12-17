@@ -71,6 +71,8 @@ turbo dev
 pnpm exec turbo dev
 ```
 
+The above command will run all apps and packages in dev mode, and additionally provide microfrontend orchestration whose base URL is [http://localhost:3024](http://localhost:3024). This orchestration strategy is only meant to be used in development. Edit [./apps/mf-home/microfrontends.json](./apps/mf-home/microfrontends.json) to update the configuration.
+
 You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
 
 ```zsh

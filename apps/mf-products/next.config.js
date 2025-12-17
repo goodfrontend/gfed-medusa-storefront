@@ -8,6 +8,7 @@ if (process.env.npm_lifecycle_event === 'build') {
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
+  basePath: '/p',
   reactStrictMode: true,
   logging: {
     fetches: {

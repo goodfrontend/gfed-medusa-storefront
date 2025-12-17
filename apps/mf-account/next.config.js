@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  basePath: '/account',
   output: 'standalone',
+  serverExternalPackages: ['jsdom'],
   images: {
     remotePatterns: [
       {
