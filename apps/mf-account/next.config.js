@@ -1,6 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  assetPrefix: '/account-assets',
+  ...(process.env.NODE_ENV === 'development'
+    ? {
+        assetPrefix: '/account-assets',
+      }
+    : null),
   output: 'standalone',
   serverExternalPackages: ['jsdom'],
   images: {
