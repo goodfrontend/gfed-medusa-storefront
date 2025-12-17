@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       home: ${{ steps.changes.outputs.home }}
+      account: ${{ steps.changes.outputs.account }}
+      products: ${{ steps.changes.outputs.products }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -26,6 +28,16 @@ jobs:
           filters: |
             home:
               - 'apps/mf-home/**'
+              - 'packages/**'
+              - 'turbo.json'
+              - 'pnpm-lock.yaml'
+            account:
+              - 'apps/mf-account/**'
+              - 'packages/**'
+              - 'turbo.json'
+              - 'pnpm-lock.yaml'
+            products:
+              - 'apps/mf-products/**'
               - 'packages/**'
               - 'turbo.json'
               - 'pnpm-lock.yaml'
@@ -54,5 +66,59 @@ jobs:
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: home-prod
+    secrets:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+
+  products-smoke:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.products == 'true'
+    uses: ./.github/workflows/_deploy-render.yaml
+    with:
+      app: products-smoke
+    secrets:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+
+  products-qa:
+    needs: [detect-changes, products-smoke]
+    if: needs.detect-changes.outputs.products == 'true'
+    uses: ./.github/workflows/_deploy-render.yaml
+    with:
+      app: products-qa
+    secrets:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+
+  products-production:
+    needs: [detect-changes, products-qa]
+    if: needs.detect-changes.outputs.products == 'true'
+    uses: ./.github/workflows/_deploy-render.yaml
+    with:
+      app: products-prod
+    secrets:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+
+  account-smoke:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.account == 'true'
+    uses: ./.github/workflows/_deploy-render.yaml
+    with:
+      app: account-smoke
+    secrets:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+
+  account-qa:
+    needs: [detect-changes, account-smoke]
+    if: needs.detect-changes.outputs.account == 'true'
+    uses: ./.github/workflows/_deploy-render.yaml
+    with:
+      app: account-qa
+    secrets:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+
+  account-production:
+    needs: [detect-changes, account-qa]
+    if: needs.detect-changes.outputs.account == 'true'
+    uses: ./.github/workflows/_deploy-render.yaml
+    with:
+      app: account-prod
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}

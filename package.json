@@ -10,7 +10,7 @@
     "lint": "turbo run lint",
     "prepare": "husky",
     "test": "turbo run test",
-    "ci:publish": "pnpm build && changeset publish --access public"
+    "ci:publish": "pnpm build \"./packages/**\" && changeset publish --access public"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",

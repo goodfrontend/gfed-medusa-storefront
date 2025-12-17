@@ -1,8 +1,6 @@
 const checkEnvVariables = require('./check-env-variables');
 
-if (process.env.npm_lifecycle_event === 'build') {
-  checkEnvVariables();
-}
+checkEnvVariables();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {

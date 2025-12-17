@@ -4,7 +4,7 @@ Products microfrontend for the Medusa storefront. Handles product-related routes
 
 ## Storefront Development Server Setup Instructions
 
-1. Set up the environment variables. Copy the `.env.sample` to a local `.env` and update the values as needed.
+1. Set up the environment variables. Copy the `.env.template` to a local `.env` and update the values as needed.
 
 ```bash
 cp .env.template .env
