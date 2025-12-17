@@ -7,7 +7,7 @@
     "dev": "next dev --port $(turbo get-mfe-port)",
     "build": "next build",
     "start": "next start -p 3001",
-    "lint": "next lint",
+    "lint": "eslint --max-warnings 30",
     "type:check": "tsc --noEmit --incremental false"
   },
   "dependencies": {

@@ -4,11 +4,13 @@ if (process.env.npm_lifecycle_event === 'build') {
   checkEnvVariables();
 }
 
-/**
- * @type {import('next').NextConfig}
- */
+/** @type {import('next').NextConfig} */
 const nextConfig = {
-  assetPrefix: '/products-assets',
+  ...(process.env.NODE_ENV === 'development'
+    ? {
+        assetPrefix: '/products-assets',
+      }
+    : null),
   reactStrictMode: true,
   logging: {
     fetches: {

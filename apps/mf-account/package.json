@@ -8,7 +8,7 @@
     "dev": "next dev --port $(turbo get-mfe-port)",
     "build": "next build",
     "start": "next start -p 8000",
-    "lint": "next lint",
+    "lint": "eslint --max-warnings 10",
     "analyze": "ANALYZE=true next build",
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",

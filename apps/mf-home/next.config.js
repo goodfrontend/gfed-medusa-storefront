@@ -1,6 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  assetPrefix: '/home-assets',
+  ...(process.env.NODE_ENV === 'development'
+    ? {
+        assetPrefix: '/home-assets',
+      }
+    : null),
   output: 'standalone',
   images: {
     remotePatterns: [
