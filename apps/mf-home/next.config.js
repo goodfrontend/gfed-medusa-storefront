@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  assetPrefix: '/home-assets',
   output: 'standalone',
   images: {
     remotePatterns: [

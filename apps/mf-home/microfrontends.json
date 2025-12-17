@@ -21,13 +21,16 @@
       },
       "routing": [
         {
-          "group": "products",
+          "group": "products-assets",
+          "paths": ["/products-assets/:path*"]
+        },
+        {
+          "group": "products-pages",
           "paths": [
-            "/p/:locale/categories/:path*",
-            "/p/:locale/collections/:path*",
-            "/p/:locale/products/:path*",
-            "/p/:locale/store/:path*",
-            "/p/:locale/:path*"
+            "/:locale/categories/:path*",
+            "/:locale/collections/:path*",
+            "/:locale/products/:path*",
+            "/:locale/store/:path*"
           ]
         }
       ]
@@ -41,8 +44,12 @@
       },
       "routing": [
         {
-          "group": "account",
-          "paths": ["/account/:locale/:path*"]
+          "group": "account-assets",
+          "paths": ["/account-assets/:path*"]
+        },
+        {
+          "group": "account-pages",
+          "paths": ["/:locale/account/:path*"]
         }
       ]
     }

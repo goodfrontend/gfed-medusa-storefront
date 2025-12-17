@@ -8,7 +8,7 @@ if (process.env.npm_lifecycle_event === 'build') {
  * @type {import('next').NextConfig}
  */
 const nextConfig = {
-  basePath: '/p',
+  assetPrefix: '/products-assets',
   reactStrictMode: true,
   logging: {
     fetches: {
