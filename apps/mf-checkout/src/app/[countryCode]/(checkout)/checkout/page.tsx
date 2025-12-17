@@ -4,8 +4,8 @@ import { notFound } from 'next/navigation';
 import PaymentWrapper from '@gfed-medusa/sf-lib-checkout/components/payment-wrapper';
 import { retrieveCart } from '@gfed-medusa/sf-lib-checkout/lib/data/cart';
 import { Cart } from '@gfed-medusa/sf-lib-checkout/lib/gql/generated-types/graphql';
-import CheckoutForm from '@gfed-medusa/sf-lib-checkout/templates/checkout/checkout-form';
-import CheckoutSummary from '@gfed-medusa/sf-lib-checkout/templates/checkout/checkout-summary';
+import CheckoutForm from '@gfed-medusa/sf-lib-checkout/templates/checkout-form';
+import CheckoutSummary from '@gfed-medusa/sf-lib-checkout/templates/checkout-summary';
 import { retrieveCustomer } from '@gfed-medusa/sf-lib-common/lib/data/customer';
 
 export const metadata: Metadata = {
