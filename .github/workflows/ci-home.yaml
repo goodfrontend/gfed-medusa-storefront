@@ -20,32 +20,6 @@ defaults:
 
 jobs:
   verify:
-    name: Verify home
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.0.0
-          run_install: false
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build
-        run: pnpm build --filter=@gfed-medusa/mf-home
-
-      - name: Lint
-        run: pnpm lint --filter=@gfed-medusa/mf-home
-
-      - name: Type check
-        run: pnpm check-types --filter=@gfed-medusa/mf-home
+    uses: ./.github/workflows/_ci-run.yaml
+    with:
+      app: mf-home

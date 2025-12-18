@@ -16,4 +16,4 @@ cp .env.template .env
 pnpm run dev
 ```
 
-The app will run on http://localhost:3001
+The app will run on http://localhost:3003
