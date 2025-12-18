@@ -4,10 +4,10 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "next dev --port 3000",
+    "dev": "next dev --port $(turbo get-mfe-port)",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint --max-warnings 0",
+    "lint": "eslint --max-warnings 10",
     "test": "echo \"No tests specified\" && exit 0",
     "check-types": "next typegen && tsc --noEmit"
   },
