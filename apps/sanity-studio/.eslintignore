@@ -1,0 +1,16 @@
+# ESLint ignore patterns for Sanity Studio
+
+# Generated Sanity files
+.sanity/
+
+# Build outputs
+dist/
+
+# Dependencies
+node_modules/
+
+# Environment files
+.env*
+
+# Generated config files
+*.min.js
