@@ -39,6 +39,17 @@ projects:
             envVars:
               - fromGroup: sf-prod-env-group
 
+          - type: web
+            runtime: image
+            plan: free
+            name: sf-checkout-prod
+            region: oregon
+            autoDeployTrigger: off
+            image:
+              url: traefik/whoami:v1.11
+            envVars:
+              - fromGroup: sf-prod-env-group
+
       - name: smoke
         services:
           - type: web
@@ -74,6 +85,17 @@ projects:
             envVars:
               - fromGroup: sf-smoke-env-group
 
+          - type: web
+            runtime: image
+            plan: free
+            name: sf-checkout-smoke
+            region: oregon
+            autoDeployTrigger: off
+            image:
+              url: traefik/whoami:v1.11
+            envVars:
+              - fromGroup: sf-smoke-env-group
+
       - name: qa
         services:
           - type: web
@@ -102,6 +124,17 @@ projects:
             runtime: image
             plan: free
             name: sf-products-qa
+            region: oregon
+            autoDeployTrigger: off
+            image:
+              url: traefik/whoami:v1.11
+            envVars:
+              - fromGroup: sf-qa-env-group
+
+          - type: web
+            runtime: image
+            plan: free
+            name: sf-checkout-qa
             region: oregon
             autoDeployTrigger: off
             image:

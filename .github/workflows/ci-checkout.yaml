@@ -1,0 +1,25 @@
+name: CI - Checkout
+
+on:
+  pull_request:
+    paths:
+      - 'apps/mf-checkout/**'
+      - 'packages/**'
+      - 'turbo.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - 'package.json'
+      - '.github/workflows/**'
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  verify:
+    uses: ./.github/workflows/_ci-run.yaml
+    with:
+      app: mf-checkout

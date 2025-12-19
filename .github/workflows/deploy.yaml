@@ -17,6 +17,7 @@ jobs:
       home: ${{ steps.changes.outputs.home }}
       account: ${{ steps.changes.outputs.account }}
       products: ${{ steps.changes.outputs.products }}
+      checkout: ${{ steps.changes.outputs.checkout }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -45,6 +46,12 @@ jobs:
               - 'turbo.json'
               - 'pnpm-lock.yaml'
               - 'render.yaml'
+            checkout:
+              - 'apps/mf-checkout/**'
+              - 'packages/**'
+              - 'turbo.json'
+              - 'pnpm-lock.yaml'
+              - 'render.yaml'
 
   build-home:
     needs: detect-changes
@@ -53,6 +60,14 @@ jobs:
     with:
       app: sf-home
       dockerfile: ./apps/mf-home/Dockerfile
+
+  build-checkout:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.checkout == 'true'
+    uses: ./.github/workflows/_build-docker.yaml
+    with:
+      app: sf-checkout
+      dockerfile: ./apps/mf-checkout/Dockerfile
 
   build-products:
     needs: detect-changes
@@ -97,6 +112,36 @@ jobs:
     with:
       app: sf-home-prod
       image: ${{ needs.build-home.outputs.image_tag }} 
+    secrets:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+
+  checkout-smoke:
+    needs: [detect-changes, build-checkout]
+    if: needs.detect-changes.outputs.checkout == 'true'
+    uses: ./.github/workflows/_deploy-render.yaml
+    with:
+      app: sf-checkout-smoke
+      image: ${{ needs.build-checkout.outputs.image_tag }} 
+    secrets:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+
+  checkout-qa:
+    needs: [detect-changes, checkout-smoke]
+    if: needs.detect-changes.outputs.checkout == 'true'
+    uses: ./.github/workflows/_deploy-render.yaml
+    with:
+      app: sf-checkout-qa
+      image: ${{ needs.build-checkout.outputs.image_tag }} 
+    secrets:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+
+  checkout-production:
+    needs: [detect-changes, checkout-qa]
+    if: needs.detect-changes.outputs.checkout == 'true'
+    uses: ./.github/workflows/_deploy-render.yaml
+    with:
+      app: sf-checkout-prod
+      image: ${{ needs.build-checkout.outputs.image_tag }} 
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
