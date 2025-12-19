@@ -52,6 +52,28 @@
           "paths": ["/:locale/account/:path*"]
         }
       ]
+    },
+    "@gfed-medusa/mf-checkout": {
+      "packageName": "@gfed-medusa/mf-checkout",
+      "development": {
+        "local": {
+          "port": 3003
+        }
+      },
+      "routing": [
+        {
+          "group": "checkout-assets",
+          "paths": ["/checkout-assets/:path*"]
+        },
+        {
+          "group": "checkout-pages",
+          "paths": [
+            "/:locale/checkout/:path*",
+            "/:locale/cart/:path*",
+            "/:locale/order/:path*"
+          ]
+        }
+      ]
     }
   }
 }
