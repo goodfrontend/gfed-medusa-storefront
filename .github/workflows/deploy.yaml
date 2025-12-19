@@ -31,23 +31,51 @@ jobs:
               - 'packages/**'
               - 'turbo.json'
               - 'pnpm-lock.yaml'
+              - 'render.yaml'
             account:
               - 'apps/mf-account/**'
               - 'packages/**'
               - 'turbo.json'
               - 'pnpm-lock.yaml'
+              - 'render.yaml'
             products:
               - 'apps/mf-products/**'
               - 'packages/**'
               - 'turbo.json'
               - 'pnpm-lock.yaml'
+              - 'render.yaml'
+
+  build-home:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.home == 'true'
+    uses: ./.github/workflows/_build-docker.yaml
+    with:
+      app: sf-home
+      dockerfile: ./apps/mf-home/Dockerfile
+
+  build-products:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.products == 'true'
+    uses: ./.github/workflows/_build-docker.yaml
+    with:
+      app: sf-products
+      dockerfile: ./apps/mf-products/Dockerfile
+
+  build-account:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.account == 'true'
+    uses: ./.github/workflows/_build-docker.yaml
+    with:
+      app: sf-account
+      dockerfile: ./apps/mf-account/Dockerfile
 
   home-smoke:
-    needs: detect-changes
+    needs: [detect-changes, build-home]
     if: needs.detect-changes.outputs.home == 'true'
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: sf-home-smoke
+      image: ${{ needs.build-home.outputs.image_tag }} 
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
@@ -57,6 +85,7 @@ jobs:
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: sf-home-qa
+      image: ${{ needs.build-home.outputs.image_tag }} 
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
@@ -66,15 +95,17 @@ jobs:
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: sf-home-prod
+      image: ${{ needs.build-home.outputs.image_tag }} 
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
   products-smoke:
-    needs: detect-changes
+    needs: [detect-changes, build-products]
     if: needs.detect-changes.outputs.products == 'true'
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: sf-products-smoke
+      image: ${{ needs.build-products.outputs.image_tag }} 
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
@@ -84,6 +115,7 @@ jobs:
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: sf-products-qa
+      image: ${{ needs.build-products.outputs.image_tag }} 
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
@@ -93,15 +125,17 @@ jobs:
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: sf-products-prod
+      image: ${{ needs.build-products.outputs.image_tag }} 
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
   account-smoke:
-    needs: detect-changes
+    needs: [detect-changes, build-account]
     if: needs.detect-changes.outputs.account == 'true'
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: sf-account-smoke
+      image: ${{ needs.build-account.outputs.image_tag }} 
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
@@ -111,6 +145,7 @@ jobs:
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: sf-account-qa
+      image: ${{ needs.build-account.outputs.image_tag }} 
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
@@ -120,5 +155,6 @@ jobs:
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: sf-account-prod
+      image: ${{ needs.build-account.outputs.image_tag }} 
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}

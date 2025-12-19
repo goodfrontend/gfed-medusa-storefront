@@ -4,77 +4,104 @@ projects:
       - name: production
         services:
           - type: web
-            runtime: docker
+            runtime: image
             plan: free
             name: sf-home-prod
             region: oregon
             autoDeployTrigger: off
-            dockerfilePath: ./apps/mf-home/Dockerfile
+            image:
+              url: traefik/whoami:v1.11
+            envVars:
+              - fromGroup: sf-prod-env-group
 
           - type: web
-            runtime: docker
+            runtime: image
             plan: free
             name: sf-account-prod
             region: oregon
             autoDeployTrigger: off
-            dockerfilePath: ./apps/mf-account/Dockerfile
+            image:
+              url: traefik/whoami:v1.11
+            envVars:
+              - fromGroup: sf-prod-env-group
 
           - type: web
-            runtime: docker
+            runtime: image
             plan: free
             name: sf-products-prod
             region: oregon
             autoDeployTrigger: off
-            dockerfilePath: ./apps/mf-products/Dockerfile
+            image:
+              url: traefik/whoami:v1.11
+            envVars:
+              - fromGroup: sf-prod-env-group
 
       - name: smoke
         services:
           - type: web
-            runtime: docker
+            runtime: image
             plan: free
             name: sf-home-smoke
             region: oregon
             autoDeployTrigger: off
-            dockerfilePath: ./apps/mf-home/Dockerfile
+            image:
+              url: traefik/whoami:v1.11
+            envVars:
+              - fromGroup: sf-smoke-env-group
 
           - type: web
-            runtime: docker
+            runtime: image
             plan: free
             name: sf-account-smoke
             region: oregon
             autoDeployTrigger: off
-            dockerfilePath: ./apps/mf-account/Dockerfile
+            image:
+              url: traefik/whoami:v1.11
+            envVars:
+              - fromGroup: sf-smoke-env-group
 
           - type: web
-            runtime: docker
+            runtime: image
             plan: free
             name: sf-products-smoke
             region: oregon
             autoDeployTrigger: off
-            dockerfilePath: ./apps/mf-products/Dockerfile
+            image:
+              url: traefik/whoami:v1.11
+            envVars:
+              - fromGroup: sf-smoke-env-group
 
       - name: qa
         services:
           - type: web
-            runtime: docker
+            runtime: image
             plan: free
             name: sf-home-qa
             region: oregon
             autoDeployTrigger: off
-            dockerfilePath: ./apps/mf-home/Dockerfile
+            image:
+              url: traefik/whoami:v1.11
+            envVars:
+              - fromGroup: sf-qa-env-group
 
           - type: web
-            runtime: docker
+            runtime: image
             plan: free
             name: sf-account-qa
             region: oregon
             autoDeployTrigger: off
-            dockerfilePath: ./apps/mf-account/Dockerfile
+            image:
+              url: traefik/whoami:v1.11
+            envVars:
+              - fromGroup: sf-qa-env-group
 
           - type: web
-            runtime: docker
+            runtime: image
             plan: free
             name: sf-products-qa
             region: oregon
             autoDeployTrigger: off
-            dockerfilePath: ./apps/mf-products/Dockerfile
+            image:
+              url: traefik/whoami:v1.11
+            envVars:
+              - fromGroup: sf-qa-env-group
