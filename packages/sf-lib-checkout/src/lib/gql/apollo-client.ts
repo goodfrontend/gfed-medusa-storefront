@@ -7,13 +7,12 @@ import {
   InMemoryCache,
   OperationVariables,
 } from '@apollo/client';
+import { getBaseURL } from '@gfed-medusa/sf-lib-common/lib/utils/env';
 
 const isServer = () => typeof window === 'undefined';
 
 const httpLink = new HttpLink({
-  uri: isServer()
-    ? `${process.env.NEXT_PUBLIC_BASE_URL}/api/graphql`
-    : '/api/graphql',
+  uri: isServer() ? `${getBaseURL()}/api/graphql` : '/api/graphql',
   credentials: 'include',
 });
 

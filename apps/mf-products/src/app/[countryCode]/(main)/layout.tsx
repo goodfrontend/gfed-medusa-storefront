@@ -2,11 +2,10 @@ import { Metadata } from 'next';
 
 import Footer from '@gfed-medusa/sf-lib-common/components/footer';
 import { Nav } from '@gfed-medusa/sf-lib-common/components/nav';
+import { getBaseURL } from '@gfed-medusa/sf-lib-common/lib/utils/env';
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3001'
-  ),
+  metadataBase: new URL(getBaseURL()),
 };
 
 export default async function MainLayout(props: { children: React.ReactNode }) {
