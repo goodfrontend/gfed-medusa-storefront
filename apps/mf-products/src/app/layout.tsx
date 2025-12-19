@@ -1,11 +1,11 @@
 import { Metadata } from 'next';
 
+import { getBaseURL } from '@gfed-medusa/sf-lib-common/lib/utils/env';
+
 import '@/styles/globals.css';
 
 export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3001'
-  ),
+  metadataBase: new URL(getBaseURL()),
 };
 
 export default function RootLayout(props: { children: React.ReactNode }) {
