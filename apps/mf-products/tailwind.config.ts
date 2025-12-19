@@ -1,16 +1,11 @@
-const path = require('path');
+import { Config } from 'tailwindcss';
 
-module.exports = {
+import * as medusaUIPreset from '@medusajs/ui-preset';
+
+const config = {
   darkMode: 'class',
-  presets: [require('@medusajs/ui-preset')],
-  content: [
-    './src/app/**/*.{js,ts,jsx,tsx}',
-    './src/components/**/*.{js,ts,jsx,tsx}',
-    './node_modules/@medusajs/ui/dist/**/*.{js,jsx,ts,tsx}',
-    '../../packages/sf-lib-common/dist/**/*.{js,jsx,ts,tsx}',
-    '../../packages/sf-lib-products/dist/**/*.{js,jsx,ts,tsx}',
-    '../../packages/sf-lib-ui/dist/**/*.{js,jsx,ts,tsx}',
-  ],
+  presets: [medusaUIPreset],
+  content: ['./src/app/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       transitionProperty: {
@@ -159,5 +154,6 @@ module.exports = {
       },
     },
   },
-  plugins: [require('tailwindcss-radix')()],
-};
+} satisfies Config;
+
+export default config;
