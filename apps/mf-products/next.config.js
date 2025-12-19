@@ -1,9 +1,3 @@
-const checkEnvVariables = require('./check-env-variables');
-
-if (process.env.npm_lifecycle_event === 'build') {
-  checkEnvVariables();
-}
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   eslint: {
@@ -50,4 +44,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;

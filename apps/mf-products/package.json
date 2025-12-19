@@ -1,6 +1,7 @@
 {
   "name": "@gfed-medusa/mf-products",
   "version": "1.0.0",
+  "type": "module",
   "private": true,
   "description": "Products microfrontend for Medusa storefront",
   "scripts": {
@@ -30,10 +31,11 @@
     "tailwindcss-radix": "^2.8.0"
   },
   "devDependencies": {
+    "@medusajs/ui-preset": "2.10.3",
     "@packages/eslint-config": "workspace:*",
     "@packages/prettier-config": "workspace:*",
     "@packages/typescript-config": "workspace:*",
-    "@medusajs/ui-preset": "2.10.3",
+    "@tailwindcss/postcss": "^4.1.18",
     "@types/lodash": "^4.14.195",
     "@types/node": "17.0.21",
     "@types/react": "^19",
@@ -43,7 +45,7 @@
     "eslint": "^9.31.0",
     "postcss": "^8.4.8",
     "prettier": "^3.6.2",
-    "tailwindcss": "^3.0.23",
+    "tailwindcss": "^4.1.18",
     "typescript": "^5.3.2"
   }
 }
