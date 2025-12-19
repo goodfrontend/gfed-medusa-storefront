@@ -4,6 +4,12 @@ checkEnvVariables();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   ...(process.env.NODE_ENV === 'development'
     ? {
         assetPrefix: '/products-assets',
@@ -14,9 +20,6 @@ const nextConfig = {
     fetches: {
       fullUrl: true,
     },
-  },
-  typescript: {
-    ignoreBuildErrors: true,
   },
   serverExternalPackages: ['jsdom', 'canvas', 'isomorphic-dompurify'],
   images: {

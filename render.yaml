@@ -1,3 +1,6 @@
+# NOTE: The env groups should be first created in the Render dashboard
+# Since they do not allow `sync: false` in env groups, this is seems to be the only way
+
 projects:
   - name: gfed-storefront-project
     environments:
