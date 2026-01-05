@@ -1,5 +1,4 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
 
 import { ArrowUpRightMini } from '@medusajs/icons';
 import { Text } from '@medusajs/ui';
@@ -16,13 +15,14 @@ export default function NotFound() {
       <p className="text-small-regular text-ui-fg-base">
         The page you tried to access does not exist.
       </p>
-      <Link className="group flex items-center gap-x-1" href="/">
+      {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- Needed for multi-zone navigation */}
+      <a className="group flex items-center gap-x-1" href="/">
         <Text className="text-ui-fg-interactive">Go to frontpage</Text>
         <ArrowUpRightMini
           className="duration-150 ease-in-out group-hover:rotate-45"
           color="var(--fg-interactive)"
         />
-      </Link>
+      </a>
     </div>
   );
 }

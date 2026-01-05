@@ -1,7 +1,6 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
 
 import { type VariantProps, cva } from 'class-variance-authority';
 
@@ -129,9 +128,9 @@ export function ProductCard({
             <div className="flex items-center justify-between">
               <h3 className="truncate text-base font-medium">
                 {product.href ? (
-                  <Link href={product.href} className="hover:underline">
+                  <a href={product.href} className="hover:underline">
                     {product.title}
-                  </Link>
+                  </a>
                 ) : (
                   product.title
                 )}
@@ -157,7 +156,7 @@ export function ProductCard({
               className={cn('w-full object-cover')}
             />
             {badge && (
-              <div className="absolute left-2 top-2">
+              <div className="absolute top-2 left-2">
                 <Badge variant="default">{badge.label}</Badge>
               </div>
             )}
@@ -167,9 +166,9 @@ export function ProductCard({
           <div className="flex flex-col gap-2 p-3">
             <h3 className="truncate text-base font-medium">
               {product.href ? (
-                <Link href={product.href} className="hover:underline">
+                <a href={product.href} className="hover:underline">
                   {product.title}
-                </Link>
+                </a>
               ) : (
                 product.title
               )}

@@ -35,7 +35,7 @@
     "lint": "eslint . --max-warnings 40"
   },
   "dependencies": {
-    "@gfed-medusa/sf-lib-common": "^1.0.0",
+    "@gfed-medusa/sf-lib-common": "^2.0.0",
     "@medusajs/icons": "^2.12.1",
     "@medusajs/ui": "^4.0.29"
   },
