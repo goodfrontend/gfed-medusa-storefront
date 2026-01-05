@@ -12,9 +12,9 @@
     "check-types": "next typegen && tsc --noEmit"
   },
   "dependencies": {
-    "@gfed-medusa/sf-lib-checkout": "2.0.0",
-    "@gfed-medusa/sf-lib-common": "1.1.1",
-    "@gfed-medusa/sf-lib-ui": "1.1.1",
+    "@gfed-medusa/sf-lib-checkout": "^2.0.0",
+    "@gfed-medusa/sf-lib-common": "^2.0.0",
+    "@gfed-medusa/sf-lib-ui": "^1.1.1",
     "@medusajs/ui": "^4.0.29",
     "@medusajs/ui-preset": "^2.12.2",
     "next": "^15.3.8",

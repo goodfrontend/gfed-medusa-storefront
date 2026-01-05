@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from 'react';
 
 import Image from 'next/image';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import DOMPurify from 'isomorphic-dompurify';
@@ -200,7 +199,7 @@ const Hit = ({ hit }: { hit: ProductHit }) => {
           }}
         />
       </div>
-      <Link
+      <a
         href={`/products/${hit.handle}`}
         className="absolute top-0 right-0 h-full w-full"
         aria-label={`View Product: ${hit.title}`}

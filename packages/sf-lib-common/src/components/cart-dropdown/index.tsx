@@ -189,7 +189,7 @@ const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
                       })}
                     </span>
                   </div>
-                  <LocalizedClientLink href="/cart" passHref>
+                  <LocalizedClientLink href="/cart">
                     <Button
                       className="w-full"
                       size="large"

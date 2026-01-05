@@ -33,7 +33,7 @@ const OrderOverview = ({ orders }: { orders: Order[] }) => {
         You don&apos;t have any orders yet, let us change that {':)'}
       </p>
       <div className="mt-4">
-        <LocalizedClientLink href="/" passHref>
+        <LocalizedClientLink href="/">
           <Button data-testid="continue-shopping-button">
             Continue shopping
           </Button>

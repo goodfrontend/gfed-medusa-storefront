@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@apollo/client": "^4.0.4",
-    "@gfed-medusa/sf-lib-common": "^1.1.0",
+    "@gfed-medusa/sf-lib-common": "^2.0.0",
     "@gfed-medusa/sf-lib-products": "^1.0.0",
     "@gfed-medusa/sf-lib-ui": "^1.1.1",
     "@headlessui/react": "^2.2.0",
