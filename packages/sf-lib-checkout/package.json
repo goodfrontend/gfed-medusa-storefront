@@ -1,6 +1,6 @@
 {
   "name": "@gfed-medusa/sf-lib-checkout",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "private": false,
   "type": "module",
   "module": "./dist/index.js",
@@ -64,6 +64,7 @@
     "@graphql-codegen/typed-document-node": "^6.0.0",
     "@graphql-codegen/typescript": "^5.0.0",
     "@graphql-codegen/typescript-operations": "^5.0.0",
+    "@graphql-typed-document-node/core": "^3.2.0",
     "@packages/eslint-config": "workspace:*",
     "@packages/jest-config": "workspace:*",
     "@packages/prettier-config": "workspace:*",
