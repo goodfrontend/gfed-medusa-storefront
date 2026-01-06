@@ -6,11 +6,7 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  ...(process.env.NODE_ENV === 'development'
-    ? {
-        assetPrefix: '/account-assets',
-      }
-    : null),
+  assetPrefix: '/account-assets',
   output: 'standalone',
   serverExternalPackages: ['jsdom'],
   images: {

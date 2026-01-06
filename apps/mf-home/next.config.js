@@ -6,11 +6,7 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  ...(process.env.NODE_ENV === 'development'
-    ? {
-        assetPrefix: '/home-assets',
-      }
-    : null),
+  assetPrefix: '/home-assets',
   output: 'standalone',
   images: {
     remotePatterns: [

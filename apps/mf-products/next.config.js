@@ -6,17 +6,14 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  ...(process.env.NODE_ENV === 'development'
-    ? {
-        assetPrefix: '/products-assets',
-      }
-    : null),
+  assetPrefix: '/products-assets',
   reactStrictMode: true,
   logging: {
     fetches: {
       fullUrl: true,
     },
   },
+  output: 'standalone',
   serverExternalPackages: ['jsdom', 'canvas', 'isomorphic-dompurify'],
   images: {
     remotePatterns: [

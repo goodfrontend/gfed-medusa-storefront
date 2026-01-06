@@ -13,7 +13,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: traefik/whoami:v1.11
+              url: http://ghcr.io/goodfrontend/gfed-medusa-storefront/sf-home:latest
             envVars:
               - fromGroup: sf-prod-env-group
 
@@ -24,7 +24,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: traefik/whoami:v1.11
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-account:latest
             envVars:
               - fromGroup: sf-prod-env-group
 
@@ -35,7 +35,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: traefik/whoami:v1.11
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-products:latest
             envVars:
               - fromGroup: sf-prod-env-group
 
@@ -46,7 +46,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: traefik/whoami:v1.11
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-checkout:latest
             envVars:
               - fromGroup: sf-prod-env-group
 
@@ -59,7 +59,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: traefik/whoami:v1.11
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-home:latest
             envVars:
               - fromGroup: sf-smoke-env-group
 
@@ -70,7 +70,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: traefik/whoami:v1.11
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-account:latest
             envVars:
               - fromGroup: sf-smoke-env-group
 
@@ -81,7 +81,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: traefik/whoami:v1.11
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-products:latest
             envVars:
               - fromGroup: sf-smoke-env-group
 
@@ -92,7 +92,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: traefik/whoami:v1.11
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-checkout:latest
             envVars:
               - fromGroup: sf-smoke-env-group
 
@@ -105,7 +105,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: traefik/whoami:v1.11
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-home:latest
             envVars:
               - fromGroup: sf-qa-env-group
 
@@ -116,7 +116,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: traefik/whoami:v1.11
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-account:latest
             envVars:
               - fromGroup: sf-qa-env-group
 
@@ -127,7 +127,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: traefik/whoami:v1.11
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-products:latest
             envVars:
               - fromGroup: sf-qa-env-group
 
@@ -138,6 +138,6 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: traefik/whoami:v1.11
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-checkout:latest
             envVars:
               - fromGroup: sf-qa-env-group
