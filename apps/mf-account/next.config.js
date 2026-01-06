@@ -29,6 +29,30 @@ const nextConfig = {
       },
     ],
   },
+  async headers() {
+    return [
+      {
+        source: '/:countryCode/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'private, no-store, no-cache, max-age=0, must-revalidate',
+          },
+        ],
+      },
+      {
+        // Static files
+        source: '/:assetsPath/_next/static/:path*',
+        locale: false,
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=31536000, immutable',
+          },
+        ],
+      }
+    ];
+  },
 };
 
 export default nextConfig;
