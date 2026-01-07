@@ -1,0 +1,22 @@
+---
+extends: default
+
+rules:
+  # GitHub Actions workflows don't need document start markers
+  document-start: disable
+
+  # Allow long lines (common in GitHub Actions)
+  line-length:
+    max: 120
+    level: warning
+
+  # Allow truthy values like "on:" in GitHub Actions
+  truthy:
+    allowed-values: ['true', 'false', 'on', 'off']
+
+  # Comments don't need exact spacing
+  comments:
+    min-spaces-from-content: 1
+
+  # Allow trailing spaces (will be cleaned up separately)
+  trailing-spaces: enable

@@ -84,6 +84,48 @@ To enable these workflows, the following **GH Secrets** must be configured in th
     - Granular access token
 - `GITHUB_TOKEN` - Automatically provided by GitHub.
 
+## Testing Your Changes Locally
+
+**Important:** Always test your changes locally before pushing to avoid breaking CI/CD pipelines.
+
+### Before Changing Workflow Files
+
+If you modify `.github/workflows/*.yaml` files:
+
+```bash
+./scripts/test-workflows.sh
+```
+
+**What it validates:**
+- YAML syntax correctness
+- GitHub Actions logic (job dependencies, outputs, expressions)
+- Shell script issues (via shellcheck)
+
+**Why it matters:** Catches workflow bugs before they reach CI (like missing job dependencies, invalid expressions, etc.)
+
+---
+
+### Before Changing Packages
+
+**Critical for package changes** - If you modify ANY code in `packages/**`:
+
+```bash
+./scripts/test-integration.sh
+```
+
+**What it validates:**
+- All packages build successfully with your changes
+- **Every MFE** (mf-home, mf-account, mf-products, mf-checkout) still works with the updated packages
+- No breaking changes across the monorepo
+
+**Why it matters:**
+- Individual MFE CI workflows only test one MFE at a time
+- Your `sf-lib-common` change might break `mf-checkout` even though `mf-products` works fine
+- This catches cross-MFE breaking changes **before** you create a PR
+- Prevents publishing broken packages to npm that break other teams
+
+---
+
 ## Step-by-Step Guide
 
 ### How to Deploy an Application

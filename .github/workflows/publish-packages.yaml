@@ -30,10 +30,9 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
-          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > $HOME/.npmrc
-          echo "@gfed-medusa:registry=https://registry.npmjs.org/" >> $HOME/.npmrc
-          echo "registry=https://registry.npmjs.org/" >> $HOME/.npmrc
-        
+          echo "//registry.npmjs.org/:_authToken=$NPM_TOKEN" > "$HOME/.npmrc"
+          echo "@gfed-medusa:registry=https://registry.npmjs.org/" >> "$HOME/.npmrc"
+          echo "registry=https://registry.npmjs.org/" >> "$HOME/.npmrc"
       - name: Publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

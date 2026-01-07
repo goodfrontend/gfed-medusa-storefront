@@ -91,27 +91,27 @@ jobs:
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: sf-home-smoke
-      image: ${{ needs.build-home.outputs.image_tag }} 
+      image: ${{ needs.build-home.outputs.image_tag }}
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
   home-qa:
-    needs: [detect-changes, home-smoke]
+    needs: [detect-changes, build-home, home-smoke]
     if: needs.detect-changes.outputs.home == 'true'
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: sf-home-qa
-      image: ${{ needs.build-home.outputs.image_tag }} 
+      image: ${{ needs.build-home.outputs.image_tag }}
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
   home-production:
-    needs: [detect-changes, home-qa]
+    needs: [detect-changes, build-home, home-qa]
     if: needs.detect-changes.outputs.home == 'true'
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: sf-home-prod
-      image: ${{ needs.build-home.outputs.image_tag }} 
+      image: ${{ needs.build-home.outputs.image_tag }}
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
@@ -121,27 +121,27 @@ jobs:
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: sf-checkout-smoke
-      image: ${{ needs.build-checkout.outputs.image_tag }} 
+      image: ${{ needs.build-checkout.outputs.image_tag }}
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
   checkout-qa:
-    needs: [detect-changes, checkout-smoke]
+    needs: [detect-changes, build-checkout, checkout-smoke]
     if: needs.detect-changes.outputs.checkout == 'true'
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: sf-checkout-qa
-      image: ${{ needs.build-checkout.outputs.image_tag }} 
+      image: ${{ needs.build-checkout.outputs.image_tag }}
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
   checkout-production:
-    needs: [detect-changes, checkout-qa]
+    needs: [detect-changes, build-checkout, checkout-qa]
     if: needs.detect-changes.outputs.checkout == 'true'
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: sf-checkout-prod
-      image: ${{ needs.build-checkout.outputs.image_tag }} 
+      image: ${{ needs.build-checkout.outputs.image_tag }}
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
@@ -151,27 +151,27 @@ jobs:
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: sf-products-smoke
-      image: ${{ needs.build-products.outputs.image_tag }} 
+      image: ${{ needs.build-products.outputs.image_tag }}
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
   products-qa:
-    needs: [detect-changes, products-smoke]
+    needs: [detect-changes, build-products, products-smoke]
     if: needs.detect-changes.outputs.products == 'true'
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: sf-products-qa
-      image: ${{ needs.build-products.outputs.image_tag }} 
+      image: ${{ needs.build-products.outputs.image_tag }}
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
   products-production:
-    needs: [detect-changes, products-qa]
+    needs: [detect-changes, build-products, products-qa]
     if: needs.detect-changes.outputs.products == 'true'
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: sf-products-prod
-      image: ${{ needs.build-products.outputs.image_tag }} 
+      image: ${{ needs.build-products.outputs.image_tag }}
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
@@ -181,26 +181,26 @@ jobs:
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: sf-account-smoke
-      image: ${{ needs.build-account.outputs.image_tag }} 
+      image: ${{ needs.build-account.outputs.image_tag }}
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
   account-qa:
-    needs: [detect-changes, account-smoke]
+    needs: [detect-changes, build-account, account-smoke]
     if: needs.detect-changes.outputs.account == 'true'
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: sf-account-qa
-      image: ${{ needs.build-account.outputs.image_tag }} 
+      image: ${{ needs.build-account.outputs.image_tag }}
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
   account-production:
-    needs: [detect-changes, account-qa]
+    needs: [detect-changes, build-account, account-qa]
     if: needs.detect-changes.outputs.account == 'true'
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: sf-account-prod
-      image: ${{ needs.build-account.outputs.image_tag }} 
+      image: ${{ needs.build-account.outputs.image_tag }}
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}

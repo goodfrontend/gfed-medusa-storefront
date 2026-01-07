@@ -45,9 +45,9 @@ jobs:
                   -H "Authorization: Bearer $RENDER_API_KEY" \
                   -H "Accept: application/json" \
                   -H "Content-Type: application/json" \
-                  -d "{ 
-                          \"image\": { 
-                              \"ownerId\": \"$service_owner_id\", 
+                  -d "{
+                          \"image\": {
+                              \"ownerId\": \"$service_owner_id\",
                               \"imagePath\": \"$IMAGE\"
                           }
                       }" \
@@ -84,7 +84,7 @@ jobs:
 
               echo "Attempt $attempts/$max_attempts: Status is '$status'"
 
-              # created queued build_in_progress update_in_progress live deactivated build_failed 
+              # created queued build_in_progress update_in_progress live deactivated build_failed
               # update_failed canceled pre_deploy_in_progress pre_deploy_failed
               case "$status" in
                   "live")
