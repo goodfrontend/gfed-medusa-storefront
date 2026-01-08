@@ -74,6 +74,14 @@ All workflows are located in `.github/workflows/`.
     2.  Authenticates with npm using `NPM_TOKEN`.
     3.  Runs `pnpm run ci:publish` to publish updated packages to the registry.
 
+### 4. Rollback Deployments
+*   **Files:** `rollback.yaml`, `deployment-history.yaml`, `scripts/map-service-name.sh`.
+*   **Trigger:** Manual workflow dispatch (on-demand via GitHub Actions UI).
+*   **Purpose:** Quickly rollback a deployed microfrontend to a previous version (MFE-only changes). Use `git revert` for commits affecting packages.
+*   **Safety Features:** Confirmation required, SHA validation, concurrency control, age warnings.
+
+**See [How to Rollback a Deployment](#how-to-rollback-a-deployment) section below for complete guide.**
+
 ## Secrets Configuration
 
 To enable these workflows, the following **GH Secrets** must be configured in the repository settings:
@@ -84,45 +92,27 @@ To enable these workflows, the following **GH Secrets** must be configured in th
     - Granular access token
 - `GITHUB_TOKEN` - Automatically provided by GitHub.
 
-## Testing Your Changes Locally
+## Workflows Validation
 
-**Important:** Always test your changes locally before pushing to avoid breaking CI/CD pipelines.
-
-### Before Changing Workflow Files
+Before creating a PR for added/modified workflow files, validate them locally to catch errors early.
 
 If you modify `.github/workflows/*.yaml` files:
 
 ```bash
-./scripts/test-workflows.sh
+pnpm lint:workflows
 ```
 
 **What it validates:**
-- YAML syntax correctness
-- GitHub Actions logic (job dependencies, outputs, expressions)
-- Shell script issues (via shellcheck)
+- YAML syntax correctness (via yamllint)
+- GitHub Actions logic (job dependencies, outputs, expressions) (via actionlint)
 
 **Why it matters:** Catches workflow bugs before they reach CI (like missing job dependencies, invalid expressions, etc.)
 
----
-
-### Before Changing Packages
-
-**Critical for package changes** - If you modify ANY code in `packages/**`:
-
+**Prerequisites:**
 ```bash
-./scripts/test-integration.sh
+# Install linters (macOS)
+brew install yamllint actionlint
 ```
-
-**What it validates:**
-- All packages build successfully with your changes
-- **Every MFE** (mf-home, mf-account, mf-products, mf-checkout) still works with the updated packages
-- No breaking changes across the monorepo
-
-**Why it matters:**
-- Individual MFE CI workflows only test one MFE at a time
-- Your `sf-lib-common` change might break `mf-checkout` even though `mf-products` works fine
-- This catches cross-MFE breaking changes **before** you create a PR
-- Prevents publishing broken packages to npm that break other teams
 
 ---
 
@@ -158,6 +148,60 @@ We use **Changesets** to manage versioning and publishing.
     *   When you are ready to publish, checkout the branch and run `pnpm install` locally, push the changes to this branch 
     *   Review and **merge** the "Version Packages" PR.
     *   The `Publish Packages` workflow will trigger and publish the new versions to npm.
+
+### How to Rollback a Deployment
+
+If a deployment introduces a critical bug, you can quickly rollback to a previous version.
+
+#### Quick Rollback (Automatic - Recommended)
+
+1.  **Go to GitHub Actions:**
+    *   Navigate to **Actions** → **Rollback Deployment**
+    *   Click **Run workflow**
+
+2.  **Configure rollback:**
+    *   **App**: Select the microfrontend (home, account, products, checkout)
+    *   **Environment**: Select the environment (smoke, qa, production)
+    *   **Target SHA**: Leave **empty** for automatic rollback to previous version
+    *   **Confirm**: Type `rollback`
+
+3.  **Execute:**
+    *   Click **Run workflow**
+    *   The workflow will automatically find and deploy the previous version
+
+#### Rollback to Specific Version
+
+If you need to rollback to a specific commit (not just the previous one):
+
+1.  **Find the target SHA:**
+    *   **Option A - Deployment History Workflow:**
+        1.  Go to **Actions** → **View Deployment History** → **Run workflow**
+        2.  Select your app and optionally set number of deployments to show
+        3.  Check the workflow run logs for commit SHAs, dates, and messages
+        4.  Copy the SHA you want to rollback to
+
+    *   **Option B - Git Locally:**
+        ```bash
+        # Show last 10 commits that deployed mf-products
+        git log -10 --oneline -- apps/mf-products packages/
+
+        # Example output:
+        # abc123d feat: add new product filter
+        # 456789e fix: product image loading   ← You want this one
+        # 789def1 feat: checkout integration
+        ```
+        Copy the SHA (e.g., `456789e`)
+
+    *   **Option C - GitHub Container Registry:**
+        1.  Go to: `https://github.com/YOUR_ORG/YOUR_REPO/packages`
+        2.  Find the package (e.g., `sf-products`)
+        3.  View available tags (each tag is a git SHA)
+
+2.  **Trigger rollback:**
+    *   Go to **Actions** → **Rollback Deployment**
+    *   Enter the **Target SHA** you found
+    *   Complete other fields and confirm
+    *   Run the workflow
 
 ### How to Setup a New Environment (Render)
 

@@ -1,0 +1,85 @@
+name: View Deployment History
+
+on:
+  workflow_dispatch:
+    inputs:
+      app:
+        description: 'Which app to view history for'
+        required: true
+        type: choice
+        options:
+          - home
+          - account
+          - products
+          - checkout
+      limit:
+        description: 'Number of deployments to show'
+        required: false
+        default: '10'
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  show-history:
+    name: Show deployment history for ${{ inputs.app }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get deployment history
+        run: |
+          APP="${{ inputs.app }}"
+          LIMIT="${{ inputs.limit }}"
+
+          echo "## Deployment History for mf-$APP (last $LIMIT deployments)"
+          echo ""
+          echo "| SHA | Date | Author | Message |"
+          echo "|-----|------|--------|---------|"
+
+          # Get commits that touched this app or packages
+          git log -$LIMIT --pretty=format:"|%h|%ad|%an|%s|" --date=short \
+            -- "apps/mf-$APP/**" "packages/**" \
+            | head -n $LIMIT
+
+          echo ""
+          echo ""
+          echo "## Current Deployments"
+          echo ""
+          echo "To rollback, copy one of the SHA values above and use it in the Rollback workflow."
+          echo ""
+          echo "### Quick Links:"
+          echo "- [Trigger Rollback](https://github.com/${{ github.repository }}/actions/workflows/rollback.yaml)"
+          echo "- [View Workflows](https://github.com/${{ github.repository }}/actions)"
+
+      - name: Show image tags
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          APP="${{ inputs.app }}"
+
+          # Map app name to service name using shared script
+          SERVICE=$(./.github/scripts/map-service-name.sh "$APP")
+
+          echo ""
+          echo "## Available Docker Images in Registry"
+          echo ""
+
+          # Try to list package versions (this might not work for all repos)
+          ORG=$(echo "${{ github.repository }}" | cut -d'/' -f1)
+
+          RESPONSE=$(curl -s -H "Authorization: Bearer $GITHUB_TOKEN" \
+            "https://api.github.com/orgs/$ORG/packages/container/$SERVICE/versions" \
+            | jq -r '.[] | "- `\(.metadata.container.tags[0])` (created: \(.created_at | split("T")[0]))"' \
+            | head -n ${{ inputs.limit }} || echo "Could not fetch registry info")
+
+          if [ -n "$RESPONSE" ]; then
+            echo "$RESPONSE"
+          else
+            echo "Unable to fetch image registry information."
+            echo "You can view images at: https://github.com/${{ github.repository }}/pkgs/container/$SERVICE"
+          fi

@@ -8,6 +8,7 @@
     "dev": "turbo run dev",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo run lint",
+    "lint:workflows": "yamllint .github/workflows/*.yaml && actionlint .github/workflows/*.yaml",
     "prepare": "husky",
     "test": "turbo run test",
     "ci:publish": "pnpm build --filter=\"./packages/**\" && changeset publish --access public"
