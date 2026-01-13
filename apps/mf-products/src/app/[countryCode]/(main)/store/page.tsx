@@ -1,6 +1,9 @@
 import { Metadata } from 'next';
+
 import StoreTemplate from '@gfed-medusa/sf-lib-products/templates/store-template';
 import type { SortOptions } from '@gfed-medusa/sf-lib-products/types/index';
+
+import { HeaderFragment } from '@/components/HeaderWebFragment';
 
 export const metadata: Metadata = {
   title: 'Store',
@@ -23,10 +26,13 @@ export default async function StorePage(props: Params) {
   const { sortBy, page } = searchParams;
 
   return (
-    <StoreTemplate
-      sortBy={sortBy}
-      page={page}
-      countryCode={params.countryCode}
-    />
+    <>
+      <HeaderFragment />
+      <StoreTemplate
+        sortBy={sortBy}
+        page={page}
+        countryCode={params.countryCode}
+      />
+    </>
   );
 }

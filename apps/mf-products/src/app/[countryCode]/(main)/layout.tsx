@@ -11,9 +11,9 @@ export const metadata: Metadata = {
 export default async function MainLayout(props: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">
-      <Nav />
+      {/* <Nav /> */}
       <main className="flex-1">{props.children}</main>
-      <Footer />
+      {/* <Footer /> */}
     </div>
   );
 }

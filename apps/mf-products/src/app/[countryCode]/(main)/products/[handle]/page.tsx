@@ -6,6 +6,8 @@ import { getRegion } from '@gfed-medusa/sf-lib-products/lib/data/regions';
 import ProductTemplate from '@gfed-medusa/sf-lib-products/templates/product-template';
 import type { Product } from '@gfed-medusa/sf-lib-products/types/graphql';
 
+import { FooterFragment } from '@/components/FooterWebFragment';
+
 export type Props = {
   params: Promise<{ countryCode: string; handle: string }>;
 };
@@ -28,7 +30,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: `${product.title} | Medusa Store`,
+    // title: `${product.title} | Medusa Store`,
+    title: 'Web Fragments: reframed',
     description: `${product.title}`,
     openGraph: {
       title: `${product.title} | Medusa Store`,
@@ -56,10 +59,13 @@ export default async function ProductPage({ params }: Props) {
   }
 
   return (
-    <ProductTemplate
-      product={pricedProduct as Product}
-      region={region}
-      countryCode={countryCode}
-    />
+    <>
+      <ProductTemplate
+        product={pricedProduct as Product}
+        region={region}
+        countryCode={countryCode}
+      />
+      <FooterFragment />
+    </>
   );
 }
