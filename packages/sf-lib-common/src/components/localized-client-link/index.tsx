@@ -1,8 +1,4 @@
-'use client';
-
 import { AnchorHTMLAttributes, DetailedHTMLProps } from 'react';
-
-import { useParams } from 'next/navigation';
 
 type LocalizedClientLinkProps = DetailedHTMLProps<
   AnchorHTMLAttributes<HTMLAnchorElement>,
@@ -18,10 +14,8 @@ const LocalizedClientLink = ({
   href,
   ...props
 }: LocalizedClientLinkProps) => {
-  const { countryCode } = useParams();
-
   return (
-    <a href={`/${countryCode}${href}`} {...props}>
+    <a href={`/dk${href}`} {...props}>
       {children}
     </a>
   );

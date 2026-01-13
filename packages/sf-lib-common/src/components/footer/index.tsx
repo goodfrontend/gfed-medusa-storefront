@@ -1,17 +1,17 @@
 import { Text, clx } from '@medusajs/ui';
 
-import { listCategories } from '@/lib/data/categories';
-import { listCollections } from '@/lib/data/collections';
-import { getFooterContent } from '@/lib/data/footer';
-import { RichTextBlock } from '@/types/graphql';
+import { Collection, Footer as FooterType, ProductCategory, RichTextBlock } from '@/types/graphql';
 
 import { LocalizedClientLink } from '../localized-client-link';
 import { PortableText } from '../portable-text';
 
-export default async function Footer() {
-  const { collections } = await listCollections();
-  const productCategories = await listCategories();
-  const footerContent = await getFooterContent();
+interface FooterProps {
+  collections?: Collection[];
+  productCategories?: ProductCategory[];
+  footerContent?: FooterType | null;
+}
+
+function Footer({ collections = [], productCategories = [], footerContent = null }: FooterProps) {
 
   return (
     <footer className="border-ui-border-base w-full border-t">
@@ -148,3 +148,5 @@ export default async function Footer() {
     </footer>
   );
 }
+
+export { Footer };
