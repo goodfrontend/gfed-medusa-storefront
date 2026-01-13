@@ -17,6 +17,7 @@
     "@gfed-medusa/sf-lib-ui": "^1.1.2",
     "@medusajs/ui": "^4.0.29",
     "@medusajs/ui-preset": "^2.12.2",
+    "htmlrewriter": "^0.0.13",
     "next": "^15.3.8",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

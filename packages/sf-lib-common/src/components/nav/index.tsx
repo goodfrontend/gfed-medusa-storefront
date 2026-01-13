@@ -1,6 +1,5 @@
 import { Suspense } from 'react';
 
-import { listRegions } from '@/lib/data/regions';
 import { Region } from '@/types/graphql';
 
 import { CartButton } from '../cart-button';
@@ -8,11 +7,7 @@ import { LocalizedClientLink } from '../localized-client-link';
 import { SearchModal } from '../search-modal';
 import { SideMenu } from '../side-menu';
 
-async function Nav() {
-  const regions = await listRegions()
-    .then((regions: Region[]) => regions)
-    .catch(() => null);
-
+function Nav({ regions }: { regions: Region[] }) {
   return (
     <div className="group sticky inset-x-0 top-0 z-50">
       <header className="border-ui-border-base relative mx-auto h-16 border-b bg-white duration-200">
