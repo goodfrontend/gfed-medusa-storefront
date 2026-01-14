@@ -1,8 +1,14 @@
-import { createRoot } from 'react-dom/client';
-import { COMPONENT_REGISTRY, type ComponentDefinition } from '../config/components';
+import { hydrateRoot } from 'react-dom/client';
 
-export function createHorizontalComponentElement(definition: ComponentDefinition) {
-  const { component: Component, dataVariable } = definition;
+import {
+  COMPONENT_REGISTRY,
+  type ComponentDefinition,
+} from '../config/components';
+
+export function createHorizontalComponentElement(
+  definition: ComponentDefinition
+) {
+  const { component: Component, dataVariable, elementTag } = definition;
 
   class HorizontalComponentElement extends HTMLElement {
     connectedCallback() {
@@ -17,20 +23,10 @@ export function createHorizontalComponentElement(definition: ComponentDefinition
         shadowRoot = this.attachShadow({ mode: 'open' });
       }
 
-      shadowRoot.innerHTML = '';
-      const root = createRoot(shadowRoot);
-      
-      const serviceUrl = 'http://localhost:4001';
-      
-      root.render(
-        <>
-          <link 
-            rel="stylesheet" 
-            href={`${serviceUrl}/dist/horizontal-components-styles.css`}
-          />
-          <Component {...(serverData ?? {})} />
-        </>
-      );
+      const container = shadowRoot.querySelector(`#root-${elementTag}`);
+      if (!container) return;
+
+      hydrateRoot(container, <Component {...(serverData ?? {})} />);
     }
   }
 
@@ -38,12 +34,11 @@ export function createHorizontalComponentElement(definition: ComponentDefinition
 }
 
 export function registerAllComponents() {
-  COMPONENT_REGISTRY.forEach(definition => {
+  COMPONENT_REGISTRY.forEach((definition) => {
     const ElementClass = createHorizontalComponentElement(definition);
-    
+
     if (!customElements.get(definition.elementTag)) {
       customElements.define(definition.elementTag, ElementClass);
     }
   });
 }
-
