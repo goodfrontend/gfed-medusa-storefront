@@ -1,22 +1,24 @@
 import 'dotenv/config';
-
-import { serve } from '@hono/node-server';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-import { serveStatic } from '@hono/node-server/serve-static';
 import { renderToString } from 'react-dom/server';
+
+import { serve } from '@hono/node-server';
+import { serveStatic } from '@hono/node-server/serve-static';
+
 import { getComponent } from '../config/components';
 
 const app = new Hono();
 
-app.use('/*', cors());
+app.use(cors());
 
 app.get('/api/:name', async (c) => {
   const name = c.req.param('name');
   const component = getComponent(name as string);
 
-  if(!component) return c.json({ error: `Component '${name}' not found` }, 404)
-  
+  if (!component)
+    return c.json({ error: `Component '${name}' not found` }, 404);
+
   try {
     const data = await component.getData();
     return c.json(data);
@@ -28,8 +30,8 @@ app.get('/api/:name', async (c) => {
 
 app.get('/fragment/:name', async (c) => {
   const name = c.req.param('name');
-    const component = getComponent(name);
-  
+  const component = getComponent(name);
+
   if (!component) {
     return c.html(`<!-- Component '${name}' not found -->`, 404);
   }
