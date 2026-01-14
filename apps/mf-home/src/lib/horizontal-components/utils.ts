@@ -1,15 +1,14 @@
-import { HTMLRewriter } from "htmlrewriter";
-import type { HorizontalComponentConfig, ComponentResources } from "./types";
+import { HTMLRewriter } from 'htmlrewriter';
 
-const SERVICE_URL = "http://localhost:4001";
+import type { ComponentResources, HorizontalComponentConfig } from './types';
+
+const SERVICE_URL = 'http://localhost:4001';
 
 function extractBodyContent(html: string): string {
   const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/);
-  let content = bodyMatch ? bodyMatch[1] ?? '' : html;
-  
-  return content
-    .replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gim, "")
-    .trim();
+  let content = bodyMatch ? (bodyMatch[1] ?? '') : html;
+
+  return content.replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gim, '').trim();
 }
 
 export async function fetchComponentResources(
@@ -17,7 +16,7 @@ export async function fetchComponentResources(
 ): Promise<ComponentResources> {
   const [htmlRes, dataRes] = await Promise.all([
     fetch(`${SERVICE_URL}/fragment/${config.name}`),
-    fetch(`${SERVICE_URL}/api/${config.name}`)
+    fetch(`${SERVICE_URL}/api/${config.name}`),
   ]);
 
   const html = await htmlRes.text();
@@ -45,24 +44,26 @@ export async function injectHorizontalComponents(
   }
 
   const scriptTags = `<script defer src="${SERVICE_URL}/dist/horizontal-components-bundle.js"></script>`;
-  
+
   const dataScripts = components
-    .map(({ data, config }) => `<script>window.${config.dataVariable}=${data}</script>`)
+    .map(
+      ({ data, config }) =>
+        `<script>window.${config.dataVariable}=${data}</script>`
+    )
     .join('\n');
 
-  let rewriter = new HTMLRewriter()
-    .on('head', {
-      element(el) {
-        el.append(`${scriptTags}${dataScripts}`, { html: true });
-      },
-    });
+  let rewriter = new HTMLRewriter().on('head', {
+    element(el) {
+      el.append(`${scriptTags}${dataScripts}`, { html: true });
+    },
+  });
 
   for (const comp of components) {
     const { html, config } = comp;
     const stylesheetUrl = `${SERVICE_URL}/dist/horizontal-components-styles.css`;
-    
-    const shadowContent = `<template shadowrootmode="open"><link rel="stylesheet" href="${stylesheetUrl}">${html}</template>`;
-    
+
+    const shadowContent = `<template shadowrootmode="open"><link rel="stylesheet" href="${stylesheetUrl}"><div id="root-${config.elementTag}">${html}</div></template>`;
+
     rewriter = rewriter.on(config.elementTag, {
       element(el) {
         try {
@@ -76,8 +77,8 @@ export async function injectHorizontalComponents(
 
   const transformedResponse = rewriter.transform(hostResponse);
   const newHeaders = new Headers(transformedResponse.headers);
-  newHeaders.delete("content-encoding");
-  newHeaders.delete("content-length");
+  newHeaders.delete('content-encoding');
+  newHeaders.delete('content-length');
 
   return new Response(transformedResponse.body, {
     status: transformedResponse.status,

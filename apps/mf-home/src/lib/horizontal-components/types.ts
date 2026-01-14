@@ -9,4 +9,3 @@ export interface ComponentResources {
   data: string;
   config: HorizontalComponentConfig;
 }
-
