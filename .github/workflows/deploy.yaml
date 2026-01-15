@@ -10,92 +10,8 @@ permissions:
   packages: write
 
 jobs:
-  version:
-    name: Version MFEs
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - uses: pnpm/action-setup@v4
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20.x
-          cache: "pnpm"
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Check for MFE changesets
-        id: check-changesets
-        run: |
-          HAS_CHANGESETS=false
-          for file in .changeset/*.md; do
-            [[ -f "$file" ]] || continue
-            [[ "$(basename "$file")" == "README.md" ]] && continue
-            if grep -q "@gfed-medusa/mf-" "$file" 2>/dev/null; then
-              HAS_CHANGESETS=true
-              break
-            fi
-          done
-
-          if [ "$HAS_CHANGESETS" = "true" ]; then
-            echo "has_changesets=true" >> "$GITHUB_OUTPUT"
-            echo "✓ MFE changesets found"
-          else
-            echo "has_changesets=false" >> "$GITHUB_OUTPUT"
-            echo "No MFE changesets found, skipping versioning"
-          fi
-
-      - name: Version MFEs
-        if: steps.check-changesets.outputs.has_changesets == 'true'
-        run: |
-          if ! pnpm run ci:version-mfes; then
-            echo "::error::Failed to version MFEs"
-            exit 1
-          fi
-
-      - name: Commit and push version changes
-        if: steps.check-changesets.outputs.has_changesets == 'true'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "Version MFEs"
-
-          echo "Creating git tags..."
-          for package in apps/mf-*/package.json; do
-            NAME=$(jq -r '.name' "$package")
-            VERSION=$(jq -r '.version' "$package")
-
-            if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then
-              echo "::error::Failed to read version from $package"
-              exit 1
-            fi
-
-            TAG="$NAME@$VERSION"
-
-            if git rev-parse "$TAG" >/dev/null 2>&1; then
-              echo "::warning::Tag $TAG already exists, skipping"
-            else
-              git tag -a "$TAG" -m "Release $TAG"
-              echo "Created tag: $TAG"
-            fi
-          done
-
-          echo "Pushing version commit and tags..."
-          if ! git push origin main --follow-tags; then
-            echo "::error::Failed to push version commit and tags"
-            exit 1
-          fi
-
-          echo "✓ Version commit and tags pushed successfully"
-
   detect-changes:
     name: Detect changes
-    needs: version
     runs-on: ubuntu-latest
     outputs:
       home: ${{ steps.changes.outputs.home }}
@@ -179,6 +95,40 @@ jobs:
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
+  tag-home:
+    name: Tag home release
+    needs: [detect-changes, home-smoke]
+    if: needs.detect-changes.outputs.home == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create git tag
+        run: |
+          NAME=$(jq -r '.name' apps/mf-home/package.json)
+          VERSION=$(jq -r '.version' apps/mf-home/package.json)
+
+          if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then
+            echo "::error::Failed to read version from apps/mf-home/package.json"
+            exit 1
+          fi
+
+          TAG="$NAME@$VERSION"
+
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists, skipping"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git tag -a "$TAG" -m "Release $TAG"
+            git push origin "$TAG"
+            echo "Created and pushed tag: $TAG"
+          fi
+
   home-qa:
     needs: [detect-changes, build-home, home-smoke]
     if: needs.detect-changes.outputs.home == 'true'
@@ -208,6 +158,40 @@ jobs:
       image: ${{ needs.build-checkout.outputs.image_tag }}
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+
+  tag-checkout:
+    name: Tag checkout release
+    needs: [detect-changes, checkout-smoke]
+    if: needs.detect-changes.outputs.checkout == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create git tag
+        run: |
+          NAME=$(jq -r '.name' apps/mf-checkout/package.json)
+          VERSION=$(jq -r '.version' apps/mf-checkout/package.json)
+
+          if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then
+            echo "::error::Failed to read version from apps/mf-checkout/package.json"
+            exit 1
+          fi
+
+          TAG="$NAME@$VERSION"
+
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists, skipping"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git tag -a "$TAG" -m "Release $TAG"
+            git push origin "$TAG"
+            echo "Created and pushed tag: $TAG"
+          fi
 
   checkout-qa:
     needs: [detect-changes, build-checkout, checkout-smoke]
@@ -239,6 +223,40 @@ jobs:
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
+  tag-products:
+    name: Tag products release
+    needs: [detect-changes, products-smoke]
+    if: needs.detect-changes.outputs.products == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create git tag
+        run: |
+          NAME=$(jq -r '.name' apps/mf-products/package.json)
+          VERSION=$(jq -r '.version' apps/mf-products/package.json)
+
+          if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then
+            echo "::error::Failed to read version from apps/mf-products/package.json"
+            exit 1
+          fi
+
+          TAG="$NAME@$VERSION"
+
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists, skipping"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git tag -a "$TAG" -m "Release $TAG"
+            git push origin "$TAG"
+            echo "Created and pushed tag: $TAG"
+          fi
+
   products-qa:
     needs: [detect-changes, build-products, products-smoke]
     if: needs.detect-changes.outputs.products == 'true'
@@ -268,6 +286,40 @@ jobs:
       image: ${{ needs.build-account.outputs.image_tag }}
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+
+  tag-account:
+    name: Tag account release
+    needs: [detect-changes, account-smoke]
+    if: needs.detect-changes.outputs.account == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Create git tag
+        run: |
+          NAME=$(jq -r '.name' apps/mf-account/package.json)
+          VERSION=$(jq -r '.version' apps/mf-account/package.json)
+
+          if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then
+            echo "::error::Failed to read version from apps/mf-account/package.json"
+            exit 1
+          fi
+
+          TAG="$NAME@$VERSION"
+
+          if git rev-parse "$TAG" >/dev/null 2>&1; then
+            echo "Tag $TAG already exists, skipping"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git tag -a "$TAG" -m "Release $TAG"
+            git push origin "$TAG"
+            echo "Created and pushed tag: $TAG"
+          fi
 
   account-qa:
     needs: [detect-changes, build-account, account-smoke]
