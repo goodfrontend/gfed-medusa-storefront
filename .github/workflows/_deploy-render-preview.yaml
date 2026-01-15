@@ -1,4 +1,4 @@
-name: Render Preview
+name: Deploy to Render (preview)
 
 on:
   workflow_call:
