@@ -20,8 +20,8 @@ on:
           - smoke
           - qa
           - production
-      target_sha:
-        description: 'Git SHA to rollback to (leave empty to use previous deployment)'
+      target_version:
+        description: 'Version to rollback to (e.g., 1.2.3, or leave empty to list available versions)'
         required: false
         type: string
       confirm:
@@ -45,6 +45,7 @@ jobs:
     outputs:
       image_tag: ${{ steps.determine-image.outputs.image_tag }}
       service_name: ${{ steps.determine-image.outputs.service_name }}
+      version: ${{ steps.determine-image.outputs.version }}
     steps:
       - name: Validate confirmation
         run: |
@@ -58,57 +59,54 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Determine target image
+      - name: Fetch git tags
+        run: git fetch --tags
+
+      - name: Determine target version
         id: determine-image
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           APP="${{ inputs.app }}"
-          TARGET_SHA="${{ inputs.target_sha }}"
+          TARGET_VERSION="${{ inputs.target_version }}"
 
-          # If no SHA provided, find the previous one
-          if [ -z "$TARGET_SHA" ]; then
-            echo "No SHA provided. Finding previous deployment..."
+          # List available versions for this MFE
+          echo "Available versions for mf-$APP:"
+          AVAILABLE_VERSIONS=$(git tag -l "@gfed-medusa/mf-$APP@*" | sed 's/@gfed-medusa\/mf-.*@//' | sort -V -r)
+          echo "$AVAILABLE_VERSIONS"
 
-            # Get the last 10 commits that touched this app
-            COMMITS=$(git log -10 --pretty=format:"%H" -- "apps/mf-$APP/**" "packages/**")
-
-            # Find the second commit (first is current, second is previous)
-            TARGET_SHA=$(echo "$COMMITS" | sed -n '2p')
-
-            if [ -z "$TARGET_SHA" ]; then
-              echo "::error::No previous deployment found for this app"
-              echo "::error::This app may have only been deployed once"
-              echo "::error::Please specify a target SHA manually, or check deployment history"
-              exit 1
-            fi
-
-            echo "Found previous SHA: $TARGET_SHA"
-          else
-            # Validate provided SHA exists
-            if ! git rev-parse --verify "$TARGET_SHA" >/dev/null 2>&1; then
-              echo "::error::Invalid SHA: $TARGET_SHA"
-              echo "::error::SHA does not exist in git history"
-              exit 1
-            fi
-            echo "Using provided SHA: $TARGET_SHA"
-          fi
-
-          # Validate SHA is from main branch
-          if ! git merge-base --is-ancestor "$TARGET_SHA" origin/main 2>/dev/null; then
-            echo "::error::SHA $TARGET_SHA is not in main branch history"
-            echo "::error::Can only rollback to versions that were deployed via main branch"
-            echo "::error::Check deployment history or git log on main branch"
+          # If no version provided, show available versions and exit
+          if [ -z "$TARGET_VERSION" ]; then
+            echo "::error::No version provided. Available versions:"
+            echo "$AVAILABLE_VERSIONS" | head -10
+            echo "::error::Please specify a version from the list above."
             exit 1
           fi
-          echo "✓ SHA is from main branch"
 
-          # Rollback warnings
-          COMMIT_DATE=$(git show -s --format=%ci "$TARGET_SHA")
-          COMMIT_TIMESTAMP=$(git show -s --format=%ct "$TARGET_SHA")
+          # Validate version exists as git tag
+          GIT_TAG="@gfed-medusa/mf-$APP@$TARGET_VERSION"
+          if ! git tag -l "$GIT_TAG" | grep -q .; then
+            echo "::error::Version $TARGET_VERSION does not exist for mf-$APP"
+            echo "::error::Available versions:"
+            echo "$AVAILABLE_VERSIONS" | head -10
+            exit 1
+          fi
+          echo "✓ Git tag exists: $GIT_TAG"
+
+          # Get commit info for version
+          TAG_COMMIT=$(git rev-list -n 1 "$GIT_TAG")
+          COMMIT_DATE=$(git show -s --format=%ci "$TAG_COMMIT")
+          COMMIT_TIMESTAMP=$(git show -s --format=%ct "$TAG_COMMIT")
           CURRENT_TIMESTAMP=$(date +%s)
           DAYS_OLD=$(( (CURRENT_TIMESTAMP - COMMIT_TIMESTAMP) / 86400 ))
 
+          echo "::notice::Version $TARGET_VERSION details:"
+          echo "::notice::• Committed: $COMMIT_DATE ($DAYS_OLD days ago)"
+          echo "::notice::• Git SHA: $TAG_COMMIT"
+
+          # Rollback warnings
           echo "::warning::⚠️  Rollback Safety Notices:"
-          echo "::warning::• Rolling back to version from $DAYS_OLD days ago (committed: $COMMIT_DATE)"
+          echo "::warning::• Rolling back to version $TARGET_VERSION from $DAYS_OLD days ago"
           echo "::warning::• Rollback only affects the $APP microfrontend"
           echo "::warning::  Shared packages (sf-lib-*) remain at current versions"
 
@@ -118,16 +116,81 @@ jobs:
             echo "::warning::• Strongly recommend testing in smoke environment first"
           fi
 
-          # Map app name to service name using shared script
-          ./.github/scripts/map-service-name.sh "$APP" "${{ inputs.environment }}"
-          SERVICE=$(cat "$GITHUB_OUTPUT" | grep "^service=" | cut -d'=' -f2)
+          # Map app name to service name (capture from stdout)
+          SERVICE_NAME=$(./.github/scripts/map-service-name.sh "$APP" "${{ inputs.environment }}")
 
-          IMAGE_TAG="ghcr.io/${{ github.repository }}/$SERVICE:$TARGET_SHA"
-          echo "image_tag=$IMAGE_TAG" >> "$GITHUB_OUTPUT"
+          # Construct Docker image tag with version
+          IMAGE_TAG="ghcr.io/${{ github.repository }}/$SERVICE_NAME:$TARGET_VERSION"
+          {
+            echo "image_tag=$IMAGE_TAG"
+            echo "version=$TARGET_VERSION"
+            echo "service_name=$SERVICE_NAME"
+          } >> "$GITHUB_OUTPUT"
           echo "Rolling back to: $IMAGE_TAG"
 
+      - name: Validate Docker image exists
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          IMAGE="${{ steps.determine-image.outputs.image_tag }}"
+          SERVICE_NAME="${{ steps.determine-image.outputs.service_name }}"
+          VERSION="${{ steps.determine-image.outputs.version }}"
+
+          # Extract base service name (remove environment suffix)
+          # Remove -smoke, -qa, or -prod suffix
+          BASE_SERVICE="$SERVICE_NAME"
+          BASE_SERVICE="${BASE_SERVICE%-smoke}"
+          BASE_SERVICE="${BASE_SERVICE%-qa}"
+          BASE_SERVICE="${BASE_SERVICE%-prod}"
+
+          # Construct full GHCR package name
+          # For image: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-home
+          # Package name is: gfed-medusa-storefront/sf-home (URL encoded)
+          REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)
+          PACKAGE_NAME="$REPO_NAME/$BASE_SERVICE"
+          # URL encode the slash
+          PACKAGE_NAME_ENCODED=$(echo "$PACKAGE_NAME" | sed 's/\//%2F/g')
+
+          echo "Checking if image exists: $IMAGE"
+          echo "Package: $PACKAGE_NAME"
+          echo "Version: $VERSION"
+
+          # Use GitHub API to check if image exists in GHCR
+          API_URL="https://api.github.com/users"
+          API_URL="$API_URL/${{ github.repository_owner }}"
+          API_URL="$API_URL/packages/container/$PACKAGE_NAME_ENCODED/versions"
+          RESPONSE=$(curl -s -w "\n%{http_code}" \
+            -H "Authorization: Bearer $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "$API_URL")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+          BODY=$(echo "$RESPONSE" | head -n-1)
+
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "::warning::Unable to verify image existence via API (HTTP $HTTP_CODE)"
+            echo "::warning::Proceeding with deployment - Render will fail if image doesn't exist"
+          else
+            # Check if the version tag exists
+            TAG_EXISTS=$(echo "$BODY" | jq -r --arg tag "$VERSION" \
+              'any(.[]; .metadata.container.tags[]? == $tag)')
+
+            if [ "$TAG_EXISTS" = "true" ]; then
+              echo "✓ Docker image exists in GHCR"
+            else
+              echo "::error::Docker image not found: $IMAGE"
+              echo "::error::The image may not have been built for this version."
+              echo "::error::This could happen if:"
+              echo "::error::  1. The version was created before Docker tagging was implemented"
+              echo "::error::  2. The build failed for this version"
+              echo "::error::  3. The image was deleted from GHCR"
+              echo "::error::Please verify the image exists or choose a more recent version."
+              exit 1
+            fi
+          fi
+
   rollback:
-    name: Rollback ${{ inputs.app }} in ${{ inputs.environment }}
+    name: Rollback ${{ inputs.app }} to v${{ needs.validate.outputs.version }} in ${{ inputs.environment }}
     needs: validate
     uses: ./.github/workflows/_deploy-render.yaml
     with:
@@ -147,6 +210,7 @@ jobs:
         run: |
           echo "::notice::✓ Rollback completed successfully"
           echo "Service: ${{ needs.validate.outputs.service_name }}"
+          echo "Version: ${{ needs.validate.outputs.version }}"
           echo "Image: ${{ needs.validate.outputs.image_tag }}"
 
       - name: Rollback failed
@@ -154,6 +218,7 @@ jobs:
         run: |
           echo "::error::✗ Rollback failed"
           echo "Service: ${{ needs.validate.outputs.service_name }}"
+          echo "Version: ${{ needs.validate.outputs.version }}"
           echo "Image: ${{ needs.validate.outputs.image_tag }}"
           echo "Check the logs above for details"
           exit 1
