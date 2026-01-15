@@ -1,5 +1,11 @@
 # @gfed-medusa/mf-home
 
+## 1.0.2
+
+### Patch Changes
+
+- b074cf2: test versioning workflow
+
 ## 1.0.1
 
 ### Patch Changes
