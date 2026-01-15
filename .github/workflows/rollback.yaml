@@ -46,6 +46,7 @@ jobs:
       image_tag: ${{ steps.determine-image.outputs.image_tag }}
       service_name: ${{ steps.determine-image.outputs.service_name }}
       version: ${{ steps.determine-image.outputs.version }}
+      base_service: ${{ steps.determine-image.outputs.base_service }}
     steps:
       - name: Validate confirmation
         run: |
@@ -70,12 +71,10 @@ jobs:
           APP="${{ inputs.app }}"
           TARGET_VERSION="${{ inputs.target_version }}"
 
-          # List available versions for this MFE
           echo "Available versions for mf-$APP:"
           AVAILABLE_VERSIONS=$(git tag -l "@gfed-medusa/mf-$APP@*" | sed 's/@gfed-medusa\/mf-.*@//' | sort -V -r)
           echo "$AVAILABLE_VERSIONS"
 
-          # If no version provided, show available versions and exit
           if [ -z "$TARGET_VERSION" ]; then
             echo "::error::No version provided. Available versions:"
             echo "$AVAILABLE_VERSIONS" | head -10
@@ -83,7 +82,6 @@ jobs:
             exit 1
           fi
 
-          # Validate version exists as git tag
           GIT_TAG="@gfed-medusa/mf-$APP@$TARGET_VERSION"
           if ! git tag -l "$GIT_TAG" | grep -q .; then
             echo "::error::Version $TARGET_VERSION does not exist for mf-$APP"
@@ -93,7 +91,6 @@ jobs:
           fi
           echo "✓ Git tag exists: $GIT_TAG"
 
-          # Get commit info for version
           TAG_COMMIT=$(git rev-list -n 1 "$GIT_TAG")
           COMMIT_DATE=$(git show -s --format=%ci "$TAG_COMMIT")
           COMMIT_TIMESTAMP=$(git show -s --format=%ct "$TAG_COMMIT")
@@ -104,7 +101,6 @@ jobs:
           echo "::notice::• Committed: $COMMIT_DATE ($DAYS_OLD days ago)"
           echo "::notice::• Git SHA: $TAG_COMMIT"
 
-          # Rollback warnings
           echo "::warning::⚠️  Rollback Safety Notices:"
           echo "::warning::• Rolling back to version $TARGET_VERSION from $DAYS_OLD days ago"
           echo "::warning::• Rollback only affects the $APP microfrontend"
@@ -116,15 +112,33 @@ jobs:
             echo "::warning::• Strongly recommend testing in smoke environment first"
           fi
 
-          # Map app name to service name (capture from stdout)
-          SERVICE_NAME=$(./.github/scripts/map-service-name.sh "$APP" "${{ inputs.environment }}")
+          case "$APP" in
+            home) BASE_SERVICE="sf-home" ;;
+            account) BASE_SERVICE="sf-account" ;;
+            products) BASE_SERVICE="sf-products" ;;
+            checkout) BASE_SERVICE="sf-checkout" ;;
+            *)
+              echo "::error::Invalid app: $APP"
+              exit 1
+              ;;
+          esac
 
-          # Construct Docker image tag with version
-          IMAGE_TAG="ghcr.io/${{ github.repository }}/$SERVICE_NAME:$TARGET_VERSION"
+          case "${{ inputs.environment }}" in
+            smoke) SERVICE_NAME="$BASE_SERVICE-smoke" ;;
+            qa) SERVICE_NAME="$BASE_SERVICE-qa" ;;
+            production) SERVICE_NAME="$BASE_SERVICE-prod" ;;
+            *)
+              echo "::error::Invalid environment: ${{ inputs.environment }}"
+              exit 1
+              ;;
+          esac
+
+          IMAGE_TAG="ghcr.io/${{ github.repository }}/$BASE_SERVICE:$TARGET_VERSION"
           {
             echo "image_tag=$IMAGE_TAG"
             echo "version=$TARGET_VERSION"
             echo "service_name=$SERVICE_NAME"
+            echo "base_service=$BASE_SERVICE"
           } >> "$GITHUB_OUTPUT"
           echo "Rolling back to: $IMAGE_TAG"
 
@@ -133,29 +147,17 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           IMAGE="${{ steps.determine-image.outputs.image_tag }}"
-          SERVICE_NAME="${{ steps.determine-image.outputs.service_name }}"
+          BASE_SERVICE="${{ steps.determine-image.outputs.base_service }}"
           VERSION="${{ steps.determine-image.outputs.version }}"
 
-          # Extract base service name (remove environment suffix)
-          # Remove -smoke, -qa, or -prod suffix
-          BASE_SERVICE="$SERVICE_NAME"
-          BASE_SERVICE="${BASE_SERVICE%-smoke}"
-          BASE_SERVICE="${BASE_SERVICE%-qa}"
-          BASE_SERVICE="${BASE_SERVICE%-prod}"
-
-          # Construct full GHCR package name
-          # For image: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-home
-          # Package name is: gfed-medusa-storefront/sf-home (URL encoded)
           REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)
           PACKAGE_NAME="$REPO_NAME/$BASE_SERVICE"
-          # URL encode the slash
           PACKAGE_NAME_ENCODED=$(echo "$PACKAGE_NAME" | sed 's/\//%2F/g')
 
           echo "Checking if image exists: $IMAGE"
           echo "Package: $PACKAGE_NAME"
           echo "Version: $VERSION"
 
-          # Use GitHub API to check if image exists in GHCR
           API_URL="https://api.github.com/users"
           API_URL="$API_URL/${{ github.repository_owner }}"
           API_URL="$API_URL/packages/container/$PACKAGE_NAME_ENCODED/versions"
@@ -171,7 +173,6 @@ jobs:
             echo "::warning::Unable to verify image existence via API (HTTP $HTTP_CODE)"
             echo "::warning::Proceeding with deployment - Render will fail if image doesn't exist"
           else
-            # Check if the version tag exists
             TAG_EXISTS=$(echo "$BODY" | jq -r --arg tag "$VERSION" \
               'any(.[]; .metadata.container.tags[]? == $tag)')
 
