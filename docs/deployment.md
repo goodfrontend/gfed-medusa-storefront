@@ -8,6 +8,7 @@ The project uses **GitHub Actions** for automation and **Render** for hosting th
 
 - **CI (Continuous Integration):** Runs on Pull Requests to ensure code quality (Build, Lint, Type Check).
 - **CD (Continuous Deployment):** Triggered on pushes to the `main` branch. It builds Docker images, pushes them to GitHub Container Registry (GHCR), and promotes them through environments on Render (`smoke` -> `qa` -> `production`).
+- **MFE Versioning:** Uses [Changesets](https://github.com/changesets/changesets) to manage semantic versioning of micro frontends. Developers add changesets to PRs, and a release PR is created at the end of each sprint to bump versions.
 - **Package Publishing:** Uses [Changesets](https://github.com/changesets/changesets) to version and publish packages to npm automatically.
 
 ## Infrastructure (Render)
@@ -75,7 +76,7 @@ All workflows are located in `.github/workflows/`.
     3.  Runs `pnpm run ci:publish` to publish updated packages to the registry.
 
 ### 4. Rollback Deployments
-*   **Files:** `rollback.yaml`, `deployment-history.yaml`, `scripts/map-service-name.sh`.
+*   **Files:** `rollback.yaml`, `scripts/map-service-name.sh`.
 *   **Trigger:** Manual workflow dispatch (on-demand via GitHub Actions UI).
 *   **Purpose:** Quickly rollback a deployed microfrontend to a previous version (MFE-only changes). Use `git revert` for commits affecting packages.
 *   **Safety Features:** Confirmation required, SHA validation, concurrency control, age warnings.
@@ -162,7 +163,7 @@ If a deployment introduces a critical bug, you can quickly rollback to a previou
 2.  **Configure rollback:**
     *   **App**: Select the microfrontend (home, account, products, checkout)
     *   **Environment**: Select the environment (smoke, qa, production)
-    *   **Target SHA**: Leave **empty** for automatic rollback to previous version
+    *   **Target Version**: Leave **empty** for automatic rollback to previous version
     *   **Confirm**: Type `rollback`
 
 3.  **Execute:**
@@ -171,35 +172,21 @@ If a deployment introduces a critical bug, you can quickly rollback to a previou
 
 #### Rollback to Specific Version
 
-If you need to rollback to a specific commit (not just the previous one):
+If you need to rollback to a specific version (not just the previous one):
 
-1.  **Find the target SHA:**
-    *   **Option A - Deployment History Workflow:**
-        1.  Go to **Actions** → **View Deployment History** → **Run workflow**
-        2.  Select your app and optionally set number of deployments to show
-        3.  Check the workflow run logs for commit SHAs, dates, and messages
-        4.  Copy the SHA you want to rollback to
+1.  **Find the target version:**
+    *   **Option A - Git Tags: https://github.com/goodfrontend/gfed-medusa-storefront/tags**
+        1. Look for the microfrontend you want to rollback.
+        2. Take note of the version and use it for the rollback deployment.
 
-    *   **Option B - Git Locally:**
-        ```bash
-        # Show last 10 commits that deployed mf-products
-        git log -10 --oneline -- apps/mf-products packages/
-
-        # Example output:
-        # abc123d feat: add new product filter
-        # 456789e fix: product image loading   ← You want this one
-        # 789def1 feat: checkout integration
-        ```
-        Copy the SHA (e.g., `456789e`)
-
-    *   **Option C - GitHub Container Registry:**
-        1.  Go to: `https://github.com/YOUR_ORG/YOUR_REPO/packages`
-        2.  Find the package (e.g., `sf-products`)
-        3.  View available tags (each tag is a git SHA)
+    *   **Option B - Docker Images:**
+        1. Example for home storefront: `https://github.com/goodfrontend/gfed-medusa-storefront/pkgs/container/gfed-medusa-storefront%2Fsf-home/versions`
+        2. Take note of the exact version of the docker image.
+        3. Use this version for rollback deployment.
 
 2.  **Trigger rollback:**
     *   Go to **Actions** → **Rollback Deployment**
-    *   Enter the **Target SHA** you found
+    *   Enter the **Target Version** you found
     *   Complete other fields and confirm
     *   Run the workflow
 
