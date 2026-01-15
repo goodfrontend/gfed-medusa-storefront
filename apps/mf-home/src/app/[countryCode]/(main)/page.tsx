@@ -22,6 +22,7 @@ export default async function Home() {
     <>
       <Hero />
       <div className="py-10">
+        <p>Release/Tags Version Testing</p>
         <ul className="flex flex-col gap-x-6">
           <FeaturedProducts collections={collections as Collection[]} />
         </ul>
