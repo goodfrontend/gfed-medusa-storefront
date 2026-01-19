@@ -1,8 +1,5 @@
 import { Metadata } from 'next';
 
-import Footer from '@gfed-medusa/sf-lib-common/components/footer';
-import { Nav } from '@gfed-medusa/sf-lib-common/components/nav';
-
 export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3001'
@@ -12,9 +9,11 @@ export const metadata: Metadata = {
 export default async function MainLayout(props: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">
-      <Nav />
+      {/* @ts-expect-error -- Web Component */}
+      <mfe-header suppressHydrationWarning></mfe-header>
       <main className="flex-1">{props.children}</main>
-      <Footer />
+      {/* @ts-expect-error -- Web Component */}
+      <mfe-footer suppressHydrationWarning></mfe-footer>
     </div>
   );
 }

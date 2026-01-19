@@ -1,7 +1,9 @@
 import type { ComponentType } from 'react';
-import { Nav } from '@gfed-medusa/sf-lib-common/components/nav';
-import { Footer } from '@gfed-medusa/sf-lib-common/components/footer';
+
 import type { HttpTypes } from '@medusajs/types';
+
+import { Footer } from '../components/footer';
+import { Header } from '../components/header';
 
 export interface ComponentDefinition {
   name: string;
@@ -14,12 +16,15 @@ export interface ComponentDefinition {
 export const COMPONENT_REGISTRY: ComponentDefinition[] = [
   {
     name: 'header',
-    component: Nav,
+    component: Header,
     getData: async () => {
-      const { sdk } = await import('@gfed-medusa/sf-lib-common/lib/config/medusa');
-      const { normalizeRegion } = await import('@gfed-medusa/sf-lib-common/lib/utils/normalize-functions');
-      const { medusaError } = await import('@gfed-medusa/sf-lib-common/lib/utils/medusa-error');
-      
+      const { sdk } =
+        await import('@gfed-medusa/sf-lib-common/lib/config/medusa');
+      const { normalizeRegion } =
+        await import('@gfed-medusa/sf-lib-common/lib/utils/normalize-functions');
+      const { medusaError } =
+        await import('@gfed-medusa/sf-lib-common/lib/utils/medusa-error');
+
       const regions = await sdk.client
         .fetch<{ regions: HttpTypes.StoreRegion[] }>(`/store/regions`, {
           method: 'GET',
@@ -37,27 +42,35 @@ export const COMPONENT_REGISTRY: ComponentDefinition[] = [
     name: 'footer',
     component: Footer,
     getData: async () => {
-      const { createServerApolloClient, graphqlFetch } = await import('@gfed-medusa/sf-lib-common/lib/gql/apollo-client');
-      const { GET_COLLECTIONS_QUERY } = await import('@gfed-medusa/sf-lib-common/lib/gql/queries/collections');
-      const { GET_PRODUCT_CATEGORIES_QUERY } = await import('@gfed-medusa/sf-lib-common/lib/gql/queries/product');
-      const { GET_FOOTER_QUERY } = await import('@gfed-medusa/sf-lib-common/lib/gql/queries/footer');
-      
+      const { createServerApolloClient, graphqlFetch } =
+        await import('@gfed-medusa/sf-lib-common/lib/gql/apollo-client');
+      const { GET_COLLECTIONS_QUERY } =
+        await import('@gfed-medusa/sf-lib-common/lib/gql/queries/collections');
+      const { GET_PRODUCT_CATEGORIES_QUERY } =
+        await import('@gfed-medusa/sf-lib-common/lib/gql/queries/product');
+      const { GET_FOOTER_QUERY } =
+        await import('@gfed-medusa/sf-lib-common/lib/gql/queries/footer');
+
       const apolloClient = createServerApolloClient();
-      
-      const [collectionsResult, categoriesResult, footerResult] = await Promise.all([
-        graphqlFetch<any, any>(
-          { query: GET_COLLECTIONS_QUERY, variables: { limit: 100, offset: 0 } },
-          apolloClient
-        ).catch(() => ({ collections: [] })),
-        graphqlFetch<any, any>(
-          { query: GET_PRODUCT_CATEGORIES_QUERY },
-          apolloClient
-        ).catch(() => ({ productCategories: [] })),
-        graphqlFetch<any, any>(
-          { query: GET_FOOTER_QUERY },
-          apolloClient
-        ).catch(() => ({ footer: null })),
-      ]);
+
+      const [collectionsResult, categoriesResult, footerResult] =
+        await Promise.all([
+          graphqlFetch<any, any>(
+            {
+              query: GET_COLLECTIONS_QUERY,
+              variables: { limit: 100, offset: 0 },
+            },
+            apolloClient
+          ).catch(() => ({ collections: [] })),
+          graphqlFetch<any, any>(
+            { query: GET_PRODUCT_CATEGORIES_QUERY },
+            apolloClient
+          ).catch(() => ({ productCategories: [] })),
+          graphqlFetch<any, any>(
+            { query: GET_FOOTER_QUERY },
+            apolloClient
+          ).catch(() => ({ footer: null })),
+        ]);
 
       return {
         collections: collectionsResult?.collections ?? [],
@@ -71,10 +84,9 @@ export const COMPONENT_REGISTRY: ComponentDefinition[] = [
 ];
 
 export function getComponent(name: string): ComponentDefinition | undefined {
-  return COMPONENT_REGISTRY.find(c => c.name === name);
+  return COMPONENT_REGISTRY.find((c) => c.name === name);
 }
 
 export function getComponentNames(): string[] {
-  return COMPONENT_REGISTRY.map(c => c.name);
+  return COMPONENT_REGISTRY.map((c) => c.name);
 }
-

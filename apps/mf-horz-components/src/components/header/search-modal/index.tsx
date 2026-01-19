@@ -2,19 +2,14 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-import Image from 'next/image';
-import { usePathname } from 'next/navigation';
-
 import DOMPurify from 'isomorphic-dompurify';
 
+import { Modal } from '@gfed-medusa/sf-lib-common/components/modal';
+import { useSearch } from '@gfed-medusa/sf-lib-common/lib/hooks/use-search';
+import { ProductHit } from '@gfed-medusa/sf-lib-common/types/graphql';
 import { PlaceholderImage } from '@gfed-medusa/sf-lib-ui/icons/placeholder-image';
 import { cn } from '@gfed-medusa/sf-lib-ui/lib/utils';
 import { Button } from '@medusajs/ui';
-
-import { useSearch } from '@/lib/hooks/use-search';
-import { ProductHit } from '@/types/graphql';
-
-import { Modal } from '../modal';
 
 type SearchModalProps = {
   buttonClassName?: string;
@@ -22,13 +17,12 @@ type SearchModalProps = {
 
 function SearchModal({ buttonClassName }: SearchModalProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const pathname = usePathname();
 
   const { query, setQuery, results, loading, error, isTyping } = useSearch();
 
   useEffect(() => {
     setIsOpen(false);
-  }, [pathname]);
+  }, []);
 
   useEffect(() => {
     if (!isOpen) {
@@ -177,7 +171,7 @@ const Hit = ({ hit }: { hit: ProductHit }) => {
     >
       <div className="relative h-[100px] w-[100px] shrink-0 overflow-hidden border border-gray-200">
         {hit.thumbnail ? (
-          <Image
+          <img
             src={hit.thumbnail}
             alt={hit.title ?? 'Product Image'}
             width={100}
@@ -201,7 +195,7 @@ const Hit = ({ hit }: { hit: ProductHit }) => {
       </div>
       <a
         href={`/products/${hit.handle}`}
-        className="absolute top-0 right-0 h-full w-full"
+        className="absolute right-0 top-0 h-full w-full"
         aria-label={`View Product: ${hit.title}`}
       />
     </div>

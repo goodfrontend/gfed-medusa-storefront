@@ -1,4 +1,4 @@
-import { retrieveCart } from '@/lib/data/cart';
+import { retrieveCart } from '@gfed-medusa/sf-lib-common/lib/data/cart';
 
 import { CartDropdown } from '../cart-dropdown';
 
