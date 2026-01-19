@@ -1,9 +1,7 @@
 import { Metadata } from 'next';
 
 import { CartMismatchBanner } from '@gfed-medusa/sf-lib-common/components/cart-mismatch-banner';
-import Footer from '@gfed-medusa/sf-lib-common/components/footer';
 import { ShippingPriceNudge } from '@gfed-medusa/sf-lib-common/components/free-shipping-price-nudge';
-import { Nav } from '@gfed-medusa/sf-lib-common/components/nav';
 import {
   listCartOptions,
   retrieveCart,
@@ -31,6 +29,7 @@ export default async function PageLayout(props: { children: React.ReactNode }) {
 
   return (
     <>
+      {/* @ts-expect-error -- Web Component */}
       <mfe-header suppressHydrationWarning></mfe-header>
       {customer && cart && (
         <CartMismatchBanner customer={customer} cart={cart as Cart} />
@@ -44,6 +43,7 @@ export default async function PageLayout(props: { children: React.ReactNode }) {
         />
       )}
       {props.children}
+      {/* @ts-expect-error -- Web Component */}
       <mfe-footer suppressHydrationWarning></mfe-footer>
     </>
   );

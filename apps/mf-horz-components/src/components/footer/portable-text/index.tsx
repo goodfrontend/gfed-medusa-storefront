@@ -1,7 +1,13 @@
 import { Fragment, ReactNode } from 'react';
 
-import Image from 'next/image';
-
+import {
+  FileBlock,
+  IconLinkMark,
+  ImageBlock,
+  RichTextBlock,
+  Span,
+  TextBlock,
+} from '@gfed-medusa/sf-lib-common/types/graphql';
 import { Back } from '@gfed-medusa/sf-lib-ui/icons/back';
 import { Bancontact } from '@gfed-medusa/sf-lib-ui/icons/bancontact';
 import { ChevronDown } from '@gfed-medusa/sf-lib-ui/icons/chevron-down';
@@ -22,15 +28,6 @@ import { User } from '@gfed-medusa/sf-lib-ui/icons/user';
 import { X } from '@gfed-medusa/sf-lib-ui/icons/x';
 import { ArrowUpRightMini } from '@medusajs/icons';
 import { Heading, Text } from '@medusajs/ui';
-
-import {
-  FileBlock,
-  IconLinkMark,
-  ImageBlock,
-  RichTextBlock,
-  Span,
-  TextBlock,
-} from '@/types/graphql';
 
 type PortableTextProps = {
   value: RichTextBlock[];
@@ -217,7 +214,7 @@ const PortableText = ({ value }: PortableTextProps) => {
           }
         case 'sanity':
           return mark.iconImage?.asset?.url ? (
-            <Image
+            <img
               src={mark.iconImage.asset.url}
               alt={mark.iconImage.alt || 'Icon'}
               width={16}
@@ -227,7 +224,7 @@ const PortableText = ({ value }: PortableTextProps) => {
           ) : null;
         case 'url':
           return mark.iconUrl ? (
-            <Image
+            <img
               src={mark.iconUrl}
               alt="Icon"
               width={16}
@@ -265,25 +262,25 @@ const PortableText = ({ value }: PortableTextProps) => {
 
     switch (style) {
       case 'h1':
-        return <h1 className="mt-8 mb-6 text-4xl font-bold">{content}</h1>;
+        return <h1 className="mb-6 mt-8 text-4xl font-bold">{content}</h1>;
       case 'h2':
         return (
-          <Heading level="h2" className="mt-6 mb-4 text-3xl font-semibold">
+          <Heading level="h2" className="mb-4 mt-6 text-3xl font-semibold">
             {content}
           </Heading>
         );
       case 'h3':
         return (
-          <Heading level="h3" className="mt-6 mb-4 text-2xl font-semibold">
+          <Heading level="h3" className="mb-4 mt-6 text-2xl font-semibold">
             {content}
           </Heading>
         );
       case 'h4':
-        return <h4 className="mt-4 mb-3 text-xl font-semibold">{content}</h4>;
+        return <h4 className="mb-3 mt-4 text-xl font-semibold">{content}</h4>;
       case 'h5':
-        return <h5 className="mt-4 mb-3 text-lg font-semibold">{content}</h5>;
+        return <h5 className="mb-3 mt-4 text-lg font-semibold">{content}</h5>;
       case 'h6':
-        return <h6 className="mt-4 mb-2 text-base font-semibold">{content}</h6>;
+        return <h6 className="mb-2 mt-4 text-base font-semibold">{content}</h6>;
       case 'blockquote':
         return (
           <blockquote className="border-ui-border-base my-4 border-l-4 py-2 pl-4 italic">
@@ -300,7 +297,7 @@ const PortableText = ({ value }: PortableTextProps) => {
 
     return (
       <div className="my-6">
-        <Image
+        <img
           src={image.asset.url}
           alt={image.alt || ''}
           width={800}

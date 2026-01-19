@@ -1,13 +1,13 @@
 import { Suspense } from 'react';
 
-import { Region } from '@/types/graphql';
+import { Region } from '@gfed-medusa/sf-lib-common/types/graphql';
 
-import { CartButton } from '../cart-button';
-import { LocalizedClientLink } from '../localized-client-link';
-import { SearchModal } from '../search-modal';
-import { SideMenu } from '../side-menu';
+import { Link } from '../link';
+import { CartButton } from './cart-button';
+import { SearchModal } from './search-modal';
+import { SideMenu } from './side-menu';
 
-function Nav({ regions }: { regions: Region[] }) {
+function Header({ regions }: { regions: Region[] }) {
   return (
     <div className="group sticky inset-x-0 top-0 z-50">
       <header className="border-ui-border-base relative mx-auto h-16 border-b bg-white duration-200">
@@ -19,35 +19,35 @@ function Nav({ regions }: { regions: Region[] }) {
           </div>
 
           <div className="flex h-full items-center">
-            <LocalizedClientLink
+            <Link
               href="/"
               className="txt-compact-xlarge-plus hover:text-ui-fg-base uppercase"
               data-testid="nav-store-link"
             >
               Medusa Store
-            </LocalizedClientLink>
+            </Link>
           </div>
 
           <div className="flex h-full flex-1 basis-0 items-center justify-end gap-x-6">
             <SearchModal />
             <div className="small:flex hidden h-full items-center gap-x-6">
-              <LocalizedClientLink
+              <Link
                 className="hover:text-ui-fg-base"
                 href="/account"
                 data-testid="nav-account-link"
               >
                 Account
-              </LocalizedClientLink>
+              </Link>
             </div>
             <Suspense
               fallback={
-                <LocalizedClientLink
+                <Link
                   className="hover:text-ui-fg-base flex gap-2"
                   href="/cart"
                   data-testid="nav-cart-link"
                 >
                   Cart (0)
-                </LocalizedClientLink>
+                </Link>
               }
             >
               <CartButton />
@@ -59,4 +59,4 @@ function Nav({ regions }: { regions: Region[] }) {
   );
 }
 
-export { Nav };
+export { Header };

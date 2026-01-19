@@ -2,14 +2,13 @@
 
 import { Fragment } from 'react';
 
+import { Region } from '@gfed-medusa/sf-lib-common/types/graphql';
 import { Popover, PopoverPanel, Transition } from '@headlessui/react';
 import { ArrowRightMini, XMark } from '@medusajs/icons';
 import { Text, clx, useToggleState } from '@medusajs/ui';
 
-import { Region } from '@/types/graphql';
-
-import { LayoutCountrySelect } from '../layout-country-select';
-import { LocalizedClientLink } from '../localized-client-link';
+import { Link } from '../../link';
+import { CountrySelect } from '../country-select';
 
 const SideMenuItems = {
   Home: '/',
@@ -60,14 +59,14 @@ const SideMenu = ({ regions }: { regions: Region[] | null }) => {
                       {Object.entries(SideMenuItems).map(([name, href]) => {
                         return (
                           <li key={name}>
-                            <LocalizedClientLink
+                            <Link
                               href={href}
                               className="hover:text-ui-fg-disabled text-3xl leading-10"
                               onClick={close}
                               data-testid={`${name.toLowerCase()}-link`}
                             >
                               {name}
-                            </LocalizedClientLink>
+                            </Link>
                           </li>
                         );
                       })}
@@ -79,7 +78,7 @@ const SideMenu = ({ regions }: { regions: Region[] | null }) => {
                         onMouseLeave={toggleState.close}
                       >
                         {regions && (
-                          <LayoutCountrySelect
+                          <CountrySelect
                             toggleState={toggleState}
                             regions={regions}
                           />

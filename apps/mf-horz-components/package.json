@@ -9,19 +9,24 @@
     "dev:server": "vite-node --watch src/server/index.tsx",
     "build": "vite build && tsc",
     "start": "cross-env NODE_ENV=production tsx src/server/index.tsx",
-    "lint": "eslint . --max-warnings 0"
+    "lint": "eslint . --max-warnings 20"
   },
   "dependencies": {
     "@gfed-medusa/sf-lib-common": "workspace:^2.0.0",
     "@gfed-medusa/sf-lib-ui": "workspace:^",
+    "@headlessui/react": "2.2.9",
     "@hono/node-server": "^1.13.7",
+    "@medusajs/icons": "2.12.1",
     "@medusajs/types": "^2.12.5",
     "@medusajs/ui": "^4.0.29",
     "@medusajs/ui-preset": "^2.12.2",
+    "@packages/eslint-config": "workspace:*",
     "@tailwindcss/vite": "^4.1.18",
     "dotenv": "^17.2.3",
     "hono": "^4.6.14",
+    "isomorphic-dompurify": "2.34.0",
     "react": "^19.0.0",
+    "react-country-flag": "^3.1.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {

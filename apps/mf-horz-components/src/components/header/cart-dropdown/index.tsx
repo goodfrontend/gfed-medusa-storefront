@@ -2,8 +2,11 @@
 
 import { Fragment, useEffect, useRef, useState } from 'react';
 
-import { usePathname } from 'next/navigation';
-
+import { DeleteButton } from '@gfed-medusa/sf-lib-common/components/delete-button';
+import { LineItemOptions } from '@gfed-medusa/sf-lib-common/components/line-item-options';
+import { LineItemPrice } from '@gfed-medusa/sf-lib-common/components/line-item-price';
+import { convertToLocale } from '@gfed-medusa/sf-lib-common/lib/utils/money';
+import { Cart } from '@gfed-medusa/sf-lib-common/types/graphql';
 import {
   Popover,
   PopoverButton,
@@ -12,13 +15,7 @@ import {
 } from '@headlessui/react';
 import { Button } from '@medusajs/ui';
 
-import { convertToLocale } from '@/lib/utils/money';
-import { Cart } from '@/types/graphql';
-
-import { DeleteButton } from '../delete-button';
-import { LineItemOptions } from '../line-item-options';
-import { LineItemPrice } from '../line-item-price';
-import { LocalizedClientLink } from '../localized-client-link';
+import { Link } from '../../link';
 import { Thumbnail } from '../thumbnail';
 
 const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
@@ -63,10 +60,10 @@ const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
     };
   }, [activeTimer]);
 
-  const pathname = usePathname();
-
   // open cart dropdown when modifying the cart items, but only if we're not on the cart page
   useEffect(() => {
+    const pathname = window.location.pathname;
+
     if (itemRef.current !== totalItems && !pathname.includes('/cart')) {
       timedOpen();
     }
@@ -81,11 +78,11 @@ const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
     >
       <Popover className="relative h-full">
         <PopoverButton className="h-full">
-          <LocalizedClientLink
+          <Link
             className="hover:text-ui-fg-base"
             href="/cart"
             data-testid="nav-cart-link"
-          >{`Cart (${totalItems})`}</LocalizedClientLink>
+          >{`Cart (${totalItems})`}</Link>
         </PopoverButton>
         <Transition
           show={cartDropdownOpen}
@@ -99,7 +96,7 @@ const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
         >
           <PopoverPanel
             static
-            className="text-ui-fg-base small:block absolute top-[calc(100%+1px)] right-0 hidden w-[420px] border-x border-b border-gray-200 bg-white"
+            className="text-ui-fg-base small:block absolute right-0 top-[calc(100%+1px)] hidden w-[420px] border-x border-b border-gray-200 bg-white"
             data-testid="nav-cart-dropdown"
           >
             <div className="flex items-center justify-center p-4">
@@ -118,7 +115,7 @@ const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
                         key={item.id}
                         data-testid="cart-item"
                       >
-                        <LocalizedClientLink
+                        <Link
                           href={`/products/${item.productHandle}`}
                           className="w-24"
                         >
@@ -127,18 +124,18 @@ const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
                             images={item.variant?.product?.images}
                             size="square"
                           />
-                        </LocalizedClientLink>
+                        </Link>
                         <div className="flex flex-1 flex-col justify-between">
                           <div className="flex flex-1 flex-col">
                             <div className="flex items-start justify-between">
                               <div className="mr-4 flex w-[180px] flex-col overflow-ellipsis whitespace-nowrap">
                                 <h3 className="text-base-regular overflow-hidden text-ellipsis">
-                                  <LocalizedClientLink
+                                  <Link
                                     href={`/products/${item.productHandle}`}
                                     data-testid="product-link"
                                   >
                                     {item.title}
-                                  </LocalizedClientLink>
+                                  </Link>
                                 </h3>
                                 <LineItemOptions
                                   variant={item.variant}
@@ -189,7 +186,7 @@ const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
                       })}
                     </span>
                   </div>
-                  <LocalizedClientLink href="/cart">
+                  <Link href="/cart">
                     <Button
                       className="w-full"
                       size="large"
@@ -197,7 +194,7 @@ const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
                     >
                       Go to cart
                     </Button>
-                  </LocalizedClientLink>
+                  </Link>
                 </div>
               </>
             ) : (
@@ -208,12 +205,12 @@ const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
                   </div>
                   <span>Your shopping bag is empty.</span>
                   <div>
-                    <LocalizedClientLink href="/store">
+                    <Link href="/store">
                       <>
                         <span className="sr-only">Go to all products page</span>
                         <Button onClick={close}>Explore products</Button>
                       </>
-                    </LocalizedClientLink>
+                    </Link>
                   </div>
                 </div>
               </div>
