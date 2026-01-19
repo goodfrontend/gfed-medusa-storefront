@@ -2,10 +2,11 @@
 
 import { Fragment, useEffect, useMemo, useState } from 'react';
 
-import { useParams, usePathname } from 'next/navigation';
-
 import ReactCountryFlag from 'react-country-flag';
 
+import { updateRegion } from '@gfed-medusa/sf-lib-common/lib/data/cart';
+import { StateType } from '@gfed-medusa/sf-lib-common/lib/hooks/use-toggle-state';
+import { Region } from '@gfed-medusa/sf-lib-common/types/graphql';
 import {
   Listbox,
   ListboxButton,
@@ -13,10 +14,6 @@ import {
   ListboxOptions,
   Transition,
 } from '@headlessui/react';
-
-import { updateRegion } from '@/lib/data/cart';
-import { StateType } from '@/lib/hooks/use-toggle-state';
-import { Region } from '@/types/graphql';
 
 type CountryOption = {
   country: string;
@@ -29,14 +26,12 @@ type CountrySelectProps = {
   regions: Region[];
 };
 
-const LayoutCountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
+const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
   const [current, setCurrent] = useState<
     | { country: string | undefined; region: string; label: string | undefined }
     | undefined
   >(undefined);
-
-  const { countryCode } = useParams();
-  const currentPath = usePathname().split(`/${countryCode}`)[1] ?? 'gb';
+  const [countryCode, setCountryCode] = useState('dk');
 
   const { state, close } = toggleState;
 
@@ -54,13 +49,19 @@ const LayoutCountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
   }, [regions]);
 
   useEffect(() => {
+    setCountryCode(window.location.pathname.split('/')[0]);
+  }, []);
+
+  useEffect(() => {
     if (countryCode) {
       const option = options?.find((o) => o?.country === countryCode);
       setCurrent(option);
     }
-  }, [options, countryCode]);
+  }, [options]);
 
   const handleChange = (option: CountryOption) => {
+    const currentPath =
+      window.location.pathname.split(`/${countryCode}`)[1] ?? 'gb';
     updateRegion(option.country, currentPath);
     close();
   };
@@ -106,7 +107,7 @@ const LayoutCountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
             leaveTo="opacity-0"
           >
             <ListboxOptions
-              className="text-small-regular no-scrollbar rounded-rounded xsmall:left-auto xsmall:right-0 absolute -bottom-[calc(100%-36px)] left-0 z-[900] max-h-[442px] w-full overflow-y-scroll bg-white text-black uppercase drop-shadow-md"
+              className="text-small-regular no-scrollbar rounded-rounded xsmall:left-auto xsmall:right-0 absolute -bottom-[calc(100%-36px)] left-0 z-[900] max-h-[442px] w-full overflow-y-scroll bg-white uppercase text-black drop-shadow-md"
               static
             >
               {options?.map((o, index) => {
@@ -137,4 +138,4 @@ const LayoutCountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
   );
 };
 
-export { LayoutCountrySelect };
+export { CountrySelect };
