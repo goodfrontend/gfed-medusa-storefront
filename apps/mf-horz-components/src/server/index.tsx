@@ -1,9 +1,11 @@
 import 'dotenv/config';
-import { Hono } from 'hono';
-import { cors } from 'hono/cors';
+import { Context, Hono } from 'hono';
 import { compress } from 'hono/compress';
+import { getCookie } from 'hono/cookie';
+import { cors } from 'hono/cors';
 import { renderToString } from 'react-dom/server';
 
+import { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import { serve } from '@hono/node-server';
 import { serveStatic } from '@hono/node-server/serve-static';
 
@@ -14,6 +16,15 @@ const app = new Hono();
 app.use(cors());
 app.use(compress());
 
+const resolveContext = (c: Context): StorefrontContext => {
+  return {
+    cartId: getCookie(c, '_medusa_cart_id'),
+    customerToken: getCookie(c, '_medusa_jwt'),
+    cacheId: getCookie(c, '_medusa_cache_id'),
+    cookieHeader: c.req.header('Cookie'),
+  };
+};
+
 app.get('/api/:name', async (c) => {
   const name = c.req.param('name');
   const component = getComponent(name as string);
@@ -22,7 +33,8 @@ app.get('/api/:name', async (c) => {
     return c.json({ error: `Component '${name}' not found` }, 404);
 
   try {
-    const data = await component.getData();
+    const ctx = resolveContext(c);
+    const data = await component.getData(ctx);
     return c.json(data);
   } catch (error) {
     console.error(`Error fetching data for component '${name}':`, error);
@@ -39,7 +51,8 @@ app.get('/fragment/:name', async (c) => {
   }
 
   try {
-    const data = await component.getData();
+    const ctx = resolveContext(c);
+    const data = await component.getData(ctx);
     const Component = component.component;
     const html = renderToString(<Component {...data} />);
     return c.html(html);

@@ -1,45 +1,39 @@
-import { cookies as nextCookies } from 'next/headers';
+import { StorefrontContext, getEmptyContext } from './context';
 
-export const getAuthHeaders = async (): Promise<
-  { authorization: string } | {}
-> => {
-  try {
-    const cookies = await nextCookies();
-    const token = cookies.get('_medusa_jwt')?.value;
+export const getAuthHeaders = (
+  ctx: StorefrontContext = getEmptyContext()
+): { authorization: string } | {} => {
+  const token = ctx.customerToken;
 
-    if (!token) {
-      return {};
-    }
-
-    return { authorization: `Bearer ${token}` };
-  } catch {
+  if (!token) {
     return {};
   }
+
+  return { authorization: `Bearer ${token}` };
 };
 
-export const getCacheTag = async (tag: string): Promise<string> => {
-  try {
-    const cookies = await nextCookies();
-    const cacheId = cookies.get('_medusa_cache_id')?.value;
+export const getCacheTag = (
+  tag: string, 
+  ctx: StorefrontContext = getEmptyContext()
+): string => {
+  const cacheId = ctx.cacheId;
 
-    if (!cacheId) {
-      return '';
-    }
-
-    return `${tag}-${cacheId}`;
-  } catch (error) {
+  if (!cacheId) {
     return '';
   }
+
+  return `${tag}-${cacheId}`;
 };
 
-export const getCacheOptions = async (
-  tag: string
-): Promise<{ tags: string[] } | {}> => {
+export const getCacheOptions = (
+  tag: string,
+  ctx: StorefrontContext = getEmptyContext()
+): { tags: string[] } | {} => {
   if (typeof window !== 'undefined') {
     return {};
   }
 
-  const cacheTag = await getCacheTag(tag);
+  const cacheTag = getCacheTag(tag, ctx);
 
   if (!cacheTag) {
     return {};
@@ -48,24 +42,30 @@ export const getCacheOptions = async (
   return { tags: [`${cacheTag}`] };
 };
 
-export const getCartId = async () => {
-  const cookies = await nextCookies();
-  return cookies.get('_medusa_cart_id')?.value;
+export const getCartId = (ctx: StorefrontContext = getEmptyContext()) => {
+  return ctx.cartId;
 };
 
-export const setCartId = async (cartId: string) => {
-  const cookies = await nextCookies();
-  cookies.set('_medusa_cart_id', cartId, {
-    maxAge: 60 * 60 * 24 * 7,
-    httpOnly: true,
-    sameSite: 'strict',
-    secure: process.env.NODE_ENV === 'production',
-  });
+export const setCartId = async (id: string, ctx: StorefrontContext = getEmptyContext()) => {
+  if (ctx.setCartId) {
+    await ctx.setCartId(id);
+  }
 };
 
-export const removeCartId = async () => {
-  const cookies = await nextCookies();
-  cookies.set('_medusa_cart_id', '', {
-    maxAge: -1,
-  });
+export const removeCartId = async (ctx: StorefrontContext = getEmptyContext()) => {
+  if (ctx.removeCartId) {
+    await ctx.removeCartId();
+  }
+};
+
+export const setAuthToken = async (token: string, ctx: StorefrontContext = getEmptyContext()) => {
+  if (ctx.setAuthToken) {
+    await ctx.setAuthToken(token);
+  }
+};
+
+export const removeAuthToken = async (ctx: StorefrontContext = getEmptyContext()) => {
+  if (ctx.removeAuthToken) {
+    await ctx.removeAuthToken();
+  }
 };

@@ -1,16 +1,10 @@
-'use server';
-
-import { revalidateTag } from 'next/cache';
-import { cookies } from 'next/headers';
-
 import {
   Customer,
   GetCustomerQuery,
   GetCustomerQueryVariables,
   TransferCartMutation,
   TransferCartMutationVariables,
-} from '@/types/graphql';
-
+} from '../../types/graphql';
 import {
   createServerApolloClient,
   graphqlFetch,
@@ -19,12 +13,13 @@ import {
 import { TRANSFER_CART_MUTATION } from '../gql/mutations/cart';
 import { GET_CUSTOMER_QUERY } from '../gql/queries/customer';
 import { medusaError } from '../utils/medusa-error';
+import { StorefrontContext, getEmptyContext } from './context';
 import { getCacheTag, getCartId } from './cookies';
 
-export const transferCart = async (): Promise<
-  TransferCartMutation['transferCart'] | null
-> => {
-  const cartId = await getCartId();
+export const transferCart = async (
+  ctx: StorefrontContext = getEmptyContext()
+): Promise<TransferCartMutation['transferCart'] | null> => {
+  const cartId = getCartId(ctx);
 
   if (!cartId) {
     return null;
@@ -43,19 +38,22 @@ export const transferCart = async (): Promise<
 
     const cart = result?.transferCart ?? null;
 
-    if (cart) {
-      const cartCacheTag = await getCacheTag('carts');
-      revalidateTag(cartCacheTag);
+    if (cart && ctx.revalidate) {
+      const cartCacheTag = getCacheTag('carts', ctx);
+      ctx.revalidate(cartCacheTag);
     }
 
     return cart;
   } catch (err) {
     medusaError(err);
+    return null;
   }
 };
 
-export const retrieveCustomer = async (): Promise<Customer | null> => {
-  const cookieHeader = (await cookies()).toString();
+export const retrieveCustomer = async (
+  ctx: StorefrontContext = getEmptyContext()
+): Promise<Customer | null> => {
+  const cookieHeader = ctx.cookieHeader;
   const apolloClient = createServerApolloClient(cookieHeader);
 
   try {

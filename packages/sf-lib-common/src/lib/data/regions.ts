@@ -1,17 +1,19 @@
 import { HttpTypes } from '@medusajs/types';
 
-import { sdk } from '@/lib/config/medusa';
-import { medusaError } from '@/lib/utils/medusa-error';
-import { normalizeRegion } from '@/lib/utils/normalize-functions';
-import { Region } from '@/types/graphql';
-
+import { Region } from '../../types/graphql';
+import { sdk } from '../config/medusa';
+import { medusaError } from '../utils/medusa-error';
+import { normalizeRegion } from '../utils/normalize-functions';
+import { StorefrontContext, getEmptyContext } from './context';
 import { getCacheOptions } from './cookies';
 
 const regionMap = new Map<string, Region>();
 
-export const listRegions = async () => {
+export const listRegions = async (
+  ctx: StorefrontContext = getEmptyContext()
+) => {
   const next = {
-    ...(await getCacheOptions('regions')),
+    ...getCacheOptions('regions', ctx),
   };
 
   return sdk.client
@@ -25,14 +27,15 @@ export const listRegions = async () => {
 };
 
 export const getRegion = async (
-  countryCode: string
+  countryCode: string,
+  ctx: StorefrontContext = getEmptyContext()
 ): Promise<Region | null> => {
   try {
     if (regionMap.has(countryCode)) {
       return regionMap.get(countryCode) ?? null;
     }
 
-    const regions = await listRegions();
+    const regions = await listRegions(ctx);
 
     if (!regions) return null;
 

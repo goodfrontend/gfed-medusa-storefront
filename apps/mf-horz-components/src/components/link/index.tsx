@@ -1,16 +1,21 @@
-import { AnchorHTMLAttributes, DetailedHTMLProps, useEffect, useState } from 'react';
+import {
+  AnchorHTMLAttributes,
+  DetailedHTMLProps,
+  useEffect,
+  useState,
+} from 'react';
 
 const DEFAULT_LOCALE = 'dk';
 
 const normalizeHref = (href?: string) => {
-    if (!href) return '';
+  if (!href) return '';
 
-    return href.startsWith('/') ? href : `/${href}`;
+  return href.startsWith('/') ? href : `/${href}`;
 };
 
 type LinkProps = DetailedHTMLProps<
-    AnchorHTMLAttributes<HTMLAnchorElement>,
-    HTMLAnchorElement
+  AnchorHTMLAttributes<HTMLAnchorElement>,
+  HTMLAnchorElement
 >;
 
 const LOCALE_REGEX = /^[a-z]{2}(?:-[A-Z]{2})?$/;
@@ -21,36 +26,36 @@ const LOCALE_REGEX = /^[a-z]{2}(?:-[A-Z]{2})?$/;
  * no country code added.
  */
 const Link = ({ children, href, ...props }: LinkProps) => {
-    const [pathname, setPathname] = useState('');
-    const locale = pathname.split('/')[1];
-    const isLocale = LOCALE_REGEX.test(locale);
+  const [pathname, setPathname] = useState('');
+  const locale = pathname.split('/')[1];
+  const isLocale = LOCALE_REGEX.test(locale);
 
-    useEffect(() => {
-        if (window.location.pathname !== pathname) {
-            setPathname(window.location.pathname);
-        }
-    }, [pathname])
+  useEffect(() => {
+    if (window.location.pathname !== pathname) {
+      setPathname(window.location.pathname);
+    }
+  }, [pathname]);
 
-    if (href?.startsWith('http'))
-        return (
-            <a href={href} {...props}>
-                {children}
-            </a>
-        );
-
-    if (isLocale)
-        return (
-            <a href={`/${locale}${normalizeHref(href)}`} {...props}>
-                {children}
-            </a>
-        );
-
-    // Return default locale: dk
+  if (href?.startsWith('http'))
     return (
-        <a href={`/${DEFAULT_LOCALE}${normalizeHref(href)}`} {...props}>
-            {children}
-        </a>
+      <a href={href} {...props}>
+        {children}
+      </a>
     );
+
+  if (isLocale)
+    return (
+      <a href={`/${locale}${normalizeHref(href)}`} {...props}>
+        {children}
+      </a>
+    );
+
+  // Return default locale: dk
+  return (
+    <a href={`/${DEFAULT_LOCALE}${normalizeHref(href)}`} {...props}>
+      {children}
+    </a>
+  );
 };
 
 export { Link };
