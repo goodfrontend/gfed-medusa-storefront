@@ -1,7 +1,8 @@
 import React from 'react';
 
-import { Label, clx } from '@medusajs/ui';
 import { Check } from 'lucide-react';
+
+import { Label, clx } from '@medusajs/ui';
 
 type CheckboxProps = {
   checked?: boolean;
@@ -39,7 +40,7 @@ const CheckboxWithLabel: React.FC<CheckboxProps> = ({
         aria-hidden
         className={clx(
           'flex h-5 w-5 items-center justify-center rounded transition-all',
-          'border border-ui-border-base bg-ui-bg-base shadow-borders-base',
+          'border-ui-border-base bg-ui-bg-base shadow-borders-base border',
           'peer-focus-visible:shadow-borders-interactive-with-focus',
           checked &&
             'border-ui-border-strong bg-ui-bg-interactive text-ui-bg-base shadow-borders-interactive'
@@ -47,13 +48,17 @@ const CheckboxWithLabel: React.FC<CheckboxProps> = ({
       >
         <Check
           className={clx(
-            'h-3 w-3 text-ui-bg-base transition-opacity',
+            'text-ui-bg-base h-3 w-3 transition-opacity',
             checked ? 'opacity-100' : 'opacity-0'
           )}
           strokeWidth={2.5}
         />
       </span>
-      <Label htmlFor={inputId} className="!txt-medium !transform-none" size="large">
+      <Label
+        htmlFor={inputId}
+        className="!txt-medium !transform-none"
+        size="large"
+      >
         {label}
       </Label>
     </label>

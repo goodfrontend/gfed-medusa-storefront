@@ -50,7 +50,7 @@ export function Pagination({
   const renderEllipsis = (key: string) => (
     <span
       key={key}
-      className="txt-xlarge-plus cursor-default items-center text-ui-fg-muted"
+      className="txt-xlarge-plus text-ui-fg-muted cursor-default items-center"
     >
       ...
     </span>

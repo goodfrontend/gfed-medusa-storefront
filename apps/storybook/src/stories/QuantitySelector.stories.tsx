@@ -1,4 +1,4 @@
-import { useEffect, useState, type ComponentProps } from 'react';
+import { type ComponentProps, useEffect, useState } from 'react';
 
 import { QuantitySelector } from '@gfed-medusa/sf-lib-ui/components/quantity-selector';
 import type { Meta, StoryObj } from '@storybook/react-vite';

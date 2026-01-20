@@ -2,12 +2,19 @@
 
 import { revalidateTag } from 'next/cache';
 
-import { graphqlFetch, graphqlMutation } from '@gfed-medusa/sf-lib-common/lib/gql/apollo-client';
+import {
+  StorefrontContext,
+  getEmptyContext,
+} from '@gfed-medusa/sf-lib-common/lib/data/context';
 import {
   getCacheTag,
   getCartId,
   setCartId,
 } from '@gfed-medusa/sf-lib-common/lib/data/cookies';
+import {
+  graphqlFetch,
+  graphqlMutation,
+} from '@gfed-medusa/sf-lib-common/lib/gql/apollo-client';
 import {
   Cart,
   CreateCartMutation,
@@ -20,21 +27,26 @@ import {
   UpdateCartMutationVariables,
 } from '@gfed-medusa/sf-lib-common/types/graphql';
 
-import { getRegion } from './regions';
-import { GET_CART_QUERY } from '@/lib/gql/queries/cart';
 import {
   CREATE_CART_MUTATION,
   CREATE_LINE_ITEM_MUTATION,
   UPDATE_CART_MUTATION,
 } from '@/lib/gql/mutations/cart';
+import { GET_CART_QUERY } from '@/lib/gql/queries/cart';
+
+import { getRegion } from './regions';
 
 /**
- * Retrieves a cart by its ID. If no ID is provided, it will use the cart ID from the cookies.
+ * Retrieves a cart by its ID. If no ID is provided, it will use the cart ID from the cookies via context.
  * @param cartId - optional - The ID of the cart to retrieve.
+ * @param ctx - optional - Storefront context.
  * @returns The cart object if found, or null if not found.
  */
-export const retrieveCart = async (cartId?: string): Promise<Cart | null> => {
-  const id = cartId || (await getCartId());
+export const retrieveCart = async (
+  cartId?: string,
+  ctx: StorefrontContext = getEmptyContext()
+): Promise<Cart | null> => {
+  const id = cartId || getCartId(ctx);
   if (!id) {
     return null;
   }
@@ -53,7 +65,8 @@ export const retrieveCart = async (cartId?: string): Promise<Cart | null> => {
 };
 
 export const getOrSetCart = async (
-  countryCode: string
+  countryCode: string,
+  ctx: StorefrontContext = getEmptyContext()
 ): Promise<Cart | null> => {
   const region = await getRegion(countryCode);
 
@@ -61,7 +74,7 @@ export const getOrSetCart = async (
     throw new Error(`Region not found for country code: ${countryCode}`);
   }
 
-  let cart = await retrieveCart();
+  let cart = await retrieveCart(undefined, ctx);
 
   if (!cart) {
     const data = await graphqlMutation<
@@ -76,14 +89,16 @@ export const getOrSetCart = async (
 
     cart = data?.createCart ?? null;
 
-    await setCartId(cart?.id || '');
-
-    const cartCacheTag = await getCacheTag('carts');
-    revalidateTag(cartCacheTag);
-
     if (cart) {
-      const cartCacheTag = await getCacheTag('carts');
-      revalidateTag(cartCacheTag);
+      await setCartId(cart.id, ctx);
+
+      if (ctx.revalidate) {
+        const cartCacheTag = getCacheTag('carts', ctx);
+        ctx.revalidate(cartCacheTag);
+      } else {
+        const cartCacheTag = getCacheTag('carts', ctx);
+        revalidateTag(cartCacheTag);
+      }
     }
   }
 
@@ -102,8 +117,13 @@ export const getOrSetCart = async (
     cart = data?.updateCart ?? cart;
 
     if (cart) {
-      const cartCacheTag = await getCacheTag('carts');
-      revalidateTag(cartCacheTag);
+      if (ctx.revalidate) {
+        const cartCacheTag = getCacheTag('carts', ctx);
+        ctx.revalidate(cartCacheTag);
+      } else {
+        const cartCacheTag = getCacheTag('carts', ctx);
+        revalidateTag(cartCacheTag);
+      }
     }
   }
 
@@ -114,10 +134,12 @@ export const addToCart = async ({
   variantId,
   quantity,
   countryCode,
+  ctx = getEmptyContext(),
 }: {
   variantId: string;
   quantity: number;
   countryCode: string;
+  ctx?: StorefrontContext;
 }): Promise<CreateLineItemMutation['createLineItem'] | null> => {
   if (!variantId) {
     throw new Error('Missing variant ID when adding to cart');
@@ -127,7 +149,7 @@ export const addToCart = async ({
     throw new Error('Missing country code when adding to cart');
   }
 
-  const cart = await getOrSetCart(countryCode);
+  const cart = await getOrSetCart(countryCode, ctx);
 
   if (!cart) {
     throw new Error('Error retrieving or creating cart');
@@ -151,11 +173,19 @@ export const addToCart = async ({
     const lineItem = result?.createLineItem ?? null;
 
     if (lineItem) {
-      const cartCacheTag = await getCacheTag('carts');
-      revalidateTag(cartCacheTag);
+      if (ctx.revalidate) {
+        const cartCacheTag = getCacheTag('carts', ctx);
+        ctx.revalidate(cartCacheTag);
 
-      const fulfillmentCacheTag = await getCacheTag('fulfillment');
-      revalidateTag(fulfillmentCacheTag);
+        const fulfillmentCacheTag = getCacheTag('fulfillment', ctx);
+        ctx.revalidate(fulfillmentCacheTag);
+      } else {
+        const cartCacheTag = getCacheTag('carts', ctx);
+        revalidateTag(cartCacheTag);
+
+        const fulfillmentCacheTag = getCacheTag('fulfillment', ctx);
+        revalidateTag(fulfillmentCacheTag);
+      }
     }
 
     return lineItem;

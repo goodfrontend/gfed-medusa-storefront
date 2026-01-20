@@ -200,7 +200,7 @@ function FreeShippingPopup({
   return (
     <div
       className={clx(
-        'fixed right-5 bottom-5 z-10 flex flex-col items-end gap-2 transition-all duration-500 ease-in-out',
+        'fixed bottom-5 right-5 z-10 flex flex-col items-end gap-2 transition-all duration-500 ease-in-out',
         {
           'invisible opacity-0 delay-1000': price.target_reached,
           'invisible opacity-0': isClosed,

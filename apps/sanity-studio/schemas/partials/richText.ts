@@ -1,5 +1,4 @@
-
-import { defineField, defineType } from 'sanity'
+import { defineField, defineType } from 'sanity';
 
 export const richText = defineType({
   type: 'document',
@@ -89,7 +88,8 @@ export const richText = defineType({
                     type: 'string',
                     name: 'iconClass',
                     title: 'Icon Class/Name',
-                    description: 'Icon name or class (e.g., arrow-right, external-link)',
+                    description:
+                      'Icon name or class (e.g., arrow-right, external-link)',
                     hidden: ({ parent }) => parent?.iconType !== 'class',
                   }),
                   defineField({
@@ -102,7 +102,8 @@ export const richText = defineType({
                     type: 'string',
                     name: 'iconComponent',
                     title: 'Icon Component',
-                    description: 'Icon component name (e.g., ArrowRight, ExternalLink)',
+                    description:
+                      'Icon component name (e.g., ArrowRight, ExternalLink)',
                     hidden: ({ parent }) => parent?.iconType !== 'component',
                   }),
                   defineField({
@@ -139,4 +140,4 @@ export const richText = defineType({
       validation: (rule) => rule.required(),
     }),
   ],
-})
+});

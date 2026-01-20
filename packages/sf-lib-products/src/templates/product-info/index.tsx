@@ -1,6 +1,7 @@
-import { Product } from '@/types/graphql';
-import { Heading, Text } from '@medusajs/ui';
 import { LocalizedClientLink } from '@gfed-medusa/sf-lib-common/components/localized-client-link';
+import { Heading, Text } from '@medusajs/ui';
+
+import { Product } from '@/types/graphql';
 
 type ProductInfoProps = {
   product: Product;
@@ -20,14 +21,14 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
         )}
         <Heading
           level="h2"
-          className="text-3xl leading-10 text-ui-fg-base"
+          className="text-ui-fg-base text-3xl leading-10"
           data-testid="product-title"
         >
           {product.title}
         </Heading>
 
         <Text
-          className="text-medium whitespace-pre-line text-ui-fg-subtle"
+          className="text-medium text-ui-fg-subtle whitespace-pre-line"
           data-testid="product-description"
         >
           {product.description}

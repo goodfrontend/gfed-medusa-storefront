@@ -1,4 +1,4 @@
-import { useEffect, useState, type ComponentProps } from 'react';
+import { type ComponentProps, useEffect, useState } from 'react';
 
 import { VariantSelector } from '@gfed-medusa/sf-lib-ui/components/variant-selector';
 import type { Meta, StoryObj } from '@storybook/react-vite';
@@ -39,9 +39,7 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-const VariantSelectorStory = (
-  args: ComponentProps<typeof VariantSelector>
-) => {
+const VariantSelectorStory = (args: ComponentProps<typeof VariantSelector>) => {
   const [value, setValue] = useState<string>(
     args.value ?? args.options?.[0]?.value ?? ''
   );

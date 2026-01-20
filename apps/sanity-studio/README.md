@@ -32,6 +32,7 @@ apps/sanity-studio/
 ### Environment Setup
 
 1. Copy the environment template:
+
    ```bash
    cp .env.template .env
    ```
@@ -46,6 +47,7 @@ apps/sanity-studio/
 ### Installation
 
 From the project root:
+
 ```bash
 # Install dependencies
 pnpm install
@@ -57,6 +59,7 @@ cd apps/sanity-studio
 ### Development
 
 Start the development server:
+
 ```bash
 pnpm dev
 ```
@@ -78,6 +81,7 @@ The studio will be available at `http://localhost:3333`
 ### Main Configuration (`sanity.config.ts`)
 
 The studio is configured with:
+
 - **Project Name**: "Medusa Dummy Store"
 - **Plugins**:
   - `structureTool` - Custom studio structure
@@ -104,6 +108,7 @@ Manages footer content with the following fields:
 ### Studio Structure (`structure/index.ts`)
 
 Custom navigation structure organizing content into logical sections:
+
 - **Navigation**: Contains footer content management
 
 ## Content Management
@@ -126,9 +131,10 @@ To add new schemas:
 3. Update the structure in `structure/index.ts` if needed
 
 Example:
+
 ```typescript
 // schemas/newContent.ts
-import {defineField, defineType} from 'sanity'
+import { defineField, defineType } from 'sanity';
 
 export default defineType({
   name: 'newContent',
@@ -139,13 +145,14 @@ export default defineType({
       name: 'title',
       title: 'Title',
       type: 'string',
-      validation: Rule => Rule.required()
-    })
-  ]
-})
+      validation: (Rule) => Rule.required(),
+    }),
+  ],
+});
 ```
 
 **Running Linting**:
+
 ```bash
 # Check for linting issues
 pnpm lint
@@ -155,7 +162,7 @@ pnpm lint:fix
 ```
 
 **Ignored Files** (`.eslintignore`):
+
 - `.sanity/` - Generated Sanity studio files
 - `dist/` - Build outputs
 - `node_modules/` - Dependencies
-

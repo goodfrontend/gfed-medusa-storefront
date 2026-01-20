@@ -8,6 +8,7 @@ import { CartDropdown } from '../cart-dropdown';
 
 function CartButton() {
   const ctx = useStorefrontContext();
+  // TODO(fcasibu): maybe use swr
   const [cart, setCart] = useState<Cart | null>(null);
 
   useEffect(() => {

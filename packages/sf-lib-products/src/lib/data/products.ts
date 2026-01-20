@@ -1,15 +1,16 @@
 'use server';
 
-import { GET_PRODUCTS_QUERY } from '@/lib/gql/queries/product';
 import { graphqlFetch } from '@gfed-medusa/sf-lib-common/lib/gql/apollo-client';
+import type { Region } from '@gfed-medusa/sf-lib-common/types/graphql';
+
+import { GET_PRODUCTS_QUERY } from '@/lib/gql/queries/product';
+import { sortProducts } from '@/lib/utils/sort-products';
+import type { SortOptions } from '@/types';
 import type {
   GetProductsQuery,
   GetProductsQueryVariables,
   Product,
 } from '@/types/graphql';
-import { sortProducts } from '@/lib/utils/sort-products';
-import type { SortOptions } from '@/types';
-import type { Region } from '@gfed-medusa/sf-lib-common/types/graphql';
 
 import { getRegion, retrieveRegion } from './regions';
 

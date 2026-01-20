@@ -77,7 +77,7 @@ function Stars({
       </div>
       <div
         style={{ width: `${(average / 5) * 100}%` }}
-        className="absolute top-0 bottom-0 flex gap-0.5 overflow-hidden"
+        className="absolute bottom-0 top-0 flex gap-0.5 overflow-hidden"
       >
         {Array(5)
           .fill(0)

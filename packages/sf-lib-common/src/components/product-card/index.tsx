@@ -156,7 +156,7 @@ export function ProductCard({
               className={cn('w-full object-cover')}
             />
             {badge && (
-              <div className="absolute top-2 left-2">
+              <div className="absolute left-2 top-2">
                 <Badge variant="default">{badge.label}</Badge>
               </div>
             )}

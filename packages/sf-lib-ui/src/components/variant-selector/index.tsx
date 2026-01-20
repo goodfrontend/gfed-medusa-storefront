@@ -59,8 +59,9 @@ const variantOption = cva(
   }
 );
 
-export interface VariantSelectorProps
-  extends VariantProps<typeof variantSelector> {
+export interface VariantSelectorProps extends VariantProps<
+  typeof variantSelector
+> {
   options: {
     value: string;
     label?: string;

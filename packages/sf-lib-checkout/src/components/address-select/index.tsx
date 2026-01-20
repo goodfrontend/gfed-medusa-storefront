@@ -42,7 +42,7 @@ const AddressSelect = ({
     <Listbox onChange={handleSelect} value={selectedAddress?.id}>
       <div className="relative">
         <Listbox.Button
-          className="text-base-regular rounded-rounded focus-visible:ring-opacity-75 relative flex w-full cursor-default items-center justify-between border bg-white px-4 py-[10px] text-left focus:outline-none focus-visible:border-gray-300 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-300"
+          className="text-base-regular rounded-rounded relative flex w-full cursor-default items-center justify-between border bg-white px-4 py-[10px] text-left focus:outline-none focus-visible:border-gray-300 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-300"
           data-testid="shipping-address-select"
         >
           {({ open }) => (
@@ -75,7 +75,7 @@ const AddressSelect = ({
                 <Listbox.Option
                   key={address?.id}
                   value={address?.id}
-                  className="relative cursor-default py-4 pr-10 pl-6 select-none hover:bg-gray-50"
+                  className="relative cursor-default select-none py-4 pl-6 pr-10 hover:bg-gray-50"
                   data-testid="shipping-address-option"
                 >
                   <div className="flex items-start gap-x-4">

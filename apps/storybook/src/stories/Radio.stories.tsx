@@ -32,7 +32,7 @@ export const Default: Story = {
         {options.map((option) => (
           <div
             key={option.value}
-            className="flex items-center gap-2 cursor-pointer"
+            className="flex cursor-pointer items-center gap-2"
             onClick={() => setSelected(option.value as typeof selected)}
           >
             <Radio checked={selected === option.value} />

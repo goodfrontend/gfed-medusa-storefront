@@ -1,7 +1,8 @@
+import { Region } from '@gfed-medusa/sf-lib-common/types/graphql';
+
+import ProductActions from '@/components/product-actions';
 import { listProducts } from '@/lib/data/products';
 import { Product } from '@/types/graphql';
-import { Region } from '@gfed-medusa/sf-lib-common/types/graphql';
-import ProductActions from '@/components/product-actions';
 
 /**
  * Fetches real time pricing for a product and renders the product actions component.

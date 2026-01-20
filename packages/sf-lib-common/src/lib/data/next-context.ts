@@ -9,7 +9,7 @@ import { getRegion } from './regions';
 
 export const resolveNextContext = async (): Promise<StorefrontContext> => {
   const cookieStore = await cookies();
-  
+
   return {
     cartId: cookieStore.get('_medusa_cart_id')?.value,
     customerToken: cookieStore.get('_medusa_jwt')?.value,

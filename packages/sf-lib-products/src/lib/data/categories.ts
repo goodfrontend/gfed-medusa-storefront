@@ -1,5 +1,6 @@
-import { GET_PRODUCT_CATEGORIES_QUERY } from '@/lib/gql/queries/product';
 import { graphqlFetch } from '@gfed-medusa/sf-lib-common/lib/gql/apollo-client';
+
+import { GET_PRODUCT_CATEGORIES_QUERY } from '@/lib/gql/queries/product';
 import type {
   GetProductCategoriesQuery,
   GetProductCategoriesQueryVariables,

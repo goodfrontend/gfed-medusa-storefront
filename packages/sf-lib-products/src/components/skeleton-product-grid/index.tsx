@@ -1,5 +1,5 @@
-import repeat from '@/lib/utils/repeat';
 import SkeletonProductPreview from '@/components/skeleton-product-preview';
+import repeat from '@/lib/utils/repeat';
 
 const SkeletonProductGrid = ({
   numberOfProducts = 8,
@@ -8,7 +8,7 @@ const SkeletonProductGrid = ({
 }) => {
   return (
     <ul
-      className="grid flex-1 grid-cols-2 gap-x-6 gap-y-8 small:grid-cols-3 medium:grid-cols-4"
+      className="small:grid-cols-3 medium:grid-cols-4 grid flex-1 grid-cols-2 gap-x-6 gap-y-8"
       data-testid="products-list-loader"
     >
       {repeat(numberOfProducts).map((index) => (

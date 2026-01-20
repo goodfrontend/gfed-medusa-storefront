@@ -1,8 +1,8 @@
 import {
-  useEffect,
-  useState,
   type ChangeEventHandler,
   type ComponentProps,
+  useEffect,
+  useState,
 } from 'react';
 
 import { CheckboxWithLabel } from '@gfed-medusa/sf-lib-ui/components/checkbox';
