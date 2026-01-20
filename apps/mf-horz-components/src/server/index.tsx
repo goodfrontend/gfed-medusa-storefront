@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
+import { compress } from 'hono/compress';
 import { renderToString } from 'react-dom/server';
 
 import { serve } from '@hono/node-server';
@@ -11,6 +12,7 @@ import { getComponent } from '../config/components';
 const app = new Hono();
 
 app.use(cors());
+app.use(compress());
 
 app.get('/api/:name', async (c) => {
   const name = c.req.param('name');

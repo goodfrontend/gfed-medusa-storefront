@@ -12,11 +12,13 @@
     "check-types": "next typegen && tsc --noEmit"
   },
   "dependencies": {
+    "@apollo/client": "^4.0.4",
     "@gfed-medusa/sf-lib-common": "^2.0.0",
     "@gfed-medusa/sf-lib-home": "^1.1.0",
     "@gfed-medusa/sf-lib-ui": "^1.1.2",
     "@medusajs/ui": "^4.0.29",
     "@medusajs/ui-preset": "^2.12.2",
+    "@medusajs/js-sdk": "2.10.3",
     "htmlrewriter": "^0.0.13",
     "next": "^15.3.8",
     "react": "^19.0.0",

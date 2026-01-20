@@ -15,32 +15,34 @@ export default defineConfig(({ command }) => {
         ? { 'process.env.NODE_ENV': JSON.stringify('production') }
         : {}),
     },
-    resolve: {
-      alias: {
-        'next/navigation': path.resolve(
-          __dirname,
-          'src/stubs/next-navigation.ts'
-        ),
-        'next/dist/compiled/@opentelemetry/api': path.resolve(
-          __dirname,
-          'src/stubs/otel-stub.ts'
-        ),
-      },
-    },
     build: {
       emptyOutDir: true,
       assetsInlineLimit: 0,
       cssCodeSplit: false,
       rollupOptions: {
+        external: [
+          'react',
+          'react-dom',
+          'react-dom/client',
+          /^next\//,
+          /^@apollo\/client/,
+          /^@medusajs\/js-sdk/,
+        ],
         input: path.resolve(__dirname, 'src/client/index.tsx'),
         output: {
           entryFileNames: `${bundleName}-bundle.js`,
           format: 'iife',
           name: 'HorizontalComponentsBundle',
-          assetFileNames: (assetInfo) => {
-            return assetInfo.name?.endsWith('.css')
-              ? `${bundleName}-styles.css`
-              : `${bundleName}-styles.css`;
+          assetFileNames: `${bundleName}-styles.css`,
+          globals: (id) => {
+            const prefix = '__GFED_GLOBALS__';
+            if (id === 'react') return `${prefix}.React`;
+            if (id === 'react-dom') return `${prefix}.ReactDOM`;
+            if (id === 'react-dom/client') return `${prefix}.ReactDOMClient`;
+            if (id.startsWith('@apollo/client')) return `${prefix}.Apollo`;
+            if (id.startsWith('@medusajs/js-sdk')) return `${prefix}.Medusa`;
+            if (id.startsWith('next/')) return 'undefined';
+            return id;
           },
         },
       },
