@@ -15,7 +15,10 @@ import {
   BreadcrumbSeparator,
 } from '@gfed-medusa/sf-lib-ui/components/breadcrumb';
 
-const SEPARATOR_ICONS: Record<string, React.ComponentType<{ size?: number; className?: string }>> = {
+const SEPARATOR_ICONS: Record<
+  string,
+  React.ComponentType<{ size?: number; className?: string }>
+> = {
   verticalLine: Tally1,
   slash: SlashIcon,
 };

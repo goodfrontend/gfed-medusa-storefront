@@ -1,4 +1,4 @@
-import prettierBaseConfig from '@mds/prettier-config/base';
+import prettierBaseConfig from '@packages/prettier-config/base';
 
 export default {
   ...prettierBaseConfig,

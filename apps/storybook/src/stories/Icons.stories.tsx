@@ -1,6 +1,5 @@
 import type { ComponentType, FC } from 'react';
 
-import type { IconProps } from '@gfed-medusa/sf-lib-ui/types/icon';
 import { Back } from '@gfed-medusa/sf-lib-ui/icons/back';
 import { Bancontact } from '@gfed-medusa/sf-lib-ui/icons/bancontact';
 import { ChevronDown } from '@gfed-medusa/sf-lib-ui/icons/chevron-down';
@@ -19,6 +18,7 @@ import { Spinner } from '@gfed-medusa/sf-lib-ui/icons/spinner';
 import { Trash } from '@gfed-medusa/sf-lib-ui/icons/trash';
 import { User } from '@gfed-medusa/sf-lib-ui/icons/user';
 import { X } from '@gfed-medusa/sf-lib-ui/icons/x';
+import type { IconProps } from '@gfed-medusa/sf-lib-ui/types/icon';
 import type { Meta, StoryObj } from '@storybook/react-vite';
 
 type IconExample = {

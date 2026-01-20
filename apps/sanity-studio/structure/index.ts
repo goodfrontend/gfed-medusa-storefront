@@ -1,8 +1,9 @@
-import { CogIcon } from '@sanity/icons'
-import {StructureBuilder} from 'sanity/structure'
+import { StructureBuilder } from 'sanity/structure';
+
+import { CogIcon } from '@sanity/icons';
 
 const structure = (S: StructureBuilder) =>
-S.list()
+  S.list()
     .title('Content')
     .items([
       S.listItem()
@@ -19,9 +20,9 @@ S.list()
                     .schemaType('footer')
                     .documentId('footerId')
                     .title('Footer Content')
-                )
+                ),
             ])
-        )
-    ])
+        ),
+    ]);
 
-export default structure
+export default structure;

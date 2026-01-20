@@ -2,6 +2,10 @@
 
 import { sdk } from '@gfed-medusa/sf-lib-common/lib/config/medusa';
 import {
+  StorefrontContext,
+  getEmptyContext,
+} from '@gfed-medusa/sf-lib-common/lib/data/context';
+import {
   getAuthHeaders,
   getCacheOptions,
 } from '@gfed-medusa/sf-lib-common/lib/data/cookies';
@@ -15,7 +19,8 @@ export const createTransferRequest = async (
     error: string | null;
     order: HttpTypes.StoreOrder | null;
   },
-  formData: FormData
+  formData: FormData,
+  ctx: StorefrontContext = getEmptyContext()
 ): Promise<{
   success: boolean;
   error: string | null;
@@ -27,7 +32,7 @@ export const createTransferRequest = async (
     return { success: false, error: 'Order ID is required', order: null };
   }
 
-  const headers = await getAuthHeaders();
+  const headers = getAuthHeaders(ctx);
 
   return await sdk.store.order
     .requestTransfer(
@@ -45,14 +50,15 @@ export const createTransferRequest = async (
 export const listOrders = async (
   limit: number = 10,
   offset: number = 0,
-  filters?: Record<string, any>
+  filters?: Record<string, any>,
+  ctx: StorefrontContext = getEmptyContext()
 ) => {
   const headers = {
-    ...(await getAuthHeaders()),
+    ...getAuthHeaders(ctx),
   };
 
   const next = {
-    ...(await getCacheOptions('orders')),
+    ...getCacheOptions('orders', ctx),
   };
 
   return sdk.client

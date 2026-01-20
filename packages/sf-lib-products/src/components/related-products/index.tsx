@@ -1,11 +1,11 @@
+import { ProductPreview } from '@gfed-medusa/sf-lib-common/components/product-preview';
+
 import { listProducts } from '@/lib/data/products';
 import { getRegion } from '@/lib/data/regions';
 import {
   GetProductsQueryVariables,
   Product as ProductType,
 } from '@/types/graphql';
-
-import { ProductPreview } from '@gfed-medusa/sf-lib-common/components/product-preview';
 
 type RelatedProductsProps = {
   product: ProductType;
@@ -56,12 +56,12 @@ export default async function RelatedProducts({
         <span className="text-base-regular mb-6 text-gray-600">
           Related products
         </span>
-        <p className="text-2xl-regular max-w-lg text-ui-fg-base">
+        <p className="text-2xl-regular text-ui-fg-base max-w-lg">
           You might also want to check out these products.
         </p>
       </div>
 
-      <ul className="grid grid-cols-2 gap-x-6 gap-y-8 small:grid-cols-3 medium:grid-cols-4">
+      <ul className="small:grid-cols-3 medium:grid-cols-4 grid grid-cols-2 gap-x-6 gap-y-8">
         {products?.map((product) => (
           <li key={product?.id}>
             <ProductPreview product={product as ProductType} />

@@ -1,10 +1,12 @@
+import { Suspense } from 'react';
+
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
-import { getCollectionByHandle } from '@gfed-medusa/sf-lib-products/lib/data/collections';
-import PaginatedProducts from '@gfed-medusa/sf-lib-products/templates/paginated-products';
+
 import RefinementList from '@gfed-medusa/sf-lib-products/components/refinement-list';
 import SkeletonProductGrid from '@gfed-medusa/sf-lib-products/components/skeleton-product-grid';
+import { getCollectionByHandle } from '@gfed-medusa/sf-lib-products/lib/data/collections';
+import PaginatedProducts from '@gfed-medusa/sf-lib-products/templates/paginated-products';
 import type { SortOptions } from '@gfed-medusa/sf-lib-products/types/index';
 
 type Props = {
@@ -47,7 +49,7 @@ export default async function CollectionPage(props: Props) {
 
   return (
     <div
-      className="content-container flex flex-col py-6 small:flex-row small:items-start"
+      className="content-container small:flex-row small:items-start flex flex-col py-6"
       data-testid="collection-container"
     >
       <RefinementList sortBy={sort} />

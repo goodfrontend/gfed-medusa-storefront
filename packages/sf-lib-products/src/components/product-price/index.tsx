@@ -1,6 +1,7 @@
-import { Product, ProductVariant } from '@/types/graphql';
 import { getProductPrice } from '@gfed-medusa/sf-lib-common/lib/utils/get-product-price';
 import { clx } from '@medusajs/ui';
+
+import { Product, ProductVariant } from '@/types/graphql';
 
 export default function ProductPrice({
   product,
@@ -21,7 +22,7 @@ export default function ProductPrice({
   }
 
   return (
-    <div className="flex flex-col text-ui-fg-base">
+    <div className="text-ui-fg-base flex flex-col">
       <span
         className={clx('text-xl-semi', {
           'text-ui-fg-interactive': selectedPrice.price_type === 'sale',

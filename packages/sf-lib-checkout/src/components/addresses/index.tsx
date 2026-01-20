@@ -80,7 +80,7 @@ const Addresses = ({
               <div>
                 <Heading
                   level="h2"
-                  className="text-3xl-regular gap-x-4 pt-8 pb-6"
+                  className="text-3xl-regular gap-x-4 pb-6 pt-8"
                 >
                   Billing address
                 </Heading>

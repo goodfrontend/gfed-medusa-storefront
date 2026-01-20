@@ -1,5 +1,5 @@
-import repeat from '@/lib/utils/repeat';
 import SkeletonProductPreview from '@/components/skeleton-product-preview';
+import repeat from '@/lib/utils/repeat';
 
 const SkeletonRelatedProducts = () => {
   return (
@@ -11,7 +11,7 @@ const SkeletonRelatedProducts = () => {
           <div className="h-10 w-48 animate-pulse bg-gray-100"></div>
         </div>
       </div>
-      <ul className="grid flex-1 grid-cols-2 gap-x-6 gap-y-8 small:grid-cols-3 medium:grid-cols-4">
+      <ul className="small:grid-cols-3 medium:grid-cols-4 grid flex-1 grid-cols-2 gap-x-6 gap-y-8">
         {repeat(3).map((index) => (
           <li key={index}>
             <SkeletonProductPreview />

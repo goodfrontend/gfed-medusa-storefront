@@ -6,14 +6,15 @@ import { useParams } from 'next/navigation';
 
 import { isEqual } from 'lodash';
 
-import { Product } from '@/types/graphql';
-import { useIntersection } from '@/lib/hooks/use-intersection';
-import { addToCart } from '@/lib/data/cart';
-import { HttpTypes } from '@medusajs/types';
-import { Button } from '@medusajs/ui';
 import { ErrorMessage } from '@gfed-medusa/sf-lib-common/components/error-message';
 import { Divider } from '@gfed-medusa/sf-lib-ui/components/divider';
+import { HttpTypes } from '@medusajs/types';
+import { Button } from '@medusajs/ui';
+
 import OptionSelect from '@/components/product-actions/option-select';
+import { addToCart } from '@/lib/data/cart';
+import { useIntersection } from '@/lib/hooks/use-intersection';
+import { Product } from '@/types/graphql';
 
 import ProductPrice from '../product-price';
 import MobileActions from './mobile-actions';

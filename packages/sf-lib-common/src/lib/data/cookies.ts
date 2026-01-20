@@ -13,7 +13,7 @@ export const getAuthHeaders = (
 };
 
 export const getCacheTag = (
-  tag: string, 
+  tag: string,
   ctx: StorefrontContext = getEmptyContext()
 ): string => {
   const cacheId = ctx.cacheId;
@@ -46,25 +46,35 @@ export const getCartId = (ctx: StorefrontContext = getEmptyContext()) => {
   return ctx.cartId;
 };
 
-export const setCartId = async (id: string, ctx: StorefrontContext = getEmptyContext()) => {
+export const setCartId = async (
+  id: string,
+  ctx: StorefrontContext = getEmptyContext()
+) => {
   if (ctx.setCartId) {
     await ctx.setCartId(id);
   }
 };
 
-export const removeCartId = async (ctx: StorefrontContext = getEmptyContext()) => {
+export const removeCartId = async (
+  ctx: StorefrontContext = getEmptyContext()
+) => {
   if (ctx.removeCartId) {
     await ctx.removeCartId();
   }
 };
 
-export const setAuthToken = async (token: string, ctx: StorefrontContext = getEmptyContext()) => {
+export const setAuthToken = async (
+  token: string,
+  ctx: StorefrontContext = getEmptyContext()
+) => {
   if (ctx.setAuthToken) {
     await ctx.setAuthToken(token);
   }
 };
 
-export const removeAuthToken = async (ctx: StorefrontContext = getEmptyContext()) => {
+export const removeAuthToken = async (
+  ctx: StorefrontContext = getEmptyContext()
+) => {
   if (ctx.removeAuthToken) {
     await ctx.removeAuthToken();
   }

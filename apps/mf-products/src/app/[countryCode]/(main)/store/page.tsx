@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+
 import StoreTemplate from '@gfed-medusa/sf-lib-products/templates/store-template';
 import type { SortOptions } from '@gfed-medusa/sf-lib-products/types/index';
 

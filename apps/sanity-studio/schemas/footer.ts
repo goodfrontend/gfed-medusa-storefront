@@ -1,4 +1,4 @@
-import {defineField, defineType} from 'sanity'
+import { defineField, defineType } from 'sanity';
 
 export default defineType({
   name: 'footer',
@@ -9,7 +9,7 @@ export default defineType({
       name: 'storeName',
       title: 'Store Name',
       type: 'string',
-      validation: Rule => Rule.required()
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'social',
@@ -23,33 +23,34 @@ export default defineType({
               name: 'text',
               title: 'Text',
               type: 'string',
-      validation: Rule => Rule.required()
-            },{
+              validation: (Rule) => Rule.required(),
+            },
+            {
               name: 'url',
               title: 'URL',
               type: 'url',
-      validation: Rule => Rule.required()
-            }
-          ]
-        }
-      ]
+              validation: (Rule) => Rule.required(),
+            },
+          ],
+        },
+      ],
     }),
     defineField({
       name: 'copyright',
       title: 'Copyright Text',
       type: 'string',
-      validation: Rule => Rule.required()
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'poweredByCta',
       title: 'Powered By Call to Action',
       type: 'partial.richText',
-    })
+    }),
   ],
   preview: {
     select: {
       title: 'storeName',
-      subtitle: 'description'
-    }
-  }
-})
+      subtitle: 'description',
+    },
+  },
+});

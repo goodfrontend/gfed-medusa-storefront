@@ -26,6 +26,7 @@ The setup includes three distinct environments defined in the Render Blueprint:
 ### Services
 
 Each environment consists of three web services corresponding to the micro frontends:
+
 - `sf-home`
 - `sf-account`
 - `sf-products`
@@ -36,6 +37,7 @@ Each environment consists of three web services corresponding to the micro front
 ### Environment Variables
 
 Environment variables are managed via **Environment Groups** in the Render Dashboard. You must create these groups manually before applying the Blueprint:
+
 - `sf-prod-env-group`
 - `sf-smoke-env-group`
 - `sf-qa-env-group`
@@ -46,34 +48,37 @@ Environment variables are managed via **Environment Groups** in the Render Dashb
 All workflows are located in `.github/workflows/`.
 
 ### 1. Verification (CI)
-*   **Files:** `ci-home.yaml`, `ci-account.yaml`, `ci-products.yaml` (reusing `_ci-run.yaml`).
-*   **Trigger:** Pull Requests affecting specific apps or shared packages.
-*   **Steps:**
-    1.  Checkout code.
-    2.  Setup Node.js & pnpm.
-    3.  Load environment variables from `.env.template`.
-    4.  Install dependencies.
-    5.  Run `build`, `lint`, and `check-types` scripts.
+
+- **Files:** `ci-home.yaml`, `ci-account.yaml`, `ci-products.yaml` (reusing `_ci-run.yaml`).
+- **Trigger:** Pull Requests affecting specific apps or shared packages.
+- **Steps:**
+  1.  Checkout code.
+  2.  Setup Node.js & pnpm.
+  3.  Load environment variables from `.env.template`.
+  4.  Install dependencies.
+  5.  Run `build`, `lint`, and `check-types` scripts.
 
 ### 2. Deployment (CD)
-*   **File:** `deploy.yaml`.
-*   **Trigger:** Push to `main`.
-*   **Process:**
-    1.  **Detect Changes:** Identifies which apps (`home`, `account`, `products`) have changed using `dorny/paths-filter`.
-    2.  **Build Docker Images:** Builds the modified apps and pushes images to **GitHub Container Registry (GHCR)** tagged with the commit SHA.
-    3.  **Deployment Chain:**
-        *   **Smoke:** Deploys the new image to the `smoke` environment.
-        *   **QA:** If `smoke` succeeds, a reviewer's approval is required to deploy QA
-        *   **Production:** If `qa` succeeds, a reviewer's approval is required to deploy Prod.
-*   **Mechanism:** The workflow uses the Render API to update the service's image and trigger a deployment, then polls for success.
+
+- **File:** `deploy.yaml`.
+- **Trigger:** Push to `main`.
+- **Process:**
+  1.  **Detect Changes:** Identifies which apps (`home`, `account`, `products`) have changed using `dorny/paths-filter`.
+  2.  **Build Docker Images:** Builds the modified apps and pushes images to **GitHub Container Registry (GHCR)** tagged with the commit SHA.
+  3.  **Deployment Chain:**
+      - **Smoke:** Deploys the new image to the `smoke` environment.
+      - **QA:** If `smoke` succeeds, a reviewer's approval is required to deploy QA
+      - **Production:** If `qa` succeeds, a reviewer's approval is required to deploy Prod.
+- **Mechanism:** The workflow uses the Render API to update the service's image and trigger a deployment, then polls for success.
 
 ### 3. Package Publishing
-*   **File:** `publish-packages.yaml`.
-*   **Trigger:** When a Pull Request is closed/merged into `main`.
-*   **Process:**
-    1.  Checks if the PR is a "Version Packages" PR created by Changesets.
-    2.  Authenticates with npm using `NPM_TOKEN`.
-    3.  Runs `pnpm run ci:publish` to publish updated packages to the registry.
+
+- **File:** `publish-packages.yaml`.
+- **Trigger:** When a Pull Request is closed/merged into `main`.
+- **Process:**
+  1.  Checks if the PR is a "Version Packages" PR created by Changesets.
+  2.  Authenticates with npm using `NPM_TOKEN`.
+  3.  Runs `pnpm run ci:publish` to publish updated packages to the registry.
 
 ### 4. Rollback Deployments
 *   **Files:** `rollback.yaml`, `scripts/map-service-name.sh`.
@@ -88,9 +93,9 @@ All workflows are located in `.github/workflows/`.
 To enable these workflows, the following **GH Secrets** must be configured in the repository settings:
 
 - `RENDER_API_KEY` - API Key from Render User Settings.
-    - This must be configured to each environment
+  - This must be configured to each environment
 - `NPM_TOKEN` - Automation token for publishing to npm.
-    - Granular access token
+  - Granular access token
 - `GITHUB_TOKEN` - Automatically provided by GitHub.
 
 ## Workflows Validation
@@ -104,12 +109,14 @@ pnpm lint:workflows
 ```
 
 **What it validates:**
+
 - YAML syntax correctness (via yamllint)
 - GitHub Actions logic (job dependencies, outputs, expressions) (via actionlint)
 
 **Why it matters:** Catches workflow bugs before they reach CI (like missing job dependencies, invalid expressions, etc.)
 
 **Prerequisites:**
+
 ```bash
 # Install linters (macOS)
 brew install yamllint actionlint
@@ -125,7 +132,7 @@ Deployment is fully automated. You do not need to manually trigger builds or dep
 
 1.  **Make Changes:** Implement your features or fixes.
 2.  **Create a PR:** Push your branch and open a Pull Request.
-    *   *The CI checks will run automatically to verify your code.*
+    - _The CI checks will run automatically to verify your code._
 3.  **Merge to Main:** Once the PR is approved and checks pass, merge it into `main`.
 
 ### How to Publish a Package
@@ -134,21 +141,24 @@ We use **Changesets** to manage versioning and publishing.
 
 1.  **Make Changes:** Modify the package code in `packages/`.
 2.  **Add a Changeset:** Run the following command in your terminal:
+
     ```bash
     npx changeset
     ```
-    *   Select the packages that have changed.
-    *   Choose the semantic version bump (major, minor, patch).
-    *   Write a summary of the changes.
+
+    - Select the packages that have changed.
+    - Choose the semantic version bump (major, minor, patch).
+    - Write a summary of the changes.
+
 3.  **Commit:** Commit the generated changeset file along with your code changes.
 4.  **Merge PR:** Create and merge your Pull Request as usual.
 5.  **Release PR (Automated):**
-    *   A "Version Packages" PR will be automatically created (or updated) by the `Changesets` bot.
-    *   This PR consumes the changeset files and updates `package.json` versions and `CHANGELOG.md`.
+    - A "Version Packages" PR will be automatically created (or updated) by the `Changesets` bot.
+    - This PR consumes the changeset files and updates `package.json` versions and `CHANGELOG.md`.
 6.  **Publish:**
-    *   When you are ready to publish, checkout the branch and run `pnpm install` locally, push the changes to this branch 
-    *   Review and **merge** the "Version Packages" PR.
-    *   The `Publish Packages` workflow will trigger and publish the new versions to npm.
+    - When you are ready to publish, checkout the branch and run `pnpm install` locally, push the changes to this branch
+    - Review and **merge** the "Version Packages" PR.
+    - The `Publish Packages` workflow will trigger and publish the new versions to npm.
 
 ### How to Rollback a Deployment
 
@@ -157,8 +167,8 @@ If a deployment introduces a critical bug, you can quickly rollback to a previou
 #### Quick Rollback (Automatic - Recommended)
 
 1.  **Go to GitHub Actions:**
-    *   Navigate to **Actions** → **Rollback Deployment**
-    *   Click **Run workflow**
+    - Navigate to **Actions** → **Rollback Deployment**
+    - Click **Run workflow**
 
 2.  **Configure rollback:**
     *   **App**: Select the microfrontend (home, account, products, checkout)
@@ -167,8 +177,8 @@ If a deployment introduces a critical bug, you can quickly rollback to a previou
     *   **Confirm**: Type `rollback`
 
 3.  **Execute:**
-    *   Click **Run workflow**
-    *   The workflow will automatically find and deploy the previous version
+    - Click **Run workflow**
+    - The workflow will automatically find and deploy the previous version
 
 #### Rollback to Specific Version
 

@@ -1,5 +1,5 @@
-import type { Product } from '@/types/graphql';
 import type { SortOptions } from '@/types';
+import type { Product } from '@/types/graphql';
 
 /**
  * Helper function to sort products by price until the store API supports sorting by price

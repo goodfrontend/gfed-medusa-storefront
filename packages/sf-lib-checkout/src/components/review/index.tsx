@@ -28,7 +28,7 @@ const Review = ({ cart }: { cart: Cart }) => {
           className={clx(
             'text-3xl-regular flex flex-row items-baseline gap-x-2',
             {
-              'pointer-events-none opacity-50 select-none': !isOpen,
+              'pointer-events-none select-none opacity-50': !isOpen,
             }
           )}
         >

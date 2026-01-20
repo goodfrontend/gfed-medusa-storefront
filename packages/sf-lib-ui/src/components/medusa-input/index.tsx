@@ -46,14 +46,14 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             name={name}
             placeholder=" "
             required={required}
-            className="border-ui-border-base bg-ui-bg-field hover:bg-ui-bg-field-hover focus:shadow-borders-interactive-with-active peer mt-0 block h-11 w-full appearance-none rounded-md border px-4 pt-4 pb-1 placeholder-transparent focus:ring-0 focus:outline-none"
+            className="border-ui-border-base bg-ui-bg-field hover:bg-ui-bg-field-hover focus:shadow-borders-interactive-with-active peer mt-0 block h-11 w-full appearance-none rounded-md border px-4 pb-1 pt-4 placeholder-transparent focus:outline-none focus:ring-0"
             {...props}
             ref={inputRef}
           />
           <label
             htmlFor={name}
             onClick={() => inputRef.current?.focus()}
-            className="origin-0 text-ui-fg-subtle absolute left-3 top-0 z-10 flex cursor-text items-center bg-ui-bg-field px-1 text-xs transition-all duration-300 -translate-y-1/2 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:-translate-y-1/2 peer-focus:text-xs peer-focus:text-ui-fg-base"
+            className="origin-0 text-ui-fg-subtle bg-ui-bg-field peer-focus:text-ui-fg-base absolute left-3 top-0 z-10 flex -translate-y-1/2 cursor-text items-center px-1 text-xs transition-all duration-300 peer-placeholder-shown:top-1/2 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:text-sm peer-focus:top-0 peer-focus:-translate-y-1/2 peer-focus:text-xs"
           >
             {label}
             {required && <span className="text-rose-500">*</span>}
@@ -62,7 +62,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="text-ui-fg-subtle focus:text-ui-fg-base absolute top-3 right-0 px-4 transition-all duration-150 outline-none focus:outline-none"
+              className="text-ui-fg-subtle focus:text-ui-fg-base absolute right-0 top-3 px-4 outline-none transition-all duration-150 focus:outline-none"
             >
               {showPassword ? <Eye /> : <EyeOff />}
               <span className="sr-only">Toggle password visibility</span>

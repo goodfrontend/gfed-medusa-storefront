@@ -1,11 +1,12 @@
 'use server';
 
+import { graphqlFetch } from '@gfed-medusa/sf-lib-common/lib/gql/apollo-client';
+
 import {
   GET_COLLECTIONS_QUERY,
   GET_COLLECTIONS_SUMMARY_QUERY,
   GET_COLLECTION_QUERY,
 } from '@/lib/gql/queries/product';
-import { graphqlFetch } from '@gfed-medusa/sf-lib-common/lib/gql/apollo-client';
 import type {
   GetCollectionQuery,
   GetCollectionQueryVariables,

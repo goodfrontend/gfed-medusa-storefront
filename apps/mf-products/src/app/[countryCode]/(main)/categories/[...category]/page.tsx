@@ -1,10 +1,12 @@
+import { Suspense } from 'react';
+
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { Suspense } from 'react';
-import { getCategoryByHandle } from '@gfed-medusa/sf-lib-products/lib/data/categories';
-import PaginatedProducts from '@gfed-medusa/sf-lib-products/templates/paginated-products';
+
 import RefinementList from '@gfed-medusa/sf-lib-products/components/refinement-list';
 import SkeletonProductGrid from '@gfed-medusa/sf-lib-products/components/skeleton-product-grid';
+import { getCategoryByHandle } from '@gfed-medusa/sf-lib-products/lib/data/categories';
+import PaginatedProducts from '@gfed-medusa/sf-lib-products/templates/paginated-products';
 import type { SortOptions } from '@gfed-medusa/sf-lib-products/types/index';
 
 type Props = {
@@ -51,7 +53,7 @@ export default async function CategoryPage(props: Props) {
 
   return (
     <div
-      className="content-container flex flex-col py-6 small:flex-row small:items-start"
+      className="content-container small:flex-row small:items-start flex flex-col py-6"
       data-testid="category-container"
     >
       <RefinementList sortBy={sort} />
@@ -59,7 +61,9 @@ export default async function CategoryPage(props: Props) {
         <div className="text-2xl-semi mb-8">
           <h1 data-testid="category-page-title">{productCategory.name}</h1>
           {productCategory.description && (
-            <p className="text-base-regular mt-2">{productCategory.description}</p>
+            <p className="text-base-regular mt-2">
+              {productCategory.description}
+            </p>
           )}
         </div>
         <Suspense fallback={<SkeletonProductGrid />}>

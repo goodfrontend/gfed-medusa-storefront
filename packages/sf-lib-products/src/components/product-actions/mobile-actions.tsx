@@ -1,14 +1,15 @@
 import React, { Fragment, useMemo } from 'react';
 
-import { Dialog, Transition } from '@headlessui/react';
-import { Product, ProductVariant } from '@/types/graphql';
 import useToggleState from '@gfed-medusa/sf-lib-common/lib/hooks/use-toggle-state';
 import { getProductPrice } from '@gfed-medusa/sf-lib-common/lib/utils/get-product-price';
-import { isSimpleProduct } from '@/lib/utils/product';
-import { HttpTypes } from '@medusajs/types';
-import { Button, clx } from '@medusajs/ui';
 import { ChevronDown } from '@gfed-medusa/sf-lib-ui/icons/chevron-down';
 import { X } from '@gfed-medusa/sf-lib-ui/icons/x';
+import { Dialog, Transition } from '@headlessui/react';
+import { HttpTypes } from '@medusajs/types';
+import { Button, clx } from '@medusajs/ui';
+
+import { isSimpleProduct } from '@/lib/utils/product';
+import { Product, ProductVariant } from '@/types/graphql';
 
 import OptionSelect from './option-select';
 
@@ -78,7 +79,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
               <span data-testid="mobile-title">{product.title}</span>
               <span>—</span>
               {selectedPrice ? (
-                <div className="flex items-end gap-x-2 text-ui-fg-base">
+                <div className="text-ui-fg-base flex items-end gap-x-2">
                   {selectedPrice.price_type === 'sale' && (
                     <p>
                       <span className="text-small-regular line-through">
@@ -170,7 +171,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                   <div className="flex w-full justify-end pr-6">
                     <button
                       onClick={close}
-                      className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-ui-fg-base"
+                      className="text-ui-fg-base flex h-12 w-12 items-center justify-center rounded-full bg-white"
                       data-testid="close-modal-button"
                     >
                       <X />
