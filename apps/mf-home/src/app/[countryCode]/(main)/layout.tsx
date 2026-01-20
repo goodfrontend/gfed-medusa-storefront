@@ -7,6 +7,7 @@ import {
   retrieveCart,
 } from '@gfed-medusa/sf-lib-common/lib/data/cart';
 import { retrieveCustomer } from '@gfed-medusa/sf-lib-common/lib/data/customer';
+import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
 import { getBaseURL } from '@gfed-medusa/sf-lib-common/lib/utils/env';
 import { Cart } from '@gfed-medusa/sf-lib-common/types/graphql';
 
@@ -15,14 +16,15 @@ export const metadata: Metadata = {
 };
 
 export default async function PageLayout(props: { children: React.ReactNode }) {
-  const customer = await retrieveCustomer();
-  const cart = await retrieveCart();
+  const ctx = await resolveNextContext();
+  const customer = await retrieveCustomer(ctx);
+  const cart = await retrieveCart(ctx);
   let shippingOptions: Awaited<
     ReturnType<typeof listCartOptions>
   >['shipping_options'] = [];
 
   if (cart) {
-    const { shipping_options } = await listCartOptions();
+    const { shipping_options } = await listCartOptions(ctx);
 
     shippingOptions = shipping_options;
   }

@@ -1,10 +1,8 @@
-'use client';
-
 import { Fragment, useEffect, useMemo, useState } from 'react';
 
 import ReactCountryFlag from 'react-country-flag';
 
-import { updateRegion } from '@gfed-medusa/sf-lib-common/lib/data/cart';
+import { useStorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import { StateType } from '@gfed-medusa/sf-lib-common/lib/hooks/use-toggle-state';
 import { Region } from '@gfed-medusa/sf-lib-common/types/graphql';
 import {
@@ -32,6 +30,7 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
     | undefined
   >(undefined);
   const [countryCode, setCountryCode] = useState('dk');
+  const ctx = useStorefrontContext();
 
   const { state, close } = toggleState;
 
@@ -49,7 +48,7 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
   }, [regions]);
 
   useEffect(() => {
-    setCountryCode(window.location.pathname.split('/')[0]);
+    setCountryCode(window.location.pathname.split('/')[1] || 'dk');
   }, []);
 
   useEffect(() => {
@@ -57,12 +56,18 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
       const option = options?.find((o) => o?.country === countryCode);
       setCurrent(option);
     }
-  }, [options]);
+  }, [options, countryCode]);
 
   const handleChange = (option: CountryOption) => {
     const currentPath =
-      window.location.pathname.split(`/${countryCode}`)[1] ?? 'gb';
-    updateRegion(option.country, currentPath);
+      window.location.pathname.split(`/${countryCode}`)[1] || '';
+
+    if (ctx.updateRegion) {
+      ctx.updateRegion(option.country, currentPath);
+    } else {
+      // Fallback for non-provisioned environments
+      window.location.href = `/${option.country}${currentPath}`;
+    }
     close();
   };
 

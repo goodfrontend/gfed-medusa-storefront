@@ -19,8 +19,7 @@ export function createHorizontalComponentElement(
       const serverData = window[dataVariable];
 
       let shadowRoot = this.shadowRoot;
-      if (!shadowRoot)
-        shadowRoot = this.attachShadow({ mode: 'open' });
+      if (!shadowRoot) shadowRoot = this.attachShadow({ mode: 'open' });
 
       const container = shadowRoot.querySelector(`#root-${elementTag}`);
       if (!container) return;

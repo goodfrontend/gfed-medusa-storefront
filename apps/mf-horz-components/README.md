@@ -3,6 +3,7 @@
 This is a specialized microfrontend app designed to provide "True SSR" (SEO-Ready) header fragments.
 
 It consists of:
+
 1.  **Hono Server**: Serves the SSR HTML fragment (`/fragment/header`) and JSON data (`/api/header-data`).
 2.  **Vite Client**: Builds a standalone bundle (`header-bundle.js`) that defines a Custom Element `<mfe-header>`.
 
@@ -13,6 +14,7 @@ The host application (e.g., Cloudflare Worker or Next.js middleware) fetches the
 ## Setup
 
 1.  Install dependencies:
+
     ```bash
     pnpm install
     ```
@@ -25,9 +27,9 @@ The host application (e.g., Cloudflare Worker or Next.js middleware) fetches the
 
 ## Endpoints
 
--   `GET http://localhost:3001/fragment/header`: Returns the raw HTML of the header (SSR).
--   `GET http://localhost:3001/api/header-data`: Returns the initial state JSON.
--   `GET http://localhost:3001/dist/header-bundle.js`: The client-side React bundle.
+- `GET http://localhost:3001/fragment/header`: Returns the raw HTML of the header (SSR).
+- `GET http://localhost:3001/api/header-data`: Returns the initial state JSON.
+- `GET http://localhost:3001/dist/header-bundle.js`: The client-side React bundle.
 
 ## Usage in Host App
 

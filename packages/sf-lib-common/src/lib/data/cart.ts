@@ -1,18 +1,5 @@
-'use server';
-
-import { revalidateTag } from 'next/cache';
-import { redirect } from 'next/navigation';
-
 import { HttpTypes } from '@medusajs/types';
 
-import { sdk } from '@/lib/config/medusa';
-import { graphqlFetch, graphqlMutation } from '@/lib/gql/apollo-client';
-import {
-  DELETE_LINE_ITEM_MUTATION,
-  UPDATE_CART_MUTATION,
-} from '@/lib/gql/mutations/cart';
-import { GET_CART_QUERY } from '@/lib/gql/queries/cart';
-import { medusaError } from '@/lib/utils/medusa-error';
 import {
   Cart,
   DeleteLineItemMutation,
@@ -21,23 +8,27 @@ import {
   GetCartQueryVariables,
   UpdateCartMutation,
   UpdateCartMutationVariables,
-} from '@/types/graphql';
-
+} from '../../types/graphql';
+import { sdk } from '../config/medusa';
+import { graphqlFetch, graphqlMutation } from '../gql/apollo-client';
+import {
+  DELETE_LINE_ITEM_MUTATION,
+  UPDATE_CART_MUTATION,
+} from '../gql/mutations/cart';
+import { GET_CART_QUERY } from '../gql/queries/cart';
+import { medusaError } from '../utils/medusa-error';
+import { StorefrontContext, getEmptyContext } from './context';
 import {
   getAuthHeaders,
   getCacheOptions,
   getCacheTag,
   getCartId,
 } from './cookies';
-import { getRegion } from './regions';
 
-/**
- * Retrieves a cart by its ID. If no ID is provided, it will use the cart ID from the cookies.
- * @param cartId - optional - The ID of the cart to retrieve.
- * @returns The cart object if found, or null if not found.
- */
-export const retrieveCart = async (cartId?: string): Promise<Cart | null> => {
-  const id = cartId || (await getCartId());
+export const retrieveCart = async (
+  ctx: StorefrontContext = getEmptyContext()
+): Promise<Cart | null> => {
+  const id = getCartId(ctx);
   if (!id) {
     return null;
   }
@@ -55,10 +46,11 @@ export const retrieveCart = async (cartId?: string): Promise<Cart | null> => {
   }
 };
 
-const updateCart = async (
-  data: UpdateCartMutationVariables['data']
+export const updateCart = async (
+  data: UpdateCartMutationVariables['data'],
+  ctx: StorefrontContext = getEmptyContext()
 ): Promise<UpdateCartMutation['updateCart'] | null> => {
-  const cartId = await getCartId();
+  const cartId = getCartId(ctx);
 
   if (!cartId) {
     throw new Error(
@@ -80,12 +72,12 @@ const updateCart = async (
 
     const cart = result?.updateCart ?? null;
 
-    if (cart) {
-      const cartCacheTag = await getCacheTag('carts');
-      revalidateTag(cartCacheTag);
+    if (cart && ctx.revalidate) {
+      const cartCacheTag = getCacheTag('carts', ctx);
+      ctx.revalidate(cartCacheTag);
 
-      const fulfillmentCacheTag = await getCacheTag('fulfillment');
-      revalidateTag(fulfillmentCacheTag);
+      const fulfillmentCacheTag = getCacheTag('fulfillment', ctx);
+      ctx.revalidate(fulfillmentCacheTag);
     }
 
     return cart;
@@ -95,13 +87,14 @@ const updateCart = async (
 };
 
 export const deleteLineItem = async (
-  lineId: string
+  lineId: string,
+  ctx: StorefrontContext = getEmptyContext()
 ): Promise<DeleteLineItemMutation['deleteLineItem'] | null> => {
   if (!lineId) {
     throw new Error('Missing lineItem ID when deleting line item');
   }
 
-  const cartId = await getCartId();
+  const cartId = getCartId(ctx);
 
   if (!cartId) {
     throw new Error('Missing cart ID when deleting line item');
@@ -121,12 +114,12 @@ export const deleteLineItem = async (
 
     const deletedLineItem = result?.deleteLineItem ?? null;
 
-    if (deletedLineItem) {
-      const cartCacheTag = await getCacheTag('carts');
-      revalidateTag(cartCacheTag);
+    if (deletedLineItem && ctx.revalidate) {
+      const cartCacheTag = getCacheTag('carts', ctx);
+      ctx.revalidate(cartCacheTag);
 
-      const fulfillmentCacheTag = await getCacheTag('fulfillment');
-      revalidateTag(fulfillmentCacheTag);
+      const fulfillmentCacheTag = getCacheTag('fulfillment', ctx);
+      ctx.revalidate(fulfillmentCacheTag);
     }
 
     return deletedLineItem;
@@ -136,41 +129,15 @@ export const deleteLineItem = async (
   }
 };
 
-/**
- * Updates the countrycode param and revalidates the regions cache
- * @param regionId
- * @param countryCode
- */
-export async function updateRegion(countryCode: string, currentPath: string) {
-  const cartId = await getCartId();
-  const region = await getRegion(countryCode);
-
-  if (!region) {
-    throw new Error(`Region not found for country code: ${countryCode}`);
-  }
-
-  if (cartId) {
-    await updateCart({ regionId: region.id });
-    const cartCacheTag = await getCacheTag('carts');
-    revalidateTag(cartCacheTag);
-  }
-
-  const regionCacheTag = await getCacheTag('regions');
-  revalidateTag(regionCacheTag);
-
-  const productsCacheTag = await getCacheTag('products');
-  revalidateTag(productsCacheTag);
-
-  redirect(`/${countryCode}${currentPath}`);
-}
-
-export async function listCartOptions() {
-  const cartId = await getCartId();
+export async function listCartOptions(
+  ctx: StorefrontContext = getEmptyContext()
+) {
+  const cartId = getCartId(ctx);
   const headers = {
-    ...(await getAuthHeaders()),
+    ...getAuthHeaders(ctx),
   };
   const next = {
-    ...(await getCacheOptions('shippingOptions')),
+    ...getCacheOptions('shippingOptions', ctx),
   };
 
   return await sdk.client.fetch<{
