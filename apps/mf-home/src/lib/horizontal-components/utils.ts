@@ -43,7 +43,7 @@ export async function injectHorizontalComponents(
     return hostResponse;
   }
 
-  const scriptTags = `<script defer src="${SERVICE_URL}/dist/horizontal-components-bundle.js"></script>`;
+  const scriptTags = `<script>window.__MFE_BUNDLE_URL__ = "${SERVICE_URL}/dist/horizontal-components-bundle.js";</script>`;
 
   const dataScripts = components
     .map(

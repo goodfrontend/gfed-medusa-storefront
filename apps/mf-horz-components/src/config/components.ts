@@ -18,12 +18,15 @@ export const COMPONENT_REGISTRY: ComponentDefinition[] = [
     name: 'header',
     component: Header,
     getData: async () => {
-      const { sdk } =
-        await import('@gfed-medusa/sf-lib-common/lib/config/medusa');
-      const { normalizeRegion } =
-        await import('@gfed-medusa/sf-lib-common/lib/utils/normalize-functions');
-      const { medusaError } =
-        await import('@gfed-medusa/sf-lib-common/lib/utils/medusa-error');
+      const [
+        { sdk },
+        { normalizeRegion },
+        { medusaError }
+      ] = await Promise.all([
+        import('@gfed-medusa/sf-lib-common/lib/config/medusa'),
+        import('@gfed-medusa/sf-lib-common/lib/utils/normalize-functions'),
+        import('@gfed-medusa/sf-lib-common/lib/utils/medusa-error'),
+      ]);
 
       const regions = await sdk.client
         .fetch<{ regions: HttpTypes.StoreRegion[] }>(`/store/regions`, {
@@ -42,14 +45,17 @@ export const COMPONENT_REGISTRY: ComponentDefinition[] = [
     name: 'footer',
     component: Footer,
     getData: async () => {
-      const { createServerApolloClient, graphqlFetch } =
-        await import('@gfed-medusa/sf-lib-common/lib/gql/apollo-client');
-      const { GET_COLLECTIONS_QUERY } =
-        await import('@gfed-medusa/sf-lib-common/lib/gql/queries/collections');
-      const { GET_PRODUCT_CATEGORIES_QUERY } =
-        await import('@gfed-medusa/sf-lib-common/lib/gql/queries/product');
-      const { GET_FOOTER_QUERY } =
-        await import('@gfed-medusa/sf-lib-common/lib/gql/queries/footer');
+      const [
+        { createServerApolloClient, graphqlFetch },
+        { GET_COLLECTIONS_QUERY },
+        { GET_PRODUCT_CATEGORIES_QUERY },
+        { GET_FOOTER_QUERY }
+      ] = await Promise.all([
+        import('@gfed-medusa/sf-lib-common/lib/gql/apollo-client'),
+        import('@gfed-medusa/sf-lib-common/lib/gql/queries/collections'),
+        import('@gfed-medusa/sf-lib-common/lib/gql/queries/product'),
+        import('@gfed-medusa/sf-lib-common/lib/gql/queries/footer'),
+      ]);
 
       const apolloClient = createServerApolloClient();
 

@@ -1,6 +1,7 @@
 // sort-imports-ignore
 import '@gfed-medusa/sf-lib-ui/styles.css';
 import './global.css';
+import './expose-globals';
 
 import { Metadata } from 'next';
 import { ApolloClientProvider } from '@gfed-medusa/sf-lib-common/lib/context/apollo-context';

@@ -7,9 +7,10 @@
     "dev": "concurrently \"pnpm dev:client\" \"pnpm dev:server\"",
     "dev:client": "vite build --watch",
     "dev:server": "vite-node --watch src/server/index.tsx",
-    "build": "vite build && tsc",
+    "build": "vite build",
     "start": "cross-env NODE_ENV=production tsx src/server/index.tsx",
-    "lint": "eslint . --max-warnings 20"
+    "lint": "eslint . --max-warnings 20",
+    "check-types": "tsc --noEmit"
   },
   "dependencies": {
     "@gfed-medusa/sf-lib-common": "workspace:^2.0.0",

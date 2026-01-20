@@ -19,9 +19,8 @@ export function createHorizontalComponentElement(
       const serverData = window[dataVariable];
 
       let shadowRoot = this.shadowRoot;
-      if (!shadowRoot) {
+      if (!shadowRoot)
         shadowRoot = this.attachShadow({ mode: 'open' });
-      }
 
       const container = shadowRoot.querySelector(`#root-${elementTag}`);
       if (!container) return;
@@ -37,8 +36,7 @@ export function registerAllComponents() {
   COMPONENT_REGISTRY.forEach((definition) => {
     const ElementClass = createHorizontalComponentElement(definition);
 
-    if (!customElements.get(definition.elementTag)) {
+    if (!customElements.get(definition.elementTag))
       customElements.define(definition.elementTag, ElementClass);
-    }
   });
 }
