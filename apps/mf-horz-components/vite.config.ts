@@ -16,6 +16,7 @@ export default defineConfig(({ command }) => {
         : {}),
     },
     build: {
+      outDir: 'build',
       emptyOutDir: true,
       assetsInlineLimit: 0,
       cssCodeSplit: false,

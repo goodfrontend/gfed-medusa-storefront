@@ -62,7 +62,7 @@ app.get('/fragment/:name', async (c) => {
   }
 });
 
-app.use('/dist/*', serveStatic({ root: './' }));
+app.use('/build/*', serveStatic({ root: './' }));
 
 const port = 4001;
 console.log(`Server is running on port ${port}`);

@@ -43,7 +43,7 @@ export async function injectHorizontalComponents(
     return hostResponse;
   }
 
-  const bundleTag = `<script>window.__MFE_BUNDLE_URL__ = "${SERVICE_URL}/dist/horizontal-components-bundle.js";</script>`;
+  const bundleTag = `<script>window.__MFE_BUNDLE_URL__ = "${SERVICE_URL}/build/horizontal-components-bundle.js";</script>`;
 
   const dataScripts = components
     .map(
@@ -60,7 +60,7 @@ export async function injectHorizontalComponents(
 
   for (const comp of components) {
     const { html, config } = comp;
-    const stylesheetUrl = `${SERVICE_URL}/dist/horizontal-components-styles.css`;
+    const stylesheetUrl = `${SERVICE_URL}/build/horizontal-components-styles.css`;
 
     const shadowContent = `<template shadowrootmode="open"><link rel="stylesheet" href="${stylesheetUrl}"><div id="root-${config.elementTag}">${html}</div></template>`;
 

@@ -15,7 +15,7 @@ export function createHorizontalComponentElement(
       if (this.getAttribute('mounted') === 'true') return;
       this.setAttribute('mounted', 'true');
 
-      // @ts-ignore
+      // @ts-expect-error -- dynamic data
       const serverData = window[dataVariable];
 
       let shadowRoot = this.shadowRoot;
