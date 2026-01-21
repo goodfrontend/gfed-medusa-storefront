@@ -17,7 +17,7 @@ import {
 } from '../gql/mutations/cart';
 import { GET_CART_QUERY } from '../gql/queries/cart';
 import { medusaError } from '../utils/medusa-error';
-import { StorefrontContext, getEmptyContext } from './context';
+import type { StorefrontContext } from './context';
 import {
   getAuthHeaders,
   getCacheOptions,
@@ -26,7 +26,7 @@ import {
 } from './cookies';
 
 export const retrieveCart = async (
-  ctx: StorefrontContext = getEmptyContext()
+  ctx: StorefrontContext
 ): Promise<Cart | null> => {
   const id = getCartId(ctx);
   if (!id) {
@@ -48,7 +48,7 @@ export const retrieveCart = async (
 
 export const updateCart = async (
   data: UpdateCartMutationVariables['data'],
-  ctx: StorefrontContext = getEmptyContext()
+  ctx: StorefrontContext
 ): Promise<UpdateCartMutation['updateCart'] | null> => {
   const cartId = getCartId(ctx);
 
@@ -88,7 +88,7 @@ export const updateCart = async (
 
 export const deleteLineItem = async (
   lineId: string,
-  ctx: StorefrontContext = getEmptyContext()
+  ctx: StorefrontContext
 ): Promise<DeleteLineItemMutation['deleteLineItem'] | null> => {
   if (!lineId) {
     throw new Error('Missing lineItem ID when deleting line item');
@@ -129,9 +129,7 @@ export const deleteLineItem = async (
   }
 };
 
-export async function listCartOptions(
-  ctx: StorefrontContext = getEmptyContext()
-) {
+export async function listCartOptions(ctx: StorefrontContext) {
   const cartId = getCartId(ctx);
   const headers = {
     ...getAuthHeaders(ctx),

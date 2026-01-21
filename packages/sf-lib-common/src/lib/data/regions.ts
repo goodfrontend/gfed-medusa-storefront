@@ -4,14 +4,12 @@ import { Region } from '../../types/graphql';
 import { sdk } from '../config/medusa';
 import { medusaError } from '../utils/medusa-error';
 import { normalizeRegion } from '../utils/normalize-functions';
-import { StorefrontContext, getEmptyContext } from './context';
+import type { StorefrontContext } from './context';
 import { getCacheOptions } from './cookies';
 
 const regionMap = new Map<string, Region>();
 
-export const listRegions = async (
-  ctx: StorefrontContext = getEmptyContext()
-) => {
+export const listRegions = async (ctx: StorefrontContext) => {
   const next = {
     ...getCacheOptions('regions', ctx),
   };
@@ -28,7 +26,7 @@ export const listRegions = async (
 
 export const getRegion = async (
   countryCode: string,
-  ctx: StorefrontContext = getEmptyContext()
+  ctx: StorefrontContext
 ): Promise<Region | null> => {
   try {
     if (regionMap.has(countryCode)) {

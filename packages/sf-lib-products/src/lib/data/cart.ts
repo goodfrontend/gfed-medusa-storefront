@@ -2,10 +2,7 @@
 
 import { revalidateTag } from 'next/cache';
 
-import {
-  StorefrontContext,
-  getEmptyContext,
-} from '@gfed-medusa/sf-lib-common/lib/data/context';
+import type { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import {
   getCacheTag,
   getCartId,
@@ -44,7 +41,7 @@ import { getRegion } from './regions';
  */
 export const retrieveCart = async (
   cartId?: string,
-  ctx: StorefrontContext = getEmptyContext()
+  ctx: StorefrontContext = {}
 ): Promise<Cart | null> => {
   const id = cartId || getCartId(ctx);
   if (!id) {
@@ -66,9 +63,9 @@ export const retrieveCart = async (
 
 export const getOrSetCart = async (
   countryCode: string,
-  ctx: StorefrontContext = getEmptyContext()
+  ctx: StorefrontContext = {}
 ): Promise<Cart | null> => {
-  const region = await getRegion(countryCode);
+  const region = await getRegion(countryCode, ctx);
 
   if (!region) {
     throw new Error(`Region not found for country code: ${countryCode}`);
@@ -134,7 +131,7 @@ export const addToCart = async ({
   variantId,
   quantity,
   countryCode,
-  ctx = getEmptyContext(),
+  ctx = {},
 }: {
   variantId: string;
   quantity: number;

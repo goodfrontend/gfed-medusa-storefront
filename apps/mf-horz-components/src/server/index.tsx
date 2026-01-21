@@ -65,7 +65,7 @@ app.get('/fragment/:name', async (c) => {
 app.use('/build/*', serveStatic({ root: './' }));
 
 const port = process.env.PORT || 4001;
-console.log(`Server is running on port ${port}`);
+console.log(`Server running on port ${port}`);
 
 serve({
   fetch: app.fetch,

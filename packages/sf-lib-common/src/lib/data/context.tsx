@@ -15,10 +15,7 @@ export interface StorefrontContext {
   removeAuthToken?: () => Promise<void>;
 }
 
-export const getEmptyContext = (): StorefrontContext => ({});
-
-const StorefrontReactContext =
-  createContext<StorefrontContext>(getEmptyContext());
+const StorefrontReactContext = createContext<StorefrontContext>({});
 
 export const StorefrontProvider = ({
   children,

@@ -1,10 +1,7 @@
 'use server';
 
 import { sdk } from '@gfed-medusa/sf-lib-common/lib/config/medusa';
-import {
-  StorefrontContext,
-  getEmptyContext,
-} from '@gfed-medusa/sf-lib-common/lib/data/context';
+import type { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import {
   getAuthHeaders,
   getCacheOptions,
@@ -20,7 +17,7 @@ export const createTransferRequest = async (
     order: HttpTypes.StoreOrder | null;
   },
   formData: FormData,
-  ctx: StorefrontContext = getEmptyContext()
+  ctx: StorefrontContext = {}
 ): Promise<{
   success: boolean;
   error: string | null;
@@ -51,7 +48,7 @@ export const listOrders = async (
   limit: number = 10,
   offset: number = 0,
   filters?: Record<string, any>,
-  ctx: StorefrontContext = getEmptyContext()
+  ctx: StorefrontContext = {}
 ) => {
   const headers = {
     ...getAuthHeaders(ctx),

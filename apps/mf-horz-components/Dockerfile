@@ -40,7 +40,7 @@ USER nodejsuser
 COPY --from=installer /app/apps/mf-horz-components/package.json .
 COPY --from=installer /app/apps/mf-horz-components/dist ./dist
 COPY --from=installer /app/apps/mf-horz-components/build ./build
-# We also need node_modules for the dependencies
+
 COPY --from=installer /app/node_modules ./node_modules
 COPY --from=installer /app/apps/mf-horz-components/node_modules ./apps/mf-horz-components/node_modules
 

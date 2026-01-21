@@ -7,7 +7,8 @@ export default defineConfig({
   platform: 'node',
   outDir: 'dist',
   clean: true,
-  unbundle: false,
-  fixedExtension: false,
   minify: true,
+  fixedExtension: false,
+  treeshake: true,
+  noExternal: [/^@medusajs\//, /^@gfed-medusa\//],
 });

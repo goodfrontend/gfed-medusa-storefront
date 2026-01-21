@@ -5,10 +5,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import { sdk } from '@gfed-medusa/sf-lib-common/lib/config/medusa';
-import {
-  StorefrontContext,
-  getEmptyContext,
-} from '@gfed-medusa/sf-lib-common/lib/data/context';
+import type { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import {
   getAuthHeaders,
   getCacheTag,
@@ -40,7 +37,7 @@ import {
 import { removeAuthToken, setAuthToken } from './cookies';
 
 export const retrieveCustomer = async (
-  ctx: StorefrontContext = getEmptyContext()
+  ctx: StorefrontContext
 ): Promise<Customer | null> => {
   const cookieHeader = ctx.cookieHeader || (await cookies()).toString();
   const apolloClient = createServerApolloClient(cookieHeader);
@@ -65,7 +62,7 @@ export const retrieveCustomer = async (
 
 export const updateCustomer = async (
   body: HttpTypes.StoreUpdateCustomer,
-  ctx: StorefrontContext = getEmptyContext()
+  ctx: StorefrontContext
 ) => {
   const headers = {
     ...getAuthHeaders(ctx),
@@ -89,7 +86,7 @@ export const updateCustomer = async (
 export async function signup(
   _currentState: unknown,
   formData: FormData,
-  ctx: StorefrontContext = getEmptyContext()
+  ctx: StorefrontContext
 ) {
   const password = formData.get('password') as string;
   const customerForm = {
@@ -153,7 +150,7 @@ export async function signup(
  */
 export async function postLogin(
   token: string | null | undefined,
-  ctx: StorefrontContext = getEmptyContext()
+  ctx: StorefrontContext
 ) {
   // TODO: MDS-80 Revisit: remove auth-related logic once all requests are refactored to use BFF.
   if (token) {
@@ -176,10 +173,7 @@ export async function postLogin(
 }
 
 // TODO: MDS-80 Revisit and remove logic related to JWT-based auth.
-export async function postSignout(
-  countryCode: string,
-  ctx: StorefrontContext = getEmptyContext()
-) {
+export async function postSignout(countryCode: string, ctx: StorefrontContext) {
   await sdk.auth.logout();
 
   await removeAuthToken();
@@ -205,7 +199,7 @@ export async function postSignout(
 }
 
 export const transferCart = async (
-  ctx: StorefrontContext = getEmptyContext()
+  ctx: StorefrontContext
 ): Promise<TransferCartMutation['transferCart'] | null> => {
   const cartId = getCartId(ctx);
 
@@ -244,7 +238,7 @@ export const transferCart = async (
 export const addCustomerAddress = async (
   currentState: Record<string, unknown>,
   formData: FormData,
-  ctx: StorefrontContext = getEmptyContext()
+  ctx: StorefrontContext
 ): Promise<any> => {
   const isDefaultBilling = (currentState.isDefaultBilling as boolean) || false;
   const isDefaultShipping =
@@ -287,7 +281,7 @@ export const addCustomerAddress = async (
 
 export const deleteCustomerAddress = async (
   addressId: string,
-  ctx: StorefrontContext = getEmptyContext()
+  ctx: StorefrontContext
 ): Promise<void> => {
   const headers = {
     ...getAuthHeaders(ctx),
@@ -312,7 +306,7 @@ export const deleteCustomerAddress = async (
 export const updateCustomerAddress = async (
   currentState: Record<string, unknown>,
   formData: FormData,
-  ctx: StorefrontContext = getEmptyContext()
+  ctx: StorefrontContext
 ): Promise<any> => {
   const addressId =
     (currentState.addressId as string) || (formData.get('addressId') as string);

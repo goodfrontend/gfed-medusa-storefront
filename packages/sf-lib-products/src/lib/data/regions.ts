@@ -1,10 +1,7 @@
 'use server';
 
 import { sdk } from '@gfed-medusa/sf-lib-common/lib/config/medusa';
-import {
-  StorefrontContext,
-  getEmptyContext,
-} from '@gfed-medusa/sf-lib-common/lib/data/context';
+import type { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import { getCacheOptions } from '@gfed-medusa/sf-lib-common/lib/data/cookies';
 import { listRegions } from '@gfed-medusa/sf-lib-common/lib/data/regions';
 import { medusaError } from '@gfed-medusa/sf-lib-common/lib/utils/medusa-error';
@@ -12,10 +9,7 @@ import { normalizeRegion } from '@gfed-medusa/sf-lib-common/lib/utils/normalize-
 import { Region } from '@gfed-medusa/sf-lib-common/types/graphql';
 import { HttpTypes } from '@medusajs/types';
 
-export const retrieveRegion = async (
-  id: string,
-  ctx: StorefrontContext = getEmptyContext()
-) => {
+export const retrieveRegion = async (id: string, ctx: StorefrontContext) => {
   const next = {
     ...getCacheOptions(['regions', id].join('-'), ctx),
   };
@@ -34,7 +28,7 @@ const regionMap = new Map<string, Region>();
 
 export const getRegion = async (
   countryCode: string,
-  ctx: StorefrontContext = getEmptyContext()
+  ctx: StorefrontContext
 ): Promise<Region | null> => {
   try {
     if (regionMap.has(countryCode)) {

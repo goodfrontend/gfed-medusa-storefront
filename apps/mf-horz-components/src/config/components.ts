@@ -19,7 +19,7 @@ export const COMPONENT_REGISTRY: ComponentDefinition[] = [
   {
     name: 'header',
     component: Header,
-    getData: async (ctx: StorefrontContext) => {
+    getData: async () => {
       const [{ sdk }, { normalizeRegion }, { medusaError }] = await Promise.all(
         [
           import('@gfed-medusa/sf-lib-common/lib/config/medusa'),
@@ -36,7 +36,7 @@ export const COMPONENT_REGISTRY: ComponentDefinition[] = [
         .then(({ regions }) => regions.map(normalizeRegion))
         .catch(medusaError);
 
-      return { regions: regions ?? [], ctx };
+      return { regions: regions ?? [] };
     },
     elementTag: 'mfe-header',
     dataVariable: '__HEADER_DATA__',
@@ -82,7 +82,6 @@ export const COMPONENT_REGISTRY: ComponentDefinition[] = [
         collections: collectionsResult?.collections ?? [],
         productCategories: categoriesResult?.productCategories ?? [],
         footerContent: footerResult?.footer,
-        ctx,
       };
     },
     elementTag: 'mfe-footer',
