@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ComponentType } from 'react';
 
 import { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';

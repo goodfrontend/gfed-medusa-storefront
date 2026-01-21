@@ -62,12 +62,12 @@ app.get('/fragment/:name', async (c) => {
   }
 });
 
-app.use('/dist/*', serveStatic({ root: './' }));
+app.use('/build/*', serveStatic({ root: './' }));
 
-const port = 4001;
+const port = process.env.PORT || 4001;
 console.log(`Server is running on port ${port}`);
 
 serve({
   fetch: app.fetch,
-  port,
+  port: Number(port),
 });

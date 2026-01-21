@@ -50,6 +50,17 @@ projects:
             envVars:
               - fromGroup: sf-prod-env-group
 
+          - type: web
+            runtime: image
+            plan: free
+            name: sf-horz-prod
+            region: oregon
+            autoDeployTrigger: off
+            image:
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-horz:latest
+            envVars:
+              - fromGroup: sf-prod-env-group
+
       - name: smoke
         services:
           - type: web
@@ -96,6 +107,17 @@ projects:
             envVars:
               - fromGroup: sf-smoke-env-group
 
+          - type: web
+            runtime: image
+            plan: free
+            name: sf-horz-smoke
+            region: oregon
+            autoDeployTrigger: off
+            image:
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-horz:latest
+            envVars:
+              - fromGroup: sf-smoke-env-group
+
       - name: qa
         services:
           - type: web
@@ -139,5 +161,16 @@ projects:
             autoDeployTrigger: off
             image:
               url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-checkout:latest
+            envVars:
+              - fromGroup: sf-qa-env-group
+
+          - type: web
+            runtime: image
+            plan: free
+            name: sf-horz-qa
+            region: oregon
+            autoDeployTrigger: off
+            image:
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-horz:latest
             envVars:
               - fromGroup: sf-qa-env-group

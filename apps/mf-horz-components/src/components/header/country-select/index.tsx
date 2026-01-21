@@ -89,7 +89,6 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
             <span>Shipping to:</span>
             {current && (
               <span className="txt-compact-small flex items-center gap-x-2">
-                {/* @ts-ignore */}
                 <ReactCountryFlag
                   svg
                   style={{
@@ -122,7 +121,6 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
                     value={o}
                     className="flex cursor-pointer items-center gap-x-2 px-3 py-2 hover:bg-gray-200"
                   >
-                    {/* @ts-ignore */}
                     <ReactCountryFlag
                       svg
                       style={{

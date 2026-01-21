@@ -431,10 +431,13 @@ importers:
         version: 8.5.6
       rollup-plugin-visualizer:
         specifier: ^6.0.5
-        version: 6.0.5(rolldown@1.0.0-beta.55)(rollup@4.53.5)
+        version: 6.0.5(rolldown@1.0.0-beta.53)(rollup@4.53.5)
       tailwindcss:
         specifier: ^4.1.18
         version: 4.1.18
+      tsdown:
+        specifier: ^0.17.3
+        version: 0.17.4(typescript@5.9.3)
       tsx:
         specifier: ^4.7.1
         version: 4.21.0
@@ -27597,14 +27600,14 @@ snapshots:
       '@rolldown/binding-win32-arm64-msvc': 1.0.0-beta.55
       '@rolldown/binding-win32-x64-msvc': 1.0.0-beta.55
 
-  rollup-plugin-visualizer@6.0.5(rolldown@1.0.0-beta.55)(rollup@4.53.5):
+  rollup-plugin-visualizer@6.0.5(rolldown@1.0.0-beta.53)(rollup@4.53.5):
     dependencies:
       open: 8.4.2
       picomatch: 4.0.3
       source-map: 0.7.6
       yargs: 17.7.2
     optionalDependencies:
-      rolldown: 1.0.0-beta.55
+      rolldown: 1.0.0-beta.53
       rollup: 4.53.5
 
   rollup@3.29.5:

@@ -4,8 +4,8 @@ This is a specialized microfrontend app designed to provide "True SSR" (SEO-Read
 
 It consists of:
 
-1.  **Hono Server**: Serves the SSR HTML fragment (`/fragment/header`) and JSON data (`/api/header-data`).
-2.  **Vite Client**: Builds a standalone bundle (`header-bundle.js`) that defines a Custom Element `<mfe-header>`.
+1.  **Hono Server**: Serves the SSR HTML fragment (`/fragment/header`) and JSON data (`/api/header`).
+2.  **Vite Client**: Builds a standalone bundle (`horizontal-components-bundle.js`) that defines a Custom Element `<mfe-header>`.
 
 ## Architecture
 
@@ -23,14 +23,10 @@ The host application (e.g., Cloudflare Worker or Next.js middleware) fetches the
     ```bash
     pnpm dev
     ```
-    This starts both the Hono server (port 3001) and the Vite build watcher.
+    This starts both the Hono server (port 4001) and the Vite build watcher.
 
 ## Endpoints
 
-- `GET http://localhost:3001/fragment/header`: Returns the raw HTML of the header (SSR).
-- `GET http://localhost:3001/api/header-data`: Returns the initial state JSON.
-- `GET http://localhost:3001/dist/header-bundle.js`: The client-side React bundle.
-
-## Usage in Host App
-
-See the project root documentation or the "SEO-Ready Header" guide for how to configure the Cloudflare Worker/Injector to consume these endpoints.
+- `GET http://localhost:4001/fragment/header`: Returns the raw HTML of the header (SSR).
+- `GET http://localhost:4001/api/header`: Returns the initial state JSON.
+- `GET http://localhost:4001/build/horizontal-components-bundle.js`: The client-side bundle.
