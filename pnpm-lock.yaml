@@ -354,10 +354,10 @@ importers:
   apps/mf-horz-components:
     dependencies:
       '@gfed-medusa/sf-lib-common':
-        specifier: 2.0.0
+        specifier: ^2.0.0
         version: link:../../packages/sf-lib-common
       '@gfed-medusa/sf-lib-ui':
-        specifier: 1.1.2
+        specifier: ^1.1.2
         version: link:../../packages/sf-lib-ui
       '@headlessui/react':
         specifier: 2.2.9

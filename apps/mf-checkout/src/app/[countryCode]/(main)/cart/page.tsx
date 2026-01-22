@@ -5,6 +5,7 @@ import { retrieveCart } from '@gfed-medusa/sf-lib-checkout/lib/data/cart';
 import type { Cart } from '@gfed-medusa/sf-lib-checkout/lib/gql/generated-types/graphql';
 import CartTemplate from '@gfed-medusa/sf-lib-checkout/templates/cart';
 import { retrieveCustomer } from '@gfed-medusa/sf-lib-common/lib/data/customer';
+import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
 
 export const metadata: Metadata = {
   title: 'Cart',
@@ -17,7 +18,7 @@ export default async function Cart() {
     return notFound();
   });
 
-  const customer = await retrieveCustomer();
+  const customer = await retrieveCustomer(await resolveNextContext());
 
   return <CartTemplate cart={cart} customer={customer} />;
 }
