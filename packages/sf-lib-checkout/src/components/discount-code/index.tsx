@@ -4,6 +4,7 @@ import React, { useActionState } from 'react';
 
 import { ErrorMessage } from '@gfed-medusa/sf-lib-common/components/error-message';
 import { SubmitButton } from '@gfed-medusa/sf-lib-common/components/submit-button';
+import { useStorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import { convertToLocale } from '@gfed-medusa/sf-lib-common/lib/utils/money';
 import { Trash } from '@gfed-medusa/sf-lib-ui/icons/trash';
 import { Badge, Heading, Input, Label, Text } from '@medusajs/ui';
@@ -17,6 +18,7 @@ type DiscountCodeProps = {
 
 const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
   const [isOpen, setIsOpen] = React.useState(false);
+  const ctx = useStorefrontContext();
 
   const { promotions = [] } = cart;
   const removePromotionCode = async (code: string) => {
@@ -28,7 +30,8 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
       await applyPromotions(
         validPromotions
           .filter((p) => p?.code === undefined)
-          .map((p) => p?.code ?? '')
+          .map((p) => p?.code ?? ''),
+        ctx
       );
   };
 
@@ -45,14 +48,21 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
       .map((p) => p?.code ?? '');
     codes.push(code.toString());
 
-    await applyPromotions(codes);
+    await applyPromotions(codes, ctx);
 
     if (input) {
       input.value = '';
     }
   };
 
-  const [message, formAction] = useActionState(submitPromotionForm, null);
+  const handleSubmitPromotionForm = async (
+    currentState: unknown,
+    formData: FormData
+  ) => {
+    return submitPromotionForm(currentState, formData, ctx);
+  };
+
+  const [message, formAction] = useActionState(handleSubmitPromotionForm, null);
 
   return (
     <div className="flex w-full flex-col bg-white">

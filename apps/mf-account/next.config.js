@@ -9,6 +9,11 @@ const nextConfig = {
   assetPrefix: '/account-assets',
   output: 'standalone',
   serverExternalPackages: ['jsdom'],
+  experimental: {
+    serverActions: {
+      allowedOrigins: ["localhost:3024"]
+    },
+  },
   images: {
     remotePatterns: [
       {
@@ -50,7 +55,7 @@ const nextConfig = {
             value: 'public, max-age=31536000, immutable',
           },
         ],
-      }
+      },
     ];
   },
 };

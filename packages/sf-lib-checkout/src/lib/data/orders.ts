@@ -1,20 +1,23 @@
 'use server';
 
 import { sdk } from '@gfed-medusa/sf-lib-common/lib/config/medusa';
+import { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
+import {
+  getAuthHeaders,
+  getCacheOptions,
+} from '@gfed-medusa/sf-lib-common/lib/data/cookies';
 import { medusaError } from '@gfed-medusa/sf-lib-common/lib/utils/medusa-error';
 import { HttpTypes } from '@medusajs/types';
 
 import { normalizeOrder } from '@/lib/util/normalizeFunctions';
 
-import { getAuthHeaders, getCacheOptions } from './cookies';
-
-export const retrieveOrder = async (id: string) => {
+export const retrieveOrder = async (id: string, ctx: StorefrontContext) => {
   const headers = {
-    ...(await getAuthHeaders()),
+    ...getAuthHeaders(ctx),
   };
 
   const next = {
-    ...(await getCacheOptions('orders')),
+    ...getCacheOptions('orders', ctx),
   };
 
   return sdk.client
@@ -33,16 +36,17 @@ export const retrieveOrder = async (id: string) => {
 };
 
 export const listOrders = async (
+  ctx: StorefrontContext,
   limit: number = 10,
   offset: number = 0,
-  filters?: Record<string, any>
+  filters: Record<string, any> | undefined = undefined
 ) => {
   const headers = {
-    ...(await getAuthHeaders()),
+    ...getAuthHeaders(ctx),
   };
 
   const next = {
-    ...(await getCacheOptions('orders')),
+    ...getCacheOptions('orders', ctx),
   };
 
   return sdk.client
@@ -69,7 +73,8 @@ export const createTransferRequest = async (
     error: string | null;
     order: HttpTypes.StoreOrder | null;
   },
-  formData: FormData
+  formData: FormData,
+  ctx: StorefrontContext
 ): Promise<{
   success: boolean;
   error: string | null;
@@ -81,7 +86,7 @@ export const createTransferRequest = async (
     return { success: false, error: 'Order ID is required', order: null };
   }
 
-  const headers = await getAuthHeaders();
+  const headers = getAuthHeaders(ctx);
 
   return await sdk.store.order
     .requestTransfer(
@@ -96,8 +101,12 @@ export const createTransferRequest = async (
     .catch((err) => ({ success: false, error: err.message, order: null }));
 };
 
-export const acceptTransferRequest = async (id: string, token: string) => {
-  const headers = await getAuthHeaders();
+export const acceptTransferRequest = async (
+  id: string,
+  token: string,
+  ctx: StorefrontContext
+) => {
+  const headers = getAuthHeaders(ctx);
 
   return await sdk.store.order
     .acceptTransfer(id, { token }, {}, headers)
@@ -105,8 +114,12 @@ export const acceptTransferRequest = async (id: string, token: string) => {
     .catch((err) => ({ success: false, error: err.message, order: null }));
 };
 
-export const declineTransferRequest = async (id: string, token: string) => {
-  const headers = await getAuthHeaders();
+export const declineTransferRequest = async (
+  id: string,
+  token: string,
+  ctx: StorefrontContext
+) => {
+  const headers = getAuthHeaders(ctx);
 
   return await sdk.store.order
     .declineTransfer(id, { token }, {}, headers)

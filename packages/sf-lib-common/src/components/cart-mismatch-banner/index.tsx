@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { ExclamationCircleSolid } from '@medusajs/icons';
 import { Button } from '@medusajs/ui';
 
+import { useStorefrontContext } from '@/lib/data/context';
 import { transferCart } from '@/lib/data/customer';
 import { Customer } from '@/types/graphql';
 import { Cart } from '@/types/graphql';
@@ -13,6 +14,7 @@ function CartMismatchBanner(props: { customer: Customer; cart: Cart }) {
   const { customer, cart } = props;
   const [isPending, setIsPending] = useState(false);
   const [actionText, setActionText] = useState('Run transfer again');
+  const ctx = useStorefrontContext();
 
   if (!customer || !!cart.customerId) {
     return;
@@ -23,7 +25,7 @@ function CartMismatchBanner(props: { customer: Customer; cart: Cart }) {
       setIsPending(true);
       setActionText('Transferring..');
 
-      await transferCart();
+      await transferCart(ctx);
     } catch {
       setActionText('Run transfer again');
       setIsPending(false);

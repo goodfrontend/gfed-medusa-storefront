@@ -15,6 +15,11 @@ const nextConfig = {
   },
   output: 'standalone',
   serverExternalPackages: ['jsdom', 'canvas', 'isomorphic-dompurify'],
+  experimental: {
+    serverActions: {
+      allowedOrigins: ["localhost:3024"]
+    },
+  },
   images: {
     remotePatterns: [
       {
@@ -60,7 +65,7 @@ const nextConfig = {
             value: 'public, max-age=31536000, immutable',
           },
         ],
-      }
+      },
     ];
   },
 };

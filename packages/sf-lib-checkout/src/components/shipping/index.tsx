@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { ErrorMessage } from '@gfed-medusa/sf-lib-common/components/error-message';
+import { useStorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import { convertToLocale } from '@gfed-medusa/sf-lib-common/lib/utils/money';
 import { Divider } from '@gfed-medusa/sf-lib-ui/components/divider';
 import { Radio as MedusaRadio } from '@gfed-medusa/sf-lib-ui/components/radio';
@@ -50,6 +51,8 @@ const Shipping: React.FC<ShippingProps> = ({
 
   const isOpen = searchParams.get('step') === 'delivery';
 
+  const ctx = useStorefrontContext();
+
   const _shippingMethods = availableShippingMethods?.filter(
     (sm) => sm.service_zone_id
   );
@@ -66,7 +69,7 @@ const Shipping: React.FC<ShippingProps> = ({
     if (_shippingMethods?.length) {
       const promises = _shippingMethods
         .filter((sm) => sm.price_type === 'calculated')
-        .map((sm) => calculatePriceForShippingOption(sm.id, cart.id));
+        .map((sm) => calculatePriceForShippingOption(sm.id, cart.id, {}, ctx));
 
       if (promises.length) {
         Promise.allSettled(promises).then((res) => {
@@ -115,7 +118,7 @@ const Shipping: React.FC<ShippingProps> = ({
       return id;
     });
 
-    await setShippingMethod({ cartId: cart.id, optionId: id })
+    await setShippingMethod(cart.id, id, ctx)
       .catch((err) => {
         setShippingMethodId(currentId);
 
@@ -138,7 +141,7 @@ const Shipping: React.FC<ShippingProps> = ({
           className={clx(
             'text-3xl-regular flex flex-row items-baseline gap-x-2',
             {
-              'pointer-events-none select-none opacity-50':
+              'pointer-events-none opacity-50 select-none':
                 !isOpen && cart.shippingMethods?.length === 0,
             }
           )}
@@ -175,7 +178,7 @@ const Shipping: React.FC<ShippingProps> = ({
               </span>
             </div>
             <div data-testid="delivery-options-container">
-              <div className="pb-8 pt-2 md:pt-0">
+              <div className="pt-2 pb-8 md:pt-0">
                 {hasPickupOptions && (
                   <RadioGroup
                     value={showPickupOptions}
@@ -284,7 +287,7 @@ const Shipping: React.FC<ShippingProps> = ({
                 </span>
               </div>
               <div data-testid="delivery-options-container">
-                <div className="pb-8 pt-2 md:pt-0">
+                <div className="pt-2 pb-8 md:pt-0">
                   <RadioGroup
                     value={shippingMethodId}
                     onChange={(v) => handleSetShippingMethod(v!, 'pickup')}

@@ -8,6 +8,7 @@ import { LineItemOptions } from '@gfed-medusa/sf-lib-common/components/line-item
 import { LineItemPrice } from '@gfed-medusa/sf-lib-common/components/line-item-price';
 import { LocalizedClientLink } from '@gfed-medusa/sf-lib-common/components/localized-client-link';
 import { Thumbnail } from '@gfed-medusa/sf-lib-common/components/thumbnail';
+import { useStorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import { Spinner } from '@gfed-medusa/sf-lib-ui/icons/spinner';
 import { Table, Text, clx } from '@medusajs/ui';
 
@@ -25,15 +26,13 @@ type ItemProps = {
 const Item = ({ item, type = 'full', currencyCode }: ItemProps) => {
   const [updating, setUpdating] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const ctx = useStorefrontContext();
 
   const changeQuantity = async (quantity: number) => {
     setError(null);
     setUpdating(true);
 
-    await updateLineItem({
-      lineId: item.id,
-      quantity,
-    })
+    await updateLineItem(item.id, quantity, ctx)
       .catch((err) => {
         setError(err.message);
       })

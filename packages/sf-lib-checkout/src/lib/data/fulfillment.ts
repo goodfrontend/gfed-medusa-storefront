@@ -1,17 +1,23 @@
 'use server';
 
 import { sdk } from '@gfed-medusa/sf-lib-common/lib/config/medusa';
+import { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
+import {
+  getAuthHeaders,
+  getCacheOptions,
+} from '@gfed-medusa/sf-lib-common/lib/data/cookies';
 import { HttpTypes } from '@medusajs/types';
 
-import { getAuthHeaders, getCacheOptions } from './cookies';
-
-export const listCartShippingMethods = async (cartId: string) => {
+export const listCartShippingMethods = async (
+  cartId: string,
+  ctx: StorefrontContext
+) => {
   const headers = {
-    ...(await getAuthHeaders()),
+    ...getAuthHeaders(ctx),
   };
 
   const next = {
-    ...(await getCacheOptions('fulfillment')),
+    ...getCacheOptions('fulfillment', ctx),
   };
 
   return sdk.client
@@ -38,14 +44,15 @@ export const listCartShippingMethods = async (cartId: string) => {
 export const calculatePriceForShippingOption = async (
   optionId: string,
   cartId: string,
-  data?: Record<string, unknown>
+  data: Record<string, unknown> = {},
+  ctx: StorefrontContext
 ) => {
   const headers = {
-    ...(await getAuthHeaders()),
+    ...getAuthHeaders(ctx),
   };
 
   const next = {
-    ...(await getCacheOptions('fulfillment')),
+    ...getCacheOptions('fulfillment', ctx),
   };
 
   const body = { cart_id: cartId, data };

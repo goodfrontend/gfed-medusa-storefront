@@ -13,12 +13,13 @@ export const metadata: Metadata = {
 };
 
 export default async function Cart() {
-  const cart = await retrieveCart().catch((error) => {
+  const ctx = await resolveNextContext();
+  const cart = await retrieveCart(undefined, ctx).catch((error) => {
     console.error(error);
     return notFound();
   });
 
-  const customer = await retrieveCustomer(await resolveNextContext());
+  const customer = await retrieveCustomer(ctx);
 
   return <CartTemplate cart={cart} customer={customer} />;
 }

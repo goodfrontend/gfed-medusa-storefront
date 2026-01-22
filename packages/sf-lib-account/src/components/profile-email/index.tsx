@@ -3,7 +3,8 @@
 import React, { useActionState, useEffect } from 'react';
 
 import { MedusaInput } from '@gfed-medusa/sf-lib-ui/components/medusa-input';
-import { Customer } from '@lib/gql/generated-types/graphql';
+
+import { Customer } from '@/types/graphql';
 
 import { AccountInfo } from '../account-info';
 

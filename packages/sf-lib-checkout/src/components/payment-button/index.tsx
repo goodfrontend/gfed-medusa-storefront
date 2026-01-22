@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 
 import { ErrorMessage } from '@gfed-medusa/sf-lib-common/components/error-message';
+import { useStorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import { Button } from '@medusajs/ui';
 import { useElements, useStripe } from '@stripe/react-stripe-js';
 
@@ -57,9 +58,10 @@ const StripePaymentButton = ({
 }) => {
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const ctx = useStorefrontContext();
 
   const onPaymentCompleted = async () => {
-    await placeOrder()
+    await placeOrder(undefined, ctx)
       .catch((err) => {
         setErrorMessage(err.message);
       })
@@ -156,9 +158,10 @@ const StripePaymentButton = ({
 const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const ctx = useStorefrontContext();
 
   const onPaymentCompleted = async () => {
-    await placeOrder()
+    await placeOrder(undefined, ctx)
       .catch((err) => {
         setErrorMessage(err.message);
       })

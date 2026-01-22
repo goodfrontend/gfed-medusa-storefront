@@ -33,15 +33,9 @@ import { GET_CART_QUERY } from '@/lib/gql/queries/cart';
 
 import { getRegion } from './regions';
 
-/**
- * Retrieves a cart by its ID. If no ID is provided, it will use the cart ID from the cookies via context.
- * @param cartId - optional - The ID of the cart to retrieve.
- * @param ctx - optional - Storefront context.
- * @returns The cart object if found, or null if not found.
- */
 export const retrieveCart = async (
-  cartId?: string,
-  ctx: StorefrontContext = {}
+  cartId: string,
+  ctx: StorefrontContext
 ): Promise<Cart | null> => {
   const id = cartId || getCartId(ctx);
   if (!id) {
@@ -63,7 +57,7 @@ export const retrieveCart = async (
 
 export const getOrSetCart = async (
   countryCode: string,
-  ctx: StorefrontContext = {}
+  ctx: StorefrontContext
 ): Promise<Cart | null> => {
   const region = await getRegion(countryCode, ctx);
 
@@ -71,7 +65,7 @@ export const getOrSetCart = async (
     throw new Error(`Region not found for country code: ${countryCode}`);
   }
 
-  let cart = await retrieveCart(undefined, ctx);
+  let cart = await retrieveCart(getCartId(ctx) || '', ctx);
 
   if (!cart) {
     const data = await graphqlMutation<
@@ -127,17 +121,18 @@ export const getOrSetCart = async (
   return cart;
 };
 
-export const addToCart = async ({
-  variantId,
-  quantity,
-  countryCode,
-  ctx = {},
-}: {
-  variantId: string;
-  quantity: number;
-  countryCode: string;
-  ctx?: StorefrontContext;
-}): Promise<CreateLineItemMutation['createLineItem'] | null> => {
+export const addToCart = async (
+  {
+    variantId,
+    quantity,
+    countryCode,
+  }: {
+    variantId: string;
+    quantity: number;
+    countryCode: string;
+  },
+  ctx: StorefrontContext
+): Promise<CreateLineItemMutation['createLineItem'] | null> => {
   if (!variantId) {
     throw new Error('Missing variant ID when adding to cart');
   }

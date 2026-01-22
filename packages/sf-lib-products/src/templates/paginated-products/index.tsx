@@ -1,4 +1,5 @@
 import { ProductPreview } from '@gfed-medusa/sf-lib-common/components/product-preview';
+import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
 
 import { Pagination } from '@/components/pagination';
 import { SortOptions } from '@/components/refinement-list/sort-products';
@@ -30,6 +31,7 @@ export default async function PaginatedProducts({
   productsIds?: string[];
   countryCode: string;
 }) {
+  const ctx = await resolveNextContext();
   const queryParams: PaginatedProductsParams = {
     limit: 12,
   };
@@ -50,20 +52,23 @@ export default async function PaginatedProducts({
     queryParams['order'] = 'created_at';
   }
 
-  const region = await getRegion(countryCode);
+  const region = await getRegion(countryCode, ctx);
 
   if (!region) {
     return null;
   }
 
-  let {
+  const {
     response: { products, count },
-  } = await listProductsWithSort({
-    page,
-    queryParams,
-    sortBy,
-    countryCode,
-  });
+  } = await listProductsWithSort(
+    {
+      page,
+      queryParams,
+      sortBy,
+      countryCode,
+    },
+    ctx
+  );
 
   const totalPages = Math.ceil(count / PRODUCT_LIMIT);
 

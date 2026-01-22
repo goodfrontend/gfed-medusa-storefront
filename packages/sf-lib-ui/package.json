@@ -42,6 +42,7 @@
     "lint": "eslint . --max-warnings 10",
     "test": "jest",
     "test:watch": "jest --watch",
+    "check-types": "tsc --noEmit",
     "test:coverage": "jest --coverage"
   },
   "dependencies": {

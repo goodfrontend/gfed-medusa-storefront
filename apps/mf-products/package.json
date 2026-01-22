@@ -9,7 +9,7 @@
     "build": "next build",
     "start": "next start -p 3001",
     "lint": "eslint --max-warnings 30",
-    "type:check": "tsc --noEmit --incremental false"
+    "check-types": "tsc --noEmit --incremental false"
   },
   "dependencies": {
     "@apollo/client": "^4.0.4",

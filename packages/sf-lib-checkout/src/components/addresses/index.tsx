@@ -6,6 +6,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { ErrorMessage } from '@gfed-medusa/sf-lib-common/components/error-message';
 import { SubmitButton } from '@gfed-medusa/sf-lib-common/components/submit-button';
+import { useStorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import { Divider } from '@gfed-medusa/sf-lib-ui/components/divider';
 import { Spinner } from '@gfed-medusa/sf-lib-ui/icons/spinner';
 import { CheckCircleSolid } from '@medusajs/icons';
@@ -42,7 +43,16 @@ const Addresses = ({
     router.push(pathname + '?step=address');
   };
 
-  const [message, formAction] = useActionState(setAddresses, null);
+  const ctx = useStorefrontContext();
+
+  const handleSetAddresses = async (
+    currentState: unknown,
+    formData: FormData
+  ) => {
+    return setAddresses(currentState, formData, ctx);
+  };
+
+  const [message, formAction] = useActionState(handleSetAddresses, null);
 
   return (
     <div className="bg-white">
@@ -80,7 +90,7 @@ const Addresses = ({
               <div>
                 <Heading
                   level="h2"
-                  className="text-3xl-regular gap-x-4 pb-6 pt-8"
+                  className="text-3xl-regular gap-x-4 pt-8 pb-6"
                 >
                   Billing address
                 </Heading>

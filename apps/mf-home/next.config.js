@@ -8,6 +8,11 @@ const nextConfig = {
   },
   assetPrefix: '/home-assets',
   output: 'standalone',
+  experimental: {
+    serverActions: {
+      allowedOrigins: ["localhost:3024"]
+    },
+  },
   images: {
     remotePatterns: [
       {
@@ -49,7 +54,7 @@ const nextConfig = {
             value: 'public, max-age=31536000, immutable',
           },
         ],
-      }
+      },
     ];
   },
 };

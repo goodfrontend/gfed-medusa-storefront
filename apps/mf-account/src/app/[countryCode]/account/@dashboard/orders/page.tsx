@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { OrderOverview } from '@gfed-medusa/sf-lib-account/components/order-overview';
 import { TransferRequestForm } from '@gfed-medusa/sf-lib-account/components/transfer-request-form';
 import { listOrders } from '@gfed-medusa/sf-lib-account/lib/data/orders';
+import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
 import { Divider } from '@gfed-medusa/sf-lib-ui/components/divider';
 
 export const metadata: Metadata = {
@@ -12,7 +13,8 @@ export const metadata: Metadata = {
 };
 
 export default async function Orders() {
-  const orders = await listOrders();
+  const ctx = await resolveNextContext();
+  const orders = await listOrders(ctx, 10, 0, undefined);
 
   if (!orders) {
     notFound();

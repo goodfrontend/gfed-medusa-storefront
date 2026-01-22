@@ -7,6 +7,7 @@ import { useParams } from 'next/navigation';
 import { isEqual } from 'lodash';
 
 import { ErrorMessage } from '@gfed-medusa/sf-lib-common/components/error-message';
+import { useStorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import { Divider } from '@gfed-medusa/sf-lib-ui/components/divider';
 import { HttpTypes } from '@medusajs/types';
 import { Button } from '@medusajs/ui';
@@ -116,6 +117,7 @@ export default function ProductActions({
   const actionsRef = useRef<HTMLDivElement>(null);
 
   const inView = useIntersection(actionsRef, '0px');
+  const ctx = useStorefrontContext();
 
   // add the selected variant to the cart
   const handleAddToCart = async () => {
@@ -124,14 +126,18 @@ export default function ProductActions({
     setStatus(AddToCartStatus.ADDING);
 
     try {
-      await addToCart({
-        variantId: selectedVariant.id,
-        quantity: 1,
-        countryCode,
-      });
+      await addToCart(
+        {
+          variantId: selectedVariant.id,
+          quantity: 1,
+          countryCode,
+        },
+        ctx
+      );
 
       setStatus(AddToCartStatus.SUCCESS);
-    } catch {
+    } catch(error) {
+            console.log(error);
       setStatus(AddToCartStatus.ERROR);
     }
   };

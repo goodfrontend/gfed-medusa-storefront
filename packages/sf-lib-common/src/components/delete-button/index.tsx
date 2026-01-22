@@ -4,6 +4,7 @@ import { Spinner, Trash } from '@medusajs/icons';
 import { clx } from '@medusajs/ui';
 
 import { deleteLineItem } from '@/lib/data/cart';
+import { useStorefrontContext } from '@/lib/data/context';
 
 const DeleteButton = ({
   id,
@@ -14,11 +15,12 @@ const DeleteButton = ({
   children?: React.ReactNode;
   className?: string;
 }) => {
+  const ctx = useStorefrontContext();
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async (id: string) => {
     setIsDeleting(true);
-    await deleteLineItem(id).catch((err) => {
+    await deleteLineItem(id, ctx).catch((err) => {
       setIsDeleting(false);
     });
   };
