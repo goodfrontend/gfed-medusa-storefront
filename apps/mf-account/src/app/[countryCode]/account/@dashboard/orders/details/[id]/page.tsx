@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { OrderDetailsTemplate } from '@gfed-medusa/sf-lib-checkout/templates';
+import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
 import { retrieveOrder } from '@gfed-medusa/sf-lib-common/lib/data/orders';
 
 type Props = {
@@ -10,7 +11,8 @@ type Props = {
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const params = await props.params;
-  const order = await retrieveOrder(params.id).catch(() => null);
+  const ctx = await resolveNextContext();
+  const order = await retrieveOrder(params.id, ctx).catch(() => null);
 
   if (!order) {
     notFound();
@@ -24,7 +26,8 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
 export default async function OrderDetailPage(props: Props) {
   const params = await props.params;
-  const order = await retrieveOrder(params.id).catch(() => null);
+  const ctx = await resolveNextContext();
+  const order = await retrieveOrder(params.id, ctx).catch(() => null);
 
   if (!order) {
     notFound();

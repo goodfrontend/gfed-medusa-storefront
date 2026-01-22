@@ -8,6 +8,7 @@ import { ProfileName } from '@gfed-medusa/sf-lib-account/components/profile-name
 // Requires major version update for sf-lib-account
 import { ProfileEmail as ProfilePhone } from '@gfed-medusa/sf-lib-account/components/profile-phone';
 import { retrieveCustomer } from '@gfed-medusa/sf-lib-common/lib/data/customer';
+import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
 import { listRegions } from '@gfed-medusa/sf-lib-common/lib/data/regions';
 
 export const metadata: Metadata = {
@@ -16,8 +17,9 @@ export const metadata: Metadata = {
 };
 
 export default async function Profile() {
-  const customer = await retrieveCustomer();
-  const regions = await listRegions();
+  const ctx = await resolveNextContext();
+  const customer = await retrieveCustomer(ctx);
+  const regions = await listRegions(ctx);
 
   if (!customer || !regions) {
     notFound();

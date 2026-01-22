@@ -1,5 +1,6 @@
 import TransferImage from '@gfed-medusa/sf-lib-checkout/components/transfer-image';
 import { acceptTransferRequest } from '@gfed-medusa/sf-lib-checkout/lib/data/orders';
+import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
 import { Heading, Text } from '@medusajs/ui';
 
 export default async function TransferPage({
@@ -8,8 +9,8 @@ export default async function TransferPage({
   params: { id: string; token: string };
 }) {
   const { id, token } = params;
-
-  const { success, error } = await acceptTransferRequest(id, token);
+  const ctx = await resolveNextContext();
+  const { success, error } = await acceptTransferRequest(id, token, ctx);
 
   return (
     <div className="mx-auto mt-10 mb-20 flex w-2/5 flex-col items-start gap-y-4">

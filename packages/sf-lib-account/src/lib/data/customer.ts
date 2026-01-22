@@ -14,6 +14,7 @@ import {
   removeCartId as removeCartIdCommon,
   setAuthToken as setAuthTokenCommon,
 } from '@gfed-medusa/sf-lib-common/lib/data/cookies';
+import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
 import {
   createServerApolloClient,
   graphqlFetch,
@@ -83,11 +84,8 @@ export const updateCustomer = async (
   return updateRes;
 };
 
-export async function signup(
-  _currentState: unknown,
-  formData: FormData,
-  ctx: StorefrontContext
-) {
+export async function signup(_currentState: unknown, formData: FormData) {
+  const ctx = await resolveNextContext();
   const password = formData.get('password') as string;
   const customerForm = {
     email: formData.get('email') as string,
@@ -140,19 +138,8 @@ export async function signup(
   }
 }
 
-/**
- * Sets appropriate cookies for client-side SDK authentication
- * and merges carts if applicable.
- *
- * @param token Auth token received after logging in
- * @param ctx Storefront context
- * @returns
- */
-export async function postLogin(
-  token: string | null | undefined,
-  ctx: StorefrontContext
-) {
-  // TODO: MDS-80 Revisit: remove auth-related logic once all requests are refactored to use BFF.
+export async function postLogin(token: string | null | undefined) {
+  const ctx = await resolveNextContext();
   if (token) {
     await setAuthToken(token as string);
     await setAuthTokenCommon(token as string, ctx);
@@ -172,8 +159,8 @@ export async function postLogin(
   }
 }
 
-// TODO: MDS-80 Revisit and remove logic related to JWT-based auth.
-export async function postSignout(countryCode: string, ctx: StorefrontContext) {
+export async function postSignout(countryCode: string) {
+  const ctx = await resolveNextContext();
   await sdk.auth.logout();
 
   await removeAuthToken();
@@ -235,11 +222,11 @@ export const transferCart = async (
   }
 };
 
-export const addCustomerAddress = async (
+export async function addCustomerAddress(
   currentState: Record<string, unknown>,
-  formData: FormData,
-  ctx: StorefrontContext
-): Promise<any> => {
+  formData: FormData
+) {
+  const ctx = await resolveNextContext();
   const isDefaultBilling = (currentState.isDefaultBilling as boolean) || false;
   const isDefaultShipping =
     (currentState.isDefaultShipping as boolean) || false;
@@ -263,26 +250,26 @@ export const addCustomerAddress = async (
     ...getAuthHeaders(ctx),
   };
 
-  return sdk.store.customer
-    .createAddress(address, {}, headers)
-    .then(async ({ customer }) => {
-      const customerCacheTag = getCacheTag('customers', ctx);
-      if (ctx.revalidate) {
-        ctx.revalidate(customerCacheTag);
-      } else {
-        revalidateTag(customerCacheTag);
-      }
-      return { success: true, error: null };
-    })
-    .catch((err) => {
-      return { success: false, error: err.toString() };
-    });
-};
+  try {
+    await sdk.store.customer.createAddress(address, {}, headers);
+    const customerCacheTag = getCacheTag('customers', ctx);
+    if (ctx.revalidate) {
+      ctx.revalidate(customerCacheTag);
+    } else {
+      revalidateTag(customerCacheTag);
+    }
+    return { isDefaultShipping, success: true, error: null };
+  } catch (err: unknown) {
+    return {
+      isDefaultShipping,
+      success: false,
+      error: err instanceof Error ? err.toString() : String(err),
+    };
+  }
+}
 
-export const deleteCustomerAddress = async (
-  addressId: string,
-  ctx: StorefrontContext
-): Promise<void> => {
+export async function deleteCustomerAddress(addressId: string) {
+  const ctx = await resolveNextContext();
   const headers = {
     ...getAuthHeaders(ctx),
   };
@@ -301,18 +288,22 @@ export const deleteCustomerAddress = async (
     .catch((err) => {
       return { success: false, error: err.toString() };
     });
-};
+}
 
-export const updateCustomerAddress = async (
+export async function updateCustomerAddress(
   currentState: Record<string, unknown>,
-  formData: FormData,
-  ctx: StorefrontContext
-): Promise<any> => {
+  formData: FormData
+) {
+  const ctx = await resolveNextContext();
   const addressId =
     (currentState.addressId as string) || (formData.get('addressId') as string);
 
   if (!addressId) {
-    return { success: false, error: 'Address ID is required' };
+    return {
+      addressId: undefined,
+      success: false,
+      error: 'Address ID is required',
+    };
   }
 
   const address = {
@@ -337,18 +328,20 @@ export const updateCustomerAddress = async (
     ...getAuthHeaders(ctx),
   };
 
-  return sdk.store.customer
-    .updateAddress(addressId, address, {}, headers)
-    .then(async () => {
-      const customerCacheTag = getCacheTag('customers', ctx);
-      if (ctx.revalidate) {
-        ctx.revalidate(customerCacheTag);
-      } else {
-        revalidateTag(customerCacheTag);
-      }
-      return { success: true, error: null };
-    })
-    .catch((err) => {
-      return { success: false, error: err.toString() };
-    });
-};
+  try {
+    await sdk.store.customer.updateAddress(addressId, address, {}, headers);
+    const customerCacheTag = getCacheTag('customers', ctx);
+    if (ctx.revalidate) {
+      ctx.revalidate(customerCacheTag);
+    } else {
+      revalidateTag(customerCacheTag);
+    }
+    return { addressId, success: true, error: null };
+  } catch (err: unknown) {
+    return {
+      addressId,
+      success: false,
+      error: err instanceof Error ? err.toString() : String(err),
+    };
+  }
+}

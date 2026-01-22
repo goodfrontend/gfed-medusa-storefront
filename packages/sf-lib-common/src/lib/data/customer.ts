@@ -13,11 +13,11 @@ import {
 import { TRANSFER_CART_MUTATION } from '../gql/mutations/cart';
 import { GET_CUSTOMER_QUERY } from '../gql/queries/customer';
 import { medusaError } from '../utils/medusa-error';
-import { StorefrontContext } from './context';
+import type { StorefrontContext } from './context';
 import { getCacheTag, getCartId } from './cookies';
 
 export const transferCart = async (
-  ctx: StorefrontContext = {}
+  ctx: StorefrontContext
 ): Promise<TransferCartMutation['transferCart'] | null> => {
   const cartId = getCartId(ctx);
 
@@ -51,7 +51,7 @@ export const transferCart = async (
 };
 
 export const retrieveCustomer = async (
-  ctx: StorefrontContext = {}
+  ctx: StorefrontContext
 ): Promise<Customer | null> => {
   const cookieHeader = ctx.cookieHeader;
   const apolloClient = createServerApolloClient(cookieHeader);

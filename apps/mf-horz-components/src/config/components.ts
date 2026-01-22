@@ -10,7 +10,7 @@ import { Header } from '../components/header';
 export interface ComponentDefinition {
   name: string;
   component: ComponentType<any>;
-  getData: (ctx: StorefrontContext) => Promise<any>;
+  getData: (ctx?: StorefrontContext) => Promise<any>;
   elementTag: string;
   dataVariable: string;
 }
@@ -44,7 +44,7 @@ export const COMPONENT_REGISTRY: ComponentDefinition[] = [
   {
     name: 'footer',
     component: Footer,
-    getData: async (ctx: StorefrontContext) => {
+    getData: async (ctx?: StorefrontContext) => {
       const [
         { createServerApolloClient, graphqlFetch },
         { GET_COLLECTIONS_QUERY },
@@ -57,7 +57,7 @@ export const COMPONENT_REGISTRY: ComponentDefinition[] = [
         import('@gfed-medusa/sf-lib-common/lib/gql/queries/footer'),
       ]);
 
-      const apolloClient = createServerApolloClient(ctx.cookieHeader);
+      const apolloClient = createServerApolloClient(ctx?.cookieHeader ?? '');
 
       const [collectionsResult, categoriesResult, footerResult] =
         await Promise.all([

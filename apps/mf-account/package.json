@@ -12,7 +12,7 @@
     "analyze": "ANALYZE=true next build",
     "test": "jest --passWithNoTests",
     "test:watch": "jest --watch",
-    "type:check": "tsc --noEmit --incremental false"
+    "check-types": "tsc --noEmit --incremental false"
   },
   "dependencies": {
     "@apollo/client": "^4.0.4",

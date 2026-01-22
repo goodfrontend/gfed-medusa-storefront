@@ -32,6 +32,7 @@
     "build": "tsdown",
     "dev": "tsdown --watch",
     "test": "jest --passWithNoTests",
+    "check-types": "tsc --noEmit",
     "lint": "eslint . --max-warnings 40"
   },
   "dependencies": {

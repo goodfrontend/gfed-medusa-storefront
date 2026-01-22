@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 
 import { AddressBook } from '@gfed-medusa/sf-lib-account/components/address-book';
 import { retrieveCustomer } from '@gfed-medusa/sf-lib-common/lib/data/customer';
+import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
 
 // lib-products
 import { getRegion } from '@/lib/data/regions';
@@ -17,8 +18,9 @@ export default async function Addresses(props: {
 }) {
   const params = await props.params;
   const { countryCode } = params;
-  const customer = await retrieveCustomer();
-  const region = await getRegion(countryCode);
+  const ctx = await resolveNextContext();
+  const customer = await retrieveCustomer(ctx);
+  const region = await getRegion(countryCode, ctx);
 
   if (!customer || !region) {
     notFound();

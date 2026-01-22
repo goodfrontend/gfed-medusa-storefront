@@ -35,7 +35,7 @@ const EditAddress: React.FC<EditAddressProps> = ({
   const [formState, formAction] = useActionState(updateCustomerAddress, {
     success: false,
     error: null,
-    addressId: address?.id,
+    addressId: address?.id ?? '',
   });
 
   const close = () => {

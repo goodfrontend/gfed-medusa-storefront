@@ -1,11 +1,12 @@
 'use server';
 
 import { sdk } from '@gfed-medusa/sf-lib-common/lib/config/medusa';
-import type { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
+import { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import {
   getAuthHeaders,
   getCacheOptions,
 } from '@gfed-medusa/sf-lib-common/lib/data/cookies';
+import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
 import { medusaError } from '@gfed-medusa/sf-lib-common/lib/utils/medusa-error';
 import { normalizeOrder } from '@gfed-medusa/sf-lib-common/lib/utils/normalize-functions';
 import { HttpTypes } from '@medusajs/types';
@@ -16,13 +17,13 @@ export const createTransferRequest = async (
     error: string | null;
     order: HttpTypes.StoreOrder | null;
   },
-  formData: FormData,
-  ctx: StorefrontContext = {}
+  formData: FormData
 ): Promise<{
   success: boolean;
   error: string | null;
   order: HttpTypes.StoreOrder | null;
 }> => {
+  const ctx = await resolveNextContext();
   const id = formData.get('order_id') as string;
 
   if (!id) {
@@ -45,10 +46,10 @@ export const createTransferRequest = async (
 };
 
 export const listOrders = async (
+  ctx: StorefrontContext,
   limit: number = 10,
   offset: number = 0,
-  filters?: Record<string, any>,
-  ctx: StorefrontContext = {}
+  filters: Record<string, any> | undefined = undefined
 ) => {
   const headers = {
     ...getAuthHeaders(ctx),

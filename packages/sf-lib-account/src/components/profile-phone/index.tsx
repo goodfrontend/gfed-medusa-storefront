@@ -2,6 +2,7 @@
 
 import React, { useActionState, useEffect } from 'react';
 
+import { useStorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import { MedusaInput } from '@gfed-medusa/sf-lib-ui/components/medusa-input';
 
 import { updateCustomer } from '@/lib/data/customer';
@@ -15,17 +16,18 @@ type MyInformationProps = {
 
 const ProfileEmail: React.FC<MyInformationProps> = ({ customer }) => {
   const [successState, setSuccessState] = React.useState(false);
+  const ctx = useStorefrontContext();
 
   const updateCustomerPhone = async (
     _currentState: Record<string, unknown>,
     formData: FormData
   ) => {
-    const customer = {
+    const data = {
       phone: formData.get('phone') as string,
     };
 
     try {
-      await updateCustomer(customer);
+      await updateCustomer(data, ctx);
       return { success: true, error: null };
     } catch (error: any) {
       return { success: false, error: error.toString() };

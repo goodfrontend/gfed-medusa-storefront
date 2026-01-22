@@ -1,3 +1,5 @@
+import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
+
 import Addresses from '@/components/addresses';
 import Payment from '@/components/payment';
 import Review from '@/components/review';
@@ -18,8 +20,12 @@ export default async function CheckoutForm({
     return null;
   }
 
-  const shippingMethods = await listCartShippingMethods(cart.id);
-  const paymentMethods = await listCartPaymentMethods(cart.region?.id ?? '');
+  const ctx = await resolveNextContext();
+  const shippingMethods = await listCartShippingMethods(cart.id, ctx);
+  const paymentMethods = await listCartPaymentMethods(
+    cart.region?.id ?? '',
+    ctx
+  );
 
   if (!shippingMethods || !paymentMethods) {
     return null;

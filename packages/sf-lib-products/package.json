@@ -55,6 +55,7 @@
     "codegen:watch": "graphql-codegen --config codegen.ts --watch",
     "dev": "tsc --watch",
     "format:fix": "prettier --write .",
+    "check-types": "tsc --noEmit",
     "lint": "eslint . --max-warnings 40"
   },
   "dependencies": {

@@ -3,15 +3,16 @@ import { HttpTypes } from '@medusajs/types';
 import { sdk } from '../config/medusa';
 import { medusaError } from '../utils/medusa-error';
 import { normalizeOrder } from '../utils/normalize-functions';
+import { StorefrontContext } from './context';
 import { getAuthHeaders, getCacheOptions } from './cookies';
 
-export const retrieveOrder = async (id: string) => {
+export const retrieveOrder = async (id: string, ctx: StorefrontContext) => {
   const headers = {
-    ...(await getAuthHeaders()),
+    ...getAuthHeaders(ctx),
   };
 
   const next = {
-    ...(await getCacheOptions('orders')),
+    ...getCacheOptions('orders', ctx),
   };
 
   return sdk.client

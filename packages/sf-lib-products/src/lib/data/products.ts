@@ -1,5 +1,6 @@
 'use server';
 
+import type { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import { graphqlFetch } from '@gfed-medusa/sf-lib-common/lib/gql/apollo-client';
 import type { Region } from '@gfed-medusa/sf-lib-common/types/graphql';
 
@@ -14,16 +15,19 @@ import type {
 
 import { getRegion, retrieveRegion } from './regions';
 
-export const listProducts = async ({
-  countryCode,
-  regionId,
-  queryParams,
-}: {
-  pageParam?: number;
-  queryParams?: GetProductsQueryVariables;
-  countryCode?: string;
-  regionId?: string;
-}): Promise<{
+export const listProducts = async (
+  {
+    countryCode,
+    regionId,
+    queryParams,
+  }: {
+    pageParam?: number;
+    queryParams?: GetProductsQueryVariables;
+    countryCode?: string;
+    regionId?: string;
+  },
+  ctx: StorefrontContext
+): Promise<{
   response: {
     products: GetProductsQuery['products']['products'] | [];
     count: number;
@@ -38,9 +42,9 @@ export const listProducts = async ({
   let region: Region | undefined | null;
 
   if (countryCode) {
-    region = await getRegion(countryCode);
+    region = await getRegion(countryCode, ctx);
   } else {
-    region = await retrieveRegion(regionId!);
+    region = await retrieveRegion(regionId!, ctx);
   }
 
   if (!region) {
@@ -84,17 +88,20 @@ export const listProducts = async ({
  * This will fetch 100 products to the Next.js cache and sort them based on the sortBy parameter.
  * It will then return the paginated products based on the page and limit parameters.
  */
-export const listProductsWithSort = async ({
-  page = 0,
-  queryParams,
-  sortBy = 'created_at',
-  countryCode,
-}: {
-  page?: number;
-  queryParams?: GetProductsQueryVariables;
-  sortBy?: SortOptions;
-  countryCode: string;
-}): Promise<{
+export const listProductsWithSort = async (
+  {
+    page = 0,
+    queryParams,
+    sortBy = 'created_at',
+    countryCode,
+  }: {
+    page?: number;
+    queryParams?: GetProductsQueryVariables;
+    sortBy?: SortOptions;
+    countryCode: string;
+  },
+  ctx: StorefrontContext
+): Promise<{
   response: { products: Product[]; count: number };
   nextPage: number | null;
   queryParams?: GetProductsQueryVariables;
@@ -103,14 +110,17 @@ export const listProductsWithSort = async ({
 
   const {
     response: { products: rawProducts, count },
-  } = await listProducts({
-    pageParam: 0,
-    queryParams: {
-      ...queryParams,
-      limit: 100,
+  } = await listProducts(
+    {
+      pageParam: 0,
+      queryParams: {
+        ...queryParams,
+        limit: 100,
+      },
+      countryCode,
     },
-    countryCode,
-  });
+    ctx
+  );
 
   const products = rawProducts ?? [];
   const sortedProducts = sortProducts(products as Product[], sortBy);

@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { ErrorMessage } from '@gfed-medusa/sf-lib-common/components/error-message';
+import { useStorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import { Divider } from '@gfed-medusa/sf-lib-ui/components/divider';
 import { RadioGroup } from '@headlessui/react';
 import { CheckCircleSolid, CreditCard } from '@medusajs/icons';
@@ -44,14 +45,19 @@ const Payment = ({
   const isOpen = searchParams.get('step') === 'payment';
 
   const isStripe = isStripeFunc(selectedPaymentMethod);
+  const ctx = useStorefrontContext();
 
   const setPaymentMethod = async (method: string) => {
     setError(null);
     setSelectedPaymentMethod(method);
     if (isStripeFunc(method)) {
-      await initiatePaymentSession(camelToSnakeCase(cart), {
-        provider_id: method,
-      });
+      await initiatePaymentSession(
+        camelToSnakeCase(cart),
+        {
+          provider_id: method,
+        },
+        ctx
+      );
     }
   };
 
@@ -86,9 +92,13 @@ const Payment = ({
         activeSession?.providerId === selectedPaymentMethod;
 
       if (!checkActiveSession) {
-        await initiatePaymentSession(camelToSnakeCase(cart), {
-          provider_id: selectedPaymentMethod,
-        });
+        await initiatePaymentSession(
+          camelToSnakeCase(cart),
+          {
+            provider_id: selectedPaymentMethod,
+          },
+          ctx
+        );
       }
 
       if (!shouldInputCard) {
@@ -118,7 +128,7 @@ const Payment = ({
           className={clx(
             'text-3xl-regular flex flex-row items-baseline gap-x-2',
             {
-              'pointer-events-none select-none opacity-50':
+              'pointer-events-none opacity-50 select-none':
                 !isOpen && !paymentReady,
             }
           )}

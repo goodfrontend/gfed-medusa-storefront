@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
+import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
 import { listProducts } from '@gfed-medusa/sf-lib-products/lib/data/products';
 import { getRegion } from '@gfed-medusa/sf-lib-products/lib/data/regions';
 import ProductTemplate from '@gfed-medusa/sf-lib-products/templates/product-template';
@@ -12,16 +13,20 @@ export type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { handle, countryCode } = await params;
-  const region = await getRegion(countryCode);
+  const ctx = await resolveNextContext();
+  const region = await getRegion(countryCode, ctx);
 
   if (!region) {
     notFound();
   }
 
-  const product = await listProducts({
-    countryCode,
-    queryParams: { handle },
-  }).then(({ response }) => response.products?.[0]);
+  const product = await listProducts(
+    {
+      countryCode,
+      queryParams: { handle },
+    },
+    ctx
+  ).then(({ response }) => response.products?.[0]);
 
   if (!product) {
     notFound();
@@ -40,16 +45,20 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductPage({ params }: Props) {
   const { countryCode, handle } = await params;
-  const region = await getRegion(countryCode);
+  const ctx = await resolveNextContext();
+  const region = await getRegion(countryCode, ctx);
 
   if (!region) {
     notFound();
   }
 
-  const pricedProduct = await listProducts({
-    countryCode,
-    queryParams: { handle },
-  }).then(({ response }) => response.products?.[0]);
+  const pricedProduct = await listProducts(
+    {
+      countryCode,
+      queryParams: { handle },
+    },
+    ctx
+  ).then(({ response }) => response.products?.[0]);
 
   if (!pricedProduct) {
     notFound();

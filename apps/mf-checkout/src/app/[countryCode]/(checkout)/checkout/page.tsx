@@ -6,21 +6,22 @@ import { retrieveCart } from '@gfed-medusa/sf-lib-checkout/lib/data/cart';
 import { Cart } from '@gfed-medusa/sf-lib-checkout/lib/gql/generated-types/graphql';
 import CheckoutForm from '@gfed-medusa/sf-lib-checkout/templates/checkout-form';
 import CheckoutSummary from '@gfed-medusa/sf-lib-checkout/templates/checkout-summary';
-import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
 import { retrieveCustomer } from '@gfed-medusa/sf-lib-common/lib/data/customer';
+import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
 
 export const metadata: Metadata = {
   title: 'Checkout',
 };
 
 export default async function Checkout() {
-  const cart = await retrieveCart();
+  const ctx = await resolveNextContext();
+  const cart = await retrieveCart(undefined, ctx);
 
   if (!cart) {
     return notFound();
   }
 
-  const customer = await retrieveCustomer(await resolveNextContext());
+  const customer = await retrieveCustomer(ctx);
 
   return (
     <div className="content-container small:grid-cols-[1fr_416px] grid grid-cols-1 gap-x-40 py-12">

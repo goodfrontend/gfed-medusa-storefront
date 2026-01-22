@@ -3,19 +3,21 @@
 import { type ReactNode, createContext, useContext } from 'react';
 
 export interface StorefrontContext {
-  cartId?: string;
-  customerToken?: string;
-  cacheId?: string;
-  cookieHeader?: string;
-  revalidate?: (tag: string) => void;
-  updateRegion?: (countryCode: string, currentPath: string) => Promise<void>;
-  setCartId?: (id: string) => Promise<void>;
-  removeCartId?: () => Promise<void>;
-  setAuthToken?: (token: string) => Promise<void>;
-  removeAuthToken?: () => Promise<void>;
+  cartId: string;
+  customerToken: string;
+  cacheId: string;
+  cookieHeader: string;
+  revalidate: (tag: string) => void;
+  updateRegion: (countryCode: string, currentPath: string) => Promise<void>;
+  setCartId: (id: string) => Promise<void>;
+  removeCartId: () => Promise<void>;
+  setAuthToken: (token: string) => Promise<void>;
+  removeAuthToken: () => Promise<void>;
 }
 
-const StorefrontReactContext = createContext<StorefrontContext>({});
+const StorefrontReactContext = createContext<StorefrontContext>(
+  {} as StorefrontContext
+);
 
 export const StorefrontProvider = ({
   children,
