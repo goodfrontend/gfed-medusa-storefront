@@ -17,7 +17,7 @@ import { StorefrontContext } from './context';
 import { getCacheTag, getCartId } from './cookies';
 
 export const transferCart = async (
-  ctx: StorefrontContext
+  ctx: StorefrontContext = {}
 ): Promise<TransferCartMutation['transferCart'] | null> => {
   const cartId = getCartId(ctx);
 
@@ -51,7 +51,7 @@ export const transferCart = async (
 };
 
 export const retrieveCustomer = async (
-  ctx: StorefrontContext
+  ctx: StorefrontContext = {}
 ): Promise<Customer | null> => {
   const cookieHeader = ctx.cookieHeader;
   const apolloClient = createServerApolloClient(cookieHeader);
