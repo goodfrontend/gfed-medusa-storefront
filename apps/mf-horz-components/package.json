@@ -15,7 +15,7 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "@gfed-medusa/sf-lib-common": "^2.0.0",
+    "@gfed-medusa/sf-lib-common": "^2.1.0",
     "@gfed-medusa/sf-lib-ui": "^1.1.2",
     "@headlessui/react": "2.2.9",
     "@hono/node-server": "^1.13.7",
