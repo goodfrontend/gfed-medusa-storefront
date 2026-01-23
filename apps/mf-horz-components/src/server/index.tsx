@@ -22,12 +22,6 @@ const resolveContext = (c: Context): StorefrontContext => {
     customerToken: getCookie(c, '_medusa_jwt') ?? '',
     cacheId: getCookie(c, '_medusa_cache_id') ?? '',
     cookieHeader: c.req.header('Cookie') ?? '',
-    revalidate: () => {},
-    updateRegion: async () => {},
-    setCartId: async () => {},
-    removeCartId: async () => {},
-    setAuthToken: async () => {},
-    removeAuthToken: async () => {},
   };
 };
 

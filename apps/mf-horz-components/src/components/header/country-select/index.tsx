@@ -2,7 +2,10 @@ import { Fragment, useEffect, useMemo, useState } from 'react';
 
 import ReactCountryFlag from 'react-country-flag';
 
-import { useStorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
+import {
+  useStorefrontActions,
+  useStorefrontContext,
+} from '@gfed-medusa/sf-lib-common/lib/data/context';
 import { StateType } from '@gfed-medusa/sf-lib-common/lib/hooks/use-toggle-state';
 import { Region } from '@gfed-medusa/sf-lib-common/types/graphql';
 import {
@@ -31,6 +34,7 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
   >(undefined);
   const [countryCode, setCountryCode] = useState('dk');
   const ctx = useStorefrontContext();
+  const actions = useStorefrontActions();
 
   const { state, close } = toggleState;
 
@@ -62,8 +66,8 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
     const currentPath =
       window.location.pathname.split(`/${countryCode}`)[1] || '';
 
-    if (ctx.updateRegion) {
-      ctx.updateRegion(option.country, currentPath);
+    if (actions.updateRegion) {
+      actions.updateRegion(option.country, currentPath);
     } else {
       // Fallback for non-provisioned environments
       window.location.href = `/${option.country}${currentPath}`;

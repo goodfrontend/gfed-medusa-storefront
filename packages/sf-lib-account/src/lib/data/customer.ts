@@ -10,9 +10,9 @@ import {
   getAuthHeaders,
   getCacheTag,
   getCartId,
-  removeAuthToken as removeAuthTokenCommon,
-  removeCartId as removeCartIdCommon,
-  setAuthToken as setAuthTokenCommon,
+  removeAuthTokenAction,
+  removeCartIdAction,
+  setAuthTokenAction,
 } from '@gfed-medusa/sf-lib-common/lib/data/cookies';
 import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
 import {
@@ -34,8 +34,6 @@ import {
   GetCustomerQuery,
   GetCustomerQueryVariables,
 } from '@/types/graphql';
-
-import { removeAuthToken, setAuthToken } from './cookies';
 
 export const retrieveCustomer = async (
   ctx: StorefrontContext
@@ -75,11 +73,7 @@ export const updateCustomer = async (
     .catch(medusaError);
 
   const cacheTag = getCacheTag('customers', ctx);
-  if (ctx.revalidate) {
-    ctx.revalidate(cacheTag);
-  } else {
-    revalidateTag(cacheTag);
-  }
+  revalidateTag(cacheTag);
 
   return updateRes;
 };
@@ -100,8 +94,7 @@ export async function signup(_currentState: unknown, formData: FormData) {
       password: password,
     });
 
-    await setAuthToken(token as string);
-    await setAuthTokenCommon(token as string, ctx);
+    await setAuthTokenAction(token as string);
 
     const headers = {
       ...getAuthHeaders(ctx),
@@ -114,15 +107,10 @@ export async function signup(_currentState: unknown, formData: FormData) {
       password,
     });
 
-    await setAuthToken(loginToken as string);
-    await setAuthTokenCommon(loginToken as string, ctx);
+    await setAuthTokenAction(loginToken as string);
 
     const customerCacheTag = getCacheTag('customers', ctx);
-    if (ctx.revalidate) {
-      ctx.revalidate(customerCacheTag);
-    } else {
-      revalidateTag(customerCacheTag);
-    }
+    revalidateTag(customerCacheTag);
 
     await transferCart(ctx);
 
@@ -141,15 +129,10 @@ export async function signup(_currentState: unknown, formData: FormData) {
 export async function postLogin(token: string | null | undefined) {
   const ctx = await resolveNextContext();
   if (token) {
-    await setAuthToken(token as string);
-    await setAuthTokenCommon(token as string, ctx);
+    await setAuthTokenAction(token as string);
 
     const customerCacheTag = getCacheTag('customers', ctx);
-    if (ctx.revalidate) {
-      ctx.revalidate(customerCacheTag);
-    } else {
-      revalidateTag(customerCacheTag);
-    }
+    revalidateTag(customerCacheTag);
   }
 
   try {
@@ -163,24 +146,15 @@ export async function postSignout(countryCode: string) {
   const ctx = await resolveNextContext();
   await sdk.auth.logout();
 
-  await removeAuthToken();
-  await removeAuthTokenCommon(ctx);
+  await removeAuthTokenAction();
 
   const customerCacheTag = getCacheTag('customers', ctx);
-  if (ctx.revalidate) {
-    ctx.revalidate(customerCacheTag);
-  } else {
-    revalidateTag(customerCacheTag);
-  }
+  revalidateTag(customerCacheTag);
 
-  await removeCartIdCommon(ctx);
+  await removeCartIdAction();
 
   const cartCacheTag = getCacheTag('carts', ctx);
-  if (ctx.revalidate) {
-    ctx.revalidate(cartCacheTag);
-  } else {
-    revalidateTag(cartCacheTag);
-  }
+  revalidateTag(cartCacheTag);
 
   redirect(`/${countryCode}/account`);
 }
@@ -209,11 +183,7 @@ export const transferCart = async (
 
     if (cart) {
       const cartCacheTag = getCacheTag('carts', ctx);
-      if (ctx.revalidate) {
-        ctx.revalidate(cartCacheTag);
-      } else {
-        revalidateTag(cartCacheTag);
-      }
+      revalidateTag(cartCacheTag);
     }
 
     return cart;
@@ -253,11 +223,7 @@ export async function addCustomerAddress(
   try {
     await sdk.store.customer.createAddress(address, {}, headers);
     const customerCacheTag = getCacheTag('customers', ctx);
-    if (ctx.revalidate) {
-      ctx.revalidate(customerCacheTag);
-    } else {
-      revalidateTag(customerCacheTag);
-    }
+    revalidateTag(customerCacheTag);
     return { isDefaultShipping, success: true, error: null };
   } catch (err: unknown) {
     return {
@@ -278,11 +244,7 @@ export async function deleteCustomerAddress(addressId: string) {
     .deleteAddress(addressId, headers)
     .then(async () => {
       const customerCacheTag = getCacheTag('customers', ctx);
-      if (ctx.revalidate) {
-        ctx.revalidate(customerCacheTag);
-      } else {
-        revalidateTag(customerCacheTag);
-      }
+      revalidateTag(customerCacheTag);
       return { success: true, error: null };
     })
     .catch((err) => {
@@ -331,11 +293,7 @@ export async function updateCustomerAddress(
   try {
     await sdk.store.customer.updateAddress(addressId, address, {}, headers);
     const customerCacheTag = getCacheTag('customers', ctx);
-    if (ctx.revalidate) {
-      ctx.revalidate(customerCacheTag);
-    } else {
-      revalidateTag(customerCacheTag);
-    }
+    revalidateTag(customerCacheTag);
     return { addressId, success: true, error: null };
   } catch (err: unknown) {
     return {

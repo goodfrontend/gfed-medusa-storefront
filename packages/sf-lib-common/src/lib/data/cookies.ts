@@ -1,3 +1,5 @@
+'use server';
+
 import type { StorefrontContext } from './context';
 
 export const getAuthHeaders = (
@@ -76,27 +78,3 @@ export async function removeAuthTokenAction() {
   const c = await cookies();
   c.set('_medusa_jwt', '', { maxAge: -1 });
 }
-
-export const setCartId = async (id: string, ctx: StorefrontContext) => {
-  if (ctx.setCartId) {
-    await ctx.setCartId(id);
-  }
-};
-
-export const removeCartId = async (ctx: StorefrontContext) => {
-  if (ctx.removeCartId) {
-    await ctx.removeCartId();
-  }
-};
-
-export const setAuthToken = async (token: string, ctx: StorefrontContext) => {
-  if (ctx.setAuthToken) {
-    await ctx.setAuthToken(token);
-  }
-};
-
-export const removeAuthToken = async (ctx: StorefrontContext) => {
-  if (ctx.removeAuthToken) {
-    await ctx.removeAuthToken();
-  }
-};

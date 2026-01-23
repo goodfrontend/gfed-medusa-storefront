@@ -136,8 +136,8 @@ export default function ProductActions({
       );
 
       setStatus(AddToCartStatus.SUCCESS);
-    } catch(error) {
-            console.log(error);
+    } catch (error) {
+      console.log(error);
       setStatus(AddToCartStatus.ERROR);
     }
   };

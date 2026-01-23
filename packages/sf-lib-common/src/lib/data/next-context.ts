@@ -6,14 +6,7 @@ import { redirect } from 'next/navigation';
 
 import { updateCart } from './cart';
 import { StorefrontContext } from './context';
-import {
-  getCacheTag,
-  getCartId,
-  removeAuthTokenAction,
-  removeCartIdAction,
-  setAuthTokenAction,
-  setCartIdAction,
-} from './cookies';
+import { getCacheTag, getCartId } from './cookies';
 import { getRegion } from './regions';
 
 export const resolveNextContext = async (): Promise<StorefrontContext> => {
@@ -24,12 +17,6 @@ export const resolveNextContext = async (): Promise<StorefrontContext> => {
     customerToken: cookieStore.get('_medusa_jwt')?.value ?? '',
     cacheId: cookieStore.get('_medusa_cache_id')?.value ?? '',
     cookieHeader: cookieStore.toString(),
-    revalidate: (tag: string) => revalidateTag(tag),
-    updateRegion: updateRegionAction,
-    setCartId: setCartIdAction,
-    removeCartId: removeCartIdAction,
-    setAuthToken: setAuthTokenAction,
-    removeAuthToken: removeAuthTokenAction,
   };
 };
 

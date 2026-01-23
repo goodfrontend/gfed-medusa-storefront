@@ -7,12 +7,7 @@ export interface StorefrontContext {
   customerToken: string;
   cacheId: string;
   cookieHeader: string;
-  revalidate: (tag: string) => void;
-  updateRegion: (countryCode: string, currentPath: string) => Promise<void>;
-  setCartId: (id: string) => Promise<void>;
-  removeCartId: () => Promise<void>;
-  setAuthToken: (token: string) => Promise<void>;
-  removeAuthToken: () => Promise<void>;
+  revalidate?: (tag: string) => void;
 }
 
 const StorefrontReactContext = createContext<StorefrontContext>(
@@ -34,3 +29,4 @@ export const StorefrontProvider = ({
 };
 
 export const useStorefrontContext = () => useContext(StorefrontReactContext);
+export { useStorefrontActions } from './client-actions';
