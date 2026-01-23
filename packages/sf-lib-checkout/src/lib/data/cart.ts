@@ -10,8 +10,8 @@ import {
   getCacheOptions,
   getCacheTag,
   getCartId,
-  removeCartId,
-  setCartId,
+  removeCartIdAction,
+  setCartIdAction,
 } from '@gfed-medusa/sf-lib-common/lib/data/cookies';
 import { medusaError } from '@gfed-medusa/sf-lib-common/lib/utils/medusa-error';
 import { HttpTypes } from '@medusajs/types';
@@ -104,7 +104,7 @@ export const getOrSetCart = async (
 
     cart = data?.createCart ?? null;
 
-    await setCartId(cart?.id || '', ctx);
+    await setCartIdAction(cart?.id || '');
 
     const cartCacheTag = getCacheTag('carts', ctx);
     revalidateTag(cartCacheTag);
@@ -565,7 +565,7 @@ export async function placeOrder(
       const orderCacheTag = getCacheTag('orders', ctx);
       revalidateTag(orderCacheTag);
 
-      await removeCartId(ctx);
+      await removeCartIdAction();
       redirect(`/${countryCode}/order/${order?.id}/confirmed`);
 
       return order;

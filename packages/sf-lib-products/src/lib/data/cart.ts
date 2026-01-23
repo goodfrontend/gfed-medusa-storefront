@@ -6,7 +6,7 @@ import type { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/cont
 import {
   getCacheTag,
   getCartId,
-  setCartId,
+  setCartIdAction,
 } from '@gfed-medusa/sf-lib-common/lib/data/cookies';
 import {
   graphqlFetch,
@@ -81,15 +81,10 @@ export const getOrSetCart = async (
     cart = data?.createCart ?? null;
 
     if (cart) {
-      await setCartId(cart.id, ctx);
+      await setCartIdAction(cart.id);
 
-      if (ctx.revalidate) {
-        const cartCacheTag = getCacheTag('carts', ctx);
-        ctx.revalidate(cartCacheTag);
-      } else {
-        const cartCacheTag = getCacheTag('carts', ctx);
-        revalidateTag(cartCacheTag);
-      }
+      const cartCacheTag = getCacheTag('carts', ctx);
+      revalidateTag(cartCacheTag);
     }
   }
 
@@ -108,13 +103,8 @@ export const getOrSetCart = async (
     cart = data?.updateCart ?? cart;
 
     if (cart) {
-      if (ctx.revalidate) {
-        const cartCacheTag = getCacheTag('carts', ctx);
-        ctx.revalidate(cartCacheTag);
-      } else {
-        const cartCacheTag = getCacheTag('carts', ctx);
-        revalidateTag(cartCacheTag);
-      }
+      const cartCacheTag = getCacheTag('carts', ctx);
+      revalidateTag(cartCacheTag);
     }
   }
 
@@ -165,19 +155,11 @@ export const addToCart = async (
     const lineItem = result?.createLineItem ?? null;
 
     if (lineItem) {
-      if (ctx.revalidate) {
-        const cartCacheTag = getCacheTag('carts', ctx);
-        ctx.revalidate(cartCacheTag);
+      const cartCacheTag = getCacheTag('carts', ctx);
+      revalidateTag(cartCacheTag);
 
-        const fulfillmentCacheTag = getCacheTag('fulfillment', ctx);
-        ctx.revalidate(fulfillmentCacheTag);
-      } else {
-        const cartCacheTag = getCacheTag('carts', ctx);
-        revalidateTag(cartCacheTag);
-
-        const fulfillmentCacheTag = getCacheTag('fulfillment', ctx);
-        revalidateTag(fulfillmentCacheTag);
-      }
+      const fulfillmentCacheTag = getCacheTag('fulfillment', ctx);
+      revalidateTag(fulfillmentCacheTag);
     }
 
     return lineItem;

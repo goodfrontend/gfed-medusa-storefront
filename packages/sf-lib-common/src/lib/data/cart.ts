@@ -72,12 +72,13 @@ export const updateCart = async (
 
     const cart = result?.updateCart ?? null;
 
-    if (cart && ctx.revalidate) {
+    if (cart) {
+      const { revalidateTag } = await import('next/cache');
       const cartCacheTag = getCacheTag('carts', ctx);
-      ctx.revalidate(cartCacheTag);
+      revalidateTag(cartCacheTag);
 
       const fulfillmentCacheTag = getCacheTag('fulfillment', ctx);
-      ctx.revalidate(fulfillmentCacheTag);
+      revalidateTag(fulfillmentCacheTag);
     }
 
     return cart;
@@ -114,12 +115,13 @@ export const deleteLineItem = async (
 
     const deletedLineItem = result?.deleteLineItem ?? null;
 
-    if (deletedLineItem && ctx.revalidate) {
+    if (deletedLineItem) {
+      const { revalidateTag } = await import('next/cache');
       const cartCacheTag = getCacheTag('carts', ctx);
-      ctx.revalidate(cartCacheTag);
+      revalidateTag(cartCacheTag);
 
       const fulfillmentCacheTag = getCacheTag('fulfillment', ctx);
-      ctx.revalidate(fulfillmentCacheTag);
+      revalidateTag(fulfillmentCacheTag);
     }
 
     return deletedLineItem;

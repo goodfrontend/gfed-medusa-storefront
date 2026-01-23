@@ -141,7 +141,7 @@ const Shipping: React.FC<ShippingProps> = ({
           className={clx(
             'text-3xl-regular flex flex-row items-baseline gap-x-2',
             {
-              'pointer-events-none opacity-50 select-none':
+              'pointer-events-none select-none opacity-50':
                 !isOpen && cart.shippingMethods?.length === 0,
             }
           )}
@@ -178,7 +178,7 @@ const Shipping: React.FC<ShippingProps> = ({
               </span>
             </div>
             <div data-testid="delivery-options-container">
-              <div className="pt-2 pb-8 md:pt-0">
+              <div className="pb-8 pt-2 md:pt-0">
                 {hasPickupOptions && (
                   <RadioGroup
                     value={showPickupOptions}
@@ -287,7 +287,7 @@ const Shipping: React.FC<ShippingProps> = ({
                 </span>
               </div>
               <div data-testid="delivery-options-container">
-                <div className="pt-2 pb-8 md:pt-0">
+                <div className="pb-8 pt-2 md:pt-0">
                   <RadioGroup
                     value={shippingMethodId}
                     onChange={(v) => handleSetShippingMethod(v!, 'pickup')}

@@ -38,9 +38,10 @@ export const transferCart = async (
 
     const cart = result?.transferCart ?? null;
 
-    if (cart && ctx.revalidate) {
+    if (cart) {
+      const { revalidateTag } = await import('next/cache');
       const cartCacheTag = getCacheTag('carts', ctx);
-      ctx.revalidate(cartCacheTag);
+      revalidateTag(cartCacheTag);
     }
 
     return cart;
