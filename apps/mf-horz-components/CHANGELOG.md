@@ -1,6 +1,6 @@
-# @gfed-medusa/sf-lib-common
+# @gfed-medusa/mf-horz-components
 
-## 2.2.0
+## 1.1.0
 
 ### Minor Changes
 
@@ -9,10 +9,5 @@
 ### Patch Changes
 
 - Updated dependencies [ed898a1]
+  - @gfed-medusa/sf-lib-common@2.2.0
   - @gfed-medusa/sf-lib-ui@1.2.0
-
-## 2.1.0
-
-### Minor Changes
-
-- 6ee0b2b: implement storefront context

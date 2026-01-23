@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
-import { OrderDetailsTemplate } from '@gfed-medusa/sf-lib-checkout/templates';
+import OrderDetailsTemplate from '@gfed-medusa/sf-lib-checkout/templates/order-details-template';
 import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
 import { retrieveOrder } from '@gfed-medusa/sf-lib-common/lib/data/orders';
 
