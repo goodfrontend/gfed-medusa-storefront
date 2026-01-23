@@ -1,6 +1,6 @@
 {
   "name": "@gfed-medusa/mf-horz-components",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "type": "module",
   "private": true,
   "scripts": {
@@ -15,8 +15,8 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "@gfed-medusa/sf-lib-common": "^2.2.0",
-    "@gfed-medusa/sf-lib-ui": "^1.2.0",
+    "@gfed-medusa/sf-lib-common": "^2.2.1",
+    "@gfed-medusa/sf-lib-ui": "^1.2.1",
     "@headlessui/react": "2.2.9",
     "@hono/node-server": "^1.13.7",
     "@medusajs/icons": "2.12.1",
