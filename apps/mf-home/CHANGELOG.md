@@ -1,5 +1,15 @@
 # @gfed-medusa/mf-home
 
+## 1.1.1
+
+### Patch Changes
+
+- e495a0d: Separate functions and data in the storefront context
+- Updated dependencies [e495a0d]
+  - @gfed-medusa/sf-lib-common@2.2.1
+  - @gfed-medusa/sf-lib-home@1.2.1
+  - @gfed-medusa/sf-lib-ui@1.2.1
+
 ## 1.1.0
 
 ### Minor Changes

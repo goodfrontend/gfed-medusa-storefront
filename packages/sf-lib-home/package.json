@@ -1,6 +1,6 @@
 {
   "name": "@gfed-medusa/sf-lib-home",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "private": false,
   "type": "module",
   "license": "MIT",
@@ -36,7 +36,7 @@
     "lint": "eslint . --max-warnings 40"
   },
   "dependencies": {
-    "@gfed-medusa/sf-lib-common": "^2.2.0",
+    "@gfed-medusa/sf-lib-common": "^2.2.1",
     "@medusajs/icons": "^2.12.1",
     "@medusajs/ui": "^4.0.29"
   },

@@ -17,7 +17,11 @@ const nextConfig = {
   serverExternalPackages: ['jsdom', 'canvas', 'isomorphic-dompurify'],
   experimental: {
     serverActions: {
-      allowedOrigins: ["localhost:3024"]
+      ...(process.env.NODE_ENV === 'production' ? {
+        allowedOrigins: ["justgood.win"]
+        } : {
+        allowedOrigins: ["localhost:3024"]
+                })
     },
   },
   images: {
