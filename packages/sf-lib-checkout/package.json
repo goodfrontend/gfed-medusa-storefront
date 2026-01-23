@@ -1,6 +1,6 @@
 {
   "name": "@gfed-medusa/sf-lib-checkout",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "private": false,
   "type": "module",
   "module": "./dist/index.js",
@@ -44,8 +44,8 @@
   },
   "dependencies": {
     "@apollo/client": "^4.0.4",
-    "@gfed-medusa/sf-lib-common": "^2.2.0",
-    "@gfed-medusa/sf-lib-ui": "^1.2.0",
+    "@gfed-medusa/sf-lib-common": "^2.2.1",
+    "@gfed-medusa/sf-lib-ui": "^1.2.1",
     "@headlessui/react": "^2.2.9",
     "@medusajs/icons": "^2.12.1",
     "@medusajs/ui": "^4.0.29",
