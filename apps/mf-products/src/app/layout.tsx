@@ -1,3 +1,6 @@
+// sort-imports-ignore
+import '@gfed-medusa/sf-lib-common/lib/globals/expose-globals';
+
 import { Metadata } from 'next';
 
 import { StorefrontProvider } from '@gfed-medusa/sf-lib-common/lib/data/context';
