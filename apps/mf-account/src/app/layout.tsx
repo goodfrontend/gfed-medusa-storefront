@@ -1,5 +1,6 @@
 // sort-imports-ignore
 import '@gfed-medusa/sf-lib-ui/styles.css';
+import '@gfed-medusa/sf-lib-common/lib/globals/expose-globals';
 import './global.css';
 
 import { Metadata } from 'next';
