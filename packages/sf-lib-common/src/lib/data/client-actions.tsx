@@ -1,5 +1,6 @@
 'use client';
 
+import { StorefrontContext } from './context';
 import {
   removeAuthTokenAction,
   removeCartIdAction,
@@ -8,12 +9,16 @@ import {
 } from './cookies';
 import { updateRegionAction } from './next-context';
 
-export const useStorefrontActions = () => {
+export const useStorefrontActions = (ctx?: StorefrontContext) => {
   return {
     setCartId: setCartIdAction,
     removeCartId: removeCartIdAction,
     setAuthToken: setAuthTokenAction,
     removeAuthToken: removeAuthTokenAction,
-    updateRegion: updateRegionAction,
+    updateRegion: ((countryCode: string, currentPath: string) =>
+      updateRegionAction(countryCode, currentPath, ctx)) as (
+      countryCode: string,
+      currentPath: string
+    ) => Promise<void>,
   };
 };

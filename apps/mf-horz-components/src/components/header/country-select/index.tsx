@@ -34,7 +34,7 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
   >(undefined);
   const [countryCode, setCountryCode] = useState('dk');
   const ctx = useStorefrontContext();
-  const actions = useStorefrontActions();
+  const actions = useStorefrontActions(ctx);
 
   const { state, close } = toggleState;
 
@@ -66,12 +66,7 @@ const CountrySelect = ({ toggleState, regions }: CountrySelectProps) => {
     const currentPath =
       window.location.pathname.split(`/${countryCode}`)[1] || '';
 
-    if (actions.updateRegion) {
-      actions.updateRegion(option.country, currentPath);
-    } else {
-      // Fallback for non-provisioned environments
-      window.location.href = `/${option.country}${currentPath}`;
-    }
+    actions.updateRegion(option.country, currentPath);
     close();
   };
 

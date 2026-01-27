@@ -50,15 +50,16 @@
     "@apollo/client": "^4.0.9",
     "@gfed-medusa/sf-lib-ui": "^1.2.1",
     "@headlessui/react": "^2.2.9",
+    "@medusajs/icons": "^2.12.1",
     "@medusajs/js-sdk": "^2.12.1",
     "@medusajs/types": "^2.12.1",
-    "@medusajs/icons": "^2.12.1",
     "@medusajs/ui": "^4.0.29",
     "class-variance-authority": "^0.7.1",
     "isomorphic-dompurify": "^2.34.0",
     "lucide-react": "^0.556.0",
     "react-country-flag": "^3.1.0",
-    "server-only": "^0.0.1"
+    "server-only": "^0.0.1",
+    "swr": "^2.3.8"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^6.0.0",
@@ -87,10 +88,10 @@
     "typescript": "^5"
   },
   "peerDependencies": {
+    "@medusajs/ui": "^4.0.29",
     "next": "^15.3.8",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "tailwindcss": "^4.1.18",
-    "@medusajs/ui": "^4.0.29"
+    "tailwindcss": "^4.1.18"
   }
 }

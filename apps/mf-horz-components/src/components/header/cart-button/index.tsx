@@ -1,21 +1,9 @@
-import { useEffect, useState } from 'react';
-
-import { retrieveCart } from '@gfed-medusa/sf-lib-common/lib/data/cart';
-import { useStorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
-import { Cart } from '@gfed-medusa/sf-lib-common/types/graphql';
+import { useCart } from '@gfed-medusa/sf-lib-common/lib/hooks/use-cart';
 
 import { CartDropdown } from '../cart-dropdown';
 
 function CartButton() {
-  const ctx = useStorefrontContext();
-  // TODO(fcasibu): maybe use swr
-  const [cart, setCart] = useState<Cart | null>(null);
-
-  useEffect(() => {
-    retrieveCart(ctx)
-      .then(setCart)
-      .catch(() => setCart(null));
-  }, [ctx]);
+  const { cart } = useCart();
 
   return <CartDropdown cart={cart} />;
 }

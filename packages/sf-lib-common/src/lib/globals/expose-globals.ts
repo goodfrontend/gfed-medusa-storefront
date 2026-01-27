@@ -4,6 +4,7 @@ import * as React from 'react';
 
 import * as ReactDOM from 'react-dom';
 import * as ReactDOMClient from 'react-dom/client';
+import useSWR, * as SWRNamespace from 'swr';
 
 import * as Apollo from '@apollo/client';
 import Medusa from '@medusajs/js-sdk';
@@ -16,11 +17,14 @@ declare global {
 }
 
 if (typeof window !== 'undefined') {
+  const SWR = Object.assign(useSWR, SWRNamespace);
+  if (!SWR.default) SWR.default = SWR;
   const globals = {
     React,
     ReactDOM,
     ReactDOMClient,
     Apollo,
+    SWR,
     Medusa,
   };
 

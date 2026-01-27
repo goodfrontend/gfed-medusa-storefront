@@ -1,7 +1,5 @@
 'use server';
 
-import { revalidateTag } from 'next/cache';
-
 import type { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import {
   getCacheTag,
@@ -83,8 +81,13 @@ export const getOrSetCart = async (
     if (cart) {
       await setCartIdAction(cart.id);
 
-      const cartCacheTag = getCacheTag('carts', ctx);
-      revalidateTag(cartCacheTag);
+      try {
+        const { revalidateTag } = await import('next/cache');
+        const cartCacheTag = getCacheTag('carts', ctx);
+        revalidateTag(cartCacheTag);
+      } catch {
+        // Not in Next.js environment, skip revalidation
+      }
     }
   }
 
@@ -103,8 +106,13 @@ export const getOrSetCart = async (
     cart = data?.updateCart ?? cart;
 
     if (cart) {
-      const cartCacheTag = getCacheTag('carts', ctx);
-      revalidateTag(cartCacheTag);
+      try {
+        const { revalidateTag } = await import('next/cache');
+        const cartCacheTag = getCacheTag('carts', ctx);
+        revalidateTag(cartCacheTag);
+      } catch {
+        // Not in Next.js environment
+      }
     }
   }
 
@@ -155,11 +163,15 @@ export const addToCart = async (
     const lineItem = result?.createLineItem ?? null;
 
     if (lineItem) {
-      const cartCacheTag = getCacheTag('carts', ctx);
-      revalidateTag(cartCacheTag);
-
-      const fulfillmentCacheTag = getCacheTag('fulfillment', ctx);
-      revalidateTag(fulfillmentCacheTag);
+      try {
+        const { revalidateTag } = await import('next/cache');
+        const cartCacheTag = getCacheTag('carts', ctx);
+        revalidateTag(cartCacheTag);
+        const fulfillmentCacheTag = getCacheTag('fulfillment', ctx);
+        revalidateTag(fulfillmentCacheTag);
+      } catch {
+        // Not in Next.js environment
+      }
     }
 
     return lineItem;

@@ -5,6 +5,7 @@ import { clx } from '@medusajs/ui';
 
 import { deleteLineItem } from '@/lib/data/cart';
 import { useStorefrontContext } from '@/lib/data/context';
+import { mutateCart } from '@/lib/hooks/use-cart';
 
 const DeleteButton = ({
   id,
@@ -20,9 +21,13 @@ const DeleteButton = ({
 
   const handleDelete = async (id: string) => {
     setIsDeleting(true);
-    await deleteLineItem(id, ctx).catch((err) => {
-      setIsDeleting(false);
-    });
+    await deleteLineItem(id, ctx)
+      .then(() => {
+        mutateCart();
+      })
+      .catch((err) => {
+        setIsDeleting(false);
+      });
   };
 
   return (

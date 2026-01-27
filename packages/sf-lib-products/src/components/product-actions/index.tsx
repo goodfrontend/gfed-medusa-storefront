@@ -8,6 +8,7 @@ import { isEqual } from 'lodash';
 
 import { ErrorMessage } from '@gfed-medusa/sf-lib-common/components/error-message';
 import { useStorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
+import { mutateCart } from '@gfed-medusa/sf-lib-common/lib/hooks/use-cart';
 import { Divider } from '@gfed-medusa/sf-lib-ui/components/divider';
 import { HttpTypes } from '@medusajs/types';
 import { Button } from '@medusajs/ui';
@@ -134,6 +135,8 @@ export default function ProductActions({
         },
         ctx
       );
+
+      mutateCart();
 
       setStatus(AddToCartStatus.SUCCESS);
     } catch (error) {

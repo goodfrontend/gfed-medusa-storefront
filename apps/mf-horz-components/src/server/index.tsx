@@ -54,7 +54,7 @@ app.get('/fragment/:name', async (c) => {
     const ctx = resolveContext(c);
     const data = await component.getData(ctx);
     const Component = component.component;
-    const html = renderToString(<Component {...data} />);
+    const html = renderToString(<Component {...data} ctx={ctx} />);
     return c.html(html);
   } catch (error) {
     console.error(`Error rendering component '${name}':`, error);

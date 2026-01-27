@@ -25,7 +25,9 @@ export default defineConfig(({ command }) => {
           'react',
           'react-dom',
           'react-dom/client',
+          'swr',
           /^next\//,
+
           /^@apollo\/client/,
           /^@medusajs\/js-sdk/,
         ],
@@ -40,6 +42,7 @@ export default defineConfig(({ command }) => {
             if (id === 'react') return `${prefix}.React`;
             if (id === 'react-dom') return `${prefix}.ReactDOM`;
             if (id === 'react-dom/client') return `${prefix}.ReactDOMClient`;
+            if (id === 'swr') return `${prefix}.SWR`;
             if (id.startsWith('@apollo/client')) return `${prefix}.Apollo`;
             if (id.startsWith('@medusajs/js-sdk')) return `${prefix}.Medusa`;
             if (id.startsWith('next/')) return 'undefined';
