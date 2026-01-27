@@ -92,11 +92,33 @@ jobs:
       app: sf-account
       dockerfile: ./apps/mf-account/Dockerfile
 
-  build-horz:
+  build-horz-smoke:
     needs: detect-changes
     if: needs.detect-changes.outputs.horz == 'true'
     uses: ./.github/workflows/_build-docker.yaml
+    secrets: inherit
     with:
+      env: smoke
+      app: sf-horz
+      dockerfile: ./apps/mf-horz-components/Dockerfile
+
+  build-horz-qa:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.horz == 'true'
+    uses: ./.github/workflows/_build-docker.yaml
+    secrets: inherit
+    with:
+      env: qa
+      app: sf-horz
+      dockerfile: ./apps/mf-horz-components/Dockerfile
+
+  build-horz-prod:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.horz == 'true'
+    uses: ./.github/workflows/_build-docker.yaml
+    secrets: inherit
+    with:
+      env: prod
       app: sf-horz
       dockerfile: ./apps/mf-horz-components/Dockerfile
 
@@ -357,31 +379,31 @@ jobs:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
   horz-smoke:
-    needs: [detect-changes, build-horz]
+    needs: [detect-changes, build-horz-smoke]
     if: needs.detect-changes.outputs.horz == 'true'
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: sf-horz-smoke
-      image: ${{ needs.build-horz.outputs.image_tag }}
+      image: ${{ needs.build-horz-smoke.outputs.image_tag }}
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
   horz-qa:
-    needs: [detect-changes, build-horz, horz-smoke]
+    needs: [detect-changes, build-horz-qa, horz-smoke]
     if: needs.detect-changes.outputs.horz == 'true'
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: sf-horz-qa
-      image: ${{ needs.build-horz.outputs.image_tag }}
+      image: ${{ needs.build-horz-qa.outputs.image_tag }}
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
   horz-production:
-    needs: [detect-changes, build-horz, horz-qa]
+    needs: [detect-changes, build-horz-prod, horz-qa]
     if: needs.detect-changes.outputs.horz == 'true'
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: sf-horz-prod
-      image: ${{ needs.build-horz.outputs.image_tag }}
+      image: ${{ needs.build-horz-prod.outputs.image_tag }}
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}

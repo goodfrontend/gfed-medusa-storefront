@@ -1,6 +1,6 @@
 {
   "name": "@gfed-medusa/mf-horz-components",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "type": "module",
   "private": true,
   "scripts": {
@@ -8,8 +8,8 @@
     "dev:client": "vite build --watch",
     "dev:server": "vite-node --watch src/server/index.tsx",
     "build": "pnpm build:client && pnpm build:server",
-    "build:client": "vite build",
-    "build:server": "tsdown",
+    "build:client": "vite build --mode production",
+    "build:server": "NODE_ENV=production tsdown",
     "start": "node dist/index.js",
     "lint": "eslint . --max-warnings 20",
     "check-types": "tsc --noEmit"

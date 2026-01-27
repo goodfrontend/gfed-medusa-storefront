@@ -19,9 +19,9 @@ app.use(compress());
 const resolveContext = (c: Context): StorefrontContext => {
   return {
     cartId: getCookie(c, '_medusa_cart_id') ?? '',
-    customerToken: getCookie(c, '_medusa_jwt') ?? '',
     cacheId: getCookie(c, '_medusa_cache_id') ?? '',
-    cookieHeader: c.req.header('Cookie') ?? '',
+    customerToken: '',
+    cookieHeader: '',
   };
 };
 

@@ -2,6 +2,9 @@ name: Build docker
 on:
   workflow_call:
     inputs:
+      env:
+        required: false
+        type: string
       app:
         required: true
         type: string
@@ -15,6 +18,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: ${{ inputs.env != '' && format('{0}-{1}', inputs.app, inputs.env) || fromJSON('null') }}
     permissions:
       contents: read
       packages: write
@@ -66,3 +70,8 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            NEXT_PUBLIC_MEDUSA_BACKEND_URL=${{ secrets.MEDUSA_BACKEND_URL }}
+            NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=${{ secrets.MEDUSA_PUBLISHABLE_KEY }}
+            NEXT_PUBLIC_BFF_URL=${{ secrets.BFF_URL }}
+            NEXT_PUBLIC_BASE_URL=${{ secrets.STOREFRONT_BASE_URL }}

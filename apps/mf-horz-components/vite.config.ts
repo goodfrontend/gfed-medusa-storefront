@@ -1,19 +1,29 @@
 import path from 'path';
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 
-export default defineConfig(({ command }) => {
-  const isBuild = command === 'build';
+export default defineConfig(({ mode }) => {
   const bundleName = 'horizontal-components';
+  const env = loadEnv(mode, process.cwd(), '');
 
   return {
     plugins: [react(), tailwindcss()],
     define: {
-      ...(isBuild
-        ? { 'process.env.NODE_ENV': JSON.stringify('production') }
-        : {}),
+      'process.env.NODE_ENV': JSON.stringify(mode),
+      'process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL': JSON.stringify(
+        env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || ''
+      ),
+      'process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY': JSON.stringify(
+        env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || ''
+      ),
+      'process.env.NEXT_PUBLIC_BFF_URL': JSON.stringify(
+        env.NEXT_PUBLIC_BFF_URL || process.env.NEXT_PUBLIC_BFF_URL || ''
+      ),
+      'process.env.NEXT_PUBLIC_BASE_URL': JSON.stringify(
+        env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_BASE_URL || ''
+      ),
     },
     build: {
       outDir: 'build',
