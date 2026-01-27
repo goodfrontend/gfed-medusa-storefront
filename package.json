@@ -5,7 +5,7 @@
   "scripts": {
     "build": "turbo run build",
     "check-types": "turbo run check-types",
-    "dev": "turbo run dev",
+    "dev": "concurrently \"tsx local-proxy.ts\" \"turbo run dev --concurrency=14\"",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo run lint",
     "lint:workflows": "yamllint .github/workflows/*.yaml && actionlint .github/workflows/*.yaml",
@@ -18,8 +18,13 @@
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",
+    "@types/express": "^5.0.6",
+    "concurrently": "^8.2.2",
+    "express": "^5.2.1",
+    "htmlrewriter": "^0.0.13",
     "husky": "^9.1.7",
     "prettier": "^3.6.2",
+    "tsx": "^4.7.1",
     "turbo": "^2.6.2",
     "typescript": "5.9.2"
   },
