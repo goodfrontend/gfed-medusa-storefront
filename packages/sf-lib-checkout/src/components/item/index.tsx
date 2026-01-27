@@ -9,6 +9,7 @@ import { LineItemPrice } from '@gfed-medusa/sf-lib-common/components/line-item-p
 import { LocalizedClientLink } from '@gfed-medusa/sf-lib-common/components/localized-client-link';
 import { Thumbnail } from '@gfed-medusa/sf-lib-common/components/thumbnail';
 import { useStorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
+import { mutateCart } from '@gfed-medusa/sf-lib-common/lib/hooks/use-cart';
 import { Spinner } from '@gfed-medusa/sf-lib-ui/icons/spinner';
 import { Table, Text, clx } from '@medusajs/ui';
 
@@ -33,6 +34,9 @@ const Item = ({ item, type = 'full', currencyCode }: ItemProps) => {
     setUpdating(true);
 
     await updateLineItem(item.id, quantity, ctx)
+      .then(() => {
+        mutateCart();
+      })
       .catch((err) => {
         setError(err.message);
       })

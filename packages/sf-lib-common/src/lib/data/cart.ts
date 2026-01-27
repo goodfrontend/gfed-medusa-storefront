@@ -116,12 +116,16 @@ export const deleteLineItem = async (
     const deletedLineItem = result?.deleteLineItem ?? null;
 
     if (deletedLineItem) {
-      const { revalidateTag } = await import('next/cache');
-      const cartCacheTag = getCacheTag('carts', ctx);
-      revalidateTag(cartCacheTag);
+      try {
+        const { revalidateTag } = await import('next/cache');
+        const cartCacheTag = getCacheTag('carts', ctx);
+        revalidateTag(cartCacheTag);
 
-      const fulfillmentCacheTag = getCacheTag('fulfillment', ctx);
-      revalidateTag(fulfillmentCacheTag);
+        const fulfillmentCacheTag = getCacheTag('fulfillment', ctx);
+        revalidateTag(fulfillmentCacheTag);
+      } catch {
+        // Not in Next.js environment
+      }
     }
 
     return deletedLineItem;
