@@ -1,5 +1,12 @@
 # @gfed-medusa/sf-lib-common
 
+## 2.3.0
+
+### Minor Changes
+
+- af95df4: Add expose-globals to common and make use in all apps
+- 0f6431e: Fix state issue between host and horizontal components
+
 ## 2.2.1
 
 ### Patch Changes

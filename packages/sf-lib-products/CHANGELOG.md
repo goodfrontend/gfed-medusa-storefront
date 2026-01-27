@@ -1,5 +1,17 @@
 # @gfed-medusa/sf-lib-products
 
+## 1.3.0
+
+### Minor Changes
+
+- 0f6431e: Fix state issue between host and horizontal components
+
+### Patch Changes
+
+- Updated dependencies [af95df4]
+- Updated dependencies [0f6431e]
+  - @gfed-medusa/sf-lib-common@2.3.0
+
 ## 1.2.1
 
 ### Patch Changes

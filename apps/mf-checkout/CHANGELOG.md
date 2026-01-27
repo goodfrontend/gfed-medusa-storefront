@@ -1,5 +1,19 @@
 # @gfed-medusa/mf-checkout
 
+## 1.2.0
+
+### Minor Changes
+
+- af95df4: Add expose-globals to common and make use in all apps
+- 0f6431e: Fix state issue between host and horizontal components
+
+### Patch Changes
+
+- Updated dependencies [af95df4]
+- Updated dependencies [0f6431e]
+  - @gfed-medusa/sf-lib-common@2.3.0
+  - @gfed-medusa/sf-lib-checkout@2.2.0
+
 ## 1.1.1
 
 ### Patch Changes
