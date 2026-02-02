@@ -49,25 +49,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ghcr.io/${{ github.repository }}/${{ inputs.app }}
-          tags: |
-            type=sha,prefix=,format=long
-            type=semver,pattern={{version}},value=${{ steps.mfe-version.outputs.version }}
-            type=semver,pattern={{major}}.{{minor}},value=${{ steps.mfe-version.outputs.version }}
-            type=semver,pattern={{major}},value=${{ steps.mfe-version.outputs.version }}
-            type=raw,value=latest,enable={{is_default_branch}}
-
       - uses: docker/build-push-action@v5
         with:
           context: .
           file: ${{ inputs.dockerfile }}
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ghcr.io/${{ github.repository }}/${{ inputs.app }}:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
