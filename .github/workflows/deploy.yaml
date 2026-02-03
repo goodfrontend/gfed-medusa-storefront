@@ -132,56 +132,12 @@ jobs:
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
-  tag-home:
-    name: Tag home release
-    needs: [detect-changes, home-smoke]
-    if: needs.detect-changes.outputs.home == 'true'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Create git tag
-        run: |
-          NAME=$(jq -r '.name' apps/mf-home/package.json)
-          VERSION=$(jq -r '.version' apps/mf-home/package.json)
-
-          if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then
-            echo "::error::Failed to read version from apps/mf-home/package.json"
-            exit 1
-          fi
-
-          TAG="$NAME@$VERSION"
-
-          if git rev-parse "$TAG" >/dev/null 2>&1; then
-            echo "Tag $TAG already exists, skipping"
-          else
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git tag -a "$TAG" -m "Release $TAG"
-            git push origin "$TAG"
-            echo "Created and pushed tag: $TAG"
-          fi
-
   home-qa:
     needs: [detect-changes, build-home, home-smoke]
     if: needs.detect-changes.outputs.home == 'true'
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: sf-home-qa
-      image: ${{ needs.build-home.outputs.image_tag }}
-    secrets:
-      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-
-  home-production:
-    needs: [detect-changes, build-home, home-qa]
-    if: needs.detect-changes.outputs.home == 'true'
-    uses: ./.github/workflows/_deploy-render.yaml
-    with:
-      app: sf-home-prod
       image: ${{ needs.build-home.outputs.image_tag }}
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
@@ -196,56 +152,12 @@ jobs:
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
-  tag-checkout:
-    name: Tag checkout release
-    needs: [detect-changes, checkout-smoke]
-    if: needs.detect-changes.outputs.checkout == 'true'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Create git tag
-        run: |
-          NAME=$(jq -r '.name' apps/mf-checkout/package.json)
-          VERSION=$(jq -r '.version' apps/mf-checkout/package.json)
-
-          if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then
-            echo "::error::Failed to read version from apps/mf-checkout/package.json"
-            exit 1
-          fi
-
-          TAG="$NAME@$VERSION"
-
-          if git rev-parse "$TAG" >/dev/null 2>&1; then
-            echo "Tag $TAG already exists, skipping"
-          else
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git tag -a "$TAG" -m "Release $TAG"
-            git push origin "$TAG"
-            echo "Created and pushed tag: $TAG"
-          fi
-
   checkout-qa:
     needs: [detect-changes, build-checkout, checkout-smoke]
     if: needs.detect-changes.outputs.checkout == 'true'
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: sf-checkout-qa
-      image: ${{ needs.build-checkout.outputs.image_tag }}
-    secrets:
-      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-
-  checkout-production:
-    needs: [detect-changes, build-checkout, checkout-qa]
-    if: needs.detect-changes.outputs.checkout == 'true'
-    uses: ./.github/workflows/_deploy-render.yaml
-    with:
-      app: sf-checkout-prod
       image: ${{ needs.build-checkout.outputs.image_tag }}
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
@@ -260,56 +172,12 @@ jobs:
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
-  tag-products:
-    name: Tag products release
-    needs: [detect-changes, products-smoke]
-    if: needs.detect-changes.outputs.products == 'true'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Create git tag
-        run: |
-          NAME=$(jq -r '.name' apps/mf-products/package.json)
-          VERSION=$(jq -r '.version' apps/mf-products/package.json)
-
-          if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then
-            echo "::error::Failed to read version from apps/mf-products/package.json"
-            exit 1
-          fi
-
-          TAG="$NAME@$VERSION"
-
-          if git rev-parse "$TAG" >/dev/null 2>&1; then
-            echo "Tag $TAG already exists, skipping"
-          else
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git tag -a "$TAG" -m "Release $TAG"
-            git push origin "$TAG"
-            echo "Created and pushed tag: $TAG"
-          fi
-
   products-qa:
     needs: [detect-changes, build-products, products-smoke]
     if: needs.detect-changes.outputs.products == 'true'
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: sf-products-qa
-      image: ${{ needs.build-products.outputs.image_tag }}
-    secrets:
-      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-
-  products-production:
-    needs: [detect-changes, build-products, products-qa]
-    if: needs.detect-changes.outputs.products == 'true'
-    uses: ./.github/workflows/_deploy-render.yaml
-    with:
-      app: sf-products-prod
       image: ${{ needs.build-products.outputs.image_tag }}
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
@@ -324,56 +192,12 @@ jobs:
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
-  tag-account:
-    name: Tag account release
-    needs: [detect-changes, account-smoke]
-    if: needs.detect-changes.outputs.account == 'true'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Create git tag
-        run: |
-          NAME=$(jq -r '.name' apps/mf-account/package.json)
-          VERSION=$(jq -r '.version' apps/mf-account/package.json)
-
-          if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then
-            echo "::error::Failed to read version from apps/mf-account/package.json"
-            exit 1
-          fi
-
-          TAG="$NAME@$VERSION"
-
-          if git rev-parse "$TAG" >/dev/null 2>&1; then
-            echo "Tag $TAG already exists, skipping"
-          else
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git tag -a "$TAG" -m "Release $TAG"
-            git push origin "$TAG"
-            echo "Created and pushed tag: $TAG"
-          fi
-
   account-qa:
     needs: [detect-changes, build-account, account-smoke]
     if: needs.detect-changes.outputs.account == 'true'
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: sf-account-qa
-      image: ${{ needs.build-account.outputs.image_tag }}
-    secrets:
-      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
-
-  account-production:
-    needs: [detect-changes, build-account, account-qa]
-    if: needs.detect-changes.outputs.account == 'true'
-    uses: ./.github/workflows/_deploy-render.yaml
-    with:
-      app: sf-account-prod
       image: ${{ needs.build-account.outputs.image_tag }}
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
@@ -398,6 +222,46 @@ jobs:
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
 
+  home-production:
+    needs: [detect-changes, build-home, home-qa]
+    if: needs.detect-changes.outputs.home == 'true'
+    uses: ./.github/workflows/_deploy-render.yaml
+    with:
+      app: sf-home-prod
+      image: ${{ needs.build-home.outputs.image_tag }}
+    secrets:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+
+  checkout-production:
+    needs: [detect-changes, build-checkout, checkout-qa]
+    if: needs.detect-changes.outputs.checkout == 'true'
+    uses: ./.github/workflows/_deploy-render.yaml
+    with:
+      app: sf-checkout-prod
+      image: ${{ needs.build-checkout.outputs.image_tag }}
+    secrets:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+
+  products-production:
+    needs: [detect-changes, build-products, products-qa]
+    if: needs.detect-changes.outputs.products == 'true'
+    uses: ./.github/workflows/_deploy-render.yaml
+    with:
+      app: sf-products-prod
+      image: ${{ needs.build-products.outputs.image_tag }}
+    secrets:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+
+  account-production:
+    needs: [detect-changes, build-account, account-qa]
+    if: needs.detect-changes.outputs.account == 'true'
+    uses: ./.github/workflows/_deploy-render.yaml
+    with:
+      app: sf-account-prod
+      image: ${{ needs.build-account.outputs.image_tag }}
+    secrets:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+
   horz-production:
     needs: [detect-changes, build-horz-prod, horz-qa]
     if: needs.detect-changes.outputs.horz == 'true'
@@ -407,3 +271,127 @@ jobs:
       image: ${{ needs.build-horz-prod.outputs.image_tag }}
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+
+  create-tags:
+    name: Create production tags
+    needs:
+      - detect-changes
+      - build-home
+      - build-checkout
+      - build-products
+      - build-account
+      - build-horz-prod
+      - home-production
+      - checkout-production
+      - products-production
+      - account-production
+      - horz-production
+    if: |
+      always() &&
+      (needs.home-production.result == 'success' ||
+       needs.checkout-production.result == 'success' ||
+       needs.products-production.result == 'success' ||
+       needs.account-production.result == 'success' ||
+       needs.horz-production.result == 'success')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Read MFE versions
+        id: versions
+        run: |
+          HOME_VERSION=$(jq -r '.version' apps/mf-home/package.json)
+          CHECKOUT_VERSION=$(jq -r '.version' apps/mf-checkout/package.json)
+          PRODUCTS_VERSION=$(jq -r '.version' apps/mf-products/package.json)
+          ACCOUNT_VERSION=$(jq -r '.version' apps/mf-account/package.json)
+          HORZ_VERSION=$(jq -r '.version' apps/mf-horz-components/package.json)
+
+          for MFE in "home" "checkout" "products" "account" "horz"; do
+            MFE_UPPER=$(echo "$MFE" | tr '[:lower:]' '[:upper:]')
+            VERSION_VAR="${MFE_UPPER}_VERSION"
+            VERSION="${!VERSION_VAR}"
+
+            if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then
+              echo "::error::Invalid version in $MFE package.json: '$VERSION'"
+              exit 1
+            fi
+
+            if ! echo "$VERSION" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+'; then
+              echo "::error::Version '$VERSION' for $MFE is not valid semver (must be X.Y.Z)"
+              exit 1
+            fi
+          done
+
+          {
+            echo "home=$HOME_VERSION"
+            echo "checkout=$CHECKOUT_VERSION"
+            echo "products=$PRODUCTS_VERSION"
+            echo "account=$ACCOUNT_VERSION"
+            echo "horz=$HORZ_VERSION"
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Create git tags for deployed MFEs
+        env:
+          HOME_RESULT: ${{ needs.home-production.result }}
+          HOME_VERSION: ${{ steps.versions.outputs.home }}
+          CHECKOUT_RESULT: ${{ needs.checkout-production.result }}
+          CHECKOUT_VERSION: ${{ steps.versions.outputs.checkout }}
+          PRODUCTS_RESULT: ${{ needs.products-production.result }}
+          PRODUCTS_VERSION: ${{ steps.versions.outputs.products }}
+          ACCOUNT_RESULT: ${{ needs.account-production.result }}
+          ACCOUNT_VERSION: ${{ steps.versions.outputs.account }}
+          HORZ_RESULT: ${{ needs.horz-production.result }}
+          HORZ_VERSION: ${{ steps.versions.outputs.horz }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Define MFEs with their package names
+          declare -A MFES=(
+            ["home"]="@gfed-medusa/mf-home"
+            ["checkout"]="@gfed-medusa/mf-checkout"
+            ["products"]="@gfed-medusa/mf-products"
+            ["account"]="@gfed-medusa/mf-account"
+            ["horz"]="@gfed-medusa/mf-horz-components"
+          )
+
+          for MFE in "${!MFES[@]}"; do
+            MFE_UPPER=$(echo "$MFE" | tr '[:lower:]' '[:upper:]')
+            RESULT_VAR="${MFE_UPPER}_RESULT"
+            VERSION_VAR="${MFE_UPPER}_VERSION"
+
+            RESULT="${!RESULT_VAR}"
+            VERSION="${!VERSION_VAR}"
+
+            if [ "$RESULT" = "success" ] && [ -n "$VERSION" ]; then
+              TAG="${MFES[$MFE]}@${VERSION}"
+
+              if ! git rev-parse "$TAG" >/dev/null 2>&1; then
+                git tag -a "$TAG" -m "Production release $TAG"
+
+                if git push origin "$TAG"; then
+                  echo "✓ Created tag: $TAG"
+                else
+                  echo "::error::Failed to push tag: $TAG"
+                  exit 1
+                fi
+              else
+                TAG_COMMIT=$(git rev-list -n 1 "$TAG" 2>/dev/null)
+                CURRENT_COMMIT=$(git rev-parse HEAD)
+
+                if [ "$TAG_COMMIT" = "$CURRENT_COMMIT" ]; then
+                  echo "⚠ Tag $TAG already exists for this commit (idempotent deployment)"
+                else
+                  echo "::error::Tag $TAG already exists but points to different commit"
+                  echo "::error::Current commit: $CURRENT_COMMIT"
+                  echo "::error::Tag points to:  $TAG_COMMIT"
+                  echo "::error::Please bump the version in $MFE package.json before deploying"
+                  exit 1
+                fi
+              fi
+            fi
+          done

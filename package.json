@@ -12,7 +12,6 @@
     "prepare": "husky",
     "test": "turbo run test",
     "ci:publish": "pnpm build --filter=\"./packages/**\" && changeset publish --access public",
-    "ci:version-mfes": "changeset version && pnpm install --lockfile-only",
     "changeset": "changeset",
     "changeset:status": "changeset status"
   },

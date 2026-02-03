@@ -8,7 +8,7 @@ The project uses **GitHub Actions** for automation and **Render** for hosting th
 
 - **CI (Continuous Integration):** Runs on Pull Requests to ensure code quality (Build, Lint, Type Check).
 - **CD (Continuous Deployment):** Triggered on pushes to the `main` branch. It builds Docker images, pushes them to GitHub Container Registry (GHCR), and promotes them through environments on Render (`smoke` -> `qa` -> `production`).
-- **MFE Versioning:** Uses [Changesets](https://github.com/changesets/changesets) to manage semantic versioning of micro frontends. Developers add changesets to PRs, and a release PR is created at the end of each sprint to bump versions.
+- **MFE Versioning:** Uses semantic versioning in `package.json`. Git tags are automatically created after successful production deployments.
 - **Package Publishing:** Uses [Changesets](https://github.com/changesets/changesets) to version and publish packages to npm automatically.
 
 ## Infrastructure (Render)
@@ -63,12 +63,13 @@ All workflows are located in `.github/workflows/`.
 - **File:** `deploy.yaml`.
 - **Trigger:** Push to `main`.
 - **Process:**
-  1.  **Detect Changes:** Identifies which apps (`home`, `account`, `products`) have changed using `dorny/paths-filter`.
-  2.  **Build Docker Images:** Builds the modified apps and pushes images to **GitHub Container Registry (GHCR)** tagged with the commit SHA.
+  1.  **Detect Changes:** Identifies which apps (`home`, `account`, `products`, `checkout`, `horz`) have changed using `dorny/paths-filter`.
+  2.  **Build Docker Images:** Builds the modified apps and pushes images to **GitHub Container Registry (GHCR)** tagged with semantic version and commit SHA.
   3.  **Deployment Chain:**
       - **Smoke:** Deploys the new image to the `smoke` environment.
       - **QA:** If `smoke` succeeds, a reviewer's approval is required to deploy QA
       - **Production:** If `qa` succeeds, a reviewer's approval is required to deploy Prod.
+  4.  **Tagging:** After successful production deployment, creates git tags with format `@gfed-medusa/mf-{app}@{version}`.
 - **Mechanism:** The workflow uses the Render API to update the service's image and trigger a deployment, then polls for success.
 
 ### 3. Package Publishing
@@ -80,13 +81,14 @@ All workflows are located in `.github/workflows/`.
   2.  Authenticates with npm using `NPM_TOKEN`.
   3.  Runs `pnpm run ci:publish` to publish updated packages to the registry.
 
-### 4. Rollback Deployments
-*   **Files:** `rollback.yaml`, `scripts/map-service-name.sh`.
-*   **Trigger:** Manual workflow dispatch (on-demand via GitHub Actions UI).
-*   **Purpose:** Quickly rollback a deployed microfrontend to a previous version (MFE-only changes). Use `git revert` for commits affecting packages.
-*   **Safety Features:** Confirmation required, SHA validation, concurrency control, age warnings.
+### 4. Rollback Production Deployments
+*   **File:** `rollback-production.yaml`.
+*   **Trigger:** Manual workflow dispatch.
+*   **Purpose:** Quickly rollback a production microfrontend to a previous version using git tags.
+*   **Environment:** Production only (git tags only exist for production deployments).
+*   **Safety Features:** Confirmation required, version validation, Docker image verification, concurrency control, age warnings.
 
-**See [How to Rollback a Deployment](#how-to-rollback-a-deployment) section below for complete guide.**
+**See [How to Rollback a Production Deployment](#how-to-rollback-a-production-deployment) section below for complete guide.**
 
 ## Secrets Configuration
 
@@ -128,12 +130,30 @@ brew install yamllint actionlint
 
 ### How to Deploy an Application
 
-Deployment is fully automated. You do not need to manually trigger builds or deploys.
+Deployment is fully automated through all environments (smoke → QA → production).
 
-1.  **Make Changes:** Implement your features or fixes.
-2.  **Create a PR:** Push your branch and open a Pull Request.
-    - _The CI checks will run automatically to verify your code._
-3.  **Merge to Main:** Once the PR is approved and checks pass, merge it into `main`.
+**Important:** Everything merged to `main` is considered production-ready and will automatically deploy to all environments.
+
+1.  **Update MFE Version:** Before making changes, update the version in the MFE's `package.json` file (e.g., `apps/mf-home/package.json`). Follow [Semantic Versioning](https://semver.org/):
+    - **MAJOR** (e.g., 1.0.0 → 2.0.0): Breaking changes
+    - **MINOR** (e.g., 1.0.0 → 1.1.0): New features, backwards-compatible
+    - **PATCH** (e.g., 1.0.0 → 1.0.1): Bug fixes
+
+2.  **Make Changes:** Implement your features or fixes.
+
+3.  **Create a PR:** Push your branch and open a Pull Request.
+    *   The CI checks will run automatically to verify your code.
+    *   Request review from team members.
+
+4.  **Merge to Main:** Once the PR is approved and checks pass, merge it into `main`.
+
+5.  **Automatic Deployment:**
+    - **Smoke:** Deploys automatically
+    - **QA:** Deploys automatically after smoke succeeds
+    - **Production:** Deploys automatically after QA succeeds
+    - **Git Tags:** Created automatically after successful production deployment
+
+6.  **Verify Deployment:** Check GitHub Actions to see the deployment progress. Verify the MFE is live in all environments.
 
 ### How to Publish a Package
 
@@ -162,43 +182,45 @@ We use **Changesets** to manage versioning and publishing.
 
 ### How to Rollback a Deployment
 
-If a deployment introduces a critical bug, you can quickly rollback to a previous version.
+If a production deployment introduces a critical bug, you can quickly rollback to a previous version.
 
-#### Quick Rollback (Automatic - Recommended)
+#### Find Available Versions
 
-1.  **Go to GitHub Actions:**
-    - Navigate to **Actions** → **Rollback Deployment**
-    - Click **Run workflow**
+**Option 1 - Git Tags:**
+```bash
+# List all versions for an MFE
+git tag -l "@gfed-medusa/mf-home@*"
 
-2.  **Configure rollback:**
-    *   **App**: Select the microfrontend (home, account, products, checkout)
-    *   **Environment**: Select the environment (smoke, qa, production)
-    *   **Target Version**: Leave **empty** for automatic rollback to previous version
-    *   **Confirm**: Type `rollback`
+# Example output:
+# @gfed-medusa/mf-home@1.0.0
+# @gfed-medusa/mf-home@1.1.0
+# @gfed-medusa/mf-home@1.2.0
+```
 
-3.  **Execute:**
-    - Click **Run workflow**
-    - The workflow will automatically find and deploy the previous version
+**Option 2 - GitHub UI:**
+1. Go to repository → Tags: `https://github.com/goodfrontend/gfed-medusa-storefront/tags`
+2. Look for the MFE you want to rollback
+3. Note the version number
 
-#### Rollback to Specific Version
+#### Execute Rollback
 
-If you need to rollback to a specific version (not just the previous one):
+1. **Go to GitHub Actions:**
+   - Navigate to **Actions** → **Rollback Production Deployment**
+   - Click **Run workflow**
 
-1.  **Find the target version:**
-    *   **Option A - Git Tags: https://github.com/goodfrontend/gfed-medusa-storefront/tags**
-        1. Look for the microfrontend you want to rollback.
-        2. Take note of the version and use it for the rollback deployment.
+2. **Configure rollback:**
+   - **App**: Select the MFE (home, account, products, checkout, horz)
+   - **Target Version**: Enter the version (e.g., `1.0.0`)
+   - **Confirm**: Type `rollback`
 
-    *   **Option B - Docker Images:**
-        1. Example for home storefront: `https://github.com/goodfrontend/gfed-medusa-storefront/pkgs/container/gfed-medusa-storefront%2Fsf-home/versions`
-        2. Take note of the exact version of the docker image.
-        3. Use this version for rollback deployment.
-
-2.  **Trigger rollback:**
-    *   Go to **Actions** → **Rollback Deployment**
-    *   Enter the **Target Version** you found
-    *   Complete other fields and confirm
-    *   Run the workflow
+3. **Execute:**
+   - Click **Run workflow**
+   - The workflow will:
+     - Validate the version exists
+     - Check if Docker image exists in GHCR
+     - Show version age and risk warnings
+     - Deploy the old Docker image
+     - Notify success or failure
 
 ### How to Setup a New Environment (Render)
 
