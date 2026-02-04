@@ -36,10 +36,6 @@ app.get('/api/:name', async (c) => {
   try {
     const ctx = resolveContext(c);
     const data = await component.getData(ctx);
-    c.header(
-      'Cache-Control',
-      's-maxage=3600, max-age=2400, stale-while-revalidate=1800'
-    );
     return c.json(data);
   } catch (error) {
     console.error(`Error fetching data for component '${name}':`, error);
@@ -60,29 +56,10 @@ app.get('/fragment/:name', async (c) => {
     const data = await component.getData(ctx);
     const Component = component.component;
     const html = renderToString(<Component {...data} ctx={ctx} />);
-    c.header(
-      'Cache-Control',
-      's-maxage=3600, max-age=2400, stale-while-revalidate=1800'
-    );
     return c.html(html);
   } catch (error) {
     console.error(`Error rendering component '${name}':`, error);
     return c.html(`<!-- Error rendering component '${name}' -->`, 500);
-  }
-});
-
-app.use('/build/*', async (c, next) => {
-  await next();
-
-  if (c.res.status >= 200 && c.res.status < 300) {
-    const path = c.req.path;
-
-    if (path.endsWith('.js') || path.endsWith('.css')) {
-      c.res.headers.set(
-        'Cache-Control',
-        's-maxage=3600, max-age=2400, stale-while-revalidate=1800'
-      );
-    }
   }
 });
 
