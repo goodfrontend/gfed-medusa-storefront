@@ -1,11 +1,10 @@
-import path from 'path';
+import path from 'node:path';
 import { defineConfig, loadEnv } from 'vite';
 
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig(({ mode }) => {
-  const bundleName = 'horizontal-components';
   const env = loadEnv(mode, process.cwd(), '');
 
   return {
@@ -13,10 +12,14 @@ export default defineConfig(({ mode }) => {
     define: {
       'process.env.NODE_ENV': JSON.stringify(mode),
       'process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL': JSON.stringify(
-        env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || ''
+        env.NEXT_PUBLIC_MEDUSA_BACKEND_URL ||
+          process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL ||
+          ''
       ),
       'process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY': JSON.stringify(
-        env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || ''
+        env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY ||
+          process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY ||
+          ''
       ),
       'process.env.NEXT_PUBLIC_BFF_URL': JSON.stringify(
         env.NEXT_PUBLIC_BFF_URL || process.env.NEXT_PUBLIC_BFF_URL || ''
@@ -26,6 +29,8 @@ export default defineConfig(({ mode }) => {
       ),
     },
     build: {
+      assetsDir: '',
+      manifest: true,
       outDir: 'build',
       emptyOutDir: true,
       assetsInlineLimit: 0,
@@ -37,16 +42,13 @@ export default defineConfig(({ mode }) => {
           'react-dom/client',
           'swr',
           /^next\//,
-
           /^@apollo\/client/,
           /^@medusajs\/js-sdk/,
         ],
         input: path.resolve(__dirname, 'src/client/index.tsx'),
         output: {
-          entryFileNames: `${bundleName}-bundle.js`,
           format: 'iife',
           name: 'HorizontalComponentsBundle',
-          assetFileNames: `${bundleName}-styles.css`,
           globals: (id) => {
             const prefix = '__GFED_GLOBALS__';
             if (id === 'react') return `${prefix}.React`;
