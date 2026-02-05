@@ -19,7 +19,7 @@ export async function getHorzManifest(
   }
 
   try {
-    const res = await fetch(`${config.HORIZONTAL_SERVICE}/build/manifest.json`);
+    const res = await fetch(`${config.HORIZONTAL_SERVICE}/build/.vite/manifest.json`);
     if (res.ok) {
       cachedManifest = await res.json();
       manifestFetchedAt = now;
@@ -86,11 +86,20 @@ export async function injectHorizontalComponents(
   }
 
   const manifest = await getHorzManifest(config);
-  const version = manifest?.version || '';
-  const versionParam = version ? `?v=${version}` : '';
+  const { jsFile, cssFile } = Object.values(manifest ?? {}).reduce(
+    (acc, value) => {
+      if (value.file.endsWith('.js')) acc.jsFile = value.file;
+      if (value.file.endsWith('.css')) acc.cssFile = value.file;
+      return acc;
+    },
+    {
+      jsFile: '',
+      cssFile: '',
+    }
+  );
 
-  const bundleUrl = `/horz-assets/horizontal-components-bundle.js${versionParam}`;
-  const stylesheetUrl = `/horz-assets/horizontal-components-styles.css${versionParam}`;
+  const bundleUrl = `/horz-assets/${jsFile}`;
+  const stylesheetUrl = `/horz-assets/${cssFile}`;
 
   const bundleTag = `<script>window.__MFE_BUNDLE_URL__ = "${bundleUrl}";</script>`;
 

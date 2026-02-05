@@ -264,8 +264,25 @@ jobs:
     needs: [detect-changes]
     if: needs.detect-changes.outputs.gateway == 'true'
     runs-on: ubuntu-latest
+    environment: gateway-smoke
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.0.0
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: workers/router
 
       - name: Deploy to Cloudflare (Smoke)
         uses: cloudflare/wrangler-action@v3
@@ -274,13 +291,31 @@ jobs:
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
           workingDirectory: workers/router
           command: deploy --config wrangler.toml
+          packageManager: pnpm
 
   gateway-qa:
     needs: [detect-changes, gateway-smoke]
     if: needs.detect-changes.outputs.gateway == 'true'
     runs-on: ubuntu-latest
+    environment: gateway-qa
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.0.0
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: workers/router
 
       - name: Deploy to Cloudflare (QA)
         uses: cloudflare/wrangler-action@v3
@@ -289,13 +324,31 @@ jobs:
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
           workingDirectory: workers/router
           command: deploy --config wrangler.qa.toml
+          packageManager: pnpm
 
   gateway-production:
     needs: [detect-changes, gateway-qa]
     if: needs.detect-changes.outputs.gateway == 'true'
     runs-on: ubuntu-latest
+    environment: gateway-prod
     steps:
       - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.0.0
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: workers/router
 
       - name: Deploy to Cloudflare (Production)
         uses: cloudflare/wrangler-action@v3
@@ -304,6 +357,7 @@ jobs:
           accountId: ${{ secrets.CF_ACCOUNT_ID }}
           workingDirectory: workers/router
           command: deploy --config wrangler.production.toml
+          packageManager: pnpm
 
   create-tags:
     name: Create production tags

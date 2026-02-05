@@ -68,14 +68,16 @@ export async function proxyRequest(
     );
 
     if (cacheTtl !== null && request.method === 'GET' && response.ok) {
-      const responseToCache = new Response(
-        transformedResponse.body,
-        transformedResponse
-      );
-      responseToCache.headers.set(
-        'Cache-Control',
-        `public, max-age=${cacheTtl}`
-      );
+      const newHeaders = new Headers(transformedResponse.headers);
+      newHeaders.delete('content-encoding');
+      newHeaders.delete('content-length');
+      newHeaders.set('Cache-Control', `public, max-age=${cacheTtl}`);
+
+      const responseToCache = new Response(transformedResponse.body, {
+        status: transformedResponse.status,
+        statusText: transformedResponse.statusText,
+        headers: newHeaders,
+      });
       ctx.waitUntil(cache.put(cacheKey, responseToCache.clone()));
       return responseToCache;
     }
@@ -84,14 +86,27 @@ export async function proxyRequest(
   }
 
   if (cacheTtl !== null && request.method === 'GET' && response.ok) {
-    const responseToCache = new Response(response.body, response);
-    responseToCache.headers.set(
-      'Cache-Control',
-      `public, max-age=${cacheTtl}, immutable`
-    );
+    const newHeaders = new Headers(response.headers);
+    newHeaders.delete('content-encoding');
+    newHeaders.delete('content-length');
+    newHeaders.set('Cache-Control', `public, max-age=${cacheTtl}, immutable`);
+
+    const responseToCache = new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: newHeaders,
+    });
     ctx.waitUntil(cache.put(cacheKey, responseToCache.clone()));
     return responseToCache;
   }
 
-  return response;
+  const newHeaders = new Headers(response.headers);
+  newHeaders.delete('content-encoding');
+  newHeaders.delete('content-length');
+
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers: newHeaders,
+  });
 }

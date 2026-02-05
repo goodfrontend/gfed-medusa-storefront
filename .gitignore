@@ -38,3 +38,7 @@ debug-storybook.log
 .DS_Store
 *.pem
 *.tgz
+
+# Cloudflare Workers
+workers/router/.dev.vars
+workers/router/.wrangler
