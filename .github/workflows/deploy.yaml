@@ -19,6 +19,7 @@ jobs:
       products: ${{ steps.changes.outputs.products }}
       checkout: ${{ steps.changes.outputs.checkout }}
       horz: ${{ steps.changes.outputs.horz }}
+      gateway: ${{ steps.changes.outputs.gateway }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -59,6 +60,8 @@ jobs:
               - 'turbo.json'
               - 'pnpm-lock.yaml'
               - 'render.yaml'
+            gateway:
+              - 'workers/router/**'
 
   build-home:
     needs: detect-changes
@@ -129,8 +132,7 @@ jobs:
     with:
       app: sf-home-smoke
       image: ${{ needs.build-home.outputs.image_tag }}
-    secrets:
-      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+    secrets: inherit
 
   home-qa:
     needs: [detect-changes, build-home, home-smoke]
@@ -139,8 +141,7 @@ jobs:
     with:
       app: sf-home-qa
       image: ${{ needs.build-home.outputs.image_tag }}
-    secrets:
-      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+    secrets: inherit
 
   checkout-smoke:
     needs: [detect-changes, build-checkout]
@@ -149,8 +150,7 @@ jobs:
     with:
       app: sf-checkout-smoke
       image: ${{ needs.build-checkout.outputs.image_tag }}
-    secrets:
-      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+    secrets: inherit
 
   checkout-qa:
     needs: [detect-changes, build-checkout, checkout-smoke]
@@ -159,8 +159,7 @@ jobs:
     with:
       app: sf-checkout-qa
       image: ${{ needs.build-checkout.outputs.image_tag }}
-    secrets:
-      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+    secrets: inherit
 
   products-smoke:
     needs: [detect-changes, build-products]
@@ -169,8 +168,7 @@ jobs:
     with:
       app: sf-products-smoke
       image: ${{ needs.build-products.outputs.image_tag }}
-    secrets:
-      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+    secrets: inherit
 
   products-qa:
     needs: [detect-changes, build-products, products-smoke]
@@ -179,8 +177,7 @@ jobs:
     with:
       app: sf-products-qa
       image: ${{ needs.build-products.outputs.image_tag }}
-    secrets:
-      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+    secrets: inherit
 
   account-smoke:
     needs: [detect-changes, build-account]
@@ -189,8 +186,7 @@ jobs:
     with:
       app: sf-account-smoke
       image: ${{ needs.build-account.outputs.image_tag }}
-    secrets:
-      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+    secrets: inherit
 
   account-qa:
     needs: [detect-changes, build-account, account-smoke]
@@ -199,8 +195,7 @@ jobs:
     with:
       app: sf-account-qa
       image: ${{ needs.build-account.outputs.image_tag }}
-    secrets:
-      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+    secrets: inherit
 
   horz-smoke:
     needs: [detect-changes, build-horz-smoke]
@@ -209,8 +204,7 @@ jobs:
     with:
       app: sf-horz-smoke
       image: ${{ needs.build-horz-smoke.outputs.image_tag }}
-    secrets:
-      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+    secrets: inherit
 
   horz-qa:
     needs: [detect-changes, build-horz-qa, horz-smoke]
@@ -219,8 +213,7 @@ jobs:
     with:
       app: sf-horz-qa
       image: ${{ needs.build-horz-qa.outputs.image_tag }}
-    secrets:
-      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+    secrets: inherit
 
   home-production:
     needs: [detect-changes, build-home, home-qa]
@@ -229,8 +222,7 @@ jobs:
     with:
       app: sf-home-prod
       image: ${{ needs.build-home.outputs.image_tag }}
-    secrets:
-      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+    secrets: inherit
 
   checkout-production:
     needs: [detect-changes, build-checkout, checkout-qa]
@@ -239,8 +231,7 @@ jobs:
     with:
       app: sf-checkout-prod
       image: ${{ needs.build-checkout.outputs.image_tag }}
-    secrets:
-      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+    secrets: inherit
 
   products-production:
     needs: [detect-changes, build-products, products-qa]
@@ -249,8 +240,7 @@ jobs:
     with:
       app: sf-products-prod
       image: ${{ needs.build-products.outputs.image_tag }}
-    secrets:
-      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+    secrets: inherit
 
   account-production:
     needs: [detect-changes, build-account, account-qa]
@@ -259,8 +249,7 @@ jobs:
     with:
       app: sf-account-prod
       image: ${{ needs.build-account.outputs.image_tag }}
-    secrets:
-      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+    secrets: inherit
 
   horz-production:
     needs: [detect-changes, build-horz-prod, horz-qa]
@@ -269,8 +258,52 @@ jobs:
     with:
       app: sf-horz-prod
       image: ${{ needs.build-horz-prod.outputs.image_tag }}
-    secrets:
-      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+    secrets: inherit
+
+  gateway-smoke:
+    needs: [detect-changes]
+    if: needs.detect-changes.outputs.gateway == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Cloudflare (Smoke)
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          workingDirectory: workers/router
+          command: deploy --config wrangler.toml
+
+  gateway-qa:
+    needs: [detect-changes, gateway-smoke]
+    if: needs.detect-changes.outputs.gateway == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Cloudflare (QA)
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          workingDirectory: workers/router
+          command: deploy --config wrangler.qa.toml
+
+  gateway-production:
+    needs: [detect-changes, gateway-qa]
+    if: needs.detect-changes.outputs.gateway == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Deploy to Cloudflare (Production)
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          workingDirectory: workers/router
+          command: deploy --config wrangler.production.toml
 
   create-tags:
     name: Create production tags

@@ -1,0 +1,21 @@
+{
+  "name": "@gfed-medusa/sf-gateway",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy:smoke": "wrangler deploy --config wrangler.toml",
+    "deploy:qa": "wrangler deploy --config wrangler.qa.toml",
+    "deploy:production": "wrangler deploy --config wrangler.production.toml",
+    "tail:smoke": "wrangler tail sf-gateway-smoke",
+    "tail:qa": "wrangler tail sf-gateway-qa",
+    "tail:production": "wrangler tail sf-gateway-production",
+    "check-types": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241205.0",
+    "typescript": "^5.7.2",
+    "wrangler": "^3.99.0"
+  }
+}

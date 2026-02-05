@@ -13,7 +13,14 @@
     "test": "turbo run test",
     "ci:publish": "pnpm build --filter=\"./packages/**\" && changeset publish --access public",
     "changeset": "changeset",
-    "changeset:status": "changeset status"
+    "changeset:status": "changeset status",
+    "worker:dev": "pnpm --filter @gfed-medusa/sf-gateway dev",
+    "worker:deploy:smoke": "pnpm --filter @gfed-medusa/sf-gateway deploy:smoke",
+    "worker:deploy:qa": "pnpm --filter @gfed-medusa/sf-gateway deploy:qa",
+    "worker:deploy:production": "pnpm --filter @gfed-medusa/sf-gateway deploy:production",
+    "worker:tail:smoke": "pnpm --filter @gfed-medusa/sf-gateway tail:smoke",
+    "worker:tail:qa": "pnpm --filter @gfed-medusa/sf-gateway tail:qa",
+    "worker:tail:production": "pnpm --filter @gfed-medusa/sf-gateway tail:production"
   },
   "devDependencies": {
     "@changesets/cli": "^2.29.8",

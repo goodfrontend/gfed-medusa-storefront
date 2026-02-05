@@ -1,0 +1,14 @@
+name = "sf-gateway-production"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+[observability]
+enabled = true
+
+# Environment variables are configured in Cloudflare Dashboard:
+# - URL_HOME
+# - URL_PRODUCTS
+# - URL_ACCOUNT
+# - URL_CHECKOUT
+# - URL_HORIZONTAL
