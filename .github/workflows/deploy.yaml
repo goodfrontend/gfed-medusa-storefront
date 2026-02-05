@@ -264,6 +264,7 @@ jobs:
     needs: [detect-changes]
     if: needs.detect-changes.outputs.gateway == 'true'
     runs-on: ubuntu-latest
+    environment: gateway-smoke
     steps:
       - uses: actions/checkout@v4
 
@@ -279,6 +280,7 @@ jobs:
     needs: [detect-changes, gateway-smoke]
     if: needs.detect-changes.outputs.gateway == 'true'
     runs-on: ubuntu-latest
+    environment: gateway-qa
     steps:
       - uses: actions/checkout@v4
 
@@ -294,6 +296,7 @@ jobs:
     needs: [detect-changes, gateway-qa]
     if: needs.detect-changes.outputs.gateway == 'true'
     runs-on: ubuntu-latest
+    environment: gateway-prod
     steps:
       - uses: actions/checkout@v4
 

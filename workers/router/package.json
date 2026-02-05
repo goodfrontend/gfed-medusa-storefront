@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "wrangler dev",
+    "lint": "eslint . --max-warnings 10",
     "deploy:smoke": "wrangler deploy --config wrangler.toml",
     "deploy:qa": "wrangler deploy --config wrangler.qa.toml",
     "deploy:production": "wrangler deploy --config wrangler.production.toml",
@@ -14,8 +15,10 @@
     "check-types": "tsc --noEmit"
   },
   "devDependencies": {
+    "@packages/eslint-config": "workspace:*",
     "@cloudflare/workers-types": "^4.20241205.0",
     "typescript": "^5.7.2",
+    "eslint": "^9",
     "wrangler": "^3.99.0"
   }
 }

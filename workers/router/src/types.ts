@@ -26,6 +26,10 @@ export interface ComponentResources {
   config: HorizontalComponentConfig;
 }
 
-export interface HorizontalManifest {
-  version?: string;
-}
+export type HorizontalManifest = Record<
+  string,
+  {
+    file: string;
+    name: string;
+  }
+>;
