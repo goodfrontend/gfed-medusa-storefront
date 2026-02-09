@@ -5,6 +5,7 @@ import { HttpTypes } from '@medusajs/types';
 const BACKEND_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL;
 const PUBLISHABLE_API_KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
 const DEFAULT_REGION = process.env.NEXT_PUBLIC_DEFAULT_REGION || 'us';
+const CACHE_TAG_PREFIX = 'mf-products';
 
 const regionMapCache = {
   regionMap: new Map<string, HttpTypes.StoreRegion>(),
@@ -96,7 +97,22 @@ async function getCountryCode(
 
 export async function middleware(request: NextRequest) {
   let redirectUrl = request.nextUrl.href;
-  let response = NextResponse.redirect(redirectUrl, 307);
+
+  const requestHeaders = new Headers(request.headers);
+
+  let response = NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
+
+  const cacheTags = [
+    CACHE_TAG_PREFIX,
+    `${CACHE_TAG_PREFIX}:${request.nextUrl.pathname}`,
+  ];
+
+  response.headers.set('Cache-Tag', cacheTags.join(','));
+
   const cacheIdCookie = request.cookies.get('_medusa_cache_id');
   const cacheId = cacheIdCookie?.value || crypto.randomUUID();
 
@@ -108,18 +124,19 @@ export async function middleware(request: NextRequest) {
     request.nextUrl.pathname.split('/')[1]?.includes(countryCode);
 
   if (urlHasCountryCode && cacheIdCookie) {
-    return NextResponse.next();
+    return response;
   }
 
   if (urlHasCountryCode && !cacheIdCookie) {
     response.cookies.set('_medusa_cache_id', cacheId, {
       maxAge: 60 * 60 * 24,
     });
+
     return response;
   }
 
   if (request.nextUrl.pathname.includes('.')) {
-    return NextResponse.next();
+    return response;
   }
 
   const redirectPath =
@@ -128,6 +145,7 @@ export async function middleware(request: NextRequest) {
 
   if (!urlHasCountryCode && countryCode) {
     redirectUrl = `${request.nextUrl.origin}/${countryCode}${redirectPath}${queryString}`;
+
     response = NextResponse.redirect(`${redirectUrl}`, 307);
   }
 
