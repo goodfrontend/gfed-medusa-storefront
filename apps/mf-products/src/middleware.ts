@@ -111,7 +111,7 @@ export async function middleware(request: NextRequest) {
     `${CACHE_TAG_PREFIX}:${request.nextUrl.pathname}`,
   ];
 
-  response.headers.set('Cache-Tag', cacheTags.join(','));
+  response.headers.set('X-Cache-Tag', cacheTags.join(','));
 
   const cacheIdCookie = request.cookies.get('_medusa_cache_id');
   const cacheId = cacheIdCookie?.value || crypto.randomUUID();
