@@ -17,7 +17,7 @@ export function middleware(request: NextRequest) {
     `${CACHE_TAG_PREFIX}:${request.nextUrl.pathname}`,
   ];
 
-  response.headers.set('Cache-Tag', cacheTags.join(','));
+  response.headers.set('X-Cache-Tag', cacheTags.join(','));
 
   return response;
 }

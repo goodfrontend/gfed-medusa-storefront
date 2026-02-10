@@ -69,9 +69,11 @@ export async function proxyRequest(
 
     if (cacheTtl !== null && request.method === 'GET' && response.ok) {
       const newHeaders = new Headers(transformedResponse.headers);
+      const cacheTags = newHeaders.get('X-Cache-Tag');
       newHeaders.delete('content-encoding');
       newHeaders.delete('content-length');
       newHeaders.set('Cache-Control', `public, max-age=${cacheTtl}`);
+      if (cacheTags) newHeaders.set('Cache-Tag', cacheTags);
 
       const responseToCache = new Response(transformedResponse.body, {
         status: transformedResponse.status,
@@ -87,9 +89,11 @@ export async function proxyRequest(
 
   if (cacheTtl !== null && request.method === 'GET' && response.ok) {
     const newHeaders = new Headers(response.headers);
+    const cacheTags = newHeaders.get('X-Cache-Tag');
     newHeaders.delete('content-encoding');
     newHeaders.delete('content-length');
     newHeaders.set('Cache-Control', `public, max-age=${cacheTtl}, immutable`);
+    if (cacheTags) newHeaders.set('Cache-Tag', cacheTags);
 
     const responseToCache = new Response(response.body, {
       status: response.status,
