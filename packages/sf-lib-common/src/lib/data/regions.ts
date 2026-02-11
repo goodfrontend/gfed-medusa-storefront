@@ -5,7 +5,7 @@ import { sdk } from '../config/medusa';
 import { medusaError } from '../utils/medusa-error';
 import { normalizeRegion } from '../utils/normalize-functions';
 import type { StorefrontContext } from './context';
-import { getCacheOptions } from './cookies';
+import { getCacheOptions } from './cookies-utils';
 
 const regionMap = new Map<string, Region>();
 

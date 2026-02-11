@@ -13,7 +13,7 @@ const nextConfig = {
       ...(process.env.NODE_ENV === 'production' ? {
         allowedOrigins: ["justgood.win"]
         } : {
-        allowedOrigins: ["localhost:3024", "localhost:8080"]
+        allowedOrigins: ["localhost:3024", "localhost:8080", "localhost:8787"]
                 })
     },
   },

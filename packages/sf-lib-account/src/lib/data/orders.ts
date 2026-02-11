@@ -5,7 +5,7 @@ import { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import {
   getAuthHeaders,
   getCacheOptions,
-} from '@gfed-medusa/sf-lib-common/lib/data/cookies';
+} from '@gfed-medusa/sf-lib-common/lib/data/cookies-utils';
 import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
 import { medusaError } from '@gfed-medusa/sf-lib-common/lib/utils/medusa-error';
 import { normalizeOrder } from '@gfed-medusa/sf-lib-common/lib/utils/normalize-functions';

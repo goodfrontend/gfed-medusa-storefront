@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation';
 
 import { updateCart } from './cart';
 import { StorefrontContext } from './context';
-import { getCacheTag, getCartId } from './cookies';
+import { getCacheTag, getCartId } from './cookies-utils';
 import { getRegion } from './regions';
 
 export const resolveNextContext = async (): Promise<StorefrontContext> => {
