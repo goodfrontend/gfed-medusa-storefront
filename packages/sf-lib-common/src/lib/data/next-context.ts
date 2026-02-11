@@ -19,31 +19,3 @@ export const resolveNextContext = async (): Promise<StorefrontContext> => {
     cookieHeader: cookieStore.toString(),
   };
 };
-
-export async function updateRegionAction(
-  countryCode: string,
-  currentPath: string,
-  ctx?: StorefrontContext
-) {
-  const context = ctx || (await resolveNextContext());
-  const cartId = getCartId(context);
-  const region = await getRegion(countryCode, context);
-
-  if (!region) {
-    throw new Error(`Region not found for country code: ${countryCode}`);
-  }
-
-  if (cartId) {
-    await updateCart({ regionId: region.id }, context);
-    const cartCacheTag = getCacheTag('carts', context);
-    revalidateTag(cartCacheTag);
-  }
-
-  const regionCacheTag = getCacheTag('regions', context);
-  revalidateTag(regionCacheTag);
-
-  const productsCacheTag = getCacheTag('products', context);
-  revalidateTag(productsCacheTag);
-
-  redirect(`/${countryCode}${currentPath}`);
-}

@@ -1,5 +1,3 @@
-'use server';
-
 import { HttpTypes } from '@medusajs/types';
 
 import {
@@ -83,7 +81,7 @@ export const updateCart = async (
         const fulfillmentCacheTag = getCacheTag('fulfillment', ctx);
         revalidateTag(fulfillmentCacheTag);
       } catch {
-        // Not in Next.js environment — cache revalidation is skipped.
+        // Not in Next.js environment
       }
     }
 

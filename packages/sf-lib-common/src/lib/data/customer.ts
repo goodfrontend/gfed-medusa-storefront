@@ -1,5 +1,3 @@
-'use server';
-
 import {
   Customer,
   GetCustomerQuery,
@@ -16,7 +14,7 @@ import { TRANSFER_CART_MUTATION } from '../gql/mutations/cart';
 import { GET_CUSTOMER_QUERY } from '../gql/queries/customer';
 import { medusaError } from '../utils/medusa-error';
 import type { StorefrontContext } from './context';
-import { getAuthHeaders, getCacheTag, getCartId } from './cookies-utils';
+import { getCacheTag, getCartId } from './cookies-utils';
 
 export const transferCart = async (
   ctx: StorefrontContext
@@ -46,9 +44,13 @@ export const transferCart = async (
     const cart = result?.transferCart ?? null;
 
     if (cart) {
-      const { revalidateTag } = await import('next/cache');
-      const cartCacheTag = getCacheTag('carts', ctx);
-      revalidateTag(cartCacheTag);
+      try {
+        const { revalidateTag } = await import('next/cache');
+        const cartCacheTag = getCacheTag('carts', ctx);
+        revalidateTag(cartCacheTag);
+      } catch {
+        // Not in Next.js environment
+      }
     }
 
     return cart;
