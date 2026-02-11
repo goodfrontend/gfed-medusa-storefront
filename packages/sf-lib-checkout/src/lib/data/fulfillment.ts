@@ -5,7 +5,7 @@ import { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import {
   getAuthHeaders,
   getCacheOptions,
-} from '@gfed-medusa/sf-lib-common/lib/data/cookies';
+} from '@gfed-medusa/sf-lib-common/lib/data/cookies-utils';
 import { HttpTypes } from '@medusajs/types';
 
 export const listCartShippingMethods = async (

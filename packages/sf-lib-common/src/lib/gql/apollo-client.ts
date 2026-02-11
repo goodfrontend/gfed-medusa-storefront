@@ -8,6 +8,8 @@ import {
   OperationVariables,
 } from '@apollo/client';
 
+import { StorefrontContext } from '../data/context';
+import { getAuthHeaders } from '../data/cookies-utils';
 import { getBaseURL } from '../utils/env';
 
 const isServer = () => typeof window === 'undefined';

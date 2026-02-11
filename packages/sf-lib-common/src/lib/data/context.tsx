@@ -7,7 +7,6 @@ export interface StorefrontContext {
   customerToken: string;
   cacheId: string;
   cookieHeader: string;
-  revalidate?: (tag: string) => void;
 }
 
 const StorefrontReactContext = createContext<StorefrontContext>(

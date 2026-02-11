@@ -6,13 +6,15 @@ import { redirect } from 'next/navigation';
 import { sdk } from '@gfed-medusa/sf-lib-common/lib/config/medusa';
 import { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import {
+  removeCartIdAction,
+  setCartIdAction,
+} from '@gfed-medusa/sf-lib-common/lib/data/cookies-actions';
+import {
   getAuthHeaders,
   getCacheOptions,
   getCacheTag,
   getCartId,
-  removeCartIdAction,
-  setCartIdAction,
-} from '@gfed-medusa/sf-lib-common/lib/data/cookies';
+} from '@gfed-medusa/sf-lib-common/lib/data/cookies-utils';
 import { medusaError } from '@gfed-medusa/sf-lib-common/lib/utils/medusa-error';
 import { HttpTypes } from '@medusajs/types';
 

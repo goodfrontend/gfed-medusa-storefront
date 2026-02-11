@@ -19,7 +19,9 @@ export async function getHorzManifest(
   }
 
   try {
-    const res = await fetch(`${config.HORIZONTAL_SERVICE}/build/.vite/manifest.json`);
+    const res = await fetch(
+      `${config.HORIZONTAL_SERVICE}/build/.vite/manifest.json`
+    );
     if (res.ok) {
       cachedManifest = await res.json();
       manifestFetchedAt = now;

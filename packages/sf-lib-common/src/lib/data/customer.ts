@@ -1,3 +1,5 @@
+'use server';
+
 import {
   Customer,
   GetCustomerQuery,
@@ -14,11 +16,13 @@ import { TRANSFER_CART_MUTATION } from '../gql/mutations/cart';
 import { GET_CUSTOMER_QUERY } from '../gql/queries/customer';
 import { medusaError } from '../utils/medusa-error';
 import type { StorefrontContext } from './context';
-import { getCacheTag, getCartId } from './cookies';
+import { getAuthHeaders, getCacheTag, getCartId } from './cookies-utils';
 
 export const transferCart = async (
   ctx: StorefrontContext
 ): Promise<TransferCartMutation['transferCart'] | null> => {
+  const cookieHeader = ctx.cookieHeader;
+  const apolloClient = createServerApolloClient(cookieHeader);
   const cartId = getCartId(ctx);
 
   if (!cartId) {
@@ -29,12 +33,15 @@ export const transferCart = async (
     const result = await graphqlMutation<
       TransferCartMutation,
       TransferCartMutationVariables
-    >({
-      mutation: TRANSFER_CART_MUTATION,
-      variables: {
-        cartId,
+    >(
+      {
+        mutation: TRANSFER_CART_MUTATION,
+        variables: {
+          cartId,
+        },
       },
-    });
+      apolloClient
+    );
 
     const cart = result?.transferCart ?? null;
 
@@ -56,7 +63,6 @@ export const retrieveCustomer = async (
 ): Promise<Customer | null> => {
   const cookieHeader = ctx.cookieHeader;
   const apolloClient = createServerApolloClient(cookieHeader);
-
   try {
     const customer = await graphqlFetch<
       GetCustomerQuery,
@@ -68,7 +74,6 @@ export const retrieveCustomer = async (
       },
       apolloClient
     ).then((response) => response?.me ?? null);
-
     return customer;
   } catch {
     return null;

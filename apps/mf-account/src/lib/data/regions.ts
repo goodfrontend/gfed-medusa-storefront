@@ -2,7 +2,7 @@
 
 import { sdk } from '@gfed-medusa/sf-lib-common/lib/config/medusa';
 import type { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
-import { getCacheOptions } from '@gfed-medusa/sf-lib-common/lib/data/cookies';
+import { getCacheOptions } from '@gfed-medusa/sf-lib-common/lib/data/cookies-utils';
 import { medusaError } from '@gfed-medusa/sf-lib-common/lib/utils/medusa-error';
 import { normalizeRegion } from '@gfed-medusa/sf-lib-common/lib/utils/normalize-functions';
 import { Region } from '@gfed-medusa/sf-lib-common/types/graphql';

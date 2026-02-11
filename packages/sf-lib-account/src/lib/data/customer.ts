@@ -1,19 +1,20 @@
 'use server';
 
 import { revalidateTag } from 'next/cache';
-import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import { sdk } from '@gfed-medusa/sf-lib-common/lib/config/medusa';
 import type { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import {
-  getAuthHeaders,
-  getCacheTag,
-  getCartId,
   removeAuthTokenAction,
   removeCartIdAction,
   setAuthTokenAction,
-} from '@gfed-medusa/sf-lib-common/lib/data/cookies';
+} from '@gfed-medusa/sf-lib-common/lib/data/cookies-actions';
+import {
+  getAuthHeaders,
+  getCacheTag,
+  getCartId,
+} from '@gfed-medusa/sf-lib-common/lib/data/cookies-utils';
 import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
 import {
   createServerApolloClient,
@@ -38,7 +39,7 @@ import {
 export const retrieveCustomer = async (
   ctx: StorefrontContext
 ): Promise<Customer | null> => {
-  const cookieHeader = ctx.cookieHeader || (await cookies()).toString();
+  const cookieHeader = ctx.cookieHeader;
   const apolloClient = createServerApolloClient(cookieHeader);
 
   try {
@@ -162,6 +163,8 @@ export async function postSignout(countryCode: string) {
 export const transferCart = async (
   ctx: StorefrontContext
 ): Promise<TransferCartMutation['transferCart'] | null> => {
+  const cookieHeader = ctx.cookieHeader;
+  const apolloClient = createServerApolloClient(cookieHeader);
   const cartId = getCartId(ctx);
 
   if (!cartId) {
@@ -172,12 +175,15 @@ export const transferCart = async (
     const result = await graphqlMutation<
       TransferCartMutation,
       TransferCartMutationVariables
-    >({
-      mutation: TRANSFER_CART_MUTATION,
-      variables: {
-        cartId,
+    >(
+      {
+        mutation: TRANSFER_CART_MUTATION,
+        variables: {
+          cartId,
+        },
       },
-    });
+      apolloClient
+    );
 
     const cart = result?.transferCart ?? null;
 

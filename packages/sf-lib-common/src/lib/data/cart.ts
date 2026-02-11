@@ -1,3 +1,5 @@
+'use server';
+
 import { HttpTypes } from '@medusajs/types';
 
 import {
@@ -23,7 +25,7 @@ import {
   getCacheOptions,
   getCacheTag,
   getCartId,
-} from './cookies';
+} from './cookies-utils';
 
 export const retrieveCart = async (
   ctx: StorefrontContext
@@ -73,12 +75,16 @@ export const updateCart = async (
     const cart = result?.updateCart ?? null;
 
     if (cart) {
-      const { revalidateTag } = await import('next/cache');
-      const cartCacheTag = getCacheTag('carts', ctx);
-      revalidateTag(cartCacheTag);
+      try {
+        const { revalidateTag } = await import('next/cache');
+        const cartCacheTag = getCacheTag('carts', ctx);
+        revalidateTag(cartCacheTag);
 
-      const fulfillmentCacheTag = getCacheTag('fulfillment', ctx);
-      revalidateTag(fulfillmentCacheTag);
+        const fulfillmentCacheTag = getCacheTag('fulfillment', ctx);
+        revalidateTag(fulfillmentCacheTag);
+      } catch {
+        // Not in Next.js environment — cache revalidation is skipped.
+      }
     }
 
     return cart;

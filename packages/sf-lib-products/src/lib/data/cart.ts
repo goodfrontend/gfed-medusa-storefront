@@ -1,11 +1,11 @@
 'use server';
 
 import type { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
+import { setCartIdAction } from '@gfed-medusa/sf-lib-common/lib/data/cookies-actions';
 import {
   getCacheTag,
   getCartId,
-  setCartIdAction,
-} from '@gfed-medusa/sf-lib-common/lib/data/cookies';
+} from '@gfed-medusa/sf-lib-common/lib/data/cookies-utils';
 import {
   graphqlFetch,
   graphqlMutation,

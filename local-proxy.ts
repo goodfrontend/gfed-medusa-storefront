@@ -1,6 +1,4 @@
-import express, {
-  Request as ExpressRequest,
-} from 'express';
+import express, { Request as ExpressRequest } from 'express';
 import { HTMLRewriter } from 'htmlrewriter';
 
 const CONFIG = {
