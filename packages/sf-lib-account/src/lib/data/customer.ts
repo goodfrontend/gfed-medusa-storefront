@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidateTag } from 'next/cache';
+import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
 import { sdk } from '@gfed-medusa/sf-lib-common/lib/config/medusa';
@@ -39,7 +40,7 @@ import {
 export const retrieveCustomer = async (
   ctx: StorefrontContext
 ): Promise<Customer | null> => {
-  const cookieHeader = ctx.cookieHeader;
+  const cookieHeader = ctx.cookieHeader || (await cookies()).toString();
   const apolloClient = createServerApolloClient(cookieHeader);
 
   try {
