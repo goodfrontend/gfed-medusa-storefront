@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-common
 
+## 2.3.1
+
+### Patch Changes
+
+- 6bc23db: Fix update region not working in horizontal components
+
 ## 2.3.0
 
 ### Minor Changes
