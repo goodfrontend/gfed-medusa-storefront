@@ -1,5 +1,13 @@
 # @gfed-medusa/mf-home
 
+## 1.2.1
+
+### Patch Changes
+
+- 6bc23db: Fix update region not working in horizontal components
+- Updated dependencies [6bc23db]
+  - @gfed-medusa/sf-lib-common@2.3.1
+
 ## 1.2.0
 
 ### Minor Changes
