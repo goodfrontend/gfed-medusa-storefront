@@ -1,0 +1,511 @@
+name: CI
+
+on:
+  pull_request:
+    paths:
+      - 'apps/**'
+      - 'packages/**'
+      - 'turbo.json'
+      - 'pnpm-lock.yaml'
+      - 'pnpm-workspace.yaml'
+      - 'package.json'
+      - '.github/workflows/**'
+
+permissions:
+  actions: write
+  contents: read
+  pull-requests: write
+  packages: write
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  detect-changes:
+    name: Detect changes
+    runs-on: ubuntu-latest
+    outputs:
+      home: ${{ steps.changes.outputs.home }}
+      account: ${{ steps.changes.outputs.account }}
+      products: ${{ steps.changes.outputs.products }}
+      checkout: ${{ steps.changes.outputs.checkout }}
+      horz: ${{ steps.changes.outputs.horz }}
+      packages: ${{ steps.changes.outputs.packages }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            home:
+              - 'apps/mf-home/**'
+              - 'packages/**'
+              - 'turbo.json'
+              - 'pnpm-lock.yaml'
+              - 'pnpm-workspace.yaml'
+              - 'package.json'
+              - '.github/workflows/**'
+            account:
+              - 'apps/mf-account/**'
+              - 'packages/**'
+              - 'turbo.json'
+              - 'pnpm-lock.yaml'
+              - 'pnpm-workspace.yaml'
+              - 'package.json'
+              - '.github/workflows/**'
+            products:
+              - 'apps/mf-products/**'
+              - 'packages/**'
+              - 'turbo.json'
+              - 'pnpm-lock.yaml'
+              - 'pnpm-workspace.yaml'
+              - 'package.json'
+              - '.github/workflows/**'
+            checkout:
+              - 'apps/mf-checkout/**'
+              - 'packages/**'
+              - 'turbo.json'
+              - 'pnpm-lock.yaml'
+              - 'pnpm-workspace.yaml'
+              - 'package.json'
+              - '.github/workflows/**'
+            horz:
+              - 'apps/mf-horz-components/**'
+              - 'packages/**'
+              - 'turbo.json'
+              - 'pnpm-lock.yaml'
+              - 'pnpm-workspace.yaml'
+              - 'package.json'
+              - '.github/workflows/**'
+            packages:
+              - 'packages/**'
+              - 'turbo.json'
+              - 'pnpm-lock.yaml'
+              - 'pnpm-workspace.yaml'
+              - 'package.json'
+
+  setup:
+    name: Setup Dependencies
+    needs: detect-changes
+    if: |
+      needs.detect-changes.outputs.home == 'true' ||
+      needs.detect-changes.outputs.account == 'true' ||
+      needs.detect-changes.outputs.products == 'true' ||
+      needs.detect-changes.outputs.checkout == 'true' ||
+      needs.detect-changes.outputs.horz == 'true' ||
+      needs.detect-changes.outputs.packages == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9.0.0
+          run_install: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+  verify-home:
+    name: Verify Home
+    needs: [detect-changes, setup]
+    if: needs.detect-changes.outputs.home == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.0.0
+          run_install: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Cache Turbo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-mf-home-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-mf-home-
+            ${{ runner.os }}-turbo-
+
+      - name: Load CI env
+        run: |
+          ENV_FILE="apps/mf-home/.env.template"
+          if [ -f "$ENV_FILE" ]; then
+            grep -vE '^\s*#|^\s*$' "$ENV_FILE" >> "$GITHUB_ENV"
+          fi
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build --filter=./apps/mf-home
+
+      - name: Lint
+        run: pnpm lint --filter=./apps/mf-home
+
+      - name: Type check
+        run: pnpm check-types --filter=./apps/mf-home
+
+  verify-account:
+    name: Verify Account
+    needs: [detect-changes, setup]
+    if: needs.detect-changes.outputs.account == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.0.0
+          run_install: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Cache Turbo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-mf-account-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-mf-account-
+            ${{ runner.os }}-turbo-
+
+      - name: Load CI env
+        run: |
+          ENV_FILE="apps/mf-account/.env.template"
+          if [ -f "$ENV_FILE" ]; then
+            grep -vE '^\s*#|^\s*$' "$ENV_FILE" >> "$GITHUB_ENV"
+          fi
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build --filter=./apps/mf-account
+
+      - name: Lint
+        run: pnpm lint --filter=./apps/mf-account
+
+      - name: Type check
+        run: pnpm check-types --filter=./apps/mf-account
+
+  verify-products:
+    name: Verify Products
+    needs: [detect-changes, setup]
+    if: needs.detect-changes.outputs.products == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.0.0
+          run_install: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Cache Turbo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-mf-products-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-mf-products-
+            ${{ runner.os }}-turbo-
+
+      - name: Load CI env
+        run: |
+          ENV_FILE="apps/mf-products/.env.template"
+          if [ -f "$ENV_FILE" ]; then
+            grep -vE '^\s*#|^\s*$' "$ENV_FILE" >> "$GITHUB_ENV"
+          fi
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build --filter=./apps/mf-products
+
+      - name: Lint
+        run: pnpm lint --filter=./apps/mf-products
+
+      - name: Type check
+        run: pnpm check-types --filter=./apps/mf-products
+
+  verify-checkout:
+    name: Verify Checkout
+    needs: [detect-changes, setup]
+    if: needs.detect-changes.outputs.checkout == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.0.0
+          run_install: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Cache Turbo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-mf-checkout-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-mf-checkout-
+            ${{ runner.os }}-turbo-
+
+      - name: Load CI env
+        run: |
+          ENV_FILE="apps/mf-checkout/.env.template"
+          if [ -f "$ENV_FILE" ]; then
+            grep -vE '^\s*#|^\s*$' "$ENV_FILE" >> "$GITHUB_ENV"
+          fi
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build --filter=./apps/mf-checkout
+
+      - name: Lint
+        run: pnpm lint --filter=./apps/mf-checkout
+
+      - name: Type check
+        run: pnpm check-types --filter=./apps/mf-checkout
+
+  verify-horz:
+    name: Verify Horz Components
+    needs: [detect-changes, setup]
+    if: needs.detect-changes.outputs.horz == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9.0.0
+          run_install: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Cache Turbo
+        uses: actions/cache@v4
+        with:
+          path: .turbo
+          key: ${{ runner.os }}-turbo-mf-horz-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-turbo-mf-horz-
+            ${{ runner.os }}-turbo-
+
+      - name: Load CI env
+        run: |
+          ENV_FILE="apps/mf-horz-components/.env.template"
+          if [ -f "$ENV_FILE" ]; then
+            grep -vE '^\s*#|^\s*$' "$ENV_FILE" >> "$GITHUB_ENV"
+          fi
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build
+        run: pnpm build --filter=./apps/mf-horz-components
+
+      - name: Lint
+        run: pnpm lint --filter=./apps/mf-horz-components
+
+      - name: Type check
+        run: pnpm check-types --filter=./apps/mf-horz-components
+
+  build-preview-home:
+    name: Build Home Preview
+    needs: [detect-changes, verify-home]
+    if: |
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      needs.detect-changes.outputs.home == 'true'
+    uses: ./.github/workflows/_build-docker-preview.yaml
+    with:
+      app: sf-home
+      dockerfile: ./apps/mf-home/Dockerfile
+
+  build-preview-account:
+    name: Build Account Preview
+    needs: [detect-changes, verify-account]
+    if: |
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      needs.detect-changes.outputs.account == 'true'
+    uses: ./.github/workflows/_build-docker-preview.yaml
+    with:
+      app: sf-account
+      dockerfile: ./apps/mf-account/Dockerfile
+
+  build-preview-products:
+    name: Build Products Preview
+    needs: [detect-changes, verify-products]
+    if: |
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      needs.detect-changes.outputs.products == 'true'
+    uses: ./.github/workflows/_build-docker-preview.yaml
+    with:
+      app: sf-products
+      dockerfile: ./apps/mf-products/Dockerfile
+
+  build-preview-checkout:
+    name: Build Checkout Preview
+    needs: [detect-changes, verify-checkout]
+    if: |
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      needs.detect-changes.outputs.checkout == 'true'
+    uses: ./.github/workflows/_build-docker-preview.yaml
+    with:
+      app: sf-checkout
+      dockerfile: ./apps/mf-checkout/Dockerfile
+
+  render-preview-home:
+    name: Home Render Preview
+    needs: [detect-changes, build-preview-home]
+    if: |
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      needs.detect-changes.outputs.home == 'true'
+    uses: ./.github/workflows/_deploy-render-preview.yaml
+    with:
+      environment_name: sf-home-smoke
+      image: ${{ needs.build-preview-home.outputs.image_tag }}
+    secrets:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+      RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
+
+  render-preview-account:
+    name: Account Render Preview
+    needs: [detect-changes, build-preview-account]
+    if: |
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      needs.detect-changes.outputs.account == 'true'
+    uses: ./.github/workflows/_deploy-render-preview.yaml
+    with:
+      environment_name: sf-account-smoke
+      image: ${{ needs.build-preview-account.outputs.image_tag }}
+    secrets:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+      RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
+
+  render-preview-products:
+    name: Products Render Preview
+    needs: [detect-changes, build-preview-products]
+    if: |
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      needs.detect-changes.outputs.products == 'true'
+    uses: ./.github/workflows/_deploy-render-preview.yaml
+    with:
+      environment_name: sf-products-smoke
+      image: ${{ needs.build-preview-products.outputs.image_tag }}
+    secrets:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+      RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
+
+  render-preview-checkout:
+    name: Checkout Render Preview
+    needs: [detect-changes, build-preview-checkout]
+    if: |
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      needs.detect-changes.outputs.checkout == 'true'
+    uses: ./.github/workflows/_deploy-render-preview.yaml
+    with:
+      environment_name: sf-checkout-smoke
+      image: ${{ needs.build-preview-checkout.outputs.image_tag }}
+    secrets:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+      RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
+
+  post-preview-home:
+    name: Post Home Preview
+    needs: [detect-changes, render-preview-home]
+    if: |
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      needs.detect-changes.outputs.home == 'true' &&
+      always()
+    uses: ./.github/workflows/_post-render-preview.yaml
+    with:
+      app_label: Home
+      app_slug: home
+      preview_url: ${{ needs.render-preview-home.outputs.preview_url }}
+      preview_service_id: ${{ needs.render-preview-home.outputs.preview_service_id }}
+      render_result: ${{ needs.render-preview-home.result }}
+      pr_number: ${{ github.event.pull_request.number }}
+
+  post-preview-account:
+    name: Post Account Preview
+    needs: [detect-changes, render-preview-account]
+    if: |
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      needs.detect-changes.outputs.account == 'true' &&
+      always()
+    uses: ./.github/workflows/_post-render-preview.yaml
+    with:
+      app_label: Account
+      app_slug: account
+      preview_url: ${{ needs.render-preview-account.outputs.preview_url }}
+      preview_service_id: ${{ needs.render-preview-account.outputs.preview_service_id }}
+      render_result: ${{ needs.render-preview-account.result }}
+      pr_number: ${{ github.event.pull_request.number }}
+
+  post-preview-products:
+    name: Post Products Preview
+    needs: [detect-changes, render-preview-products]
+    if: |
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      needs.detect-changes.outputs.products == 'true' &&
+      always()
+    uses: ./.github/workflows/_post-render-preview.yaml
+    with:
+      app_label: Products
+      app_slug: products
+      preview_url: ${{ needs.render-preview-products.outputs.preview_url }}
+      preview_service_id: ${{ needs.render-preview-products.outputs.preview_service_id }}
+      render_result: ${{ needs.render-preview-products.result }}
+      pr_number: ${{ github.event.pull_request.number }}
+
+  post-preview-checkout:
+    name: Post Checkout Preview
+    needs: [detect-changes, render-preview-checkout]
+    if: |
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      needs.detect-changes.outputs.checkout == 'true' &&
+      always()
+    uses: ./.github/workflows/_post-render-preview.yaml
+    with:
+      app_label: Checkout
+      app_slug: checkout
+      preview_url: ${{ needs.render-preview-checkout.outputs.preview_url }}
+      preview_service_id: ${{ needs.render-preview-checkout.outputs.preview_service_id }}
+      render_result: ${{ needs.render-preview-checkout.result }}
+      pr_number: ${{ github.event.pull_request.number }}
