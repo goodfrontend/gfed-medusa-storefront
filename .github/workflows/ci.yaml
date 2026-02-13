@@ -86,39 +86,9 @@ jobs:
               - 'pnpm-workspace.yaml'
               - 'package.json'
 
-  setup:
-    name: Setup Dependencies
-    needs: detect-changes
-    if: |
-      needs.detect-changes.outputs.home == 'true' ||
-      needs.detect-changes.outputs.account == 'true' ||
-      needs.detect-changes.outputs.products == 'true' ||
-      needs.detect-changes.outputs.checkout == 'true' ||
-      needs.detect-changes.outputs.horz == 'true' ||
-      needs.detect-changes.outputs.packages == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.0.0
-          run_install: false
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
   verify-home:
     name: Verify Home
-    needs: [detect-changes, setup]
+    needs: detect-changes
     if: needs.detect-changes.outputs.home == 'true'
     runs-on: ubuntu-latest
     steps:
@@ -132,9 +102,22 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm
 
-      - name: Cache Turbo
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Setup Turbo cache
         uses: actions/cache@v4
         with:
           path: .turbo
@@ -164,7 +147,7 @@ jobs:
 
   verify-account:
     name: Verify Account
-    needs: [detect-changes, setup]
+    needs: detect-changes
     if: needs.detect-changes.outputs.account == 'true'
     runs-on: ubuntu-latest
     steps:
@@ -178,9 +161,22 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm
 
-      - name: Cache Turbo
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Setup Turbo cache
         uses: actions/cache@v4
         with:
           path: .turbo
@@ -210,7 +206,7 @@ jobs:
 
   verify-products:
     name: Verify Products
-    needs: [detect-changes, setup]
+    needs: detect-changes
     if: needs.detect-changes.outputs.products == 'true'
     runs-on: ubuntu-latest
     steps:
@@ -224,9 +220,22 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm
 
-      - name: Cache Turbo
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Setup Turbo cache
         uses: actions/cache@v4
         with:
           path: .turbo
@@ -256,7 +265,7 @@ jobs:
 
   verify-checkout:
     name: Verify Checkout
-    needs: [detect-changes, setup]
+    needs: detect-changes
     if: needs.detect-changes.outputs.checkout == 'true'
     runs-on: ubuntu-latest
     steps:
@@ -270,9 +279,22 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm
 
-      - name: Cache Turbo
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Setup Turbo cache
         uses: actions/cache@v4
         with:
           path: .turbo
@@ -302,7 +324,7 @@ jobs:
 
   verify-horz:
     name: Verify Horz Components
-    needs: [detect-changes, setup]
+    needs: detect-changes
     if: needs.detect-changes.outputs.horz == 'true'
     runs-on: ubuntu-latest
     steps:
@@ -316,9 +338,22 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: pnpm
 
-      - name: Cache Turbo
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
+
+      - name: Setup pnpm cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - name: Setup Turbo cache
         uses: actions/cache@v4
         with:
           path: .turbo
@@ -508,4 +543,45 @@ jobs:
       preview_url: ${{ needs.render-preview-checkout.outputs.preview_url }}
       preview_service_id: ${{ needs.render-preview-checkout.outputs.preview_service_id }}
       render_result: ${{ needs.render-preview-checkout.result }}
+      pr_number: ${{ github.event.pull_request.number }}
+
+  build-preview-horz:
+    name: Build Horz Components Preview
+    needs: [detect-changes, verify-horz]
+    if: |
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      needs.detect-changes.outputs.horz == 'true'
+    uses: ./.github/workflows/_build-docker-preview.yaml
+    with:
+      app: sf-horz
+      dockerfile: ./apps/mf-horz-components/Dockerfile
+
+  render-preview-horz:
+    name: Horz Components Render Preview
+    needs: [detect-changes, build-preview-horz]
+    if: |
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      needs.detect-changes.outputs.horz == 'true'
+    uses: ./.github/workflows/_deploy-render-preview.yaml
+    with:
+      environment_name: sf-horz-smoke
+      image: ${{ needs.build-preview-horz.outputs.image_tag }}
+    secrets:
+      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+      RENDER_SERVICE_ID: ${{ secrets.RENDER_SERVICE_ID }}
+
+  post-preview-horz:
+    name: Post Horz Components Preview
+    needs: [detect-changes, render-preview-horz]
+    if: |
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      needs.detect-changes.outputs.horz == 'true' &&
+      always()
+    uses: ./.github/workflows/_post-render-preview.yaml
+    with:
+      app_label: Horz Components
+      app_slug: horz
+      preview_url: ${{ needs.render-preview-horz.outputs.preview_url }}
+      preview_service_id: ${{ needs.render-preview-horz.outputs.preview_service_id }}
+      render_result: ${{ needs.render-preview-horz.result }}
       pr_number: ${{ github.event.pull_request.number }}
