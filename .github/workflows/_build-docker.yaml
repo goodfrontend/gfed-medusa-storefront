@@ -62,3 +62,11 @@ jobs:
             NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=${{ secrets.MEDUSA_PUBLISHABLE_KEY }}
             NEXT_PUBLIC_BFF_URL=${{ secrets.BFF_URL }}
             NEXT_PUBLIC_BASE_URL=${{ secrets.STOREFRONT_BASE_URL }}
+
+  scan:
+    name: Security Scan
+    needs: build
+    uses: ./.github/workflows/_trivy-scan.yaml
+    with:
+      image_tag: ghcr.io/${{ github.repository }}/${{ inputs.app }}:${{ github.sha }}
+      app: ${{ inputs.app }}
