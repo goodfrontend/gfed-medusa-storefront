@@ -2,20 +2,13 @@
 
 import { sdk } from '@gfed-medusa/sf-lib-common/lib/config/medusa';
 import { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
-import {
-  getAuthHeaders,
-  getCacheOptions,
-} from '@gfed-medusa/sf-lib-common/lib/data/cookies-utils';
+import { getCacheOptions } from '@gfed-medusa/sf-lib-common/lib/data/cookies-utils';
 import { HttpTypes } from '@medusajs/types';
 
 export const listCartShippingMethods = async (
   cartId: string,
   ctx: StorefrontContext
 ) => {
-  const headers = {
-    ...getAuthHeaders(ctx),
-  };
-
   const next = {
     ...getCacheOptions('fulfillment', ctx),
   };
@@ -30,7 +23,6 @@ export const listCartShippingMethods = async (
           fields:
             '+service_zone.fulfllment_set.type,*service_zone.fulfillment_set.location.address',
         },
-        headers,
         next,
         cache: 'force-cache',
       }
@@ -47,10 +39,6 @@ export const calculatePriceForShippingOption = async (
   data: Record<string, unknown> = {},
   ctx: StorefrontContext
 ) => {
-  const headers = {
-    ...getAuthHeaders(ctx),
-  };
-
   const next = {
     ...getCacheOptions('fulfillment', ctx),
   };
@@ -67,7 +55,6 @@ export const calculatePriceForShippingOption = async (
       {
         method: 'POST',
         body,
-        headers,
         next,
       }
     )

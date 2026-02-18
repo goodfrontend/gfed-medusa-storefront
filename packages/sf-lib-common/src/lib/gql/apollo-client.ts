@@ -8,8 +8,6 @@ import {
   OperationVariables,
 } from '@apollo/client';
 
-import { StorefrontContext } from '../data/context';
-import { getAuthHeaders } from '../data/cookies-utils';
 import { getBaseURL } from '../utils/env';
 
 const isServer = () => typeof window === 'undefined';
@@ -38,13 +36,16 @@ const apolloClient = new ApolloClient({
 export function createServerApolloClient(cookieHeader?: string) {
   const authLink = new ApolloLink((operation, forward) => {
     if (cookieHeader) {
-      operation.setContext(({ headers = {} }) => ({
+      operation.setContext({
+        http: {
+          includeCredentials: true,
+        },
         headers: {
-          ...headers,
           Cookie: cookieHeader,
         },
-      }));
+      });
     }
+
     return forward(operation);
   });
 

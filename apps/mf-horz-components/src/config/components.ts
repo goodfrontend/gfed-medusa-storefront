@@ -38,10 +38,6 @@ export const COMPONENT_REGISTRY: ComponentDefinition[] = [
 
       return {
         regions: regions ?? [],
-        ctx: {
-          cartId: ctx?.cartId,
-          cacheId: ctx?.cacheId,
-        },
       };
     },
     elementTag: 'mfe-header',
@@ -88,10 +84,6 @@ export const COMPONENT_REGISTRY: ComponentDefinition[] = [
         collections: collectionsResult?.collections ?? [],
         productCategories: categoriesResult?.productCategories ?? [],
         footerContent: footerResult?.footer,
-        ctx: {
-          cartId: ctx?.cartId,
-          cacheId: ctx?.cacheId,
-        },
       };
     },
     elementTag: 'mfe-footer',

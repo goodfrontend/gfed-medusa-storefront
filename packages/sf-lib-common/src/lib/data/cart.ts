@@ -10,20 +10,20 @@ import {
   UpdateCartMutationVariables,
 } from '../../types/graphql';
 import { sdk } from '../config/medusa';
-import { graphqlFetch, graphqlMutation } from '../gql/apollo-client';
+import {
+  createServerApolloClient,
+  graphqlFetch,
+  graphqlMutation,
+} from '../gql/apollo-client';
 import {
   DELETE_LINE_ITEM_MUTATION,
   UPDATE_CART_MUTATION,
 } from '../gql/mutations/cart';
 import { GET_CART_QUERY } from '../gql/queries/cart';
+import { mutateCart } from '../hooks/use-cart';
 import { medusaError } from '../utils/medusa-error';
 import type { StorefrontContext } from './context';
-import {
-  getAuthHeaders,
-  getCacheOptions,
-  getCacheTag,
-  getCartId,
-} from './cookies-utils';
+import { getCacheOptions, getCacheTag, getCartId } from './cookies-utils';
 
 export const retrieveCart = async (
   ctx: StorefrontContext
@@ -33,11 +33,17 @@ export const retrieveCart = async (
     return null;
   }
 
+  const cookieHeader = ctx.cookieHeader;
+  const apolloClient = createServerApolloClient(cookieHeader);
+
   try {
-    const data = await graphqlFetch<GetCartQuery, GetCartQueryVariables>({
-      query: GET_CART_QUERY,
-      variables: { id },
-    });
+    const data = await graphqlFetch<GetCartQuery, GetCartQueryVariables>(
+      {
+        query: GET_CART_QUERY,
+        variables: { id },
+      },
+      apolloClient
+    );
 
     return data?.cart ?? null;
   } catch (error) {
@@ -73,6 +79,7 @@ export const updateCart = async (
     const cart = result?.updateCart ?? null;
 
     if (cart) {
+      await mutateCart();
       try {
         const { revalidateTag } = await import('next/cache');
         const cartCacheTag = getCacheTag('carts', ctx);
@@ -120,6 +127,7 @@ export const deleteLineItem = async (
     const deletedLineItem = result?.deleteLineItem ?? null;
 
     if (deletedLineItem) {
+      await mutateCart();
       try {
         const { revalidateTag } = await import('next/cache');
         const cartCacheTag = getCacheTag('carts', ctx);
@@ -141,9 +149,6 @@ export const deleteLineItem = async (
 
 export async function listCartOptions(ctx: StorefrontContext) {
   const cartId = getCartId(ctx);
-  const headers = {
-    ...getAuthHeaders(ctx),
-  };
   const next = {
     ...getCacheOptions('shippingOptions', ctx),
   };
@@ -153,7 +158,6 @@ export async function listCartOptions(ctx: StorefrontContext) {
   }>('/store/shipping-options', {
     query: { cart_id: cartId },
     next,
-    headers,
     cache: 'force-cache',
   });
 }

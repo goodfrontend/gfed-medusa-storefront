@@ -10,7 +10,6 @@ import {
   setCartIdAction,
 } from '@gfed-medusa/sf-lib-common/lib/data/cookies-actions';
 import {
-  getAuthHeaders,
   getCacheOptions,
   getCacheTag,
   getCartId,
@@ -366,12 +365,8 @@ export async function initiatePaymentSession(
   data: HttpTypes.StoreInitializePaymentSession,
   ctx: StorefrontContext
 ) {
-  const headers = {
-    ...getAuthHeaders(ctx),
-  };
-
   return sdk.store.payment
-    .initiatePaymentSession(cart, data, {}, headers)
+    .initiatePaymentSession(cart, data)
     .then(async (resp) => {
       const cartCacheTag = getCacheTag('carts', ctx);
       revalidateTag(cartCacheTag);
@@ -546,11 +541,6 @@ export async function placeOrder(
     >({
       mutation: COMPLETE_CART_MUTATION,
       variables: { cartId: id },
-      context: {
-        headers: {
-          ...getAuthHeaders(ctx),
-        },
-      },
     });
 
     const completed = result?.completeCart;
@@ -626,9 +616,6 @@ export async function updateRegion(
 
 export async function listCartOptions(ctx: StorefrontContext) {
   const cartId = getCartId(ctx);
-  const headers = {
-    ...getAuthHeaders(ctx),
-  };
   const next = {
     ...getCacheOptions('shippingOptions', ctx),
   };
@@ -638,7 +625,6 @@ export async function listCartOptions(ctx: StorefrontContext) {
   }>('/store/shipping-options', {
     query: { cart_id: cartId },
     next,
-    headers,
     cache: 'force-cache',
   });
 }

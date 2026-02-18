@@ -25,7 +25,7 @@ const DeleteButton = ({
       .then(() => {
         mutateCart();
       })
-      .catch((err) => {
+      .finally(() => {
         setIsDeleting(false);
       });
   };

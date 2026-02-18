@@ -21,10 +21,51 @@ const resolveContext = (c: Context): StorefrontContext => {
   return {
     cartId: getCookie(c, '_medusa_cart_id') ?? '',
     cacheId: getCookie(c, '_medusa_cache_id') ?? '',
-    customerToken: '',
-    cookieHeader: '',
+    cookieHeader: c.req.header('cookie') ?? '',
   };
 };
+
+app.get('/api/context', async (c) => {
+  const cartId = getCookie(c, '_medusa_cart_id');
+  const cacheId = getCookie(c, '_medusa_cache_id');
+
+  return c.json({
+    cartId: cartId ?? '',
+    cacheId: cacheId ?? '',
+  });
+});
+
+app.get('/api/cart', async (c) => {
+  const cartId = getCookie(c, '_medusa_cart_id');
+
+  if (!cartId) {
+    return c.json({ cart: null });
+  }
+
+  try {
+    const [{ createServerApolloClient, graphqlFetch }, { GET_CART_QUERY }] =
+      await Promise.all([
+        import('@gfed-medusa/sf-lib-common/lib/gql/apollo-client'),
+        import('@gfed-medusa/sf-lib-common/lib/gql/queries/cart'),
+      ]);
+
+    const cookieHeader = c.req.header('cookie') ?? '';
+    const apolloClient = createServerApolloClient(cookieHeader);
+
+    const result = await graphqlFetch<any, { id: string }>(
+      {
+        query: GET_CART_QUERY,
+        variables: { id: cartId },
+      },
+      apolloClient
+    );
+
+    return c.json({ cart: result?.cart ?? null });
+  } catch (error) {
+    console.error('Error fetching cart:', error);
+    return c.json({ error: 'Failed to fetch cart' }, 500);
+  }
+});
 
 app.get('/api/:name', async (c) => {
   const name = c.req.param('name');
@@ -55,7 +96,7 @@ app.get('/fragment/:name', async (c) => {
     const ctx = resolveContext(c);
     const data = await component.getData(ctx);
     const Component = component.component;
-    const html = renderToString(<Component {...data} ctx={ctx} />);
+    const html = renderToString(<Component {...data} />);
     return c.html(html);
   } catch (error) {
     console.error(`Error rendering component '${name}':`, error);

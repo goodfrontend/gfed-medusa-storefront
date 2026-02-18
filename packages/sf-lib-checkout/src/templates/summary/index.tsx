@@ -1,16 +1,13 @@
 'use client';
 
 import { LocalizedClientLink } from '@gfed-medusa/sf-lib-common/components/localized-client-link';
+import { useCart } from '@gfed-medusa/sf-lib-common/lib/hooks/use-cart';
 import { Divider } from '@gfed-medusa/sf-lib-ui/components/divider';
 import { Button, Heading } from '@medusajs/ui';
 
 import CartTotals from '@/components/cart-totals';
 import DiscountCode from '@/components/discount-code';
 import { Cart } from '@/lib/gql/generated-types/graphql';
-
-type SummaryProps = {
-  cart: Cart;
-};
 
 function getCheckoutStep(cart: Cart) {
   if (!cart?.shippingAddress?.address1 || !cart.email) {
@@ -22,7 +19,13 @@ function getCheckoutStep(cart: Cart) {
   }
 }
 
-const Summary = ({ cart }: SummaryProps) => {
+const Summary = () => {
+  const { cart } = useCart();
+
+  if (!cart) {
+    return null;
+  }
+
   const step = getCheckoutStep(cart);
 
   return (
@@ -30,9 +33,9 @@ const Summary = ({ cart }: SummaryProps) => {
       <Heading level="h2" className="text-[2rem] leading-[2.75rem]">
         Summary
       </Heading>
-      <DiscountCode cart={cart} />
+      <DiscountCode />
       <Divider />
-      <CartTotals totals={cart} />
+      <CartTotals />
       <LocalizedClientLink
         href={'/checkout?step=' + step}
         data-testid="checkout-button"

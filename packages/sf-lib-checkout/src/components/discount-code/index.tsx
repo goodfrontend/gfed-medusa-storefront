@@ -5,6 +5,7 @@ import React, { useActionState } from 'react';
 import { ErrorMessage } from '@gfed-medusa/sf-lib-common/components/error-message';
 import { SubmitButton } from '@gfed-medusa/sf-lib-common/components/submit-button';
 import { useStorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
+import { useCart } from '@gfed-medusa/sf-lib-common/lib/hooks/use-cart';
 import { convertToLocale } from '@gfed-medusa/sf-lib-common/lib/utils/money';
 import { Trash } from '@gfed-medusa/sf-lib-ui/icons/trash';
 import { Badge, Heading, Input, Label, Text } from '@medusajs/ui';
@@ -13,12 +14,18 @@ import { applyPromotions, submitPromotionForm } from '@/lib/data/cart';
 import { Cart } from '@/lib/gql/generated-types/graphql';
 
 type DiscountCodeProps = {
-  cart: Cart;
+  cart?: Cart | null;
 };
 
-const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
+const DiscountCode: React.FC<DiscountCodeProps> = ({ cart: propCart }) => {
+  const { cart: swrCart } = useCart();
+  const cart = propCart ?? swrCart;
   const [isOpen, setIsOpen] = React.useState(false);
   const ctx = useStorefrontContext();
+
+  if (!cart) {
+    return null;
+  }
 
   const { promotions = [] } = cart;
   const removePromotionCode = async (code: string) => {
@@ -110,7 +117,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
           )}
         </form>
 
-        {promotions?.length && promotions.length > 0 && (
+        {!!promotions?.length && promotions.length > 0 && (
           <div className="flex w-full items-center">
             <div className="flex w-full flex-col">
               <Heading className="txt-medium mb-2">

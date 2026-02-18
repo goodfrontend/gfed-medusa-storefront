@@ -2,10 +2,11 @@
 
 import React from 'react';
 
+import { useCart } from '@gfed-medusa/sf-lib-common/lib/hooks/use-cart';
 import { convertToLocale } from '@gfed-medusa/sf-lib-common/lib/utils/money';
 
 type CartTotalsProps = {
-  totals: {
+  totals?: {
     total?: number | null;
     subtotal?: number | null;
     taxTotal?: number | null;
@@ -13,10 +14,17 @@ type CartTotalsProps = {
     discountTotal?: number | null;
     giftCardTotal?: number | null;
     currencyCode: string;
-  };
+  } | null;
 };
 
 const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
+  const { cart } = useCart();
+  const cartData = totals ?? cart;
+
+  if (!cartData) {
+    return null;
+  }
+
   const {
     currencyCode,
     total,
@@ -25,7 +33,7 @@ const CartTotals: React.FC<CartTotalsProps> = ({ totals }) => {
     discountTotal,
     giftCardTotal,
     shippingTotal,
-  } = totals;
+  } = cartData;
 
   const shipping_excluded = (subtotal ?? 0) - (shippingTotal ?? 0);
 

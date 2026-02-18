@@ -2,10 +2,7 @@
 
 import { sdk } from '@gfed-medusa/sf-lib-common/lib/config/medusa';
 import { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
-import {
-  getAuthHeaders,
-  getCacheOptions,
-} from '@gfed-medusa/sf-lib-common/lib/data/cookies-utils';
+import { getCacheOptions } from '@gfed-medusa/sf-lib-common/lib/data/cookies-utils';
 import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
 import { medusaError } from '@gfed-medusa/sf-lib-common/lib/utils/medusa-error';
 import { normalizeOrder } from '@gfed-medusa/sf-lib-common/lib/utils/normalize-functions';
@@ -30,16 +27,13 @@ export const createTransferRequest = async (
     return { success: false, error: 'Order ID is required', order: null };
   }
 
-  const headers = getAuthHeaders(ctx);
-
   return await sdk.store.order
     .requestTransfer(
       id,
       {},
       {
         fields: 'id, email',
-      },
-      headers
+      }
     )
     .then(({ order }) => ({ success: true, error: null, order }))
     .catch((err) => ({ success: false, error: err.message, order: null }));
@@ -51,10 +45,6 @@ export const listOrders = async (
   offset: number = 0,
   filters: Record<string, any> | undefined = undefined
 ) => {
-  const headers = {
-    ...getAuthHeaders(ctx),
-  };
-
   const next = {
     ...getCacheOptions('orders', ctx),
   };
@@ -69,7 +59,6 @@ export const listOrders = async (
         fields: '*items,+items.metadata,*items.variant,*items.product',
         ...filters,
       },
-      headers,
       next,
       cache: 'force-cache',
     })
