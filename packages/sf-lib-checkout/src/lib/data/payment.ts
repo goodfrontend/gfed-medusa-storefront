@@ -2,20 +2,13 @@
 
 import { sdk } from '@gfed-medusa/sf-lib-common/lib/config/medusa';
 import { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
-import {
-  getAuthHeaders,
-  getCacheOptions,
-} from '@gfed-medusa/sf-lib-common/lib/data/cookies-utils';
+import { getCacheOptions } from '@gfed-medusa/sf-lib-common/lib/data/cookies-utils';
 import { HttpTypes } from '@medusajs/types';
 
 export const listCartPaymentMethods = async (
   regionId: string,
   ctx: StorefrontContext
 ) => {
-  const headers = {
-    ...getAuthHeaders(ctx),
-  };
-
   const next = {
     ...getCacheOptions('payment_providers', ctx),
   };
@@ -26,7 +19,6 @@ export const listCartPaymentMethods = async (
       {
         method: 'GET',
         query: { region_id: regionId },
-        headers,
         next,
         cache: 'force-cache',
       }

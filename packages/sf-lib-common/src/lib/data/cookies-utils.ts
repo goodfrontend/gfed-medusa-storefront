@@ -1,17 +1,5 @@
 import type { StorefrontContext } from './context';
 
-export const getAuthHeaders = (
-  ctx: StorefrontContext
-): { authorization: string } | {} => {
-  const token = ctx.customerToken;
-
-  if (!token) {
-    return {};
-  }
-
-  return { authorization: `Bearer ${token}` };
-};
-
 export const getCacheTag = (tag: string, ctx: StorefrontContext): string => {
   const cacheId = ctx.cacheId;
 

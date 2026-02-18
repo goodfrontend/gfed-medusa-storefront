@@ -19,7 +19,7 @@ import { getCacheTag, getCartId } from './cookies-utils';
 export const transferCart = async (
   ctx: StorefrontContext
 ): Promise<TransferCartMutation['transferCart'] | null> => {
-  const cookieHeader = ctx.cookieHeader;
+  const cookieHeader = ctx.cookieHeader ?? '';
   const apolloClient = createServerApolloClient(cookieHeader);
   const cartId = getCartId(ctx);
 
@@ -63,7 +63,7 @@ export const transferCart = async (
 export const retrieveCustomer = async (
   ctx: StorefrontContext
 ): Promise<Customer | null> => {
-  const cookieHeader = ctx.cookieHeader;
+  const cookieHeader = ctx.cookieHeader ?? '';
   const apolloClient = createServerApolloClient(cookieHeader);
   try {
     const customer = await graphqlFetch<

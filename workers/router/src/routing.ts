@@ -8,6 +8,11 @@ export function determineTargetApp(url: URL, config: AppConfig): string {
   if (pathname.startsWith('/products-assets/')) return config.PRODUCTS;
   if (pathname.startsWith('/checkout-assets/')) return config.CHECKOUT;
 
+  // Horizontal component APIs (cart, context, etc.)
+  if (pathname === '/api/cart' || pathname === '/api/context') {
+    return config.HORIZONTAL_SERVICE;
+  }
+
   // TODO(fcasibu): should be somewhere, but home for now
   if (pathname.startsWith('/api/')) return config.HOME;
 

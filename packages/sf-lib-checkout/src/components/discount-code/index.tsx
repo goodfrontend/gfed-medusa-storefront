@@ -110,7 +110,7 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
           )}
         </form>
 
-        {promotions?.length && promotions.length > 0 && (
+        {!!promotions?.length && promotions.length > 0 && (
           <div className="flex w-full items-center">
             <div className="flex w-full flex-col">
               <Heading className="txt-medium mb-2">

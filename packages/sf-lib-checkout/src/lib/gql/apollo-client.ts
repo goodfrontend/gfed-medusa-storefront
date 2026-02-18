@@ -35,13 +35,16 @@ const apolloClient = new ApolloClient({
 export function createServerApolloClient(cookieHeader?: string) {
   const authLink = new ApolloLink((operation, forward) => {
     if (cookieHeader) {
-      operation.setContext(({ headers = {} }) => ({
+      operation.setContext({
+        http: {
+          includeCredentials: true,
+        },
         headers: {
-          ...headers,
           Cookie: cookieHeader,
         },
-      }));
+      });
     }
+
     return forward(operation);
   });
 

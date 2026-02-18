@@ -1,15 +1,14 @@
+'use client';
+
+import { useCart } from '@gfed-medusa/sf-lib-common/lib/hooks/use-cart';
 import { Heading, Table } from '@medusajs/ui';
 
 import Item from '@/components/item';
 import SkeletonLineItem from '@/components/skeleton-line-item';
-import { Cart } from '@/lib/gql/generated-types/graphql';
 import repeat from '@/lib/util/repeat';
 
-type ItemsTemplateProps = {
-  cart?: Cart;
-};
-
-const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
+const ItemsTemplate = () => {
+  const { cart, isLoading } = useCart();
   const items = cart?.items;
   return (
     <div>
@@ -31,23 +30,25 @@ const ItemsTemplate = ({ cart }: ItemsTemplateProps) => {
           </Table.Row>
         </Table.Header>
         <Table.Body>
-          {items
-            ? [...items]
-                .sort((a, b) => {
-                  return (a.createdAt ?? '') > (b.createdAt ?? '') ? -1 : 1;
-                })
-                .map((item) => {
-                  return (
-                    <Item
-                      key={item.id}
-                      item={item}
-                      currencyCode={cart?.currencyCode}
-                    />
-                  );
-                })
-            : repeat(5).map((i) => {
+          {isLoading
+            ? repeat(5).map((i) => {
                 return <SkeletonLineItem key={i} />;
-              })}
+              })
+            : items
+              ? [...items]
+                  .sort((a, b) => {
+                    return (a.createdAt ?? '') > (b.createdAt ?? '') ? -1 : 1;
+                  })
+                  .map((item) => {
+                    return (
+                      <Item
+                        key={item.id}
+                        item={item}
+                        currencyCode={cart?.currencyCode}
+                      />
+                    );
+                  })
+              : null}
         </Table.Body>
       </Table>
     </div>

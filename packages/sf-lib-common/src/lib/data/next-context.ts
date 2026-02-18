@@ -14,7 +14,6 @@ export const resolveNextContext = async (): Promise<StorefrontContext> => {
 
   return {
     cartId: cookieStore.get('_medusa_cart_id')?.value ?? '',
-    customerToken: cookieStore.get('_medusa_jwt')?.value ?? '',
     cacheId: cookieStore.get('_medusa_cache_id')?.value ?? '',
     cookieHeader: cookieStore.toString(),
   };

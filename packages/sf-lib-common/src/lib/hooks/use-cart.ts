@@ -1,23 +1,36 @@
+'use client';
+
 import useSWR, { mutate } from 'swr';
 
 import { Cart } from '../../types/graphql';
-import { retrieveCart } from '../data/cart';
-import { useStorefrontContext } from '../data/context';
 
-export const CART_SWR_KEY = 'medusa-cart';
+const CART_SWR_KEY = 'medusa-cart';
 
 export const useCart = () => {
-  const ctx = useStorefrontContext();
-
   const {
     data,
     error,
     isLoading,
     mutate: swrMutate,
-  } = useSWR<Cart | null>(CART_SWR_KEY, () => retrieveCart(ctx), {
-    revalidateOnFocus: true,
-    revalidateOnReconnect: true,
-  });
+  } = useSWR<Cart | null>(
+    CART_SWR_KEY,
+    async () => {
+      const response = await fetch('/api/cart', {
+        credentials: 'include',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch cart');
+      }
+
+      const { cart } = await response.json();
+      return cart;
+    },
+    {
+      revalidateOnFocus: true,
+      revalidateOnReconnect: true,
+    }
+  );
 
   return {
     cart: data,

@@ -12,7 +12,6 @@ import {
   setAuthTokenAction,
 } from '@gfed-medusa/sf-lib-common/lib/data/cookies-actions';
 import {
-  getAuthHeaders,
   getCacheTag,
   getCartId,
 } from '@gfed-medusa/sf-lib-common/lib/data/cookies-utils';
@@ -35,8 +34,14 @@ import {
   Customer,
   GetCustomerQuery,
   GetCustomerQueryVariables,
+  LoginMutation,
+  LoginMutationVariables,
 } from '@/types/graphql';
 
+import { LOGIN_MUTATION } from '../gql/mutations/customer';
+
+// TODO(fcasibu): instances of using the medusa sdk should be refactored to call BFF instead
+// BFF should include these logic
 export const retrieveCustomer = async (
   ctx: StorefrontContext
 ): Promise<Customer | null> => {
@@ -65,12 +70,8 @@ export const updateCustomer = async (
   body: HttpTypes.StoreUpdateCustomer,
   ctx: StorefrontContext
 ) => {
-  const headers = {
-    ...getAuthHeaders(ctx),
-  };
-
   const updateRes = await sdk.store.customer
-    .update(body, {}, headers)
+    .update(body, {})
     .then(({ customer }) => customer)
     .catch(medusaError);
 
@@ -81,7 +82,6 @@ export const updateCustomer = async (
 };
 
 export async function signup(_currentState: unknown, formData: FormData) {
-  const ctx = await resolveNextContext();
   const password = formData.get('password') as string;
   const customerForm = {
     email: formData.get('email') as string,
@@ -98,24 +98,27 @@ export async function signup(_currentState: unknown, formData: FormData) {
 
     await setAuthTokenAction(token as string);
 
-    const headers = {
-      ...getAuthHeaders(ctx),
-    };
+    await sdk.store.customer.create(
+      customerForm,
+      {},
+      {
+        Authorization: `Bearer ${token}`,
+      }
+    );
 
-    await sdk.store.customer.create(customerForm, {}, headers);
+    const ctx = await resolveNextContext();
+    const cookieHeader = ctx.cookieHeader;
+    const apolloClient = createServerApolloClient(cookieHeader);
+    const data = await graphqlMutation<LoginMutation, LoginMutationVariables>(
+      {
+        mutation: LOGIN_MUTATION,
+        variables: { email: customerForm.email, password },
+      },
+      apolloClient
+    );
+    const loginToken = data?.login?.token ?? '';
 
-    const loginToken = await sdk.auth.login('customer', 'emailpass', {
-      email: customerForm.email,
-      password,
-    });
-
-    await setAuthTokenAction(loginToken as string);
-
-    const customerCacheTag = getCacheTag('customers', ctx);
-    revalidateTag(customerCacheTag);
-
-    await transferCart(ctx);
-
+    await postLogin(loginToken);
     return {
       message: 'Registration successful',
       status: 'success',
@@ -129,18 +132,18 @@ export async function signup(_currentState: unknown, formData: FormData) {
 }
 
 export async function postLogin(token: string | null | undefined) {
-  const ctx = await resolveNextContext();
   if (token) {
     await setAuthTokenAction(token as string);
+    const ctx = await resolveNextContext();
 
     const customerCacheTag = getCacheTag('customers', ctx);
     revalidateTag(customerCacheTag);
-  }
 
-  try {
-    await transferCart(ctx);
-  } catch (error: any) {
-    return error.toString();
+    try {
+      await transferCart(ctx);
+    } catch (error: any) {
+      return error.toString();
+    }
   }
 }
 
@@ -164,7 +167,7 @@ export async function postSignout(countryCode: string) {
 export const transferCart = async (
   ctx: StorefrontContext
 ): Promise<TransferCartMutation['transferCart'] | null> => {
-  const cookieHeader = ctx.cookieHeader;
+  const cookieHeader = ctx.cookieHeader || '';
   const apolloClient = createServerApolloClient(cookieHeader);
   const cartId = getCartId(ctx);
 
@@ -223,12 +226,8 @@ export async function addCustomerAddress(
     is_default_shipping: isDefaultShipping,
   };
 
-  const headers = {
-    ...getAuthHeaders(ctx),
-  };
-
   try {
-    await sdk.store.customer.createAddress(address, {}, headers);
+    await sdk.store.customer.createAddress(address, {});
     const customerCacheTag = getCacheTag('customers', ctx);
     revalidateTag(customerCacheTag);
     return { isDefaultShipping, success: true, error: null };
@@ -243,12 +242,9 @@ export async function addCustomerAddress(
 
 export async function deleteCustomerAddress(addressId: string) {
   const ctx = await resolveNextContext();
-  const headers = {
-    ...getAuthHeaders(ctx),
-  };
 
   await sdk.store.customer
-    .deleteAddress(addressId, headers)
+    .deleteAddress(addressId)
     .then(async () => {
       const customerCacheTag = getCacheTag('customers', ctx);
       revalidateTag(customerCacheTag);
@@ -293,12 +289,8 @@ export async function updateCustomerAddress(
     address.phone = phone;
   }
 
-  const headers = {
-    ...getAuthHeaders(ctx),
-  };
-
   try {
-    await sdk.store.customer.updateAddress(addressId, address, {}, headers);
+    await sdk.store.customer.updateAddress(addressId, address, {});
     const customerCacheTag = getCacheTag('customers', ctx);
     revalidateTag(customerCacheTag);
     return { addressId, success: true, error: null };
