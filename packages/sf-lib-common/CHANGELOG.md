@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-common
 
+## 2.4.0
+
+### Minor Changes
+
+- 1a92686: Fix for UI and auth issues
+
 ## 2.3.1
 
 ### Patch Changes

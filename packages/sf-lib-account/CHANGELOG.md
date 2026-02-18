@@ -1,5 +1,16 @@
 # @gfed-medusa/sf-lib-account
 
+## 1.3.0
+
+### Minor Changes
+
+- 1a92686: Fix for UI and auth issues
+
+### Patch Changes
+
+- Updated dependencies [1a92686]
+  - @gfed-medusa/sf-lib-common@2.4.0
+
 ## 1.2.2
 
 ### Patch Changes
