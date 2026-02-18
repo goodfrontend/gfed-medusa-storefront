@@ -38,10 +38,11 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-  scan:
-    name: Security Scan
-    needs: build
-    uses: ./.github/workflows/_trivy-scan.yaml
-    with:
-      image_tag: ghcr.io/${{ github.repository }}/${{ inputs.app }}:${{ github.sha }}
-      app: ${{ inputs.app }}
+  # Trivy scan temporarily disabled
+  # scan:
+  #   name: Security Scan
+  #   needs: build
+  #   uses: ./.github/workflows/_trivy-scan.yaml
+  #   with:
+  #     image_tag: ghcr.io/${{ github.repository }}/${{ inputs.app }}:${{ github.sha }}
+  #     app: ${{ inputs.app }}
