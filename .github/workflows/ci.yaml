@@ -118,13 +118,9 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Setup Turbo cache
-        uses: actions/cache@v4
+        uses: rharkor/caching-for-turbo@v2.3.11
         with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-mf-home-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-mf-home-
-            ${{ runner.os }}-turbo-
+          cache-prefix: 'ci-turbo'
 
       - name: Load CI env
         run: |
@@ -177,13 +173,9 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Setup Turbo cache
-        uses: actions/cache@v4
+        uses: rharkor/caching-for-turbo@v2.3.11
         with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-mf-account-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-mf-account-
-            ${{ runner.os }}-turbo-
+          cache-prefix: 'ci-turbo'
 
       - name: Load CI env
         run: |
@@ -236,13 +228,9 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Setup Turbo cache
-        uses: actions/cache@v4
+        uses: rharkor/caching-for-turbo@v2.3.11
         with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-mf-products-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-mf-products-
-            ${{ runner.os }}-turbo-
+          cache-prefix: 'ci-turbo'
 
       - name: Load CI env
         run: |
@@ -295,13 +283,9 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Setup Turbo cache
-        uses: actions/cache@v4
+        uses: rharkor/caching-for-turbo@v2.3.11
         with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-mf-checkout-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-mf-checkout-
-            ${{ runner.os }}-turbo-
+          cache-prefix: 'ci-turbo'
 
       - name: Load CI env
         run: |
@@ -354,13 +338,9 @@ jobs:
             ${{ runner.os }}-pnpm-store-
 
       - name: Setup Turbo cache
-        uses: actions/cache@v4
+        uses: rharkor/caching-for-turbo@v2.3.11
         with:
-          path: .turbo
-          key: ${{ runner.os }}-turbo-mf-horz-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-turbo-mf-horz-
-            ${{ runner.os }}-turbo-
+          cache-prefix: 'ci-turbo'
 
       - name: Load CI env
         run: |
