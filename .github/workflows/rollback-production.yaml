@@ -42,8 +42,10 @@ jobs:
       base_service: ${{ steps.determine-image.outputs.base_service }}
     steps:
       - name: Validate confirmation
+        env:
+          CONFIRM: ${{ inputs.confirm }}
         run: |
-          if [ "${{ inputs.confirm }}" != "rollback" ]; then
+          if [ "$CONFIRM" != "rollback" ]; then
             echo "::error::Confirmation failed. You must type 'rollback' to proceed."
             exit 1
           fi
@@ -60,9 +62,13 @@ jobs:
         id: determine-image
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          APP: ${{ inputs.app }}
+          TARGET_VERSION: ${{ inputs.target_version }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.repository }}
         run: |
-          APP="${{ inputs.app }}"
-          TARGET_VERSION="${{ inputs.target_version }}"
+          APP="$APP"
+          TARGET_VERSION="$TARGET_VERSION"
 
           case "$APP" in
             home)
@@ -131,7 +137,7 @@ jobs:
           BASE_SERVICE="sf-$APP"
           SERVICE_NAME="$BASE_SERVICE-prod"
 
-          IMAGE_TAG="ghcr.io/${{ github.repository }}/$BASE_SERVICE:$TAG_SHA"
+          IMAGE_TAG="ghcr.io/$REPO/$BASE_SERVICE:$TAG_SHA"
           {
             echo "image_tag=$IMAGE_TAG"
             echo "version=$TARGET_VERSION"
@@ -143,14 +149,15 @@ jobs:
       - name: Validate Docker image exists
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          IMAGE: ${{ steps.determine-image.outputs.image_tag }}
+          BASE_SERVICE: ${{ steps.determine-image.outputs.base_service }}
+          VERSION: ${{ steps.determine-image.outputs.version }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO: ${{ github.repository }}
         run: |
-          IMAGE="${{ steps.determine-image.outputs.image_tag }}"
-          BASE_SERVICE="${{ steps.determine-image.outputs.base_service }}"
-          VERSION="${{ steps.determine-image.outputs.version }}"
-
           SHA="${IMAGE##*:}"
 
-          REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2)
+          REPO_NAME=$(echo "$REPO" | cut -d'/' -f2)
           PACKAGE_NAME="$REPO_NAME/$BASE_SERVICE"
           PACKAGE_NAME_ENCODED="${PACKAGE_NAME//\//%2F}"
 
@@ -160,7 +167,7 @@ jobs:
           echo "SHA: $SHA"
 
           API_URL="https://api.github.com/users"
-          API_URL="$API_URL/${{ github.repository_owner }}"
+          API_URL="$API_URL/$REPO_OWNER"
           API_URL="$API_URL/packages/container/$PACKAGE_NAME_ENCODED/versions"
           RESPONSE=$(curl -s -w "\n%{http_code}" \
             -H "Authorization: Bearer $GITHUB_TOKEN" \
@@ -209,18 +216,26 @@ jobs:
     steps:
       - name: Rollback successful
         if: needs.rollback.result == 'success'
+        env:
+          SERVICE_NAME: ${{ needs.validate.outputs.service_name }}
+          VERSION: ${{ needs.validate.outputs.version }}
+          IMAGE: ${{ needs.validate.outputs.image_tag }}
         run: |
           echo "::notice::✓ Production rollback completed successfully"
-          echo "Service: ${{ needs.validate.outputs.service_name }}"
-          echo "Version: ${{ needs.validate.outputs.version }}"
-          echo "Image: ${{ needs.validate.outputs.image_tag }}"
+          echo "Service: $SERVICE_NAME"
+          echo "Version: $VERSION"
+          echo "Image: $IMAGE"
 
       - name: Rollback failed
         if: needs.rollback.result == 'failure'
+        env:
+          SERVICE_NAME: ${{ needs.validate.outputs.service_name }}
+          VERSION: ${{ needs.validate.outputs.version }}
+          IMAGE: ${{ needs.validate.outputs.image_tag }}
         run: |
           echo "::error::✗ Production rollback failed"
-          echo "Service: ${{ needs.validate.outputs.service_name }}"
-          echo "Version: ${{ needs.validate.outputs.version }}"
-          echo "Image: ${{ needs.validate.outputs.image_tag }}"
+          echo "Service: $SERVICE_NAME"
+          echo "Version: $VERSION"
+          echo "Image: $IMAGE"
           echo "Check the logs above for details"
           exit 1
