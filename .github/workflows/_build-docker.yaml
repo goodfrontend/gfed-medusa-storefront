@@ -29,8 +29,10 @@ jobs:
 
       - name: Read MFE version
         id: mfe-version
+        env:
+          DOCKERFILE: ${{ inputs.dockerfile }}
         run: |
-          APP_PATH=$(dirname "${{ inputs.dockerfile }}")
+          APP_PATH=$(dirname "$DOCKERFILE")
           VERSION=$(jq -r '.version' "$APP_PATH/package.json")
 
           if [ -z "$VERSION" ] || [ "$VERSION" = "null" ]; then

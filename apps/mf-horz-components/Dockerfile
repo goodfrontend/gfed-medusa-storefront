@@ -43,7 +43,7 @@ COPY --from=pruner /app/out/json/ .
 COPY --from=pruner /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY --from=pruner /app/out/pnpm-workspace.yaml ./pnpm-workspace.yaml
 
-RUN pnpm install --frozen-lockfile --prod --ignore-scripts
+RUN pnpm install --frozen-lockfile --prod --shamefully-hoist --ignore-scripts
 
 FROM node:20-alpine AS runner
 WORKDIR /app
