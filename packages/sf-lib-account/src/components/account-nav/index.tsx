@@ -122,7 +122,7 @@ const AccountNav = ({ customer }: { customer: Customer | null }) => {
           </>
         )}
       </div>
-      <div className="small:block hidden" data-testid="account-nav">
+      <div className="small:block" data-testid="account-nav">
         <div>
           <div className="pb-4">
             <h3 className="text-base-semi">Account</h3>
