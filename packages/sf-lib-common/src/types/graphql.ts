@@ -74,6 +74,12 @@ export enum ApplicationType {
   Percentage = 'percentage',
 }
 
+export type AuthPayload = {
+  __typename?: 'AuthPayload';
+  customer?: Maybe<Customer>;
+  token: Scalars['String']['output'];
+};
+
 export type Cart = {
   __typename?: 'Cart';
   billingAddress?: Maybe<Address>;
@@ -187,56 +193,14 @@ export type CustomerAddress = {
   province?: Maybe<Scalars['String']['output']>;
 };
 
-export type FileBlock = {
-  __typename?: 'FileBlock';
-  _key: Scalars['String']['output'];
-  _type: Scalars['String']['output'];
-  asset?: Maybe<SanityFileAsset>;
-};
-
 export type Footer = {
   __typename?: 'Footer';
+  _id: Scalars['ID']['output'];
+  _type: Scalars['String']['output'];
   copyright?: Maybe<Scalars['String']['output']>;
-  poweredByCta?: Maybe<RichText>;
+  poweredByCta?: Maybe<PartialRichText>;
   social?: Maybe<Array<SocialLink>>;
   storeName?: Maybe<Scalars['String']['output']>;
-};
-
-export type IconLinkMark = {
-  __typename?: 'IconLinkMark';
-  _key: Scalars['String']['output'];
-  _type: Scalars['String']['output'];
-  href: Scalars['String']['output'];
-  iconClass?: Maybe<Scalars['String']['output']>;
-  iconComponent?: Maybe<Scalars['String']['output']>;
-  iconFill?: Maybe<Scalars['String']['output']>;
-  iconImage?: Maybe<SanityImage>;
-  iconType: Scalars['String']['output'];
-  iconUrl?: Maybe<Scalars['String']['output']>;
-  target?: Maybe<Scalars['String']['output']>;
-};
-
-export type ImageBlock = {
-  __typename?: 'ImageBlock';
-  _key: Scalars['String']['output'];
-  _type: Scalars['String']['output'];
-  alt?: Maybe<Scalars['String']['output']>;
-  asset?: Maybe<SanityImageAsset>;
-  caption?: Maybe<Scalars['String']['output']>;
-};
-
-export type ImageDimensions = {
-  __typename?: 'ImageDimensions';
-  aspectRatio: Scalars['Float']['output'];
-  height: Scalars['Int']['output'];
-  width: Scalars['Int']['output'];
-};
-
-export type ImageMetadata = {
-  __typename?: 'ImageMetadata';
-  dimensions?: Maybe<ImageDimensions>;
-  hasAlpha?: Maybe<Scalars['Boolean']['output']>;
-  isOpaque?: Maybe<Scalars['Boolean']['output']>;
 };
 
 export type LineItem = {
@@ -257,20 +221,10 @@ export type LineItem = {
   variant?: Maybe<ProductVariant>;
 };
 
-export type LinkMark = {
-  __typename?: 'LinkMark';
-  _key: Scalars['String']['output'];
-  _type: Scalars['String']['output'];
-  href: Scalars['String']['output'];
-  target?: Maybe<Scalars['String']['output']>;
+export type LoginInput = {
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
 };
-
-export type LogoutResponse = {
-  __typename?: 'LogoutResponse';
-  success?: Maybe<Scalars['Boolean']['output']>;
-};
-
-export type MarkDef = IconLinkMark | LinkMark;
 
 export type Mutation = {
   __typename?: 'Mutation';
@@ -280,8 +234,9 @@ export type Mutation = {
   createCart?: Maybe<Cart>;
   createLineItem?: Maybe<Cart>;
   deleteLineItem: StoreLineItemDeleteResponse;
-  login?: Maybe<Token>;
-  logout?: Maybe<LogoutResponse>;
+  login: AuthPayload;
+  logout: Scalars['Boolean']['output'];
+  register: AuthPayload;
   transferCart?: Maybe<Cart>;
   updateCart?: Maybe<Cart>;
   updateLineItem?: Maybe<Cart>;
@@ -316,8 +271,11 @@ export type Mutation_DeleteLineItemArgs = {
 };
 
 export type Mutation_LoginArgs = {
-  email: Scalars['String']['input'];
-  password: Scalars['String']['input'];
+  input: LoginInput;
+};
+
+export type Mutation_RegisterArgs = {
+  input: RegisterCustomerInput;
 };
 
 export type Mutation_TransferCartArgs = {
@@ -357,6 +315,11 @@ export type Order = {
   subtotal?: Maybe<Scalars['Int']['output']>;
   taxTotal?: Maybe<Scalars['Int']['output']>;
   total: Scalars['Int']['output'];
+};
+
+export type PartialRichText = {
+  __typename?: 'PartialRichText';
+  text?: Maybe<Scalars['JSON']['output']>;
 };
 
 export type Payment = {
@@ -529,6 +492,7 @@ export type Promotion = {
 
 export type Query = {
   __typename?: 'Query';
+  _empty?: Maybe<Scalars['String']['output']>;
   cart?: Maybe<Cart>;
   collection?: Maybe<Collection>;
   collections: Array<Collection>;
@@ -538,6 +502,8 @@ export type Query = {
   productCategories: Array<ProductCategory>;
   productCategory?: Maybe<ProductCategory>;
   products: ProductListResponse;
+  region?: Maybe<Region>;
+  regions: Array<Region>;
   searchProducts: SearchProducts;
 };
 
@@ -588,6 +554,10 @@ export type Query_ProductsArgs = {
   tag_id?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
+export type Query_RegionArgs = {
+  id: Scalars['ID']['input'];
+};
+
 export type Query_SearchProductsArgs = {
   facets?: InputMaybe<Array<Scalars['String']['input']>>;
   filters?: InputMaybe<Scalars['String']['input']>;
@@ -606,34 +576,12 @@ export type Region = {
   name: Scalars['String']['output'];
 };
 
-export type RichText = {
-  __typename?: 'RichText';
-  text: Array<RichTextBlock>;
-};
-
-export type RichTextBlock = FileBlock | ImageBlock | TextBlock;
-
-export type SanityFileAsset = {
-  __typename?: 'SanityFileAsset';
-  _id: Scalars['ID']['output'];
-  mimeType?: Maybe<Scalars['String']['output']>;
-  originalFilename?: Maybe<Scalars['String']['output']>;
-  size?: Maybe<Scalars['Int']['output']>;
-  url: Scalars['String']['output'];
-};
-
-export type SanityImage = {
-  __typename?: 'SanityImage';
-  alt?: Maybe<Scalars['String']['output']>;
-  asset?: Maybe<SanityImageAsset>;
-  caption?: Maybe<Scalars['String']['output']>;
-};
-
-export type SanityImageAsset = {
-  __typename?: 'SanityImageAsset';
-  _id: Scalars['ID']['output'];
-  metadata?: Maybe<ImageMetadata>;
-  url: Scalars['String']['output'];
+export type RegisterCustomerInput = {
+  email: Scalars['String']['input'];
+  firstName?: InputMaybe<Scalars['String']['input']>;
+  lastName?: InputMaybe<Scalars['String']['input']>;
+  password: Scalars['String']['input'];
+  phone?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type SearchProducts = {
@@ -664,35 +612,11 @@ export type SocialLink = {
   url: Scalars['String']['output'];
 };
 
-export type Span = {
-  __typename?: 'Span';
-  _key: Scalars['String']['output'];
-  _type: Scalars['String']['output'];
-  marks?: Maybe<Array<Scalars['String']['output']>>;
-  text: Scalars['String']['output'];
-};
-
 export type StoreLineItemDeleteResponse = {
   __typename?: 'StoreLineItemDeleteResponse';
   deleted: Scalars['Boolean']['output'];
   id: Scalars['ID']['output'];
   object?: Maybe<Scalars['String']['output']>;
-};
-
-export type TextBlock = {
-  __typename?: 'TextBlock';
-  _key: Scalars['String']['output'];
-  _type: Scalars['String']['output'];
-  children: Array<Span>;
-  level?: Maybe<Scalars['Int']['output']>;
-  listItem?: Maybe<Scalars['String']['output']>;
-  markDefs?: Maybe<Array<MarkDef>>;
-  style?: Maybe<Scalars['String']['output']>;
-};
-
-export type Token = {
-  __typename?: 'Token';
-  token?: Maybe<Scalars['String']['output']>;
 };
 
 export type UpdateCartInput = {
@@ -722,15 +646,23 @@ export type CartItemFieldsFragment = {
   variant?: ({ __typename?: 'ProductVariant' } & ProductVariantFragment) | null;
 };
 
-export type AddressFieldsFragment = {
-  __typename?: 'Address';
-  firstName?: string | null;
-  lastName?: string | null;
-  phone?: string | null;
-  address1?: string | null;
-  city?: string | null;
-  countryCode?: string | null;
-  postalCode?: string | null;
+export type CountryFieldsFragment = {
+  __typename?: 'Country';
+  id?: string | null;
+  iso2?: string | null;
+  name?: string | null;
+  displayName?: string | null;
+};
+
+export type RegionFieldsFragment = {
+  __typename?: 'Region';
+  id: string;
+  name: string;
+  currencyCode: string;
+  createdAt?: any | null;
+  countries?: Array<
+    ({ __typename?: 'Country' } & CountryFieldsFragment) | null
+  > | null;
 };
 
 export type ShippingMethodFieldsFragment = {
@@ -765,23 +697,15 @@ export type PaymentCollectionFieldsFragment = {
   } | null> | null;
 };
 
-export type CountryFieldsFragment = {
-  __typename?: 'Country';
-  id?: string | null;
-  iso2?: string | null;
-  name?: string | null;
-  displayName?: string | null;
-};
-
-export type RegionFieldsFragment = {
-  __typename?: 'Region';
-  id: string;
-  name: string;
-  currencyCode: string;
-  createdAt?: any | null;
-  countries?: Array<
-    ({ __typename?: 'Country' } & CountryFieldsFragment) | null
-  > | null;
+export type AddressFieldsFragment = {
+  __typename?: 'Address';
+  firstName?: string | null;
+  lastName?: string | null;
+  phone?: string | null;
+  address1?: string | null;
+  city?: string | null;
+  countryCode?: string | null;
+  postalCode?: string | null;
 };
 
 export type PromotionFieldsFragment = {
@@ -860,25 +784,6 @@ export type CustomerFragment = {
   > | null;
 };
 
-export type ProductImageFragment = {
-  __typename?: 'ProductImage';
-  id: string;
-  url: string;
-};
-
-export type ProductTagFragment = { __typename?: 'ProductTag'; id: string };
-
-export type ProductOptionFragment = {
-  __typename?: 'ProductOption';
-  id: string;
-  title: string;
-  values: Array<{
-    __typename?: 'ProductOptionValue';
-    id: string;
-    value: string;
-  }>;
-};
-
 export type PriceFragment = {
   __typename?: 'Price';
   amount?: number | null;
@@ -904,6 +809,15 @@ export type ProductVariantFragment = {
   originalPrice?: ({ __typename?: 'Price' } & PriceFragment) | null;
 };
 
+export type ProductHitFragment = {
+  __typename?: 'ProductHit';
+  id: string;
+  title?: string | null;
+  description?: string | null;
+  handle: string;
+  thumbnail?: string | null;
+};
+
 export type ProductCategoryFragment = {
   __typename?: 'ProductCategory';
   id: string;
@@ -919,33 +833,10 @@ export type ProductCollectionFragment = {
   handle: string;
 };
 
-export type ProductFragment = {
-  __typename?: 'Product';
+export type ProductImageFragment = {
+  __typename?: 'ProductImage';
   id: string;
-  title: string;
-  handle: string;
-  description?: string | null;
-  thumbnail?: string | null;
-  width?: number | null;
-  weight?: number | null;
-  length?: number | null;
-  height?: number | null;
-  originCountry?: string | null;
-  material?: string | null;
-  type?: string | null;
-  collectionId?: string | null;
-  createdAt: any;
-  images?: Array<{ __typename?: 'ProductImage' } & ProductImageFragment> | null;
-  tags?: Array<{ __typename?: 'ProductTag' } & ProductTagFragment> | null;
-  options?: Array<
-    { __typename?: 'ProductOption' } & ProductOptionFragment
-  > | null;
-  variants?: Array<
-    { __typename?: 'ProductVariant' } & ProductVariantFragment
-  > | null;
-  collection?:
-    | ({ __typename?: 'Collection' } & ProductCollectionFragment)
-    | null;
+  url: string;
 };
 
 export type CollectionProductsFragment = {
@@ -966,24 +857,6 @@ export type CollectionProductsFragment = {
       originalPrice?: ({ __typename?: 'Price' } & PriceFragment) | null;
     }> | null;
   }> | null;
-};
-
-export type ProductHitFragment = {
-  __typename?: 'ProductHit';
-  id: string;
-  title?: string | null;
-  description?: string | null;
-  handle: string;
-  thumbnail?: string | null;
-};
-
-export type CreateCartMutationVariables = Exact<{
-  data: CreateCartInput;
-}>;
-
-export type CreateCartMutation = {
-  __typename?: 'Mutation';
-  createCart?: ({ __typename?: 'Cart' } & CartFieldsFragment) | null;
 };
 
 export type UpdateCartMutationVariables = Exact<{
@@ -1008,37 +881,6 @@ export type UpdateCartMutation = {
     | null;
 };
 
-export type CreateLineItemMutationVariables = Exact<{
-  cartId: Scalars['ID']['input'];
-  data: CreateLineItemInput;
-}>;
-
-export type CreateLineItemMutation = {
-  __typename?: 'Mutation';
-  createLineItem?: {
-    __typename?: 'Cart';
-    id: string;
-    total: number;
-    items?: Array<{ __typename?: 'LineItem' } & CartItemFieldsFragment> | null;
-  } | null;
-};
-
-export type UpdateLineItemMutationVariables = Exact<{
-  cartId: Scalars['ID']['input'];
-  lineItemId: Scalars['ID']['input'];
-  data: UpdateLineItemInput;
-}>;
-
-export type UpdateLineItemMutation = {
-  __typename?: 'Mutation';
-  updateLineItem?: {
-    __typename?: 'Cart';
-    id: string;
-    total: number;
-    items?: Array<{ __typename?: 'LineItem' } & CartItemFieldsFragment> | null;
-  } | null;
-};
-
 export type DeleteLineItemMutationVariables = Exact<{
   cartId: Scalars['ID']['input'];
   lineItemId: Scalars['ID']['input'];
@@ -1054,86 +896,6 @@ export type DeleteLineItemMutation = {
   };
 };
 
-export type AddShippingMethodMutationVariables = Exact<{
-  cartId: Scalars['ID']['input'];
-  optionId: Scalars['ID']['input'];
-}>;
-
-export type AddShippingMethodMutation = {
-  __typename?: 'Mutation';
-  addShippingMethod?: {
-    __typename?: 'Cart';
-    id: string;
-    total: number;
-    items?: Array<{ __typename?: 'LineItem' } & CartItemFieldsFragment> | null;
-    shippingMethods?: Array<
-      ({ __typename?: 'ShippingMethod' } & ShippingMethodFieldsFragment) | null
-    > | null;
-  } | null;
-};
-
-export type CompleteCartMutationVariables = Exact<{
-  cartId: Scalars['ID']['input'];
-}>;
-
-export type CompleteCartMutation = {
-  __typename?: 'Mutation';
-  completeCart?:
-    | {
-        __typename: 'CompleteCartErrorResult';
-        type: string;
-        error?: {
-          __typename?: 'CompleteCartError';
-          message: string;
-          name: string;
-          type: string;
-        } | null;
-        cart?: {
-          __typename?: 'Cart';
-          id: string;
-          total: number;
-          items?: Array<
-            { __typename?: 'LineItem' } & CartItemFieldsFragment
-          > | null;
-        } | null;
-      }
-    | {
-        __typename: 'CompleteCartOrderResult';
-        type: string;
-        order?: {
-          __typename?: 'Order';
-          id: string;
-          email: string;
-          status: string;
-          total: number;
-          createdAt: any;
-          currencyCode: string;
-          customerId: string;
-          fulfillmentStatus: string;
-          displayId?: number | null;
-          subtotal?: number | null;
-          discountTotal?: number | null;
-          giftCardTotal?: number | null;
-          shippingTotal?: number | null;
-          taxTotal?: number | null;
-          paymentCollections?: Array<
-            | ({
-                __typename?: 'PaymentCollection';
-              } & PaymentCollectionFieldsFragment)
-            | null
-          > | null;
-          items: Array<{ __typename?: 'LineItem' } & CartItemFieldsFragment>;
-          shippingMethods: Array<
-            { __typename?: 'ShippingMethod' } & ShippingMethodFieldsFragment
-          >;
-          shippingAddress?:
-            | ({ __typename?: 'Address' } & AddressFieldsFragment)
-            | null;
-        } | null;
-      }
-    | null;
-};
-
 export type TransferCartMutationVariables = Exact<{
   cartId: Scalars['ID']['input'];
 }>;
@@ -1143,33 +905,6 @@ export type TransferCartMutation = {
   transferCart?: ({ __typename?: 'Cart' } & CartFieldsFragment) | null;
 };
 
-export type ApplyPromotionsMutationVariables = Exact<{
-  cartId: Scalars['ID']['input'];
-  codes: Array<Scalars['String']['input']> | Scalars['String']['input'];
-}>;
-
-export type ApplyPromotionsMutation = {
-  __typename?: 'Mutation';
-  applyPromotions?: ({ __typename?: 'Cart' } & CartFieldsFragment) | null;
-};
-
-export type LoginMutationVariables = Exact<{
-  email: Scalars['String']['input'];
-  password: Scalars['String']['input'];
-}>;
-
-export type LoginMutation = {
-  __typename?: 'Mutation';
-  login?: { __typename?: 'Token'; token?: string | null } | null;
-};
-
-export type LogoutMutationVariables = Exact<{ [key: string]: never }>;
-
-export type LogoutMutation = {
-  __typename?: 'Mutation';
-  logout?: { __typename?: 'LogoutResponse'; success?: boolean | null } | null;
-};
-
 export type GetCartQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
@@ -1177,6 +912,23 @@ export type GetCartQueryVariables = Exact<{
 export type GetCartQuery = {
   __typename?: 'Query';
   cart?: ({ __typename?: 'Cart' } & CartFieldsFragment) | null;
+};
+
+export type GetCollectionsQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+export type GetCollectionsQuery = {
+  __typename?: 'Query';
+  collections: Array<
+    {
+      __typename?: 'Collection';
+      products?:
+        | ({ __typename?: 'ProductList' } & CollectionProductsFragment)
+        | null;
+    } & ProductCollectionFragment
+  >;
 };
 
 export type GetCustomerQueryVariables = Exact<{ [key: string]: never }>;
@@ -1199,114 +951,20 @@ export type GetFooterQuery = {
       text: string;
       url: string;
     }> | null;
-    poweredByCta?: {
-      __typename?: 'RichText';
-      text: Array<
-        | {
-            __typename?: 'FileBlock';
-            _key: string;
-            _type: string;
-            asset?: {
-              __typename?: 'SanityFileAsset';
-              url: string;
-              originalFilename?: string | null;
-              size?: number | null;
-              mimeType?: string | null;
-            } | null;
-          }
-        | {
-            __typename?: 'ImageBlock';
-            _key: string;
-            _type: string;
-            alt?: string | null;
-            asset?: { __typename?: 'SanityImageAsset'; url: string } | null;
-          }
-        | {
-            __typename?: 'TextBlock';
-            _key: string;
-            _type: string;
-            style?: string | null;
-            children: Array<{
-              __typename?: 'Span';
-              _key: string;
-              text: string;
-              marks?: Array<string> | null;
-            }>;
-            markDefs?: Array<
-              | {
-                  __typename?: 'IconLinkMark';
-                  _key: string;
-                  _type: string;
-                  href: string;
-                  iconType: string;
-                  iconClass?: string | null;
-                  iconFill?: string | null;
-                  iconComponent?: string | null;
-                  iconUrl?: string | null;
-                  target?: string | null;
-                  iconImage?: {
-                    __typename?: 'SanityImage';
-                    alt?: string | null;
-                    asset?: {
-                      __typename?: 'SanityImageAsset';
-                      url: string;
-                    } | null;
-                  } | null;
-                }
-              | {
-                  __typename?: 'LinkMark';
-                  _key: string;
-                  _type: string;
-                  href: string;
-                  target?: string | null;
-                }
-            > | null;
-          }
-      >;
-    } | null;
+    poweredByCta?: { __typename?: 'PartialRichText'; text?: any | null } | null;
   } | null;
 };
 
-export type GetProductsQueryVariables = Exact<{
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  handle?: InputMaybe<Scalars['String']['input']>;
-  region_id?: InputMaybe<Scalars['String']['input']>;
-  category_id?: InputMaybe<
-    | Array<InputMaybe<Scalars['String']['input']>>
-    | InputMaybe<Scalars['String']['input']>
-  >;
-  collection_id?: InputMaybe<
-    | Array<InputMaybe<Scalars['String']['input']>>
-    | InputMaybe<Scalars['String']['input']>
-  >;
-  q?: InputMaybe<Scalars['String']['input']>;
-  is_giftcard?: InputMaybe<Scalars['Boolean']['input']>;
-  id?: InputMaybe<Array<Scalars['ID']['input']> | Scalars['ID']['input']>;
-  tag_id?: InputMaybe<
-    Array<Scalars['String']['input']> | Scalars['String']['input']
-  >;
+export type SearchSuggestionsQueryVariables = Exact<{
+  query: Scalars['String']['input'];
 }>;
 
-export type GetProductsQuery = {
+export type SearchSuggestionsQuery = {
   __typename?: 'Query';
-  products: {
-    __typename?: 'ProductListResponse';
-    count: number;
-    products?: Array<
-      ({ __typename?: 'Product' } & ProductFragment) | null
-    > | null;
+  searchProducts: {
+    __typename?: 'SearchProducts';
+    items: Array<{ __typename?: 'ProductHit' } & ProductHitFragment>;
   };
-};
-
-export type GetProductQueryVariables = Exact<{
-  id: Scalars['ID']['input'];
-  region_id?: InputMaybe<Scalars['String']['input']>;
-}>;
-
-export type GetProductQuery = {
-  __typename?: 'Query';
-  product?: ({ __typename?: 'Product' } & ProductFragment) | null;
 };
 
 export type GetProductCategoriesQueryVariables = Exact<{
@@ -1333,93 +991,46 @@ export type GetProductCategoriesQuery = {
   >;
 };
 
-export type GetProductCategoryQueryVariables = Exact<{
+export type ListRegionsQueryVariables = Exact<{ [key: string]: never }>;
+
+export type ListRegionsQuery = {
+  __typename?: 'Query';
+  regions: Array<{
+    __typename?: 'Region';
+    id: string;
+    name: string;
+    currencyCode: string;
+    createdAt?: any | null;
+    countries?: Array<{
+      __typename?: 'Country';
+      id?: string | null;
+      iso2?: string | null;
+      name?: string | null;
+      displayName?: string | null;
+    } | null> | null;
+  }>;
+};
+
+export type GetRegionQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
 
-export type GetProductCategoryQuery = {
+export type GetRegionQuery = {
   __typename?: 'Query';
-  productCategory?:
-    | ({
-        __typename?: 'ProductCategory';
-        parentCategory?:
-          | ({
-              __typename?: 'ProductCategory';
-              parentCategory?:
-                | ({ __typename?: 'ProductCategory' } & ProductCategoryFragment)
-                | null;
-            } & ProductCategoryFragment)
-          | null;
-        categoryChildren?: Array<
-          { __typename?: 'ProductCategory' } & ProductCategoryFragment
-        > | null;
-        products?: { __typename?: 'ProductList'; count: number } | null;
-      } & ProductCategoryFragment)
-    | null;
-};
-
-export type GetCollectionsQueryVariables = Exact<{
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-}>;
-
-export type GetCollectionsQuery = {
-  __typename?: 'Query';
-  collections: Array<
-    {
-      __typename?: 'Collection';
-      products?:
-        | ({ __typename?: 'ProductList' } & CollectionProductsFragment)
-        | null;
-    } & ProductCollectionFragment
-  >;
-};
-
-export type GetCollectionsSummaryQueryVariables = Exact<{
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  handle?: InputMaybe<
-    | Array<InputMaybe<Scalars['String']['input']>>
-    | InputMaybe<Scalars['String']['input']>
-  >;
-}>;
-
-export type GetCollectionsSummaryQuery = {
-  __typename?: 'Query';
-  collections: Array<
-    {
-      __typename?: 'Collection';
-      products?: { __typename?: 'ProductList'; count: number } | null;
-    } & ProductCollectionFragment
-  >;
-};
-
-export type GetCollectionQueryVariables = Exact<{
-  id: Scalars['ID']['input'];
-}>;
-
-export type GetCollectionQuery = {
-  __typename?: 'Query';
-  collection?:
-    | ({
-        __typename?: 'Collection';
-        products?:
-          | ({ __typename?: 'ProductList' } & CollectionProductsFragment)
-          | null;
-      } & ProductCollectionFragment)
-    | null;
-};
-
-export type SearchSuggestionsQueryVariables = Exact<{
-  query: Scalars['String']['input'];
-}>;
-
-export type SearchSuggestionsQuery = {
-  __typename?: 'Query';
-  searchProducts: {
-    __typename?: 'SearchProducts';
-    items: Array<{ __typename?: 'ProductHit' } & ProductHitFragment>;
-  };
+  region?: {
+    __typename?: 'Region';
+    id: string;
+    name: string;
+    currencyCode: string;
+    createdAt?: any | null;
+    countries?: Array<{
+      __typename?: 'Country';
+      id?: string | null;
+      iso2?: string | null;
+      name?: string | null;
+      displayName?: string | null;
+    } | null> | null;
+  } | null;
 };
 
 export const PromotionFieldsFragmentDoc = {
@@ -2002,21 +1613,48 @@ export const CartFieldsFragmentDoc = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'AddressFields' },
+      name: { kind: 'Name', value: 'CountryFields' },
       typeCondition: {
         kind: 'NamedType',
-        name: { kind: 'Name', value: 'Address' },
+        name: { kind: 'Name', value: 'Country' },
       },
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'firstName' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'lastName' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'phone' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'address1' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'city' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'countryCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'postalCode' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'iso2' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'displayName' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'RegionFields' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'Region' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'countries' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: { kind: 'Name', value: 'CountryFields' },
+                },
+              ],
+            },
+          },
         ],
       },
     },
@@ -2087,48 +1725,21 @@ export const CartFieldsFragmentDoc = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'CountryFields' },
+      name: { kind: 'Name', value: 'AddressFields' },
       typeCondition: {
         kind: 'NamedType',
-        name: { kind: 'Name', value: 'Country' },
+        name: { kind: 'Name', value: 'Address' },
       },
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'iso2' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'displayName' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'RegionFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Region' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'countries' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'CountryFields' },
-                },
-              ],
-            },
-          },
+          { kind: 'Field', name: { kind: 'Name', value: 'firstName' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'lastName' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'phone' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'address1' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'city' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'countryCode' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'postalCode' } },
         ],
       },
     },
@@ -2343,6 +1954,29 @@ export const CustomerFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<CustomerFragment, unknown>;
+export const ProductHitFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ProductHit' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'ProductHit' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'thumbnail' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ProductHitFragment, unknown>;
 export const ProductCategoryFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -2365,74 +1999,6 @@ export const ProductCategoryFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<ProductCategoryFragment, unknown>;
-export const ProductImageFragmentDoc = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductImage' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ProductImage' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'url' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<ProductImageFragment, unknown>;
-export const ProductTagFragmentDoc = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductTag' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ProductTag' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
-      },
-    },
-  ],
-} as unknown as DocumentNode<ProductTagFragment, unknown>;
-export const ProductOptionFragmentDoc = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductOption' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ProductOption' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'values' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'value' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<ProductOptionFragment, unknown>;
 export const ProductCollectionFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -2454,101 +2020,9 @@ export const ProductCollectionFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<ProductCollectionFragment, unknown>;
-export const ProductFragmentDoc = {
+export const ProductImageFragmentDoc = {
   kind: 'Document',
   definitions: [
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'Product' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Product' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'description' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'thumbnail' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'width' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'length' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'height' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'originCountry' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'material' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'type' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'collectionId' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'images' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProductImage' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'tags' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProductTag' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'options' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProductOption' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'variants' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProductVariant' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'collection' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProductCollection' },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
     {
       kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'ProductImage' },
@@ -2564,135 +2038,8 @@ export const ProductFragmentDoc = {
         ],
       },
     },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductTag' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ProductTag' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductOption' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ProductOption' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'values' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'value' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'Price' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Price' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'priceType' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductVariant' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ProductVariant' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'sku' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'inventoryQuantity' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'allowBackorder' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'manageInventory' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'options' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'optionId' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'value' } },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'price' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'Price' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'originalPrice' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'Price' },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductCollection' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Collection' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
-        ],
-      },
-    },
   ],
-} as unknown as DocumentNode<ProductFragment, unknown>;
+} as unknown as DocumentNode<ProductImageFragment, unknown>;
 export const CollectionProductsFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -2773,6 +2120,22 @@ export const CollectionProductsFragmentDoc = {
     },
     {
       kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'Price' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'Price' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'priceType' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'ProductImage' },
       typeCondition: {
         kind: 'NamedType',
@@ -2786,486 +2149,8 @@ export const CollectionProductsFragmentDoc = {
         ],
       },
     },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'Price' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Price' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'priceType' } },
-        ],
-      },
-    },
   ],
 } as unknown as DocumentNode<CollectionProductsFragment, unknown>;
-export const ProductHitFragmentDoc = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductHit' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ProductHit' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'description' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'thumbnail' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<ProductHitFragment, unknown>;
-export const CreateCartDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'CreateCart' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
-          type: {
-            kind: 'NonNullType',
-            type: {
-              kind: 'NamedType',
-              name: { kind: 'Name', value: 'CreateCartInput' },
-            },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'createCart' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'data' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'data' },
-                },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'CartFields' },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'CartItemFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'LineItem' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'quantity' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'unitPrice' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'thumbnail' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'productHandle' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'productTitle' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'total' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'originalTotal' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'variant' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProductVariant' },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'AddressFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Address' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'firstName' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'lastName' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'phone' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'address1' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'city' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'countryCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'postalCode' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ShippingMethodFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ShippingMethod' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'cartId' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'shippingOptionId' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'total' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'PaymentCollectionFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'PaymentCollection' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'status' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'paymentProviders' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'paymentSessions' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'currencyCode' },
-                },
-                { kind: 'Field', name: { kind: 'Name', value: 'providerId' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'data' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'status' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'CountryFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Country' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'iso2' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'displayName' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'RegionFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Region' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'countries' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'CountryFields' },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'PromotionFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Promotion' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'code' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'applicationMethod' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'value' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'type' } },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'currencyCode' },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'CartFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Cart' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'customerId' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'regionId' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'email' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'total' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'subtotal' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'taxTotal' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'itemTotal' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'discountTotal' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'originalTotal' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'shippingTotal' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'giftCardTotal' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'promotions' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'PromotionFields' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'items' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'CartItemFields' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'shippingAddress' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'AddressFields' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'billingAddress' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'AddressFields' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'region' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'RegionFields' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'shippingMethods' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ShippingMethodFields' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'paymentCollection' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'PaymentCollectionFields' },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'Price' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Price' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'priceType' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductVariant' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ProductVariant' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'sku' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'inventoryQuantity' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'allowBackorder' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'manageInventory' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'options' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'optionId' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'value' } },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'price' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'Price' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'originalPrice' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'Price' },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<CreateCartMutation, CreateCartMutationVariables>;
 export const UpdateCartDocument = {
   kind: 'Document',
   definitions: [
@@ -3400,21 +2285,48 @@ export const UpdateCartDocument = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'AddressFields' },
+      name: { kind: 'Name', value: 'CountryFields' },
       typeCondition: {
         kind: 'NamedType',
-        name: { kind: 'Name', value: 'Address' },
+        name: { kind: 'Name', value: 'Country' },
       },
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'firstName' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'lastName' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'phone' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'address1' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'city' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'countryCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'postalCode' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'iso2' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'displayName' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'RegionFields' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'Region' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'countries' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: { kind: 'Name', value: 'CountryFields' },
+                },
+              ],
+            },
+          },
         ],
       },
     },
@@ -3485,48 +2397,21 @@ export const UpdateCartDocument = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'CountryFields' },
+      name: { kind: 'Name', value: 'AddressFields' },
       typeCondition: {
         kind: 'NamedType',
-        name: { kind: 'Name', value: 'Country' },
+        name: { kind: 'Name', value: 'Address' },
       },
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'iso2' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'displayName' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'RegionFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Region' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'countries' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'CountryFields' },
-                },
-              ],
-            },
-          },
+          { kind: 'Field', name: { kind: 'Name', value: 'firstName' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'lastName' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'phone' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'address1' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'city' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'countryCode' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'postalCode' } },
         ],
       },
     },
@@ -3752,411 +2637,6 @@ export const UpdateCartDocument = {
     },
   ],
 } as unknown as DocumentNode<UpdateCartMutation, UpdateCartMutationVariables>;
-export const CreateLineItemDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'CreateLineItem' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'cartId' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
-          type: {
-            kind: 'NonNullType',
-            type: {
-              kind: 'NamedType',
-              name: { kind: 'Name', value: 'CreateLineItemInput' },
-            },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'createLineItem' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'cartId' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'cartId' },
-                },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'data' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'data' },
-                },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'total' } },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'items' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      {
-                        kind: 'FragmentSpread',
-                        name: { kind: 'Name', value: 'CartItemFields' },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'CartItemFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'LineItem' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'quantity' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'unitPrice' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'thumbnail' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'productHandle' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'productTitle' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'total' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'originalTotal' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'variant' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProductVariant' },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'Price' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Price' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'priceType' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductVariant' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ProductVariant' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'sku' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'inventoryQuantity' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'allowBackorder' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'manageInventory' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'options' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'optionId' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'value' } },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'price' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'Price' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'originalPrice' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'Price' },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  CreateLineItemMutation,
-  CreateLineItemMutationVariables
->;
-export const UpdateLineItemDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'UpdateLineItem' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'cartId' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'lineItemId' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'data' } },
-          type: {
-            kind: 'NonNullType',
-            type: {
-              kind: 'NamedType',
-              name: { kind: 'Name', value: 'UpdateLineItemInput' },
-            },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'updateLineItem' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'cartId' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'cartId' },
-                },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'lineItemId' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'lineItemId' },
-                },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'data' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'data' },
-                },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'total' } },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'items' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      {
-                        kind: 'FragmentSpread',
-                        name: { kind: 'Name', value: 'CartItemFields' },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'CartItemFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'LineItem' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'quantity' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'unitPrice' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'thumbnail' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'productHandle' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'productTitle' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'total' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'originalTotal' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'variant' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProductVariant' },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'Price' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Price' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'priceType' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductVariant' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ProductVariant' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'sku' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'inventoryQuantity' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'allowBackorder' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'manageInventory' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'options' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'optionId' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'value' } },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'price' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'Price' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'originalPrice' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'Price' },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  UpdateLineItemMutation,
-  UpdateLineItemMutationVariables
->;
 export const DeleteLineItemDocument = {
   kind: 'Document',
   definitions: [
@@ -4228,692 +2708,6 @@ export const DeleteLineItemDocument = {
 } as unknown as DocumentNode<
   DeleteLineItemMutation,
   DeleteLineItemMutationVariables
->;
-export const AddShippingMethodDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'AddShippingMethod' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'cartId' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'optionId' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'addShippingMethod' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'cartId' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'cartId' },
-                },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'optionId' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'optionId' },
-                },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'total' } },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'items' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      {
-                        kind: 'FragmentSpread',
-                        name: { kind: 'Name', value: 'CartItemFields' },
-                      },
-                    ],
-                  },
-                },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'shippingMethods' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      {
-                        kind: 'FragmentSpread',
-                        name: { kind: 'Name', value: 'ShippingMethodFields' },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'CartItemFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'LineItem' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'quantity' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'unitPrice' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'thumbnail' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'productHandle' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'productTitle' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'total' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'originalTotal' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'variant' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProductVariant' },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ShippingMethodFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ShippingMethod' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'cartId' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'shippingOptionId' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'total' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'Price' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Price' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'priceType' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductVariant' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ProductVariant' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'sku' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'inventoryQuantity' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'allowBackorder' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'manageInventory' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'options' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'optionId' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'value' } },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'price' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'Price' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'originalPrice' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'Price' },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  AddShippingMethodMutation,
-  AddShippingMethodMutationVariables
->;
-export const CompleteCartDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'CompleteCart' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'cartId' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'completeCart' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'cartId' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'cartId' },
-                },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: '__typename' } },
-                {
-                  kind: 'InlineFragment',
-                  typeCondition: {
-                    kind: 'NamedType',
-                    name: { kind: 'Name', value: 'CompleteCartOrderResult' },
-                  },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'type' } },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'order' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'id' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'email' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'status' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'total' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'createdAt' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'currencyCode' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'customerId' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: {
-                                kind: 'Name',
-                                value: 'fulfillmentStatus',
-                              },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'displayId' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'subtotal' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'discountTotal' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'giftCardTotal' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'shippingTotal' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'taxTotal' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: {
-                                kind: 'Name',
-                                value: 'paymentCollections',
-                              },
-                              selectionSet: {
-                                kind: 'SelectionSet',
-                                selections: [
-                                  {
-                                    kind: 'FragmentSpread',
-                                    name: {
-                                      kind: 'Name',
-                                      value: 'PaymentCollectionFields',
-                                    },
-                                  },
-                                ],
-                              },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'items' },
-                              selectionSet: {
-                                kind: 'SelectionSet',
-                                selections: [
-                                  {
-                                    kind: 'FragmentSpread',
-                                    name: {
-                                      kind: 'Name',
-                                      value: 'CartItemFields',
-                                    },
-                                  },
-                                ],
-                              },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'shippingMethods' },
-                              selectionSet: {
-                                kind: 'SelectionSet',
-                                selections: [
-                                  {
-                                    kind: 'FragmentSpread',
-                                    name: {
-                                      kind: 'Name',
-                                      value: 'ShippingMethodFields',
-                                    },
-                                  },
-                                ],
-                              },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'shippingAddress' },
-                              selectionSet: {
-                                kind: 'SelectionSet',
-                                selections: [
-                                  {
-                                    kind: 'FragmentSpread',
-                                    name: {
-                                      kind: 'Name',
-                                      value: 'AddressFields',
-                                    },
-                                  },
-                                ],
-                              },
-                            },
-                          ],
-                        },
-                      },
-                    ],
-                  },
-                },
-                {
-                  kind: 'InlineFragment',
-                  typeCondition: {
-                    kind: 'NamedType',
-                    name: { kind: 'Name', value: 'CompleteCartErrorResult' },
-                  },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'type' } },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'error' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'message' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'name' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'type' },
-                            },
-                          ],
-                        },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'cart' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'id' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'total' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'items' },
-                              selectionSet: {
-                                kind: 'SelectionSet',
-                                selections: [
-                                  {
-                                    kind: 'FragmentSpread',
-                                    name: {
-                                      kind: 'Name',
-                                      value: 'CartItemFields',
-                                    },
-                                  },
-                                ],
-                              },
-                            },
-                          ],
-                        },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'CartItemFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'LineItem' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'quantity' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'unitPrice' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'thumbnail' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'productHandle' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'productTitle' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'total' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'originalTotal' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'variant' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProductVariant' },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'AddressFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Address' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'firstName' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'lastName' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'phone' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'address1' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'city' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'countryCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'postalCode' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ShippingMethodFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ShippingMethod' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'cartId' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'shippingOptionId' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'total' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'PaymentCollectionFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'PaymentCollection' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'status' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'paymentProviders' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'paymentSessions' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'currencyCode' },
-                },
-                { kind: 'Field', name: { kind: 'Name', value: 'providerId' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'data' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'status' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'Price' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Price' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'priceType' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductVariant' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ProductVariant' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'sku' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'inventoryQuantity' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'allowBackorder' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'manageInventory' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'options' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'optionId' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'value' } },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'price' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'Price' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'originalPrice' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'Price' },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  CompleteCartMutation,
-  CompleteCartMutationVariables
 >;
 export const TransferCartDocument = {
   kind: 'Document',
@@ -5002,21 +2796,48 @@ export const TransferCartDocument = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'AddressFields' },
+      name: { kind: 'Name', value: 'CountryFields' },
       typeCondition: {
         kind: 'NamedType',
-        name: { kind: 'Name', value: 'Address' },
+        name: { kind: 'Name', value: 'Country' },
       },
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'firstName' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'lastName' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'phone' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'address1' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'city' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'countryCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'postalCode' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'iso2' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'displayName' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'RegionFields' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'Region' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'countries' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: { kind: 'Name', value: 'CountryFields' },
+                },
+              ],
+            },
+          },
         ],
       },
     },
@@ -5087,48 +2908,21 @@ export const TransferCartDocument = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'CountryFields' },
+      name: { kind: 'Name', value: 'AddressFields' },
       typeCondition: {
         kind: 'NamedType',
-        name: { kind: 'Name', value: 'Country' },
+        name: { kind: 'Name', value: 'Address' },
       },
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'iso2' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'displayName' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'RegionFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Region' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'countries' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'CountryFields' },
-                },
-              ],
-            },
-          },
+          { kind: 'Field', name: { kind: 'Name', value: 'firstName' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'lastName' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'phone' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'address1' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'city' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'countryCode' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'postalCode' } },
         ],
       },
     },
@@ -5357,574 +3151,6 @@ export const TransferCartDocument = {
   TransferCartMutation,
   TransferCartMutationVariables
 >;
-export const ApplyPromotionsDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'ApplyPromotions' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'cartId' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'codes' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: {
-              kind: 'ListType',
-              type: {
-                kind: 'NonNullType',
-                type: {
-                  kind: 'NamedType',
-                  name: { kind: 'Name', value: 'String' },
-                },
-              },
-            },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'applyPromotions' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'cartId' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'cartId' },
-                },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'codes' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'codes' },
-                },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'CartFields' },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'CartItemFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'LineItem' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'quantity' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'unitPrice' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'thumbnail' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'productHandle' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'productTitle' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'total' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'originalTotal' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'variant' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProductVariant' },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'AddressFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Address' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'firstName' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'lastName' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'phone' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'address1' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'city' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'countryCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'postalCode' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ShippingMethodFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ShippingMethod' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'cartId' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'shippingOptionId' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'total' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'PaymentCollectionFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'PaymentCollection' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'status' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'paymentProviders' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'paymentSessions' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'currencyCode' },
-                },
-                { kind: 'Field', name: { kind: 'Name', value: 'providerId' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'data' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'status' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'CountryFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Country' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'iso2' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'displayName' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'RegionFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Region' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'countries' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'CountryFields' },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'PromotionFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Promotion' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'code' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'applicationMethod' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'value' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'type' } },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'currencyCode' },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'CartFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Cart' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'customerId' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'regionId' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'email' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'total' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'subtotal' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'taxTotal' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'itemTotal' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'discountTotal' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'originalTotal' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'shippingTotal' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'giftCardTotal' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'promotions' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'PromotionFields' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'items' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'CartItemFields' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'shippingAddress' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'AddressFields' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'billingAddress' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'AddressFields' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'region' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'RegionFields' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'shippingMethods' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ShippingMethodFields' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'paymentCollection' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'PaymentCollectionFields' },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'Price' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Price' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'priceType' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductVariant' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ProductVariant' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'sku' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'inventoryQuantity' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'allowBackorder' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'manageInventory' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'options' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'optionId' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'value' } },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'price' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'Price' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'originalPrice' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'Price' },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  ApplyPromotionsMutation,
-  ApplyPromotionsMutationVariables
->;
-export const LoginDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'Login' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'email' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: {
-              kind: 'NamedType',
-              name: { kind: 'Name', value: 'String' },
-            },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'password' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: {
-              kind: 'NamedType',
-              name: { kind: 'Name', value: 'String' },
-            },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'login' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'email' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'email' },
-                },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'password' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'password' },
-                },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'token' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<LoginMutation, LoginMutationVariables>;
-export const LogoutDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'mutation',
-      name: { kind: 'Name', value: 'Logout' },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'logout' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'success' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<LogoutMutation, LogoutMutationVariables>;
 export const GetCartDocument = {
   kind: 'Document',
   definitions: [
@@ -6009,21 +3235,48 @@ export const GetCartDocument = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'AddressFields' },
+      name: { kind: 'Name', value: 'CountryFields' },
       typeCondition: {
         kind: 'NamedType',
-        name: { kind: 'Name', value: 'Address' },
+        name: { kind: 'Name', value: 'Country' },
       },
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'firstName' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'lastName' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'phone' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'address1' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'city' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'countryCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'postalCode' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'iso2' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'displayName' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'RegionFields' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'Region' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'countries' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: { kind: 'Name', value: 'CountryFields' },
+                },
+              ],
+            },
+          },
         ],
       },
     },
@@ -6094,48 +3347,21 @@ export const GetCartDocument = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'CountryFields' },
+      name: { kind: 'Name', value: 'AddressFields' },
       typeCondition: {
         kind: 'NamedType',
-        name: { kind: 'Name', value: 'Country' },
+        name: { kind: 'Name', value: 'Address' },
       },
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'iso2' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'displayName' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'RegionFields' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Region' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'countries' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'CountryFields' },
-                },
-              ],
-            },
-          },
+          { kind: 'Field', name: { kind: 'Name', value: 'firstName' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'lastName' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'phone' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'address1' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'city' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'countryCode' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'postalCode' } },
         ],
       },
     },
@@ -6361,6 +3587,205 @@ export const GetCartDocument = {
     },
   ],
 } as unknown as DocumentNode<GetCartQuery, GetCartQueryVariables>;
+export const GetCollectionsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetCollections' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'limit' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'offset' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'collections' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'limit' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'limit' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'offset' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'offset' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: { kind: 'Name', value: 'ProductCollection' },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'products' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'FragmentSpread',
+                        name: { kind: 'Name', value: 'CollectionProducts' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'Price' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'Price' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'priceType' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ProductCollection' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'Collection' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ProductImage' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'ProductImage' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'url' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'CollectionProducts' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'ProductList' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'count' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'items' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'thumbnail' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'images' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'FragmentSpread',
+                        name: { kind: 'Name', value: 'ProductImage' },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'variants' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'price' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'FragmentSpread',
+                              name: { kind: 'Name', value: 'Price' },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'originalPrice' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'FragmentSpread',
+                              name: { kind: 'Name', value: 'Price' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetCollectionsQuery, GetCollectionsQueryVariables>;
 export const GetCustomerDocument = {
   kind: 'Document',
   definitions: [
@@ -6492,319 +3917,7 @@ export const GetFooterDocument = {
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'text' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'InlineFragment',
-                              typeCondition: {
-                                kind: 'NamedType',
-                                name: { kind: 'Name', value: 'TextBlock' },
-                              },
-                              selectionSet: {
-                                kind: 'SelectionSet',
-                                selections: [
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: '_key' },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: '_type' },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'style' },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'children' },
-                                    selectionSet: {
-                                      kind: 'SelectionSet',
-                                      selections: [
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: '_key' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'text' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: {
-                                            kind: 'Name',
-                                            value: 'marks',
-                                          },
-                                        },
-                                      ],
-                                    },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'markDefs' },
-                                    selectionSet: {
-                                      kind: 'SelectionSet',
-                                      selections: [
-                                        {
-                                          kind: 'InlineFragment',
-                                          typeCondition: {
-                                            kind: 'NamedType',
-                                            name: {
-                                              kind: 'Name',
-                                              value: 'LinkMark',
-                                            },
-                                          },
-                                          selectionSet: {
-                                            kind: 'SelectionSet',
-                                            selections: [
-                                              {
-                                                kind: 'Field',
-                                                name: {
-                                                  kind: 'Name',
-                                                  value: '_key',
-                                                },
-                                              },
-                                              {
-                                                kind: 'Field',
-                                                name: {
-                                                  kind: 'Name',
-                                                  value: '_type',
-                                                },
-                                              },
-                                              {
-                                                kind: 'Field',
-                                                name: {
-                                                  kind: 'Name',
-                                                  value: 'href',
-                                                },
-                                              },
-                                              {
-                                                kind: 'Field',
-                                                name: {
-                                                  kind: 'Name',
-                                                  value: 'target',
-                                                },
-                                              },
-                                            ],
-                                          },
-                                        },
-                                        {
-                                          kind: 'InlineFragment',
-                                          typeCondition: {
-                                            kind: 'NamedType',
-                                            name: {
-                                              kind: 'Name',
-                                              value: 'IconLinkMark',
-                                            },
-                                          },
-                                          selectionSet: {
-                                            kind: 'SelectionSet',
-                                            selections: [
-                                              {
-                                                kind: 'Field',
-                                                name: {
-                                                  kind: 'Name',
-                                                  value: '_key',
-                                                },
-                                              },
-                                              {
-                                                kind: 'Field',
-                                                name: {
-                                                  kind: 'Name',
-                                                  value: '_type',
-                                                },
-                                              },
-                                              {
-                                                kind: 'Field',
-                                                name: {
-                                                  kind: 'Name',
-                                                  value: 'href',
-                                                },
-                                              },
-                                              {
-                                                kind: 'Field',
-                                                name: {
-                                                  kind: 'Name',
-                                                  value: 'iconType',
-                                                },
-                                              },
-                                              {
-                                                kind: 'Field',
-                                                name: {
-                                                  kind: 'Name',
-                                                  value: 'iconClass',
-                                                },
-                                              },
-                                              {
-                                                kind: 'Field',
-                                                name: {
-                                                  kind: 'Name',
-                                                  value: 'iconFill',
-                                                },
-                                              },
-                                              {
-                                                kind: 'Field',
-                                                name: {
-                                                  kind: 'Name',
-                                                  value: 'iconComponent',
-                                                },
-                                              },
-                                              {
-                                                kind: 'Field',
-                                                name: {
-                                                  kind: 'Name',
-                                                  value: 'iconImage',
-                                                },
-                                                selectionSet: {
-                                                  kind: 'SelectionSet',
-                                                  selections: [
-                                                    {
-                                                      kind: 'Field',
-                                                      name: {
-                                                        kind: 'Name',
-                                                        value: 'asset',
-                                                      },
-                                                      selectionSet: {
-                                                        kind: 'SelectionSet',
-                                                        selections: [
-                                                          {
-                                                            kind: 'Field',
-                                                            name: {
-                                                              kind: 'Name',
-                                                              value: 'url',
-                                                            },
-                                                          },
-                                                        ],
-                                                      },
-                                                    },
-                                                    {
-                                                      kind: 'Field',
-                                                      name: {
-                                                        kind: 'Name',
-                                                        value: 'alt',
-                                                      },
-                                                    },
-                                                  ],
-                                                },
-                                              },
-                                              {
-                                                kind: 'Field',
-                                                name: {
-                                                  kind: 'Name',
-                                                  value: 'iconUrl',
-                                                },
-                                              },
-                                              {
-                                                kind: 'Field',
-                                                name: {
-                                                  kind: 'Name',
-                                                  value: 'target',
-                                                },
-                                              },
-                                            ],
-                                          },
-                                        },
-                                      ],
-                                    },
-                                  },
-                                ],
-                              },
-                            },
-                            {
-                              kind: 'InlineFragment',
-                              typeCondition: {
-                                kind: 'NamedType',
-                                name: { kind: 'Name', value: 'ImageBlock' },
-                              },
-                              selectionSet: {
-                                kind: 'SelectionSet',
-                                selections: [
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: '_key' },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: '_type' },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'asset' },
-                                    selectionSet: {
-                                      kind: 'SelectionSet',
-                                      selections: [
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'url' },
-                                        },
-                                      ],
-                                    },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'alt' },
-                                  },
-                                ],
-                              },
-                            },
-                            {
-                              kind: 'InlineFragment',
-                              typeCondition: {
-                                kind: 'NamedType',
-                                name: { kind: 'Name', value: 'FileBlock' },
-                              },
-                              selectionSet: {
-                                kind: 'SelectionSet',
-                                selections: [
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: '_key' },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: '_type' },
-                                  },
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'asset' },
-                                    selectionSet: {
-                                      kind: 'SelectionSet',
-                                      selections: [
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'url' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: {
-                                            kind: 'Name',
-                                            value: 'originalFilename',
-                                          },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: { kind: 'Name', value: 'size' },
-                                        },
-                                        {
-                                          kind: 'Field',
-                                          name: {
-                                            kind: 'Name',
-                                            value: 'mimeType',
-                                          },
-                                        },
-                                      ],
-                                    },
-                                  },
-                                ],
-                              },
-                            },
-                          ],
-                        },
-                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'text' } },
                     ],
                   },
                 },
@@ -6816,112 +3929,25 @@ export const GetFooterDocument = {
     },
   ],
 } as unknown as DocumentNode<GetFooterQuery, GetFooterQueryVariables>;
-export const GetProductsDocument = {
+export const SearchSuggestionsDocument = {
   kind: 'Document',
   definitions: [
     {
       kind: 'OperationDefinition',
       operation: 'query',
-      name: { kind: 'Name', value: 'GetProducts' },
+      name: { kind: 'Name', value: 'SearchSuggestions' },
       variableDefinitions: [
         {
           kind: 'VariableDefinition',
           variable: {
             kind: 'Variable',
-            name: { kind: 'Name', value: 'limit' },
-          },
-          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'offset' },
-          },
-          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'handle' },
-          },
-          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'region_id' },
-          },
-          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'category_id' },
+            name: { kind: 'Name', value: 'query' },
           },
           type: {
-            kind: 'ListType',
+            kind: 'NonNullType',
             type: {
               kind: 'NamedType',
               name: { kind: 'Name', value: 'String' },
-            },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'collection_id' },
-          },
-          type: {
-            kind: 'ListType',
-            type: {
-              kind: 'NamedType',
-              name: { kind: 'Name', value: 'String' },
-            },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'q' } },
-          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'is_giftcard' },
-          },
-          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Boolean' } },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
-          type: {
-            kind: 'ListType',
-            type: {
-              kind: 'NonNullType',
-              type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } },
-            },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'tag_id' },
-          },
-          type: {
-            kind: 'ListType',
-            type: {
-              kind: 'NonNullType',
-              type: {
-                kind: 'NamedType',
-                name: { kind: 'Name', value: 'String' },
-              },
             },
           },
         },
@@ -6931,83 +3957,14 @@ export const GetProductsDocument = {
         selections: [
           {
             kind: 'Field',
-            name: { kind: 'Name', value: 'products' },
+            name: { kind: 'Name', value: 'searchProducts' },
             arguments: [
               {
                 kind: 'Argument',
-                name: { kind: 'Name', value: 'limit' },
+                name: { kind: 'Name', value: 'query' },
                 value: {
                   kind: 'Variable',
-                  name: { kind: 'Name', value: 'limit' },
-                },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'offset' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'offset' },
-                },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'handle' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'handle' },
-                },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'region_id' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'region_id' },
-                },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'category_id' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'category_id' },
-                },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'collection_id' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'collection_id' },
-                },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'q' },
-                value: { kind: 'Variable', name: { kind: 'Name', value: 'q' } },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'id' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'id' },
-                },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'is_giftcard' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'is_giftcard' },
-                },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'tag_id' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'tag_id' },
+                  name: { kind: 'Name', value: 'query' },
                 },
               },
             ],
@@ -7016,18 +3973,17 @@ export const GetProductsDocument = {
               selections: [
                 {
                   kind: 'Field',
-                  name: { kind: 'Name', value: 'products' },
+                  name: { kind: 'Name', value: 'items' },
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
                       {
                         kind: 'FragmentSpread',
-                        name: { kind: 'Name', value: 'Product' },
+                        name: { kind: 'Name', value: 'ProductHit' },
                       },
                     ],
                   },
                 },
-                { kind: 'Field', name: { kind: 'Name', value: 'count' } },
               ],
             },
           },
@@ -7036,538 +3992,27 @@ export const GetProductsDocument = {
     },
     {
       kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductImage' },
+      name: { kind: 'Name', value: 'ProductHit' },
       typeCondition: {
         kind: 'NamedType',
-        name: { kind: 'Name', value: 'ProductImage' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'url' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductTag' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ProductTag' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductOption' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ProductOption' },
+        name: { kind: 'Name', value: 'ProductHit' },
       },
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'values' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'value' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'Price' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Price' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'priceType' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductVariant' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ProductVariant' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'sku' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'inventoryQuantity' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'allowBackorder' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'manageInventory' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'options' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'optionId' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'value' } },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'price' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'Price' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'originalPrice' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'Price' },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductCollection' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Collection' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'Product' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Product' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
           { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
           { kind: 'Field', name: { kind: 'Name', value: 'thumbnail' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'width' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'length' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'height' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'originCountry' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'material' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'type' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'collectionId' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'images' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProductImage' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'tags' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProductTag' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'options' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProductOption' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'variants' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProductVariant' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'collection' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProductCollection' },
-                },
-              ],
-            },
-          },
         ],
       },
     },
   ],
-} as unknown as DocumentNode<GetProductsQuery, GetProductsQueryVariables>;
-export const GetProductDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'GetProduct' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'region_id' },
-          },
-          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'product' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'id' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'id' },
-                },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'region_id' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'region_id' },
-                },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'Product' },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductImage' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ProductImage' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'url' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductTag' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ProductTag' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductOption' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ProductOption' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'values' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'value' } },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'Price' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Price' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'priceType' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductVariant' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ProductVariant' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'sku' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'inventoryQuantity' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'allowBackorder' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'manageInventory' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'options' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'optionId' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'value' } },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'price' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'Price' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'originalPrice' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'Price' },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductCollection' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Collection' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'Product' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Product' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'description' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'thumbnail' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'width' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'weight' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'length' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'height' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'originCountry' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'material' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'type' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'collectionId' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'images' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProductImage' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'tags' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProductTag' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'options' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProductOption' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'variants' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProductVariant' },
-                },
-              ],
-            },
-          },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'collection' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProductCollection' },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<GetProductQuery, GetProductQueryVariables>;
+} as unknown as DocumentNode<
+  SearchSuggestionsQuery,
+  SearchSuggestionsQueryVariables
+>;
 export const GetProductCategoriesDocument = {
   kind: 'Document',
   definitions: [
@@ -7730,13 +4175,60 @@ export const GetProductCategoriesDocument = {
   GetProductCategoriesQuery,
   GetProductCategoriesQueryVariables
 >;
-export const GetProductCategoryDocument = {
+export const ListRegionsDocument = {
   kind: 'Document',
   definitions: [
     {
       kind: 'OperationDefinition',
       operation: 'query',
-      name: { kind: 'Name', value: 'GetProductCategory' },
+      name: { kind: 'Name', value: 'ListRegions' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'regions' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'currencyCode' },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'countries' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'iso2' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'displayName' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ListRegionsQuery, ListRegionsQueryVariables>;
+export const GetRegionDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetRegion' },
       variableDefinitions: [
         {
           kind: 'VariableDefinition',
@@ -7752,7 +4244,7 @@ export const GetProductCategoryDocument = {
         selections: [
           {
             kind: 'Field',
-            name: { kind: 'Name', value: 'productCategory' },
+            name: { kind: 'Name', value: 'region' },
             arguments: [
               {
                 kind: 'Argument',
@@ -7766,274 +4258,25 @@ export const GetProductCategoryDocument = {
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProductCategory' },
-                },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'parentCategory' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      {
-                        kind: 'FragmentSpread',
-                        name: { kind: 'Name', value: 'ProductCategory' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'parentCategory' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'FragmentSpread',
-                              name: { kind: 'Name', value: 'ProductCategory' },
-                            },
-                          ],
-                        },
-                      },
-                    ],
-                  },
-                },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'categoryChildren' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      {
-                        kind: 'FragmentSpread',
-                        name: { kind: 'Name', value: 'ProductCategory' },
-                      },
-                    ],
-                  },
-                },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'products' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'count' } },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductCategory' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ProductCategory' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'description' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  GetProductCategoryQuery,
-  GetProductCategoryQueryVariables
->;
-export const GetCollectionsDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'GetCollections' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'limit' },
-          },
-          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'offset' },
-          },
-          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'collections' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'limit' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'limit' },
-                },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'offset' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'offset' },
-                },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProductCollection' },
-                },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'products' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      {
-                        kind: 'FragmentSpread',
-                        name: { kind: 'Name', value: 'CollectionProducts' },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductImage' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ProductImage' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'url' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'Price' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Price' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'priceType' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductCollection' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Collection' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'CollectionProducts' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ProductList' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'count' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'items' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'thumbnail' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                 {
                   kind: 'Field',
-                  name: { kind: 'Name', value: 'images' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      {
-                        kind: 'FragmentSpread',
-                        name: { kind: 'Name', value: 'ProductImage' },
-                      },
-                    ],
-                  },
+                  name: { kind: 'Name', value: 'currencyCode' },
                 },
+                { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
                 {
                   kind: 'Field',
-                  name: { kind: 'Name', value: 'variants' },
+                  name: { kind: 'Name', value: 'countries' },
                   selectionSet: {
                     kind: 'SelectionSet',
                     selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'iso2' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'name' } },
                       {
                         kind: 'Field',
-                        name: { kind: 'Name', value: 'price' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'FragmentSpread',
-                              name: { kind: 'Name', value: 'Price' },
-                            },
-                          ],
-                        },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'originalPrice' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'FragmentSpread',
-                              name: { kind: 'Name', value: 'Price' },
-                            },
-                          ],
-                        },
+                        name: { kind: 'Name', value: 'displayName' },
                       },
                     ],
                   },
@@ -8045,386 +4288,4 @@ export const GetCollectionsDocument = {
       },
     },
   ],
-} as unknown as DocumentNode<GetCollectionsQuery, GetCollectionsQueryVariables>;
-export const GetCollectionsSummaryDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'GetCollectionsSummary' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'limit' },
-          },
-          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'offset' },
-          },
-          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'handle' },
-          },
-          type: {
-            kind: 'ListType',
-            type: {
-              kind: 'NamedType',
-              name: { kind: 'Name', value: 'String' },
-            },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'collections' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'limit' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'limit' },
-                },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'offset' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'offset' },
-                },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'handle' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'handle' },
-                },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProductCollection' },
-                },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'products' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'count' } },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductCollection' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Collection' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  GetCollectionsSummaryQuery,
-  GetCollectionsSummaryQueryVariables
->;
-export const GetCollectionDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'GetCollection' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
-          type: {
-            kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'collection' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'id' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'id' },
-                },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProductCollection' },
-                },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'products' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      {
-                        kind: 'FragmentSpread',
-                        name: { kind: 'Name', value: 'CollectionProducts' },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductImage' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ProductImage' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'url' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'Price' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Price' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'priceType' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductCollection' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'Collection' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'CollectionProducts' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ProductList' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'count' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'items' },
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'thumbnail' } },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'images' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      {
-                        kind: 'FragmentSpread',
-                        name: { kind: 'Name', value: 'ProductImage' },
-                      },
-                    ],
-                  },
-                },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'variants' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'price' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'FragmentSpread',
-                              name: { kind: 'Name', value: 'Price' },
-                            },
-                          ],
-                        },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'originalPrice' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'FragmentSpread',
-                              name: { kind: 'Name', value: 'Price' },
-                            },
-                          ],
-                        },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<GetCollectionQuery, GetCollectionQueryVariables>;
-export const SearchSuggestionsDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'SearchSuggestions' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'query' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: {
-              kind: 'NamedType',
-              name: { kind: 'Name', value: 'String' },
-            },
-          },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'searchProducts' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'query' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'query' },
-                },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'items' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      {
-                        kind: 'FragmentSpread',
-                        name: { kind: 'Name', value: 'ProductHit' },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductHit' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ProductHit' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'description' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'thumbnail' } },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<
-  SearchSuggestionsQuery,
-  SearchSuggestionsQueryVariables
->;
+} as unknown as DocumentNode<GetRegionQuery, GetRegionQueryVariables>;

@@ -1,26 +1,37 @@
-import { HttpTypes } from '@medusajs/types';
-
-import { Region } from '../../types/graphql';
-import { sdk } from '../config/medusa';
+import type { Region } from '../../types/graphql';
+import {
+  createServerApolloClient,
+  graphqlFetch,
+} from '../gql/apollo-client';
+import { GET_REGION_QUERY, LIST_REGIONS_QUERY } from '../gql/queries/regions';
 import { medusaError } from '../utils/medusa-error';
-import { normalizeRegion } from '../utils/normalize-functions';
 import type { StorefrontContext } from './context';
-import { getCacheOptions } from './cookies-utils';
+
+// Inline types until codegen generates ListRegionsQuery / GetRegionQuery
+type ListRegionsResult = { regions: Region[] };
+type GetRegionResult = { region: Region | null };
 
 const regionMap = new Map<string, Region>();
 
 export const listRegions = async (ctx: StorefrontContext) => {
-  const next = {
-    ...getCacheOptions('regions', ctx),
-  };
+  const apolloClient = createServerApolloClient(ctx.cookieHeader ?? '');
 
-  return sdk.client
-    .fetch<{ regions: HttpTypes.StoreRegion[] }>(`/store/regions`, {
-      method: 'GET',
-      next,
-      cache: 'force-cache',
-    })
-    .then(({ regions }) => regions.map(normalizeRegion))
+  return graphqlFetch<ListRegionsResult, Record<string, never>>(
+    { query: LIST_REGIONS_QUERY, fetchPolicy: 'cache-first' },
+    apolloClient
+  )
+    .then((data) => data?.regions ?? [])
+    .catch(medusaError);
+};
+
+export const retrieveRegion = async (id: string, ctx: StorefrontContext) => {
+  const apolloClient = createServerApolloClient(ctx.cookieHeader ?? '');
+
+  return graphqlFetch<GetRegionResult, { id: string }>(
+    { query: GET_REGION_QUERY, variables: { id }, fetchPolicy: 'cache-first' },
+    apolloClient
+  )
+    .then((data) => data?.region ?? null)
     .catch(medusaError);
 };
 
@@ -48,7 +59,7 @@ export const getRegion = async (
       : (regionMap.get('us') ?? null);
 
     return region;
-  } catch (e: any) {
+  } catch {
     return null;
   }
 };

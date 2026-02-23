@@ -2,7 +2,6 @@
 import type { ComponentType } from 'react';
 
 import { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
-import type { HttpTypes } from '@medusajs/types';
 
 import { Footer } from '../components/footer';
 import { Header } from '../components/header';
@@ -20,24 +19,22 @@ export const COMPONENT_REGISTRY: ComponentDefinition[] = [
     name: 'header',
     component: Header,
     getData: async (ctx?: StorefrontContext) => {
-      const [{ sdk }, { normalizeRegion }, { medusaError }] = await Promise.all(
-        [
-          import('@gfed-medusa/sf-lib-common/lib/config/medusa'),
-          import('@gfed-medusa/sf-lib-common/lib/utils/normalize-functions'),
-          import('@gfed-medusa/sf-lib-common/lib/utils/medusa-error'),
-        ]
-      );
+      const [
+        { createServerApolloClient, graphqlFetch },
+        { LIST_REGIONS_QUERY },
+      ] = await Promise.all([
+        import('@gfed-medusa/sf-lib-common/lib/gql/apollo-client'),
+        import('@gfed-medusa/sf-lib-common/lib/gql/queries/regions'),
+      ]);
 
-      const regions = await sdk.client
-        .fetch<{ regions: HttpTypes.StoreRegion[] }>(`/store/regions`, {
-          method: 'GET',
-          cache: 'force-cache',
-        })
-        .then(({ regions }) => regions.map(normalizeRegion))
-        .catch(medusaError);
+      const apolloClient = createServerApolloClient(ctx?.cookieHeader ?? '');
+      const data = await graphqlFetch<any, any>(
+        { query: LIST_REGIONS_QUERY },
+        apolloClient
+      ).catch(() => null);
 
       return {
-        regions: regions ?? [],
+        regions: data?.regions ?? [],
       };
     },
     elementTag: 'mfe-header',
