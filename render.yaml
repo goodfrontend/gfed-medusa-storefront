@@ -8,7 +8,7 @@ projects:
         services:
           - type: web
             runtime: image
-            plan: starter
+            plan: free
             name: sf-home-prod
             region: oregon
             autoDeployTrigger: off
@@ -19,7 +19,7 @@ projects:
 
           - type: web
             runtime: image
-            plan: starter
+            plan: free
             name: sf-account-prod
             region: oregon
             autoDeployTrigger: off
@@ -30,7 +30,7 @@ projects:
 
           - type: web
             runtime: image
-            plan: starter
+            plan: free
             name: sf-products-prod
             region: oregon
             autoDeployTrigger: off
@@ -41,7 +41,7 @@ projects:
 
           - type: web
             runtime: image
-            plan: starter
+            plan: free
             name: sf-checkout-prod
             region: oregon
             autoDeployTrigger: off
@@ -52,7 +52,7 @@ projects:
 
           - type: web
             runtime: image
-            plan: starter
+            plan: free
             name: sf-horz-prod
             region: oregon
             autoDeployTrigger: off
