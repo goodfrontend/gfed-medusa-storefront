@@ -1,6 +1,32 @@
 import { gql } from '@apollo/client';
 
-import { ADDRESS_FRAGMENT, CART_FRAGMENT } from '../fragments/cart';
+import {
+  ADDRESS_FRAGMENT,
+  CART_FRAGMENT,
+  LINE_ITEM_FRAGMENT,
+} from '../fragments/cart';
+
+export const CREATE_CART_MUTATION = gql`
+  mutation CreateCart($data: CreateCartInput!) {
+    createCart(data: $data) {
+      ...CartFields
+    }
+  }
+  ${CART_FRAGMENT}
+`;
+
+export const CREATE_LINE_ITEM_MUTATION = gql`
+  mutation CreateLineItem($cartId: ID!, $data: CreateLineItemInput!) {
+    createLineItem(cartId: $cartId, data: $data) {
+      id
+      total
+      items {
+        ...CartItemFields
+      }
+    }
+  }
+  ${LINE_ITEM_FRAGMENT}
+`;
 
 export const UPDATE_CART_MUTATION = gql`
   mutation UpdateCart($id: ID!, $data: UpdateCartInput!) {
