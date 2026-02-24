@@ -31,6 +31,21 @@ export type Scalars = {
   JSON: { input: any; output: any };
 };
 
+export type AddCustomerAddressInput = {
+  address1?: InputMaybe<Scalars['String']['input']>;
+  address2?: InputMaybe<Scalars['String']['input']>;
+  city?: InputMaybe<Scalars['String']['input']>;
+  company?: InputMaybe<Scalars['String']['input']>;
+  countryCode?: InputMaybe<Scalars['String']['input']>;
+  firstName?: InputMaybe<Scalars['String']['input']>;
+  isDefaultBilling?: InputMaybe<Scalars['Boolean']['input']>;
+  isDefaultShipping?: InputMaybe<Scalars['Boolean']['input']>;
+  lastName?: InputMaybe<Scalars['String']['input']>;
+  phone?: InputMaybe<Scalars['String']['input']>;
+  postalCode?: InputMaybe<Scalars['String']['input']>;
+  province?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type Address = {
   __typename?: 'Address';
   address1?: Maybe<Scalars['String']['output']>;
@@ -73,6 +88,12 @@ export enum ApplicationType {
   Fixed = 'fixed',
   Percentage = 'percentage',
 }
+
+export type AuthPayload = {
+  __typename?: 'AuthPayload';
+  customer?: Maybe<Customer>;
+  token: Scalars['String']['output'];
+};
 
 export type Cart = {
   __typename?: 'Cart';
@@ -187,6 +208,12 @@ export type CustomerAddress = {
   province?: Maybe<Scalars['String']['output']>;
 };
 
+export type DeleteCustomerAddressResult = {
+  __typename?: 'DeleteCustomerAddressResult';
+  deleted: Scalars['Boolean']['output'];
+  id: Scalars['ID']['output'];
+};
+
 export type Footer = {
   __typename?: 'Footer';
   _id: Scalars['ID']['output'];
@@ -215,30 +242,33 @@ export type LineItem = {
   variant?: Maybe<ProductVariant>;
 };
 
-export type LoginResponse = {
-  __typename?: 'LoginResponse';
-  isCustomerLoggedIn?: Maybe<Scalars['Boolean']['output']>;
-  token?: Maybe<Scalars['String']['output']>;
-};
-
-export type LogoutResponse = {
-  __typename?: 'LogoutResponse';
-  success?: Maybe<Scalars['Boolean']['output']>;
+export type LoginInput = {
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
 };
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addCustomerAddress: Customer;
   addShippingMethod?: Maybe<Cart>;
   applyPromotions?: Maybe<Cart>;
   completeCart?: Maybe<CompleteCartResponse>;
   createCart?: Maybe<Cart>;
   createLineItem?: Maybe<Cart>;
+  deleteCustomerAddress: DeleteCustomerAddressResult;
   deleteLineItem: StoreLineItemDeleteResponse;
-  login?: Maybe<LoginResponse>;
-  logout?: Maybe<LogoutResponse>;
+  login: AuthPayload;
+  logout: Scalars['Boolean']['output'];
+  register: AuthPayload;
   transferCart?: Maybe<Cart>;
   updateCart?: Maybe<Cart>;
+  updateCustomer: Customer;
+  updateCustomerAddress: Customer;
   updateLineItem?: Maybe<Cart>;
+};
+
+export type Mutation_AddCustomerAddressArgs = {
+  input: AddCustomerAddressInput;
 };
 
 export type Mutation_AddShippingMethodArgs = {
@@ -264,14 +294,21 @@ export type Mutation_CreateLineItemArgs = {
   data: CreateLineItemInput;
 };
 
+export type Mutation_DeleteCustomerAddressArgs = {
+  id: Scalars['ID']['input'];
+};
+
 export type Mutation_DeleteLineItemArgs = {
   cartId: Scalars['ID']['input'];
   lineItemId: Scalars['ID']['input'];
 };
 
 export type Mutation_LoginArgs = {
-  email: Scalars['String']['input'];
-  password: Scalars['String']['input'];
+  input: LoginInput;
+};
+
+export type Mutation_RegisterArgs = {
+  input: RegisterCustomerInput;
 };
 
 export type Mutation_TransferCartArgs = {
@@ -281,6 +318,15 @@ export type Mutation_TransferCartArgs = {
 export type Mutation_UpdateCartArgs = {
   data: UpdateCartInput;
   id: Scalars['ID']['input'];
+};
+
+export type Mutation_UpdateCustomerArgs = {
+  input: UpdateCustomerInput;
+};
+
+export type Mutation_UpdateCustomerAddressArgs = {
+  id: Scalars['ID']['input'];
+  input: UpdateCustomerAddressInput;
 };
 
 export type Mutation_UpdateLineItemArgs = {
@@ -489,6 +535,7 @@ export type Promotion = {
 export type Query = {
   __typename?: 'Query';
   _empty?: Maybe<Scalars['String']['output']>;
+  calculateShippingOption?: Maybe<ShippingOption>;
   cart?: Maybe<Cart>;
   collection?: Maybe<Collection>;
   collections: Array<Collection>;
@@ -498,7 +545,16 @@ export type Query = {
   productCategories: Array<ProductCategory>;
   productCategory?: Maybe<ProductCategory>;
   products: ProductListResponse;
+  region?: Maybe<Region>;
+  regions: Array<Region>;
   searchProducts: SearchProducts;
+  shippingOptions?: Maybe<Array<Maybe<ShippingOption>>>;
+};
+
+export type Query_CalculateShippingOptionArgs = {
+  cartId: Scalars['ID']['input'];
+  data?: InputMaybe<Scalars['JSON']['input']>;
+  optionId: Scalars['ID']['input'];
 };
 
 export type Query_CartArgs = {
@@ -548,6 +604,10 @@ export type Query_ProductsArgs = {
   tag_id?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
 };
 
+export type Query_RegionArgs = {
+  id: Scalars['ID']['input'];
+};
+
 export type Query_SearchProductsArgs = {
   facets?: InputMaybe<Array<Scalars['String']['input']>>;
   filters?: InputMaybe<Scalars['String']['input']>;
@@ -557,6 +617,10 @@ export type Query_SearchProductsArgs = {
   query?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type Query_ShippingOptionsArgs = {
+  cartId: Scalars['ID']['input'];
+};
+
 export type Region = {
   __typename?: 'Region';
   countries?: Maybe<Array<Maybe<Country>>>;
@@ -564,6 +628,14 @@ export type Region = {
   currencyCode: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   name: Scalars['String']['output'];
+};
+
+export type RegisterCustomerInput = {
+  email: Scalars['String']['input'];
+  firstName?: InputMaybe<Scalars['String']['input']>;
+  lastName?: InputMaybe<Scalars['String']['input']>;
+  password: Scalars['String']['input'];
+  phone?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type SearchProducts = {
@@ -588,6 +660,16 @@ export type ShippingMethod = {
   total?: Maybe<Scalars['Int']['output']>;
 };
 
+export type ShippingOption = {
+  __typename?: 'ShippingOption';
+  amount?: Maybe<Scalars['Int']['output']>;
+  id: Scalars['ID']['output'];
+  insufficientInventory?: Maybe<Scalars['Boolean']['output']>;
+  name: Scalars['String']['output'];
+  priceType: Scalars['String']['output'];
+  serviceZoneId?: Maybe<Scalars['String']['output']>;
+};
+
 export type SocialLink = {
   __typename?: 'SocialLink';
   text: Scalars['String']['output'];
@@ -607,6 +689,25 @@ export type UpdateCartInput = {
   promoCodes?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   regionId?: InputMaybe<Scalars['String']['input']>;
   shippingAddress?: InputMaybe<AddressInput>;
+};
+
+export type UpdateCustomerAddressInput = {
+  address1?: InputMaybe<Scalars['String']['input']>;
+  address2?: InputMaybe<Scalars['String']['input']>;
+  city?: InputMaybe<Scalars['String']['input']>;
+  company?: InputMaybe<Scalars['String']['input']>;
+  countryCode?: InputMaybe<Scalars['String']['input']>;
+  firstName?: InputMaybe<Scalars['String']['input']>;
+  lastName?: InputMaybe<Scalars['String']['input']>;
+  phone?: InputMaybe<Scalars['String']['input']>;
+  postalCode?: InputMaybe<Scalars['String']['input']>;
+  province?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateCustomerInput = {
+  firstName?: InputMaybe<Scalars['String']['input']>;
+  lastName?: InputMaybe<Scalars['String']['input']>;
+  phone?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type UpdateLineItemInput = {
@@ -647,21 +748,110 @@ export type CustomerFragment = {
   > | null;
 };
 
+export type RegisterMutationVariables = Exact<{
+  input: RegisterCustomerInput;
+}>;
+
+export type RegisterMutation = {
+  __typename?: 'Mutation';
+  register: {
+    __typename?: 'AuthPayload';
+    token: string;
+    customer?: {
+      __typename?: 'Customer';
+      id: string;
+      email?: string | null;
+      firstName?: string | null;
+      lastName?: string | null;
+      phone?: string | null;
+    } | null;
+  };
+};
+
 export type LoginMutationVariables = Exact<{
-  email: Scalars['String']['input'];
-  password: Scalars['String']['input'];
+  input: LoginInput;
 }>;
 
 export type LoginMutation = {
   __typename?: 'Mutation';
-  login?: { __typename?: 'LoginResponse'; token?: string | null } | null;
+  login: {
+    __typename?: 'AuthPayload';
+    token: string;
+    customer?: {
+      __typename?: 'Customer';
+      id: string;
+      email?: string | null;
+      firstName?: string | null;
+      lastName?: string | null;
+      phone?: string | null;
+    } | null;
+  };
 };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never }>;
 
-export type LogoutMutation = {
+export type LogoutMutation = { __typename?: 'Mutation'; logout: boolean };
+
+export type UpdateCustomerMutationVariables = Exact<{
+  input: UpdateCustomerInput;
+}>;
+
+export type UpdateCustomerMutation = {
   __typename?: 'Mutation';
-  logout?: { __typename?: 'LogoutResponse'; success?: boolean | null } | null;
+  updateCustomer: {
+    __typename?: 'Customer';
+    id: string;
+    email?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    phone?: string | null;
+  };
+};
+
+export type AddCustomerAddressMutationVariables = Exact<{
+  input: AddCustomerAddressInput;
+}>;
+
+export type AddCustomerAddressMutation = {
+  __typename?: 'Mutation';
+  addCustomerAddress: {
+    __typename?: 'Customer';
+    id: string;
+    email?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    phone?: string | null;
+  };
+};
+
+export type UpdateCustomerAddressMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+  input: UpdateCustomerAddressInput;
+}>;
+
+export type UpdateCustomerAddressMutation = {
+  __typename?: 'Mutation';
+  updateCustomerAddress: {
+    __typename?: 'Customer';
+    id: string;
+    email?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    phone?: string | null;
+  };
+};
+
+export type DeleteCustomerAddressMutationVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+export type DeleteCustomerAddressMutation = {
+  __typename?: 'Mutation';
+  deleteCustomerAddress: {
+    __typename?: 'DeleteCustomerAddressResult';
+    id: string;
+    deleted: boolean;
+  };
 };
 
 export type GetCustomerQueryVariables = Exact<{ [key: string]: never }>;
@@ -777,6 +967,77 @@ export const CustomerFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<CustomerFragment, unknown>;
+export const RegisterDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'Register' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'input' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'RegisterCustomerInput' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'register' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'input' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'token' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'customer' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'firstName' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'lastName' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'phone' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<RegisterMutation, RegisterMutationVariables>;
 export const LoginDocument = {
   kind: 'Document',
   definitions: [
@@ -789,27 +1050,13 @@ export const LoginDocument = {
           kind: 'VariableDefinition',
           variable: {
             kind: 'Variable',
-            name: { kind: 'Name', value: 'email' },
+            name: { kind: 'Name', value: 'input' },
           },
           type: {
             kind: 'NonNullType',
             type: {
               kind: 'NamedType',
-              name: { kind: 'Name', value: 'String' },
-            },
-          },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'password' },
-          },
-          type: {
-            kind: 'NonNullType',
-            type: {
-              kind: 'NamedType',
-              name: { kind: 'Name', value: 'String' },
+              name: { kind: 'Name', value: 'LoginInput' },
             },
           },
         },
@@ -823,18 +1070,10 @@ export const LoginDocument = {
             arguments: [
               {
                 kind: 'Argument',
-                name: { kind: 'Name', value: 'email' },
+                name: { kind: 'Name', value: 'input' },
                 value: {
                   kind: 'Variable',
-                  name: { kind: 'Name', value: 'email' },
-                },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'password' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'password' },
+                  name: { kind: 'Name', value: 'input' },
                 },
               },
             ],
@@ -842,6 +1081,26 @@ export const LoginDocument = {
               kind: 'SelectionSet',
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'token' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'customer' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'firstName' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'lastName' },
+                      },
+                      { kind: 'Field', name: { kind: 'Name', value: 'phone' } },
+                    ],
+                  },
+                },
               ],
             },
           },
@@ -860,13 +1119,59 @@ export const LogoutDocument = {
       selectionSet: {
         kind: 'SelectionSet',
         selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'logout' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<LogoutMutation, LogoutMutationVariables>;
+export const UpdateCustomerDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'UpdateCustomer' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'input' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'UpdateCustomerInput' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
           {
             kind: 'Field',
-            name: { kind: 'Name', value: 'logout' },
+            name: { kind: 'Name', value: 'updateCustomer' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'input' },
+                },
+              },
+            ],
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'success' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'firstName' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'lastName' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'phone' } },
               ],
             },
           },
@@ -874,7 +1179,191 @@ export const LogoutDocument = {
       },
     },
   ],
-} as unknown as DocumentNode<LogoutMutation, LogoutMutationVariables>;
+} as unknown as DocumentNode<
+  UpdateCustomerMutation,
+  UpdateCustomerMutationVariables
+>;
+export const AddCustomerAddressDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'AddCustomerAddress' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'input' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'AddCustomerAddressInput' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'addCustomerAddress' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'input' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'firstName' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'lastName' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'phone' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  AddCustomerAddressMutation,
+  AddCustomerAddressMutationVariables
+>;
+export const UpdateCustomerAddressDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'UpdateCustomerAddress' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'input' },
+          },
+          type: {
+            kind: 'NonNullType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'UpdateCustomerAddressInput' },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'updateCustomerAddress' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'id' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'input' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'input' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'email' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'firstName' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'lastName' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'phone' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  UpdateCustomerAddressMutation,
+  UpdateCustomerAddressMutationVariables
+>;
+export const DeleteCustomerAddressDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'mutation',
+      name: { kind: 'Name', value: 'DeleteCustomerAddress' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'deleteCustomerAddress' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'id' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'deleted' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  DeleteCustomerAddressMutation,
+  DeleteCustomerAddressMutationVariables
+>;
 export const GetCustomerDocument = {
   kind: 'Document',
   definitions: [
