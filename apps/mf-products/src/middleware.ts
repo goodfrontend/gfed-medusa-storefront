@@ -1,23 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { HttpTypes } from '@medusajs/types';
-
-const BACKEND_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL;
-const PUBLISHABLE_API_KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY;
+const BFF_URL = process.env.NEXT_PUBLIC_BFF_URL;
 const DEFAULT_REGION = process.env.NEXT_PUBLIC_DEFAULT_REGION || 'us';
 const CACHE_TAG_PREFIX = 'mf-products';
 
+type BffRegion = {
+  id: string;
+  name: string;
+  countries: { iso2: string; name: string }[];
+};
+
 const regionMapCache = {
-  regionMap: new Map<string, HttpTypes.StoreRegion>(),
+  regionMap: new Map<string, BffRegion>(),
   regionMapUpdated: Date.now(),
 };
 
 async function getRegionMap(cacheId: string) {
   const { regionMap, regionMapUpdated } = regionMapCache;
 
-  if (!BACKEND_URL) {
+  if (!BFF_URL) {
     throw new Error(
-      'Middleware.ts: Error fetching regions. Did you set up NEXT_PUBLIC_MEDUSA_BACKEND_URL?'
+      'Middleware.ts: Error fetching regions. Did you set up NEXT_PUBLIC_BFF_URL?'
     );
   }
 
@@ -25,34 +28,36 @@ async function getRegionMap(cacheId: string) {
     !regionMap.keys().next().value ||
     regionMapUpdated < Date.now() - 3600 * 1000
   ) {
-    const { regions } = await fetch(`${BACKEND_URL}/store/regions`, {
-      headers: {
-        'x-publishable-api-key': PUBLISHABLE_API_KEY!,
-      },
+    const response = await fetch(`${BFF_URL}/graphql`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        query: `{ regions { id name countries { iso2 name } } }`,
+      }),
       next: {
         revalidate: 3600,
         tags: [`regions-${cacheId}`],
       },
       cache: 'force-cache',
-    }).then(async (response) => {
-      const json = await response.json();
-
-      if (!response.ok) {
-        throw new Error(json.message);
-      }
-
-      return json;
     });
 
-    if (!regions?.length) {
+    const json = await response.json();
+
+    if (!response.ok) {
+      throw new Error(json.message);
+    }
+
+    const regions: BffRegion[] = json?.data?.regions ?? [];
+
+    if (!regions.length) {
       throw new Error(
         'No regions found. Please set up regions in your Medusa Admin.'
       );
     }
 
-    regions.forEach((region: HttpTypes.StoreRegion) => {
+    regions.forEach((region) => {
       region.countries?.forEach((c) => {
-        regionMapCache.regionMap.set(c.iso_2 ?? '', region);
+        regionMapCache.regionMap.set(c.iso2 ?? '', region);
       });
     });
 
@@ -64,7 +69,7 @@ async function getRegionMap(cacheId: string) {
 
 async function getCountryCode(
   request: NextRequest,
-  regionMap: Map<string, HttpTypes.StoreRegion | number>
+  regionMap: Map<string, BffRegion>
 ) {
   try {
     let countryCode;

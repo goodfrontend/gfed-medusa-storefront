@@ -7,7 +7,7 @@ import {
   RichTextBlock,
   Span,
   TextBlock,
-} from '@gfed-medusa/sf-lib-common/types/graphql';
+} from '@gfed-medusa/sf-lib-common/types/cms';
 import { Back } from '@gfed-medusa/sf-lib-ui/icons/back';
 import { Bancontact } from '@gfed-medusa/sf-lib-ui/icons/bancontact';
 import { ChevronDown } from '@gfed-medusa/sf-lib-ui/icons/chevron-down';

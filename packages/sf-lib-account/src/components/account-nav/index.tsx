@@ -28,10 +28,14 @@ const AccountNav = ({ customer }: { customer: Customer | null }) => {
   );
 
   const handleLogout = async () => {
-    const { data } = await logout();
+    try {
+      const { data } = await logout();
 
-    if (data?.logout?.success) {
-      await postSignout(countryCode);
+      if (data?.logout) {
+        await postSignout(countryCode);
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
     }
   };
 

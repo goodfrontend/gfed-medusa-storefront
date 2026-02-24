@@ -1,8 +1,8 @@
+import type { RichTextBlock } from '@gfed-medusa/sf-lib-common/types/cms';
 import type {
   Collection,
   Footer as FooterType,
   ProductCategory,
-  RichTextBlock,
 } from '@gfed-medusa/sf-lib-common/types/graphql';
 import { Text, clx } from '@medusajs/ui';
 

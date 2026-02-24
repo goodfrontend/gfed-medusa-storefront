@@ -4,7 +4,6 @@ import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
-import { sdk } from '@gfed-medusa/sf-lib-common/lib/config/medusa';
 import type { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import {
   removeAuthTokenAction,
@@ -27,18 +26,135 @@ import {
   TransferCartMutation,
   TransferCartMutationVariables,
 } from '@gfed-medusa/sf-lib-common/types/graphql';
-import { HttpTypes } from '@medusajs/types';
 
 import { GET_CUSTOMER_QUERY } from '@/lib/gql/queries/customer';
 import {
   Customer,
   GetCustomerQuery,
   GetCustomerQueryVariables,
-  LoginMutation,
-  LoginMutationVariables,
 } from '@/types/graphql';
 
-import { LOGIN_MUTATION } from '../gql/mutations/customer';
+import {
+  ADD_CUSTOMER_ADDRESS_MUTATION,
+  DELETE_CUSTOMER_ADDRESS_MUTATION,
+  LOGOUT_MUTATION,
+  REGISTER_MUTATION,
+  UPDATE_CUSTOMER_ADDRESS_MUTATION,
+  UPDATE_CUSTOMER_MUTATION,
+} from '../gql/mutations/customer';
+
+interface RegisterInput {
+  email: string;
+  password: string;
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+}
+
+interface RegisterMutation {
+  register: {
+    token: string;
+    customer: {
+      id: string;
+      email: string;
+      firstName?: string;
+      lastName?: string;
+      phone?: string;
+    };
+  };
+}
+
+interface RegisterMutationVariables {
+  input: RegisterInput;
+}
+
+interface UpdateCustomerInput {
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+}
+
+interface UpdateCustomerMutation {
+  updateCustomer: {
+    id: string;
+    email: string;
+    firstName?: string;
+    lastName?: string;
+    phone?: string;
+  };
+}
+
+interface UpdateCustomerMutationVariables {
+  input: UpdateCustomerInput;
+}
+
+interface AddCustomerAddressInput {
+  firstName?: string;
+  lastName?: string;
+  company?: string;
+  address1?: string;
+  address2?: string;
+  city?: string;
+  province?: string;
+  countryCode?: string;
+  postalCode?: string;
+  phone?: string;
+  isDefaultBilling?: boolean;
+  isDefaultShipping?: boolean;
+}
+
+interface AddCustomerAddressMutation {
+  addCustomerAddress: {
+    id: string;
+    email: string;
+    firstName?: string;
+    lastName?: string;
+    phone?: string;
+  };
+}
+
+interface AddCustomerAddressMutationVariables {
+  input: AddCustomerAddressInput;
+}
+
+interface UpdateCustomerAddressInput {
+  firstName?: string;
+  lastName?: string;
+  company?: string;
+  address1?: string;
+  address2?: string;
+  city?: string;
+  province?: string;
+  countryCode?: string;
+  postalCode?: string;
+  phone?: string;
+}
+
+interface UpdateCustomerAddressMutation {
+  updateCustomerAddress: {
+    id: string;
+    email: string;
+    firstName?: string;
+    lastName?: string;
+    phone?: string;
+  };
+}
+
+interface UpdateCustomerAddressMutationVariables {
+  id: string;
+  input: UpdateCustomerAddressInput;
+}
+
+interface DeleteCustomerAddressMutation {
+  deleteCustomerAddress: {
+    id: string;
+    deleted: boolean;
+  };
+}
+
+interface DeleteCustomerAddressMutationVariables {
+  id: string;
+}
 
 // TODO(fcasibu): instances of using the medusa sdk should be refactored to call BFF instead
 // BFF should include these logic
@@ -67,18 +183,37 @@ export const retrieveCustomer = async (
 };
 
 export const updateCustomer = async (
-  body: HttpTypes.StoreUpdateCustomer,
+  body: { first_name?: string; last_name?: string; phone?: string },
   ctx: StorefrontContext
 ) => {
-  const updateRes = await sdk.store.customer
-    .update(body, {})
-    .then(({ customer }) => customer)
-    .catch(medusaError);
+  const cookieHeader = ctx.cookieHeader || (await cookies()).toString();
+  const apolloClient = createServerApolloClient(cookieHeader);
 
-  const cacheTag = getCacheTag('customers', ctx);
-  revalidateTag(cacheTag);
+  try {
+    const result = await graphqlMutation<
+      UpdateCustomerMutation,
+      UpdateCustomerMutationVariables
+    >(
+      {
+        mutation: UPDATE_CUSTOMER_MUTATION,
+        variables: {
+          input: {
+            firstName: body.first_name,
+            lastName: body.last_name,
+            phone: body.phone,
+          },
+        },
+      },
+      apolloClient
+    );
 
-  return updateRes;
+    const cacheTag = getCacheTag('customers', ctx);
+    revalidateTag(cacheTag);
+
+    return result?.updateCustomer ?? null;
+  } catch (err) {
+    medusaError(err);
+  }
 };
 
 export async function signup(_currentState: unknown, formData: FormData) {
@@ -91,34 +226,37 @@ export async function signup(_currentState: unknown, formData: FormData) {
   };
 
   try {
-    const token = await sdk.auth.register('customer', 'emailpass', {
-      email: customerForm.email,
-      password: password,
-    });
-
-    await setAuthTokenAction(token as string);
-
-    await sdk.store.customer.create(
-      customerForm,
-      {},
-      {
-        Authorization: `Bearer ${token}`,
-      }
-    );
-
     const ctx = await resolveNextContext();
     const cookieHeader = ctx.cookieHeader;
     const apolloClient = createServerApolloClient(cookieHeader);
-    const data = await graphqlMutation<LoginMutation, LoginMutationVariables>(
+
+    const data = await graphqlMutation<
+      RegisterMutation,
+      RegisterMutationVariables
+    >(
       {
-        mutation: LOGIN_MUTATION,
-        variables: { email: customerForm.email, password },
+        mutation: REGISTER_MUTATION,
+        variables: {
+          input: {
+            email: customerForm.email,
+            password: password,
+            firstName: customerForm.first_name,
+            lastName: customerForm.last_name,
+            phone: customerForm.phone,
+          },
+        },
       },
       apolloClient
     );
-    const loginToken = data?.login?.token ?? '';
 
-    await postLogin(loginToken);
+    const token = data?.register?.token ?? '';
+
+    if (!token) {
+      throw new Error('Registration failed: No token received');
+    }
+
+    await postLogin(token);
+
     return {
       message: 'Registration successful',
       status: 'success',
@@ -149,7 +287,20 @@ export async function postLogin(token: string | null | undefined) {
 
 export async function postSignout(countryCode: string) {
   const ctx = await resolveNextContext();
-  await sdk.auth.logout();
+
+  const cookieHeader = ctx.cookieHeader;
+  const apolloClient = createServerApolloClient(cookieHeader);
+
+  try {
+    await graphqlMutation(
+      {
+        mutation: LOGOUT_MUTATION,
+      },
+      apolloClient
+    );
+  } catch (error) {
+    console.error('Logout error:', error);
+  }
 
   await removeAuthTokenAction();
 
@@ -212,22 +363,37 @@ export async function addCustomerAddress(
     (currentState.isDefaultShipping as boolean) || false;
 
   const address = {
-    first_name: formData.get('first_name') as string,
-    last_name: formData.get('last_name') as string,
+    firstName: formData.get('first_name') as string,
+    lastName: formData.get('last_name') as string,
     company: formData.get('company') as string,
-    address_1: formData.get('address_1') as string,
-    address_2: formData.get('address_2') as string,
+    address1: formData.get('address_1') as string,
+    address2: formData.get('address_2') as string,
     city: formData.get('city') as string,
-    postal_code: formData.get('postal_code') as string,
     province: formData.get('province') as string,
-    country_code: formData.get('country_code') as string,
+    countryCode: formData.get('country_code') as string,
+    postalCode: formData.get('postal_code') as string,
     phone: formData.get('phone') as string,
-    is_default_billing: isDefaultBilling,
-    is_default_shipping: isDefaultShipping,
+    isDefaultBilling,
+    isDefaultShipping,
   };
 
   try {
-    await sdk.store.customer.createAddress(address, {});
+    const cookieHeader = ctx.cookieHeader || (await cookies()).toString();
+    const apolloClient = createServerApolloClient(cookieHeader);
+
+    await graphqlMutation<
+      AddCustomerAddressMutation,
+      AddCustomerAddressMutationVariables
+    >(
+      {
+        mutation: ADD_CUSTOMER_ADDRESS_MUTATION,
+        variables: {
+          input: address,
+        },
+      },
+      apolloClient
+    );
+
     const customerCacheTag = getCacheTag('customers', ctx);
     revalidateTag(customerCacheTag);
     return { isDefaultShipping, success: true, error: null };
@@ -243,16 +409,37 @@ export async function addCustomerAddress(
 export async function deleteCustomerAddress(addressId: string) {
   const ctx = await resolveNextContext();
 
-  await sdk.store.customer
-    .deleteAddress(addressId)
-    .then(async () => {
-      const customerCacheTag = getCacheTag('customers', ctx);
-      revalidateTag(customerCacheTag);
-      return { success: true, error: null };
-    })
-    .catch((err) => {
-      return { success: false, error: err.toString() };
-    });
+  console.log('Deleting address with id:', addressId);
+
+  try {
+    const cookieHeader = ctx.cookieHeader || (await cookies()).toString();
+    const apolloClient = createServerApolloClient(cookieHeader);
+
+    await graphqlMutation<
+      DeleteCustomerAddressMutation,
+      DeleteCustomerAddressMutationVariables
+    >(
+      {
+        mutation: DELETE_CUSTOMER_ADDRESS_MUTATION,
+        variables: {
+          id: addressId,
+        },
+      },
+      apolloClient
+    );
+
+    console.log('Address deleted successfully');
+
+    const customerCacheTag = getCacheTag('customers', ctx);
+    revalidateTag(customerCacheTag);
+    return { success: true, error: null };
+  } catch (err) {
+    console.error('Delete address error:', err);
+    return {
+      success: false,
+      error: err instanceof Error ? err.toString() : String(err),
+    };
+  }
 }
 
 export async function updateCustomerAddress(
@@ -271,17 +458,17 @@ export async function updateCustomerAddress(
     };
   }
 
-  const address = {
-    first_name: formData.get('first_name') as string,
-    last_name: formData.get('last_name') as string,
+  const address: UpdateCustomerAddressInput = {
+    firstName: formData.get('first_name') as string,
+    lastName: formData.get('last_name') as string,
     company: formData.get('company') as string,
-    address_1: formData.get('address_1') as string,
-    address_2: formData.get('address_2') as string,
+    address1: formData.get('address_1') as string,
+    address2: formData.get('address_2') as string,
     city: formData.get('city') as string,
-    postal_code: formData.get('postal_code') as string,
+    postalCode: formData.get('postal_code') as string,
     province: formData.get('province') as string,
-    country_code: formData.get('country_code') as string,
-  } as HttpTypes.StoreUpdateCustomerAddress;
+    countryCode: formData.get('country_code') as string,
+  };
 
   const phone = formData.get('phone') as string;
 
@@ -290,11 +477,32 @@ export async function updateCustomerAddress(
   }
 
   try {
-    await sdk.store.customer.updateAddress(addressId, address, {});
+    const cookieHeader = ctx.cookieHeader || (await cookies()).toString();
+    const apolloClient = createServerApolloClient(cookieHeader);
+
+    console.log('Updating address:', addressId, address);
+
+    await graphqlMutation<
+      UpdateCustomerAddressMutation,
+      UpdateCustomerAddressMutationVariables
+    >(
+      {
+        mutation: UPDATE_CUSTOMER_ADDRESS_MUTATION,
+        variables: {
+          id: addressId,
+          input: address,
+        },
+      },
+      apolloClient
+    );
+
+    console.log('Address updated successfully');
+
     const customerCacheTag = getCacheTag('customers', ctx);
     revalidateTag(customerCacheTag);
     return { addressId, success: true, error: null };
   } catch (err: unknown) {
+    console.error('Update address error:', err);
     return {
       addressId,
       success: false,

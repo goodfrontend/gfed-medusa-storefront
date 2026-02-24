@@ -29,8 +29,10 @@ const Login = ({ setCurrentView }: Props) => {
     try {
       const { data } = await login({
         variables: {
-          email,
-          password,
+          input: {
+            email,
+            password,
+          },
         },
       });
 
