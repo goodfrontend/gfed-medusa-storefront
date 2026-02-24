@@ -223,7 +223,7 @@ async function injectHorizontalComponents(
         try {
           el.setInnerContent(shadowContent, { html: true });
         } catch (e) {
-          console.error(`Failed to inject ${config.elementTag}:`, e);
+          console.error('Failed to inject:', config.elementTag, e);
         }
       },
     });
