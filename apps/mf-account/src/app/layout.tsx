@@ -26,25 +26,6 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
             </StorefrontProvider>
           </ApolloClientProvider>
         </main>
-        <div
-          aria-hidden="true"
-          style={{
-            position: 'fixed',
-            right: '8px',
-            bottom: '8px',
-            zIndex: 2147483647,
-            fontSize: '10px',
-            lineHeight: '12px',
-            padding: '2px 6px',
-            border: '1px solid rgba(0, 0, 0, 0.2)',
-            borderRadius: '4px',
-            background: 'rgba(255, 255, 255, 0.85)',
-            color: 'rgba(0, 0, 0, 0.7)',
-            pointerEvents: 'none',
-          }}
-        >
-          account deploy check 2026-02-25
-        </div>
       </body>
     </html>
   );
