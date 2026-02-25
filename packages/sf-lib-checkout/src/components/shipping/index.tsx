@@ -11,12 +11,11 @@ import { Divider } from '@gfed-medusa/sf-lib-ui/components/divider';
 import { Radio as MedusaRadio } from '@gfed-medusa/sf-lib-ui/components/radio';
 import { Radio, RadioGroup } from '@headlessui/react';
 import { CheckCircleSolid, Loader } from '@medusajs/icons';
-import { HttpTypes } from '@medusajs/types';
 import { Button, Heading, Text, clx } from '@medusajs/ui';
 
 import { setShippingMethod } from '@/lib/data/cart';
 import { calculatePriceForShippingOption } from '@/lib/data/fulfillment';
-import { Cart } from '@/lib/gql/generated-types/graphql';
+import { Cart, ShippingOption } from '@/lib/gql/generated-types/graphql';
 
 /* eslint-disable react/prop-types */
 
@@ -25,7 +24,7 @@ const PICKUP_OPTION_OFF = '__PICKUP_OFF';
 
 type ShippingProps = {
   cart: Cart;
-  availableShippingMethods: HttpTypes.StoreCartShippingOption[] | null;
+  availableShippingMethods: ShippingOption[] | null;
 };
 
 const Shipping: React.FC<ShippingProps> = ({
@@ -54,11 +53,11 @@ const Shipping: React.FC<ShippingProps> = ({
   const ctx = useStorefrontContext();
 
   const _shippingMethods = availableShippingMethods?.filter(
-    (sm) => sm.service_zone_id
+    (sm) => sm.serviceZoneId
   );
 
   const _pickupMethods = availableShippingMethods?.filter(
-    (sm) => sm.service_zone_id && sm.service_zone_id.includes('pickup')
+    (sm) => sm.serviceZoneId && sm.serviceZoneId.includes('pickup')
   );
 
   const hasPickupOptions = !!_pickupMethods?.length;
@@ -68,7 +67,7 @@ const Shipping: React.FC<ShippingProps> = ({
 
     if (_shippingMethods?.length) {
       const promises = _shippingMethods
-        .filter((sm) => sm.price_type === 'calculated')
+        .filter((sm) => sm.priceType === 'calculated')
         .map((sm) => calculatePriceForShippingOption(sm.id, cart.id, {}, ctx));
 
       if (promises.length) {
@@ -184,7 +183,7 @@ const Shipping: React.FC<ShippingProps> = ({
                     value={showPickupOptions}
                     onChange={(value) => {
                       const id = _pickupMethods.find(
-                        (option) => !option.insufficient_inventory
+                        (option) => !option.insufficientInventory
                       )?.id;
 
                       if (id) {
@@ -223,7 +222,7 @@ const Shipping: React.FC<ShippingProps> = ({
                 >
                   {_shippingMethods?.map((option) => {
                     const isDisabled =
-                      option.price_type === 'calculated' &&
+                      option.priceType === 'calculated' &&
                       !isLoadingPrices &&
                       typeof calculatedPricesMap[option.id] !== 'number';
 
@@ -252,7 +251,7 @@ const Shipping: React.FC<ShippingProps> = ({
                           </span>
                         </div>
                         <span className="text-ui-fg-base justify-self-end">
-                          {option.price_type === 'flat' ? (
+                          {option.priceType === 'flat_rate' ? (
                             convertToLocale({
                               amount: option.amount!,
                               currency_code: cart?.currencyCode,
@@ -297,7 +296,7 @@ const Shipping: React.FC<ShippingProps> = ({
                         <Radio
                           key={option.id}
                           value={option.id}
-                          disabled={option.insufficient_inventory}
+                          disabled={option.insufficientInventory ?? undefined}
                           data-testid="delivery-option-radio"
                           className={clx(
                             'text-small-regular rounded-rounded hover:shadow-borders-interactive-with-active mb-2 flex cursor-pointer items-center justify-between border px-8 py-4',
@@ -305,7 +304,7 @@ const Shipping: React.FC<ShippingProps> = ({
                               'border-ui-border-interactive':
                                 option.id === shippingMethodId,
                               'hover:shadow-brders-none cursor-not-allowed':
-                                option.insufficient_inventory,
+                                option.insufficientInventory,
                             }
                           )}
                         >

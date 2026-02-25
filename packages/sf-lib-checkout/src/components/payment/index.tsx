@@ -17,7 +17,6 @@ import PaymentContainer, {
 import { isStripe as isStripeFunc, paymentInfoMap } from '@/lib/constants';
 import { initiatePaymentSession } from '@/lib/data/cart';
 import { Cart } from '@/lib/gql/generated-types/graphql';
-import { camelToSnakeCase } from '@/lib/util/normalizeFunctions';
 
 const Payment = ({
   cart,
@@ -51,13 +50,7 @@ const Payment = ({
     setError(null);
     setSelectedPaymentMethod(method);
     if (isStripeFunc(method)) {
-      await initiatePaymentSession(
-        camelToSnakeCase(cart),
-        {
-          provider_id: method,
-        },
-        ctx
-      );
+      await initiatePaymentSession(cart.id, method, ctx);
     }
   };
 
@@ -92,13 +85,7 @@ const Payment = ({
         activeSession?.providerId === selectedPaymentMethod;
 
       if (!checkActiveSession) {
-        await initiatePaymentSession(
-          camelToSnakeCase(cart),
-          {
-            provider_id: selectedPaymentMethod,
-          },
-          ctx
-        );
+        await initiatePaymentSession(cart.id, selectedPaymentMethod, ctx);
       }
 
       if (!shouldInputCard) {
