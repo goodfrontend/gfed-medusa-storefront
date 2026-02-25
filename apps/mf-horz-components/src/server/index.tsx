@@ -79,7 +79,7 @@ app.get('/api/:name', async (c) => {
     const data = await component.getData(ctx);
     return c.json(data);
   } catch (error) {
-    console.error(`Error fetching data for component '${name}':`, error);
+    console.error('Error fetching data for component:', name, error);
     return c.json({ error: 'Failed to fetch component data' }, 500);
   }
 });
@@ -99,7 +99,7 @@ app.get('/fragment/:name', async (c) => {
     const html = renderToString(<Component {...data} />);
     return c.html(html);
   } catch (error) {
-    console.error(`Error rendering component '${name}':`, error);
+    console.error('Error rendering component:', name, error);
     return c.html(`<!-- Error rendering component '${name}' -->`, 500);
   }
 });
