@@ -149,6 +149,9 @@ function Footer({
                 value={footerContent.poweredByCta.text as RichTextBlock[]}
               />
             )}
+            <Text className="txt-compact-small opacity-60">
+              horz deploy check 2026-02-25
+            </Text>
           </div>
         </div>
       </div>
