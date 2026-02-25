@@ -8,9 +8,9 @@ projects:
         services:
           - type: web
             runtime: image
-            plan: free
+            plan: starter
             name: sf-home-prod
-            region: oregon
+            region: frankfurt
             autoDeployTrigger: off
             image:
               url: http://ghcr.io/goodfrontend/gfed-medusa-storefront/sf-home:latest
@@ -19,9 +19,9 @@ projects:
 
           - type: web
             runtime: image
-            plan: free
+            plan: starter
             name: sf-account-prod
-            region: oregon
+            region: frankfurt
             autoDeployTrigger: off
             image:
               url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-account:latest
@@ -30,9 +30,9 @@ projects:
 
           - type: web
             runtime: image
-            plan: free
+            plan: starter
             name: sf-products-prod
-            region: oregon
+            region: frankfurt
             autoDeployTrigger: off
             image:
               url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-products:latest
@@ -41,9 +41,9 @@ projects:
 
           - type: web
             runtime: image
-            plan: free
+            plan: starter
             name: sf-checkout-prod
-            region: oregon
+            region: frankfurt
             autoDeployTrigger: off
             image:
               url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-checkout:latest
@@ -52,9 +52,9 @@ projects:
 
           - type: web
             runtime: image
-            plan: free
+            plan: starter
             name: sf-horz-prod
-            region: oregon
+            region: frankfurt
             autoDeployTrigger: off
             image:
               url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-horz:latest
