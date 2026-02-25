@@ -11,7 +11,6 @@ import { retrieveCustomer } from '@gfed-medusa/sf-lib-common/lib/data/customer';
 import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
 import { getBaseURL } from '@gfed-medusa/sf-lib-common/lib/utils/env';
 import { Cart } from '@gfed-medusa/sf-lib-common/types/graphql';
-import { StoreCartShippingOption } from '@medusajs/types';
 import { Toaster } from '@medusajs/ui';
 
 export const metadata: Metadata = {
@@ -28,13 +27,7 @@ export default async function PageLayout({
   const ctx = await resolveNextContext();
   const customer = await retrieveCustomer(ctx);
   const cart = await retrieveCart(ctx);
-  let shippingOptions: StoreCartShippingOption[] = [];
-
-  if (cart) {
-    const { shipping_options } = await listCartOptions(ctx);
-
-    shippingOptions = shipping_options;
-  }
+  let shippingOptions = await (cart ? listCartOptions(ctx) : Promise.resolve(null));
 
   return (
     <>

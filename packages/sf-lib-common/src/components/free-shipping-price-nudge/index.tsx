@@ -3,22 +3,17 @@
 import { useState } from 'react';
 
 import { CheckCircleSolid, XMark } from '@medusajs/icons';
-import {
-  HttpTypes,
-  StoreCartShippingOption,
-  StorePrice,
-} from '@medusajs/types';
 import { Button, clx } from '@medusajs/ui';
 
 import { convertToLocale } from '@/lib/utils/money';
-import { Cart } from '@/types/graphql';
+import { Cart, ShippingOption, ShippingOptionPrice } from '@/types/graphql';
 import { StoreFreeShippingPrice } from '@/types/prices';
 
 import { LocalizedClientLink } from '../localized-client-link';
 
-const computeTarget = (cart: Cart, price: HttpTypes.StorePrice) => {
-  const priceRule = (price.price_rules || []).find(
-    (pr) => pr.attribute === 'item_total'
+const computeTarget = (cart: Cart, price: ShippingOptionPrice) => {
+  const priceRule = (price.priceRules || []).find(
+    (pr) => pr?.attribute === 'item_total'
   )!;
 
   const currentAmount = cart.itemTotal;
@@ -79,7 +74,7 @@ function ShippingPriceNudge({
 }: {
   variant?: 'popup' | 'inline';
   cart: Cart;
-  shippingOptions: StoreCartShippingOption[];
+  shippingOptions: ShippingOption[];
 }) {
   if (!cart || !shippingOptions?.length) {
     return;
@@ -88,7 +83,7 @@ function ShippingPriceNudge({
   // Check if any shipping options have a conditional price based on item_total
   const freeShippingPrice = shippingOptions
     .map((shippingOption) => {
-      const calculatedPrice = shippingOption.calculated_price;
+      const calculatedPrice = shippingOption.calculatedPrice;
 
       if (!calculatedPrice) {
         return;
@@ -97,11 +92,13 @@ function ShippingPriceNudge({
       // Get all prices that are:
       // 1. Currency code is same as the cart's
       // 2. Have a rule that is set on item_total
-      const validCurrencyPrices = shippingOption.prices.filter(
-        (price) =>
-          price.currency_code === cart.currencyCode &&
-          (price.price_rules || []).some(
-            (priceRule) => priceRule.attribute === 'item_total'
+      const validCurrencyPrices = (shippingOption.prices ?? []).filter(
+        (price): price is NonNullable<typeof price> =>
+          price !== null &&
+          price !== undefined &&
+          price.currencyCode === cart.currencyCode &&
+          (price.priceRules || []).some(
+            (priceRule) => priceRule?.attribute === 'item_total'
           )
       );
 
@@ -135,11 +132,7 @@ function FreeShippingInline({
   price,
 }: {
   cart: Cart;
-  price: StorePrice & {
-    target_reached: boolean;
-    target_remaining: number;
-    remaining_percentage: number;
-  };
+  price: StoreFreeShippingPrice;
 }) {
   return (
     <div className="rounded-lg border bg-neutral-100 p-2">

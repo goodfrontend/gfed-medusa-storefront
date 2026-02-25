@@ -100,6 +100,11 @@ export enum CacheControlScope {
   Public = 'PUBLIC',
 }
 
+export type CalculatedShippingOptionPrice = {
+  __typename?: 'CalculatedShippingOptionPrice';
+  amount?: Maybe<Scalars['Int']['output']>;
+};
+
 export type Cart = {
   __typename?: 'Cart';
   billingAddress?: Maybe<Address>;
@@ -442,6 +447,13 @@ export type Price = {
   priceType?: Maybe<Scalars['String']['output']>;
 };
 
+export type PriceRule = {
+  __typename?: 'PriceRule';
+  attribute: Scalars['String']['output'];
+  operator: Scalars['String']['output'];
+  value: Scalars['String']['output'];
+};
+
 export type Product = {
   __typename?: 'Product';
   collection?: Maybe<Collection>;
@@ -698,12 +710,21 @@ export type ShippingMethod = {
 export type ShippingOption = {
   __typename?: 'ShippingOption';
   amount?: Maybe<Scalars['Int']['output']>;
+  calculatedPrice?: Maybe<CalculatedShippingOptionPrice>;
   id: Scalars['ID']['output'];
   insufficientInventory?: Maybe<Scalars['Boolean']['output']>;
   name: Scalars['String']['output'];
   priceType: Scalars['String']['output'];
+  prices?: Maybe<Array<Maybe<ShippingOptionPrice>>>;
   serviceZone?: Maybe<ServiceZone>;
   serviceZoneId?: Maybe<Scalars['String']['output']>;
+};
+
+export type ShippingOptionPrice = {
+  __typename?: 'ShippingOptionPrice';
+  amount?: Maybe<Scalars['Int']['output']>;
+  currencyCode?: Maybe<Scalars['String']['output']>;
+  priceRules?: Maybe<Array<Maybe<PriceRule>>>;
 };
 
 export type SocialLink = {
