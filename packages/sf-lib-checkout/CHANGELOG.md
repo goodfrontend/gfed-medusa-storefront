@@ -1,5 +1,13 @@
 # @gfed-medusa/sf-lib-checkout
 
+## 2.3.1
+
+### Patch Changes
+
+- e325359: use region query from bff
+- Updated dependencies [e325359]
+  - @gfed-medusa/sf-lib-common@2.5.0
+
 ## 2.3.0
 
 ### Minor Changes
