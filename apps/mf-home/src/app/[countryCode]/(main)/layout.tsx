@@ -33,7 +33,7 @@ export default async function PageLayout(props: { children: React.ReactNode }) {
         <ShippingPriceNudge
           variant="popup"
           cart={cart}
-          shippingOptions={shippingOptions}
+          shippingOptions={shippingOptions ?? []}
         />
       )}
       {props.children}

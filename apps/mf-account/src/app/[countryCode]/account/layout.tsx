@@ -41,7 +41,7 @@ export default async function PageLayout({
         <ShippingPriceNudge
           variant="popup"
           cart={cart}
-          shippingOptions={shippingOptions}
+          shippingOptions={shippingOptions ?? []}
         />
       )}
       <AccountLayout customer={customer}>
