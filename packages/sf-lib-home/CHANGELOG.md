@@ -1,5 +1,12 @@
 # @gfed-medusa/sf-lib-home
 
+## 1.2.2
+
+### Patch Changes
+
+- Updated dependencies [4a735aa]
+  - @gfed-medusa/sf-lib-common@3.0.0
+
 ## 1.2.1
 
 ### Patch Changes

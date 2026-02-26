@@ -1,5 +1,12 @@
 # @gfed-medusa/mf-horz-components
 
+## 1.3.1
+
+### Patch Changes
+
+- Updated dependencies [4a735aa]
+  - @gfed-medusa/sf-lib-common@3.0.0
+
 ## 1.3.0
 
 ### Minor Changes
