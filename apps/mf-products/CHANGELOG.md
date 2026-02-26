@@ -1,5 +1,13 @@
 # @gfed-medusa/mf-products
 
+## 1.3.1
+
+### Patch Changes
+
+- Updated dependencies [4a735aa]
+  - @gfed-medusa/sf-lib-common@3.0.0
+  - @gfed-medusa/sf-lib-products@1.3.3
+
 ## 1.3.0
 
 ### Minor Changes

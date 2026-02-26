@@ -1,5 +1,16 @@
 # @gfed-medusa/sf-lib-account
 
+## 2.0.0
+
+### Major Changes
+
+- 4a735aa: migrate payment, shipping, and orders queries to bff
+
+### Patch Changes
+
+- Updated dependencies [4a735aa]
+  - @gfed-medusa/sf-lib-common@3.0.0
+
 ## 1.3.1
 
 ### Patch Changes

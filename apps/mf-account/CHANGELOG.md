@@ -1,5 +1,19 @@
 # @gfed-medusa/mf-account
 
+## 1.4.0
+
+### Minor Changes
+
+- 4a735aa: migrate payment, shipping, and orders queries to bff
+
+### Patch Changes
+
+- Updated dependencies [4a735aa]
+  - @gfed-medusa/sf-lib-checkout@3.0.0
+  - @gfed-medusa/sf-lib-common@3.0.0
+  - @gfed-medusa/sf-lib-account@2.0.0
+  - @gfed-medusa/sf-lib-home@1.2.2
+
 ## 1.3.0
 
 ### Minor Changes
