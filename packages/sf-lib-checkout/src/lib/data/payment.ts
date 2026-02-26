@@ -1,34 +1,37 @@
 'use server';
 
-import { sdk } from '@gfed-medusa/sf-lib-common/lib/config/medusa';
 import { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
-import { getCacheOptions } from '@gfed-medusa/sf-lib-common/lib/data/cookies-utils';
-import { HttpTypes } from '@medusajs/types';
+
+import {
+  createServerApolloClient,
+  graphqlFetch,
+} from '@/lib/gql/apollo-client';
+import {
+  GetPaymentProvidersQuery,
+  GetPaymentProvidersQueryVariables,
+  PaymentProviders,
+} from '@/lib/gql/generated-types/graphql';
+import { GET_PAYMENT_PROVIDERS_QUERY } from '@/lib/gql/queries/payment';
 
 export const listCartPaymentMethods = async (
   regionId: string,
   ctx: StorefrontContext
-) => {
-  const next = {
-    ...getCacheOptions('payment_providers', ctx),
-  };
-
-  return sdk.client
-    .fetch<HttpTypes.StorePaymentProviderListResponse>(
-      `/store/payment-providers`,
-      {
-        method: 'GET',
-        query: { region_id: regionId },
-        next,
-        cache: 'force-cache',
-      }
-    )
-    .then(({ payment_providers }) =>
-      payment_providers.sort((a, b) => {
-        return a.id > b.id ? 1 : -1;
-      })
-    )
-    .catch(() => {
-      return null;
-    });
+): Promise<PaymentProviders[] | null> => {
+  const apolloClient = createServerApolloClient(ctx.cookieHeader ?? '');
+  try {
+    const data = await graphqlFetch<
+      GetPaymentProvidersQuery,
+      GetPaymentProvidersQueryVariables
+    >(
+      { query: GET_PAYMENT_PROVIDERS_QUERY, variables: { regionId } },
+      apolloClient
+    );
+    return (
+      data?.paymentProviders?.sort((a, b) =>
+        (a?.id ?? '').localeCompare(b?.id ?? '')
+      ) ?? null
+    );
+  } catch {
+    return null;
+  }
 };

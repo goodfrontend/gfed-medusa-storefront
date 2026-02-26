@@ -1,4 +1,4 @@
-import { StorePrice } from '@medusajs/types';
+import type { ShippingOptionPrice } from './graphql';
 
 export type VariantPrice = {
   calculated_price_number: number;
@@ -10,7 +10,10 @@ export type VariantPrice = {
   percentage_diff: string;
 };
 
-export type StoreFreeShippingPrice = StorePrice & {
+export type StoreFreeShippingPrice = ShippingOptionPrice & {
+  shipping_option_id: string;
+  current_amount: number;
+  target_amount: number;
   target_reached: boolean;
   target_remaining: number;
   remaining_percentage: number;

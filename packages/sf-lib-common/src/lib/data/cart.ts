@@ -1,15 +1,15 @@
-import { HttpTypes } from '@medusajs/types';
-
 import {
   Cart,
   DeleteLineItemMutation,
   DeleteLineItemMutationVariables,
   GetCartQuery,
   GetCartQueryVariables,
+  GetShippingOptionsQuery,
+  GetShippingOptionsQueryVariables,
+  ShippingOption,
   UpdateCartMutation,
   UpdateCartMutationVariables,
 } from '../../types/graphql';
-import { sdk } from '../config/medusa';
 import {
   createServerApolloClient,
   graphqlFetch,
@@ -20,10 +20,11 @@ import {
   UPDATE_CART_MUTATION,
 } from '../gql/mutations/cart';
 import { GET_CART_QUERY } from '../gql/queries/cart';
+import { GET_SHIPPING_OPTIONS_QUERY } from '../gql/queries/shipping';
 import { mutateCart } from '../hooks/use-cart';
 import { medusaError } from '../utils/medusa-error';
 import type { StorefrontContext } from './context';
-import { getCacheOptions, getCacheTag, getCartId } from './cookies-utils';
+import { getCacheTag, getCartId } from './cookies-utils';
 
 export const retrieveCart = async (
   ctx: StorefrontContext
@@ -147,17 +148,24 @@ export const deleteLineItem = async (
   }
 };
 
-export async function listCartOptions(ctx: StorefrontContext) {
+export async function listCartOptions(
+  ctx: StorefrontContext
+): Promise<ShippingOption[] | null> {
   const cartId = getCartId(ctx);
-  const next = {
-    ...getCacheOptions('shippingOptions', ctx),
-  };
-
-  return await sdk.client.fetch<{
-    shipping_options: HttpTypes.StoreCartShippingOption[];
-  }>('/store/shipping-options', {
-    query: { cart_id: cartId },
-    next,
-    cache: 'force-cache',
-  });
+  if (!cartId) {
+    return null;
+  }
+  const apolloClient = createServerApolloClient(ctx.cookieHeader);
+  try {
+    const data = await graphqlFetch<
+      GetShippingOptionsQuery,
+      GetShippingOptionsQueryVariables
+    >(
+      { query: GET_SHIPPING_OPTIONS_QUERY, variables: { cartId } },
+      apolloClient
+    );
+    return (data?.shippingOptions?.filter(Boolean) as ShippingOption[]) ?? null;
+  } catch {
+    return null;
+  }
 }

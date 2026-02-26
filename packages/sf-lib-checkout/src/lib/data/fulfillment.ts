@@ -1,36 +1,39 @@
 'use server';
 
-import { sdk } from '@gfed-medusa/sf-lib-common/lib/config/medusa';
 import { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
-import { getCacheOptions } from '@gfed-medusa/sf-lib-common/lib/data/cookies-utils';
-import { HttpTypes } from '@medusajs/types';
+
+import {
+  createServerApolloClient,
+  graphqlFetch,
+  graphqlMutation,
+} from '@/lib/gql/apollo-client';
+import {
+  CalculateShippingOptionPriceMutation,
+  CalculateShippingOptionPriceMutationVariables,
+  GetShippingOptionsQuery,
+  GetShippingOptionsQueryVariables,
+  ShippingOption,
+} from '@/lib/gql/generated-types/graphql';
+import { CALCULATE_SHIPPING_OPTION_PRICE_MUTATION } from '@/lib/gql/mutations/fulfillment';
+import { GET_SHIPPING_OPTIONS_QUERY } from '@/lib/gql/queries/fulfillment';
 
 export const listCartShippingMethods = async (
   cartId: string,
   ctx: StorefrontContext
-) => {
-  const next = {
-    ...getCacheOptions('fulfillment', ctx),
-  };
-
-  return sdk.client
-    .fetch<HttpTypes.StoreShippingOptionListResponse>(
-      `/store/shipping-options`,
-      {
-        method: 'GET',
-        query: {
-          cart_id: cartId,
-          fields:
-            '+service_zone.fulfllment_set.type,*service_zone.fulfillment_set.location.address',
-        },
-        next,
-        cache: 'force-cache',
-      }
-    )
-    .then(({ shipping_options }) => shipping_options)
-    .catch(() => {
-      return null;
-    });
+): Promise<ShippingOption[] | null> => {
+  const apolloClient = createServerApolloClient(ctx.cookieHeader ?? '');
+  try {
+    const data = await graphqlFetch<
+      GetShippingOptionsQuery,
+      GetShippingOptionsQueryVariables
+    >(
+      { query: GET_SHIPPING_OPTIONS_QUERY, variables: { cartId } },
+      apolloClient
+    );
+    return (data?.shippingOptions?.filter(Boolean) as ShippingOption[]) ?? null;
+  } catch {
+    return null;
+  }
 };
 
 export const calculatePriceForShippingOption = async (
@@ -38,28 +41,21 @@ export const calculatePriceForShippingOption = async (
   cartId: string,
   data: Record<string, unknown> = {},
   ctx: StorefrontContext
-) => {
-  const next = {
-    ...getCacheOptions('fulfillment', ctx),
-  };
-
-  const body = { cart_id: cartId, data };
-
-  if (data) {
-    body.data = data;
-  }
-
-  return sdk.client
-    .fetch<{ shipping_option: HttpTypes.StoreCartShippingOption }>(
-      `/store/shipping-options/${optionId}/calculate`,
+): Promise<ShippingOption | null> => {
+  const apolloClient = createServerApolloClient(ctx.cookieHeader ?? '');
+  try {
+    const result = await graphqlMutation<
+      CalculateShippingOptionPriceMutation,
+      CalculateShippingOptionPriceMutationVariables
+    >(
       {
-        method: 'POST',
-        body,
-        next,
-      }
-    )
-    .then(({ shipping_option }) => shipping_option)
-    .catch((e) => {
-      return null;
-    });
+        mutation: CALCULATE_SHIPPING_OPTION_PRICE_MUTATION,
+        variables: { optionId, cartId, data },
+      },
+      apolloClient
+    );
+    return result?.calculateShippingOptionPrice ?? null;
+  } catch {
+    return null;
+  }
 };

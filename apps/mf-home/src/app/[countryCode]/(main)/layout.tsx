@@ -19,15 +19,7 @@ export default async function PageLayout(props: { children: React.ReactNode }) {
   const ctx = await resolveNextContext();
   const customer = await retrieveCustomer(ctx);
   const cart = await retrieveCart(ctx);
-  let shippingOptions: Awaited<
-    ReturnType<typeof listCartOptions>
-  >['shipping_options'] = [];
-
-  if (cart) {
-    const { shipping_options } = await listCartOptions(ctx);
-
-    shippingOptions = shipping_options;
-  }
+  let shippingOptions = await (cart ? listCartOptions(ctx) : Promise.resolve(null));
 
   return (
     <>
@@ -41,7 +33,7 @@ export default async function PageLayout(props: { children: React.ReactNode }) {
         <ShippingPriceNudge
           variant="popup"
           cart={cart}
-          shippingOptions={shippingOptions}
+          shippingOptions={shippingOptions ?? []}
         />
       )}
       {props.children}

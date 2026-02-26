@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default async function Orders() {
   const ctx = await resolveNextContext();
-  const orders = await listOrders(ctx, 10, 0, undefined);
+  const orders = await listOrders(ctx, 10, 0);
 
   if (!orders) {
     notFound();

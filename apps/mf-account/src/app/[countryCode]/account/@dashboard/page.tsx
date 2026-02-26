@@ -15,7 +15,7 @@ export default async function OverviewTemplate() {
   const ctx = await resolveNextContext();
   const customer = await retrieveCustomer(ctx);
   const orders =
-    (await listOrders(ctx, 10, 0, undefined).catch(() => null)) || null;
+    (await listOrders(ctx, 10, 0).catch(() => null)) || null;
 
   if (!customer) {
     notFound();

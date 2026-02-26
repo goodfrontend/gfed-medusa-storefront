@@ -3,21 +3,22 @@
 import { revalidateTag } from 'next/cache';
 import { redirect } from 'next/navigation';
 
-import { sdk } from '@gfed-medusa/sf-lib-common/lib/config/medusa';
 import { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import {
   removeCartIdAction,
   setCartIdAction,
 } from '@gfed-medusa/sf-lib-common/lib/data/cookies-actions';
 import {
-  getCacheOptions,
   getCacheTag,
   getCartId,
 } from '@gfed-medusa/sf-lib-common/lib/data/cookies-utils';
 import { medusaError } from '@gfed-medusa/sf-lib-common/lib/utils/medusa-error';
-import { HttpTypes } from '@medusajs/types';
 
-import { graphqlFetch, graphqlMutation } from '@/lib/gql/apollo-client';
+import {
+  createServerApolloClient,
+  graphqlFetch,
+  graphqlMutation,
+} from '@/lib/gql/apollo-client';
 import {
   AddShippingMethodMutation,
   AddShippingMethodMutationVariables,
@@ -34,6 +35,11 @@ import {
   DeleteLineItemMutationVariables,
   GetCartQuery,
   GetCartQueryVariables,
+  GetShippingOptionsQuery,
+  GetShippingOptionsQueryVariables,
+  InitiatePaymentSessionMutation,
+  InitiatePaymentSessionMutationVariables,
+  ShippingOption,
   UpdateCartMutation,
   UpdateCartMutationVariables,
   UpdateLineItemMutation,
@@ -49,7 +55,9 @@ import {
   UPDATE_CART_MUTATION,
   UPDATE_LINE_ITEM_MUTATION,
 } from '@/lib/gql/mutations/cart';
+import { INITIATE_PAYMENT_SESSION_MUTATION } from '@/lib/gql/mutations/payment';
 import { GET_CART_QUERY } from '@/lib/gql/queries/cart';
+import { GET_SHIPPING_OPTIONS_QUERY } from '@/lib/gql/queries/fulfillment';
 
 import { getRegion } from './regions';
 
@@ -361,18 +369,32 @@ export const setShippingMethod = async (
 };
 
 export async function initiatePaymentSession(
-  cart: HttpTypes.StoreCart,
-  data: HttpTypes.StoreInitializePaymentSession,
+  cartId: string,
+  providerId: string,
   ctx: StorefrontContext
-) {
-  return sdk.store.payment
-    .initiatePaymentSession(cart, data)
-    .then(async (resp) => {
+): Promise<InitiatePaymentSessionMutation['initiatePaymentSession'] | null> {
+  const apolloClient = createServerApolloClient(ctx.cookieHeader ?? '');
+  try {
+    const result = await graphqlMutation<
+      InitiatePaymentSessionMutation,
+      InitiatePaymentSessionMutationVariables
+    >(
+      {
+        mutation: INITIATE_PAYMENT_SESSION_MUTATION,
+        variables: { cartId, providerId },
+      },
+      apolloClient
+    );
+    const cart = result?.initiatePaymentSession ?? null;
+    if (cart) {
       const cartCacheTag = getCacheTag('carts', ctx);
       revalidateTag(cartCacheTag);
-      return resp;
-    })
-    .catch(medusaError);
+    }
+    return cart;
+  } catch (err) {
+    medusaError(err);
+    return null;
+  }
 }
 
 export const applyPromotions = async (
@@ -614,17 +636,24 @@ export async function updateRegion(
   redirect(`/${countryCode}${currentPath}`);
 }
 
-export async function listCartOptions(ctx: StorefrontContext) {
+export async function listCartOptions(
+  ctx: StorefrontContext
+): Promise<ShippingOption[] | null> {
   const cartId = getCartId(ctx);
-  const next = {
-    ...getCacheOptions('shippingOptions', ctx),
-  };
-
-  return await sdk.client.fetch<{
-    shipping_options: HttpTypes.StoreCartShippingOption[];
-  }>('/store/shipping-options', {
-    query: { cart_id: cartId },
-    next,
-    cache: 'force-cache',
-  });
+  if (!cartId) {
+    return null;
+  }
+  const apolloClient = createServerApolloClient(ctx.cookieHeader ?? '');
+  try {
+    const data = await graphqlFetch<
+      GetShippingOptionsQuery,
+      GetShippingOptionsQueryVariables
+    >(
+      { query: GET_SHIPPING_OPTIONS_QUERY, variables: { cartId } },
+      apolloClient
+    );
+    return (data?.shippingOptions?.filter(Boolean) as ShippingOption[]) ?? null;
+  } catch {
+    return null;
+  }
 }
