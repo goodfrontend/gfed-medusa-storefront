@@ -7,12 +7,7 @@ import { LineItemOptions } from '@gfed-medusa/sf-lib-common/components/line-item
 import { LineItemPrice } from '@gfed-medusa/sf-lib-common/components/line-item-price';
 import { convertToLocale } from '@gfed-medusa/sf-lib-common/lib/utils/money';
 import { Cart } from '@gfed-medusa/sf-lib-common/types/graphql';
-import {
-  Popover,
-  PopoverButton,
-  PopoverPanel,
-  Transition,
-} from '@headlessui/react';
+import { Popover, PopoverPanel, Transition } from '@headlessui/react';
 import { Button } from '@medusajs/ui';
 
 import { Link } from '../../link';
@@ -23,6 +18,8 @@ const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
     undefined
   );
   const [cartDropdownOpen, setCartDropdownOpen] = useState(false);
+  const isMounted = useRef(false);
+  const initialLoadComplete = useRef(false);
 
   const open = () => setCartDropdownOpen(true);
   const close = () => setCartDropdownOpen(false);
@@ -33,7 +30,7 @@ const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
     }, 0) || 0;
 
   const subtotal = cartState?.subtotal ?? 0;
-  const itemRef = useRef<number>(totalItems || 0);
+  const itemRef = useRef<number | undefined>(undefined);
 
   const timedOpen = () => {
     open();
@@ -51,7 +48,6 @@ const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
     open();
   };
 
-  // Clean up the timer when the component unmounts
   useEffect(() => {
     return () => {
       if (activeTimer) {
@@ -60,15 +56,25 @@ const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
     };
   }, [activeTimer]);
 
-  // open cart dropdown when modifying the cart items, but only if we're not on the cart page
   useEffect(() => {
+    if (!initialLoadComplete.current) {
+      initialLoadComplete.current = true;
+      itemRef.current = totalItems;
+      return;
+    }
+
     const pathname = window.location.pathname;
 
-    if (itemRef.current !== totalItems && !pathname.includes('/cart')) {
+    if (
+      itemRef.current !== undefined &&
+      itemRef.current !== totalItems &&
+      !pathname.includes('/cart')
+    ) {
       timedOpen();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [totalItems, itemRef.current]);
+
+    itemRef.current = totalItems;
+  }, [totalItems]);
 
   return (
     <div
@@ -77,13 +83,16 @@ const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
       onMouseLeave={close}
     >
       <Popover className="relative h-full">
-        <PopoverButton className="h-full">
+        <div
+          className="flex h-full cursor-pointer items-center"
+          onClick={openAndCancel}
+        >
           <Link
             className="hover:text-ui-fg-base"
             href="/cart"
             data-testid="nav-cart-link"
           >{`Cart (${totalItems})`}</Link>
-        </PopoverButton>
+        </div>
         <Transition
           show={cartDropdownOpen}
           as={Fragment}
@@ -96,7 +105,7 @@ const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
         >
           <PopoverPanel
             static
-            className="text-ui-fg-base small:block absolute right-0 top-[calc(100%+1px)] hidden w-[420px] border-x border-b border-gray-200 bg-white"
+            className="text-ui-fg-base small:block small:w-[420px] absolute right-0 top-[calc(100%+1px)] w-[calc(100vw-2rem)] border-x border-b border-gray-200 bg-white"
             data-testid="nav-cart-dropdown"
           >
             <div className="flex items-center justify-center p-4">

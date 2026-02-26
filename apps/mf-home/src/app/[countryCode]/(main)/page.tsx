@@ -14,8 +14,18 @@ export const metadata: Metadata = {
 export default async function Home() {
   const { collections } = await listCollections();
 
-  if (!collections) {
-    return null;
+  if (!collections || collections.length === 0) {
+    return (
+      <>
+        <Hero />
+        <div className="py-10">
+          <p>Manual Version Bump</p>
+          <p className="text-ui-fg-subtle text-center">
+            No products available at the moment.
+          </p>
+        </div>
+      </>
+    );
   }
 
   return (
