@@ -29,7 +29,7 @@ const SideMenu = ({ regions }: { regions: Region[] | null }) => {
               <div className="relative flex h-full">
                 <Popover.Button
                   data-testid="nav-menu-button"
-                  className="hover:text-ui-fg-base relative flex h-full items-center transition-all duration-200 ease-out focus:outline-none"
+                  className="hover:text-ui-fg-base relative flex h-full cursor-pointer items-center transition-all duration-200 ease-out focus:outline-none"
                 >
                   Menu
                 </Popover.Button>

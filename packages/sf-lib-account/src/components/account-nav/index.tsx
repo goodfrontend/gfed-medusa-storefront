@@ -41,7 +41,7 @@ const AccountNav = ({ customer }: { customer: Customer | null }) => {
 
   return (
     <div>
-      <div className="small:hidden" data-testid="mobile-account-nav">
+      <div>
         {route !== `/${countryCode}/account` ? (
           <LocalizedClientLink
             href="/account"

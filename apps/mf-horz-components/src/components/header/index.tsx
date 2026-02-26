@@ -34,7 +34,7 @@ function Header({ regions }: { regions: Region[] }) {
               <SearchModal />
               <div className="small:flex hidden h-full items-center gap-x-6">
                 <Link
-                  className="hover:text-ui-fg-base"
+                  className="hover:text-ui-fg-base cursor-pointer"
                   href="/account"
                   data-testid="nav-account-link"
                 >

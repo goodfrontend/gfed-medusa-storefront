@@ -278,11 +278,14 @@ export async function postLogin(token: string | null | undefined) {
     revalidateTag(customerCacheTag);
 
     try {
-      await transferCart(ctx);
+      const result = await transferCart(ctx);
+      return { success: true, cart: result };
     } catch (error: any) {
-      return error.toString();
+      console.error('Cart transfer failed:', error);
+      return { success: false, error: error.toString() };
     }
   }
+  return { success: false, error: 'No token provided' };
 }
 
 export async function postSignout(countryCode: string) {

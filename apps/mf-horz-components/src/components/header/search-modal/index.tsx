@@ -41,7 +41,7 @@ function SearchModal({ buttonClassName }: SearchModalProps) {
         <Button
           onClick={() => setIsOpen(true)}
           variant="transparent"
-          className="text-small-regular hover:text-ui-fg-base px-0 hover:bg-transparent focus:!bg-transparent"
+          className="text-small-regular hover:text-ui-fg-base cursor-pointer px-0 hover:bg-transparent focus:!bg-transparent"
           data-testid="search-button"
         >
           Search

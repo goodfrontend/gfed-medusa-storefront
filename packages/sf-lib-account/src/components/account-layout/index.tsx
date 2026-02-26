@@ -7,7 +7,7 @@ import { Customer } from '@/types/graphql';
 import { AccountNav } from '../account-nav';
 
 interface AccountLayoutProps {
-  customer: Customer | null;
+  customer?: Customer | null;
   children: React.ReactNode;
 }
 
