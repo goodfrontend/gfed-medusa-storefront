@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-common
 
+## 2.5.0
+
+### Minor Changes
+
+- e325359: use region query from bff
+
 ## 2.4.0
 
 ### Minor Changes

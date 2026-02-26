@@ -1,5 +1,13 @@
 # @gfed-medusa/sf-lib-products
 
+## 1.3.2
+
+### Patch Changes
+
+- e325359: use region query from bff
+- Updated dependencies [e325359]
+  - @gfed-medusa/sf-lib-common@2.5.0
+
 ## 1.3.1
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # @gfed-medusa/sf-lib-account
 
+## 1.3.1
+
+### Patch Changes
+
+- e325359: use region query from bff
+- e325359: use correct RegisterCustomerInput type in register mutation
+- Updated dependencies [e325359]
+  - @gfed-medusa/sf-lib-common@2.5.0
+
 ## 1.3.0
 
 ### Minor Changes
