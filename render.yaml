@@ -8,7 +8,7 @@ projects:
         services:
           - type: web
             runtime: image
-            plan: standard
+            plan: free
             name: sf-home-prod
             region: frankfurt
             autoDeployTrigger: off
@@ -19,7 +19,7 @@ projects:
 
           - type: web
             runtime: image
-            plan: standard
+            plan: free
             name: sf-account-prod
             region: frankfurt
             autoDeployTrigger: off
@@ -30,7 +30,7 @@ projects:
 
           - type: web
             runtime: image
-            plan: standard
+            plan: free
             name: sf-products-prod
             region: frankfurt
             autoDeployTrigger: off
@@ -41,7 +41,7 @@ projects:
 
           - type: web
             runtime: image
-            plan: standard
+            plan: free
             name: sf-checkout-prod
             region: frankfurt
             autoDeployTrigger: off
@@ -52,7 +52,7 @@ projects:
 
           - type: web
             runtime: image
-            plan: standard
+            plan: free
             name: sf-horz-prod
             region: frankfurt
             autoDeployTrigger: off
