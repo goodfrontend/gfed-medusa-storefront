@@ -272,7 +272,7 @@ importers:
         specifier: ^4.0.4
         version: 4.0.11(graphql-ws@6.0.6(graphql@16.12.0)(ws@8.18.3))(graphql@16.12.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(rxjs@7.8.2)
       '@gfed-medusa/sf-lib-common':
-        specifier: ^3.0.0
+        specifier: ^3.0.1
         version: link:../../packages/sf-lib-common
       '@gfed-medusa/sf-lib-home':
         specifier: ^1.2.2
@@ -369,7 +369,7 @@ importers:
   apps/mf-horz-components:
     dependencies:
       '@gfed-medusa/sf-lib-common':
-        specifier: ^3.0.0
+        specifier: ^3.0.1
         version: link:../../packages/sf-lib-common
       '@gfed-medusa/sf-lib-ui':
         specifier: ^1.2.1
@@ -793,7 +793,7 @@ importers:
         specifier: ^4.0.9
         version: 4.0.11(graphql-ws@6.0.6(graphql@16.12.0)(ws@8.18.3))(graphql@16.12.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(rxjs@7.8.2)
       '@gfed-medusa/sf-lib-common':
-        specifier: ^3.0.0
+        specifier: ^3.0.1
         version: link:../sf-lib-common
       '@gfed-medusa/sf-lib-ui':
         specifier: ^1.2.1
@@ -1256,7 +1256,7 @@ importers:
         specifier: ^4.0.9
         version: 4.0.11(graphql-ws@6.0.6(graphql@16.12.0)(ws@8.18.3))(graphql@16.12.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(rxjs@7.8.2)
       '@gfed-medusa/sf-lib-common':
-        specifier: ^3.0.0
+        specifier: ^3.0.1
         version: link:../sf-lib-common
       '@gfed-medusa/sf-lib-ui':
         specifier: ^1.2.1
