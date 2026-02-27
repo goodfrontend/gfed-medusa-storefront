@@ -1,9 +1,6 @@
 'use client';
 
-import { useState } from 'react';
-
-import { Login } from '@gfed-medusa/sf-lib-account/components/login';
-import { Register } from '@gfed-medusa/sf-lib-account/components/register';
+import { Button } from '@medusajs/ui';
 
 export enum LOGIN_VIEW {
   SIGN_IN = 'sign-in',
@@ -11,15 +8,17 @@ export enum LOGIN_VIEW {
 }
 
 const LoginTemplate = () => {
-  const [currentView, setCurrentView] = useState('sign-in');
+  const goToLogin = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_BFF_BASE_URL}/auth/login`;
+  };
 
   return (
     <div className="flex w-full justify-start px-8 py-8">
-      {currentView === 'sign-in' ? (
-        <Login setCurrentView={setCurrentView} />
-      ) : (
-        <Register setCurrentView={setCurrentView} />
-      )}
+      <div className="flex w-full max-w-sm flex-col items-center">
+        <Button onClick={goToLogin} type="button">
+          Register or Login to View Your Account
+        </Button>
+      </div>
     </div>
   );
 };

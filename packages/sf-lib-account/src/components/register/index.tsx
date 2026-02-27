@@ -15,6 +15,7 @@ type Props = {
   setCurrentView: (view: LOGIN_VIEW) => void;
 };
 
+// TODO: Delete this component or replace?
 const Register = ({ setCurrentView }: Props) => {
   const [state, formAction, isPending] = useActionState(signup, null);
 

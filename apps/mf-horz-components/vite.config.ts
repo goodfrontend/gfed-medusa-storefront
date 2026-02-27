@@ -27,6 +27,11 @@ export default defineConfig(({ mode }) => {
       'process.env.NEXT_PUBLIC_BASE_URL': JSON.stringify(
         env.NEXT_PUBLIC_BASE_URL || process.env.NEXT_PUBLIC_BASE_URL || ''
       ),
+      'process.env.NEXT_PUBLIC_BFF_BASE_URL': JSON.stringify(
+        env.NEXT_PUBLIC_BFF_BASE_URL ||
+          process.env.NEXT_PUBLIC_BFF_BASE_URL ||
+          ''
+      ),
     },
     build: {
       assetsDir: '',
