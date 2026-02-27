@@ -67,6 +67,38 @@ app.get('/api/cart', async (c) => {
   }
 });
 
+app.get('/api/customer', async (c) => {
+  const sessionId = getCookie(c, 'storefront.sid');
+
+  if (!sessionId) {
+    return c.json({ customer: null });
+  }
+
+  try {
+    const [{ createServerApolloClient, graphqlFetch }, { GET_CUSTOMER_QUERY }] =
+      await Promise.all([
+        import('@gfed-medusa/sf-lib-common/lib/gql/apollo-client'),
+        import('@gfed-medusa/sf-lib-common/lib/gql/queries/customer'),
+      ]);
+
+    const cookieHeader = c.req.header('cookie') ?? '';
+    const apolloClient = createServerApolloClient(cookieHeader);
+
+    const result = await graphqlFetch<{ me?: any }, { [x: string]: never }>(
+      {
+        query: GET_CUSTOMER_QUERY,
+        variables: {},
+      },
+      apolloClient
+    );
+
+    return c.json({ customer: result?.me ?? null });
+  } catch (error) {
+    console.error('Error fetching customer:', error);
+    return c.json({ error: 'Failed to fetch customer' }, 500);
+  }
+});
+
 app.get('/api/:name', async (c) => {
   const name = c.req.param('name');
   const component = getComponent(name as string);

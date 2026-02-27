@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 
 import { StorefrontProvider } from '@gfed-medusa/sf-lib-common/lib/data/context';
+import { useCustomer } from '@gfed-medusa/sf-lib-common/lib/hooks/use-customer';
 import { Region } from '@gfed-medusa/sf-lib-common/types/graphql';
 
 import { Link } from '../link';
@@ -9,6 +10,12 @@ import { SearchModal } from './search-modal';
 import { SideMenu } from './side-menu';
 
 function Header({ regions }: { regions: Region[] }) {
+  const { customer } = useCustomer();
+
+  const goToLogin = () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_BFF_BASE_URL}/auth/login`;
+  };
+
   return (
     <StorefrontProvider>
       <div className="group sticky inset-x-0 top-0 z-50">
@@ -33,13 +40,22 @@ function Header({ regions }: { regions: Region[] }) {
             <div className="flex h-full flex-1 basis-0 items-center justify-end gap-x-6">
               <SearchModal />
               <div className="small:flex hidden h-full items-center gap-x-6">
-                <Link
-                  className="hover:text-ui-fg-base cursor-pointer"
-                  href="/account"
-                  data-testid="nav-account-link"
-                >
-                  Account
-                </Link>
+                {customer ? (
+                  <Link
+                    className="hover:text-ui-fg-base cursor-pointer"
+                    href="/account"
+                    data-testid="nav-account-link"
+                  >
+                    Account
+                  </Link>
+                ) : (
+                  <button
+                    className="hover:text-ui-fg-base cursor-pointer"
+                    onClick={goToLogin}
+                  >
+                    Log In
+                  </button>
+                )}
               </div>
               <Suspense
                 fallback={
