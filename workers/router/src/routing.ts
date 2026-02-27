@@ -9,7 +9,11 @@ export function determineTargetApp(url: URL, config: AppConfig): string {
   if (pathname.startsWith('/checkout-assets/')) return config.CHECKOUT;
 
   // Horizontal component APIs (cart, context, etc.)
-  if (pathname === '/api/cart' || pathname === '/api/context') {
+  if (
+    pathname === '/api/cart' ||
+    pathname === '/api/context' ||
+    pathname === '/api/customer'
+  ) {
     return config.HORIZONTAL_SERVICE;
   }
 

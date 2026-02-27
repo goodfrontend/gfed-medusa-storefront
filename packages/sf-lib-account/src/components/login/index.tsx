@@ -15,6 +15,7 @@ type Props = {
   setCurrentView: (view: LOGIN_VIEW) => void;
 };
 
+// TODO: Delete this component or replace?
 const Login = ({ setCurrentView }: Props) => {
   const [login, { error, loading, data }] =
     useMutation<LoginMutation>(LOGIN_MUTATION);
