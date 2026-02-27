@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-common
 
+## 3.0.1
+
+### Patch Changes
+
+- c294e90: Storefront UI issues
+
 ## 3.0.0
 
 ### Major Changes

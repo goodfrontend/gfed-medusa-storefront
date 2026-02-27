@@ -1,5 +1,13 @@
 # @gfed-medusa/mf-home
 
+## 1.4.1
+
+### Patch Changes
+
+- c294e90: Storefront UI issues
+- Updated dependencies [c294e90]
+  - @gfed-medusa/sf-lib-common@3.0.1
+
 ## 1.4.0
 
 ### Minor Changes

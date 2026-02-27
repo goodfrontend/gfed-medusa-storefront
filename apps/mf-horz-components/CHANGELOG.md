@@ -1,5 +1,13 @@
 # @gfed-medusa/mf-horz-components
 
+## 1.3.2
+
+### Patch Changes
+
+- c294e90: Storefront UI issues
+- Updated dependencies [c294e90]
+  - @gfed-medusa/sf-lib-common@3.0.1
+
 ## 1.3.1
 
 ### Patch Changes
