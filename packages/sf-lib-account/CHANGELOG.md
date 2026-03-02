@@ -1,5 +1,16 @@
 # @gfed-medusa/sf-lib-account
 
+## 2.1.0
+
+### Minor Changes
+
+- Adjusted logout functionality: link to authentication service logout page
+
+### Patch Changes
+
+- Updated dependencies
+  - @gfed-medusa/sf-lib-common@3.1.0
+
 ## 2.0.1
 
 ### Patch Changes

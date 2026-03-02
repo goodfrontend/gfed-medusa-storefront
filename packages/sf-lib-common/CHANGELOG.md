@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-common
 
+## 3.1.0
+
+### Minor Changes
+
+- Added a `useCustomer` hook to retrieve customer information with SWR
+
 ## 3.0.1
 
 ### Patch Changes

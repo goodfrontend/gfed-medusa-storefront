@@ -1,5 +1,17 @@
 # @gfed-medusa/mf-account
 
+## 1.5.0
+
+### Minor Changes
+
+- Added a login link to the authentication service login page on the Account page when user is not logged in
+
+### Patch Changes
+
+- Updated dependencies
+  - @gfed-medusa/sf-lib-account@2.1.0
+  - @gfed-medusa/sf-lib-common@3.1.0
+
 ## 1.4.0
 
 ### Minor Changes
