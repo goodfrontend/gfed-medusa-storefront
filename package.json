@@ -5,7 +5,8 @@
   "scripts": {
     "build": "turbo run build",
     "check-types": "turbo run check-types",
-    "dev": "concurrently \"tsx local-proxy.ts\" \"turbo run dev --concurrency=14\"",
+    "dev": "concurrently \"tsx local-proxy.ts\" \"turbo run dev --concurrency=15\"",
+    "dev:proxy": "tsx local-proxy.ts",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo run lint",
     "lint:workflows": "yamllint .github/workflows/*.yaml && actionlint .github/workflows/*.yaml",

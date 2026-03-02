@@ -6,7 +6,7 @@ const CONFIG = {
   PRODUCTS: 'http://localhost:3001',
   ACCOUNT: 'http://localhost:3002',
   CHECKOUT: 'http://localhost:3003',
-  HORIZONTAL_SERVICE: 'http://localhost:4001',
+  HORIZONTAL_SERVICE: 'http://localhost:5001',
 };
 
 const HORIZONTAL_COMPONENTS = [

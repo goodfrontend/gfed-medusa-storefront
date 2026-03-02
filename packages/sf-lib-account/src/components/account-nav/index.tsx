@@ -2,7 +2,6 @@
 
 import { useParams, usePathname } from 'next/navigation';
 
-import { useMutation } from '@apollo/client/react';
 import { LocalizedClientLink } from '@gfed-medusa/sf-lib-common/components/localized-client-link';
 import { ChevronDown } from '@gfed-medusa/sf-lib-ui/icons/chevron-down';
 import { MapPin } from '@gfed-medusa/sf-lib-ui/icons/map-pin';
@@ -11,32 +10,15 @@ import { User } from '@gfed-medusa/sf-lib-ui/icons/user';
 import { ArrowRightOnRectangle } from '@medusajs/icons';
 import { clx } from '@medusajs/ui';
 
-import { postSignout } from '@/lib/data/customer';
-import { LOGOUT_MUTATION } from '@/lib/gql/mutations/customer';
-import {
-  Customer,
-  LogoutMutation,
-  LogoutMutationVariables,
-} from '@/types/graphql';
+import { Customer } from '@/types/graphql';
 
 const AccountNav = ({ customer }: { customer: Customer | null }) => {
   const route = usePathname();
+
   const { countryCode } = useParams() as { countryCode: string };
 
-  const [logout, _] = useMutation<LogoutMutation, LogoutMutationVariables>(
-    LOGOUT_MUTATION
-  );
-
   const handleLogout = async () => {
-    try {
-      const { data } = await logout();
-
-      if (data?.logout) {
-        await postSignout(countryCode);
-      }
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
+    window.location.href = `${process.env.NEXT_PUBLIC_BFF_BASE_URL}/auth/logout`;
   };
 
   return (
@@ -122,7 +104,7 @@ const AccountNav = ({ customer }: { customer: Customer | null }) => {
           </>
         )}
       </div>
-      <div className="small:block hidden" data-testid="account-nav">
+      <div className="small:block" data-testid="account-nav">
         <div>
           <div className="pb-4">
             <h3 className="text-base-semi">Account</h3>
