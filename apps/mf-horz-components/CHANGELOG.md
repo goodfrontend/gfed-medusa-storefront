@@ -1,5 +1,17 @@
 # @gfed-medusa/mf-horz-components
 
+## 1.4.0
+
+### Minor Changes
+
+- Added /api/customer to retrieve customer information
+- Added a login link on the header instead of an account page link
+
+### Patch Changes
+
+- Updated dependencies
+  - @gfed-medusa/sf-lib-common@3.1.0
+
 ## 1.3.2
 
 ### Patch Changes
