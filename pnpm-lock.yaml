@@ -484,7 +484,7 @@ importers:
         specifier: ^3.0.0
         version: link:../../packages/sf-lib-common
       '@gfed-medusa/sf-lib-products':
-        specifier: ^1.3.5
+        specifier: ^1.3.6
         version: link:../../packages/sf-lib-products
       '@gfed-medusa/sf-lib-ui':
         specifier: ^1.2.1
