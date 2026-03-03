@@ -32,6 +32,36 @@ export const PRICE_FRAGMENT = gql`
   }
 `;
 
+export const PRODUCT_VARIANT_CONTENT_FRAGMENT = gql`
+  fragment ProductVariantContent on ProductVariant {
+    id
+    sku
+    allowBackorder
+    manageInventory
+    title
+    options {
+      id
+      optionId
+      value
+    }
+  }
+`;
+
+export const PRODUCT_VARIANT_PRICING_FRAGMENT = gql`
+  fragment ProductVariantPricing on ProductVariant {
+    id
+    sku
+    inventoryQuantity
+    price {
+      ...Price
+    }
+    originalPrice {
+      ...Price
+    }
+  }
+  ${PRICE_FRAGMENT}
+`;
+
 export const PRODUCT_VARIANT_FRAGMENT = gql`
   fragment ProductVariant on ProductVariant {
     id
@@ -70,6 +100,45 @@ export const PRODUCT_COLLECTION_FRAGMENT = gql`
     title
     handle
   }
+`;
+
+export const PRODUCT_CONTENT_FRAGMENT = gql`
+  fragment ProductContent on Product {
+    id
+    title
+    handle
+    description
+    thumbnail
+    width
+    weight
+    length
+    height
+    originCountry
+    material
+    type
+    collectionId
+    createdAt
+    images {
+      ...ProductImage
+    }
+    tags {
+      ...ProductTag
+    }
+    options {
+      ...ProductOption
+    }
+    variants {
+      ...ProductVariantContent
+    }
+    collection {
+      ...ProductCollection
+    }
+  }
+  ${PRODUCT_IMAGE_FRAGMENT}
+  ${PRODUCT_TAG_FRAGMENT}
+  ${PRODUCT_OPTION_FRAGMENT}
+  ${PRODUCT_COLLECTION_FRAGMENT}
+  ${PRODUCT_VARIANT_CONTENT_FRAGMENT}
 `;
 
 export const PRODUCT_FRAGMENT = gql`

@@ -1,17 +1,40 @@
-import { getProductPrice } from '@gfed-medusa/sf-lib-common/lib/utils/get-product-price';
-import { clx } from '@medusajs/ui';
+'use client';
 
+import { getProductPrice } from '@gfed-medusa/sf-lib-common/lib/utils/get-product-price';
+
+import { useProductPrice } from '@/lib/hooks/use-product-price';
 import { Product, ProductVariant } from '@/types/graphql';
 
 export default function ProductPrice({
   product,
   variant,
+  regionId,
 }: {
   product: Product;
   variant?: ProductVariant;
+  regionId: string;
 }) {
+  const { product: pricingProduct } = useProductPrice(product.id, regionId);
+
+  const pricingById = new Map(
+    (pricingProduct?.variants ?? []).map((v: any) => [v.id, v])
+  );
+
+  const sourceProduct = {
+    ...product,
+    variants: (product.variants ?? []).map((v: any) => {
+      const p = pricingById.get(v.id);
+      return {
+        ...v,
+        price: p?.price,
+        originalPrice: p?.originalPrice,
+        inventoryQuantity: p?.inventoryQuantity,
+      };
+    }),
+  } as Product;
+
   const { cheapestPrice, variantPrice } = getProductPrice({
-    product,
+    product: sourceProduct,
     variantId: variant?.id,
   });
 
@@ -22,37 +45,15 @@ export default function ProductPrice({
   }
 
   return (
-    <div className="text-ui-fg-base flex flex-col">
+    <div className="flex h-9 w-32 items-center">
       <span
-        className={clx('text-xl-semi', {
-          'text-ui-fg-interactive': selectedPrice.price_type === 'sale',
-        })}
+        className="truncate"
+        data-testid="product-price"
+        data-value={selectedPrice.calculated_price_number}
       >
         {!variant && 'From '}
-        <span
-          data-testid="product-price"
-          data-value={selectedPrice.calculated_price_number}
-        >
-          {selectedPrice.calculated_price}
-        </span>
+        {selectedPrice.calculated_price}
       </span>
-      {selectedPrice.price_type === 'sale' && (
-        <>
-          <p>
-            <span className="text-ui-fg-subtle">Original: </span>
-            <span
-              className="line-through"
-              data-testid="original-product-price"
-              data-value={selectedPrice.original_price_number}
-            >
-              {selectedPrice.original_price}
-            </span>
-          </p>
-          <span className="text-ui-fg-interactive">
-            -{selectedPrice.percentage_diff}%
-          </span>
-        </>
-      )}
     </div>
   );
 }

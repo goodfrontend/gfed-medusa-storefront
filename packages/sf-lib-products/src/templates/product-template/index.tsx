@@ -13,8 +13,6 @@ import SkeletonRelatedProducts from '@/components/skeleton-related-products';
 import ProductInfo from '@/templates/product-info';
 import { Product } from '@/types/graphql';
 
-import ProductActionsWrapper from '../product-actions-wrapper';
-
 type ProductTemplateProps = {
   product?: Product | null;
   region: Region;
@@ -50,11 +48,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
         </div>
         <div className="small:sticky small:top-48 small:max-w-[300px] small:py-0 flex w-full flex-col gap-y-12 py-8">
           <ProductOnboardingCta />
-          <Suspense
-            fallback={<ProductActions disabled={true} product={product} />}
-          >
-            <ProductActionsWrapper id={product.id} region={region} />
-          </Suspense>
+          <ProductActions product={product} regionId={region.id} />
         </div>
       </div>
       <div
