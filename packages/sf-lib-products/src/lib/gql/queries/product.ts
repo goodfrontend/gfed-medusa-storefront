@@ -4,8 +4,10 @@ import {
   COLLECTION_PRODUCTS_FRAGMENT,
   PRODUCT_CATEGORY_FRAGMENT,
   PRODUCT_COLLECTION_FRAGMENT,
+  PRODUCT_CONTENT_FRAGMENT,
   PRODUCT_FRAGMENT,
   PRODUCT_HIT_FRAGMENT,
+  PRODUCT_VARIANT_PRICING_FRAGMENT,
 } from '../fragments/product';
 
 export const GET_PRODUCTS_QUERY = gql`
@@ -49,6 +51,34 @@ export const GET_PRODUCT_QUERY = gql`
     }
   }
   ${PRODUCT_FRAGMENT}
+`;
+
+export const GET_PRODUCT_CONTENT_BY_HANDLE_QUERY = gql`
+  query GetProductContentByHandle(
+    $handle: String
+    $region_id: String
+    $limit: Int
+  ) {
+    products(handle: $handle, region_id: $region_id, limit: $limit) {
+      products {
+        ...ProductContent
+      }
+      count
+    }
+  }
+  ${PRODUCT_CONTENT_FRAGMENT}
+`;
+
+export const GET_PRODUCT_PRICING_QUERY = gql`
+  query GetProductPricing($id: ID!, $region_id: String) {
+    product(id: $id, region_id: $region_id) {
+      id
+      variants {
+        ...ProductVariantPricing
+      }
+    }
+  }
+  ${PRODUCT_VARIANT_PRICING_FRAGMENT}
 `;
 
 export const GET_PRODUCT_CATEGORIES_QUERY = gql`

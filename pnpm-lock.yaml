@@ -1294,6 +1294,9 @@ importers:
       server-only:
         specifier: ^0.0.1
         version: 0.0.1
+      swr:
+        specifier: ^2.3.8
+        version: 2.3.8(react@19.2.3)
     devDependencies:
       '@graphql-codegen/cli':
         specifier: ^6.0.0
