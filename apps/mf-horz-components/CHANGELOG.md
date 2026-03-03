@@ -4,8 +4,7 @@
 
 ### Patch Changes
 
-- sanitize dirty product description
-  adjust size options buttons
+- Check cartState for mini cart popup
 
 ## 1.4.0
 

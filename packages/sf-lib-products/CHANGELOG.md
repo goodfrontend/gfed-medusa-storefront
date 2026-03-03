@@ -1,5 +1,12 @@
 # @gfed-medusa/sf-lib-products
 
+## 1.3.7
+
+### Patch Changes
+
+- Sanitize dirty product description
+- Adjust size selection buttons
+
 ## 1.3.6
 
 ### Patch Changes
