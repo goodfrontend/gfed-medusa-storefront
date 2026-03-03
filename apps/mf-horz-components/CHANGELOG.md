@@ -6,7 +6,7 @@
 
 - Added /api/customer to retrieve customer information
 - Added a login link on the header instead of an account page link
-
+- fd809eb: remove test content and resolve css issues
 ### Patch Changes
 
 - Updated dependencies

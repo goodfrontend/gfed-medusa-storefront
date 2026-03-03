@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-products
 
+## 1.3.5
+
+### Patch Changes
+
+- 8acacb4: add cursor-pointer for pagination numbers
+
 ## 1.3.4
 
 ### Patch Changes
