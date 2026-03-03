@@ -1,5 +1,13 @@
 # @gfed-medusa/mf-products
 
+## 1.3.3
+
+### Patch Changes
+
+- fd809eb: remove test content and resolve css issues
+- Updated dependencies [8acacb4]
+  - @gfed-medusa/sf-lib-products@1.3.5
+
 ## 1.3.1
 
 ### Patch Changes

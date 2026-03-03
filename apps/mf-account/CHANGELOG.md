@@ -6,6 +6,7 @@
 
 - Added a login link to the authentication service login page on the Account page when user is not logged in
 
+- fd809eb: remove test content and resolve css issues
 ### Patch Changes
 
 - Updated dependencies

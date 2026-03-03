@@ -1,5 +1,11 @@
 # @gfed-medusa/mf-checkout
 
+## 1.3.3
+
+### Patch Changes
+
+- fd809eb: remove test content and resolve css issues
+
 ## 1.3.1
 
 ### Patch Changes

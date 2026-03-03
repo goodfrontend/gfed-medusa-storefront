@@ -19,7 +19,6 @@ export default async function Home() {
       <>
         <Hero />
         <div className="py-10">
-          <p>Manual Version Bump</p>
           <p className="text-ui-fg-subtle text-center">
             No products available at the moment.
           </p>
@@ -32,7 +31,6 @@ export default async function Home() {
     <>
       <Hero />
       <div className="py-10">
-        <p>Manual Version Bump</p>
         <ul className="flex flex-col gap-x-6">
           <FeaturedProducts collections={collections as Collection[]} />
         </ul>

@@ -1,5 +1,11 @@
 # @gfed-medusa/mf-home
 
+## 1.4.3
+
+### Patch Changes
+
+- fd809eb: remove test content and resolve css issues
+
 ## 1.4.1
 
 ### Patch Changes
