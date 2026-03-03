@@ -13,14 +13,20 @@ export const metadata: Metadata = {
 
 export default async function Home() {
   const { collections } = await listCollections();
+  const visibleCollections = ([...(collections ?? [])]
+    .filter((collection) => (collection.products?.count ?? 0) >= 3)
+    .sort(
+      (left, right) =>
+        (right.products?.count ?? 0) - (left.products?.count ?? 0)
+    )) as Collection[];
 
-  if (!collections || collections.length === 0) {
+  if (visibleCollections.length === 0) {
     return (
       <>
         <Hero />
         <div className="py-10">
           <p className="text-ui-fg-subtle text-center">
-            No products available at the moment.
+            No featured collections available at the moment.
           </p>
         </div>
       </>
@@ -32,7 +38,7 @@ export default async function Home() {
       <Hero />
       <div className="py-10">
         <ul className="flex flex-col gap-x-6">
-          <FeaturedProducts collections={collections as Collection[]} />
+          <FeaturedProducts collections={visibleCollections} />
         </ul>
       </div>
     </>

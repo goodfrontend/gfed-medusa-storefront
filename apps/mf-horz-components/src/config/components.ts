@@ -77,8 +77,16 @@ export const COMPONENT_REGISTRY: ComponentDefinition[] = [
           ).catch(() => ({ footer: null })),
         ]);
 
+      const collections = [...(collectionsResult?.collections ?? [])]
+        .filter((collection) => (collection.products?.count ?? 0) >= 3)
+        .sort(
+          (left, right) =>
+            (right.products?.count ?? 0) - (left.products?.count ?? 0)
+        )
+        .slice(0, 6);
+
       return {
-        collections: collectionsResult?.collections ?? [],
+        collections,
         productCategories: categoriesResult?.productCategories ?? [],
         footerContent: footerResult?.footer,
       };
