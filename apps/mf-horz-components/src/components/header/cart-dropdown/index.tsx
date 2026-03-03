@@ -57,6 +57,10 @@ const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
   }, [activeTimer]);
 
   useEffect(() => {
+    if (cartState === undefined) {
+      return;
+    }
+
     if (!initialLoadComplete.current) {
       initialLoadComplete.current = true;
       itemRef.current = totalItems;
@@ -74,7 +78,7 @@ const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
     }
 
     itemRef.current = totalItems;
-  }, [totalItems]);
+  }, [totalItems, cartState]);
 
   return (
     <div

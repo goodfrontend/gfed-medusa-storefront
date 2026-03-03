@@ -1,5 +1,11 @@
 # @gfed-medusa/mf-horz-components
 
+## 1.4.1
+
+### Patch Changes
+
+- Check cartState for mini cart popup
+
 ## 1.4.0
 
 ### Minor Changes
@@ -7,6 +13,7 @@
 - Added /api/customer to retrieve customer information
 - Added a login link on the header instead of an account page link
 - fd809eb: remove test content and resolve css issues
+
 ### Patch Changes
 
 - Updated dependencies

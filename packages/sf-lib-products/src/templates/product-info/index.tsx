@@ -1,5 +1,7 @@
+import DOMPurify from 'isomorphic-dompurify';
+
 import { LocalizedClientLink } from '@gfed-medusa/sf-lib-common/components/localized-client-link';
-import { Heading, Text } from '@medusajs/ui';
+import { Heading } from '@medusajs/ui';
 
 import { Product } from '@/types/graphql';
 
@@ -27,12 +29,13 @@ const ProductInfo = ({ product }: ProductInfoProps) => {
           {product.title}
         </Heading>
 
-        <Text
-          className="text-medium text-ui-fg-subtle whitespace-pre-line"
+        <div
+          className="txt-medium text-ui-fg-subtle whitespace-pre-line"
           data-testid="product-description"
-        >
-          {product.description}
-        </Text>
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(product.description ?? ''),
+          }}
+        />
       </div>
     </div>
   );
