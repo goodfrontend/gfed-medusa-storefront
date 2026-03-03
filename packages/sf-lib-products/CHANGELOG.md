@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-products
 
+## 1.3.6
+
+### Patch Changes
+
+- da5240f: Separate cached/non-cached product content
+
 ## 1.3.5
 
 ### Patch Changes
