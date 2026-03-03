@@ -137,7 +137,12 @@ jobs:
           BASE_SERVICE="sf-$APP"
           SERVICE_NAME="$BASE_SERVICE-prod"
 
-          IMAGE_TAG="ghcr.io/$REPO/$BASE_SERVICE:$TAG_SHA"
+          IMAGE_TAG_SUFFIX=""
+          if [ "$APP" = "horz" ]; then
+            IMAGE_TAG_SUFFIX="-prod"
+          fi
+
+          IMAGE_TAG="ghcr.io/$REPO/$BASE_SERVICE:${TAG_SHA}${IMAGE_TAG_SUFFIX}"
           {
             echo "image_tag=$IMAGE_TAG"
             echo "version=$TARGET_VERSION"
@@ -201,6 +206,10 @@ jobs:
   rollback:
     name: Rollback ${{ inputs.app }} to v${{ needs.validate.outputs.version }} in production
     needs: validate
+    permissions:
+      contents: read
+      deployments: write
+      packages: write
     uses: ./.github/workflows/_deploy-render.yaml
     with:
       app: ${{ needs.validate.outputs.service_name }}

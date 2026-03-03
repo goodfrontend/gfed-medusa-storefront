@@ -13,7 +13,7 @@ projects:
             region: frankfurt
             autoDeployTrigger: off
             image:
-              url: http://ghcr.io/goodfrontend/gfed-medusa-storefront/sf-home:latest
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-home:prod-latest
             envVars:
               - fromGroup: sf-prod-env-group
 
@@ -24,7 +24,7 @@ projects:
             region: frankfurt
             autoDeployTrigger: off
             image:
-              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-account:latest
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-account:prod-latest
             envVars:
               - fromGroup: sf-prod-env-group
 
@@ -35,7 +35,7 @@ projects:
             region: frankfurt
             autoDeployTrigger: off
             image:
-              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-products:latest
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-products:prod-latest
             envVars:
               - fromGroup: sf-prod-env-group
 
@@ -46,7 +46,7 @@ projects:
             region: frankfurt
             autoDeployTrigger: off
             image:
-              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-checkout:latest
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-checkout:prod-latest
             envVars:
               - fromGroup: sf-prod-env-group
 
@@ -57,7 +57,7 @@ projects:
             region: frankfurt
             autoDeployTrigger: off
             image:
-              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-horz:latest
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-horz:prod-latest
             envVars:
               - fromGroup: sf-prod-env-group
 
@@ -70,7 +70,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-home:latest
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-home:smoke-latest
             envVars:
               - fromGroup: sf-smoke-env-group
 
@@ -81,7 +81,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-account:latest
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-account:smoke-latest
             envVars:
               - fromGroup: sf-smoke-env-group
 
@@ -92,7 +92,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-products:latest
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-products:smoke-latest
             envVars:
               - fromGroup: sf-smoke-env-group
 
@@ -103,7 +103,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-checkout:latest
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-checkout:smoke-latest
             envVars:
               - fromGroup: sf-smoke-env-group
 
@@ -114,7 +114,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-horz:latest
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-horz:smoke-latest
             envVars:
               - fromGroup: sf-smoke-env-group
 
@@ -127,7 +127,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-home:latest
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-home:qa-latest
             envVars:
               - fromGroup: sf-qa-env-group
 
@@ -138,7 +138,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-account:latest
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-account:qa-latest
             envVars:
               - fromGroup: sf-qa-env-group
 
@@ -149,7 +149,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-products:latest
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-products:qa-latest
             envVars:
               - fromGroup: sf-qa-env-group
 
@@ -160,7 +160,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-checkout:latest
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-checkout:qa-latest
             envVars:
               - fromGroup: sf-qa-env-group
 
@@ -171,6 +171,6 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-horz:latest
+              url: ghcr.io/goodfrontend/gfed-medusa-storefront/sf-horz:qa-latest
             envVars:
               - fromGroup: sf-qa-env-group

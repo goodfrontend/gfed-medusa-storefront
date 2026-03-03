@@ -70,6 +70,7 @@ jobs:
     with:
       app: sf-home
       dockerfile: ./apps/mf-home/Dockerfile
+      publish_latest: true
 
   build-checkout:
     needs: detect-changes
@@ -78,6 +79,7 @@ jobs:
     with:
       app: sf-checkout
       dockerfile: ./apps/mf-checkout/Dockerfile
+      publish_latest: true
 
   build-products:
     needs: detect-changes
@@ -86,6 +88,7 @@ jobs:
     with:
       app: sf-products
       dockerfile: ./apps/mf-products/Dockerfile
+      publish_latest: true
 
   build-account:
     needs: detect-changes
@@ -94,6 +97,7 @@ jobs:
     with:
       app: sf-account
       dockerfile: ./apps/mf-account/Dockerfile
+      publish_latest: true
 
   build-horz-smoke:
     needs: detect-changes
@@ -104,6 +108,7 @@ jobs:
       env: smoke
       app: sf-horz
       dockerfile: ./apps/mf-horz-components/Dockerfile
+      image_tag_suffix: -smoke
 
   build-horz-qa:
     needs: detect-changes
@@ -114,6 +119,7 @@ jobs:
       env: qa
       app: sf-horz
       dockerfile: ./apps/mf-horz-components/Dockerfile
+      image_tag_suffix: -qa
 
   build-horz-prod:
     needs: detect-changes
@@ -124,6 +130,8 @@ jobs:
       env: prod
       app: sf-horz
       dockerfile: ./apps/mf-horz-components/Dockerfile
+      image_tag_suffix: -prod
+      publish_latest: true
 
   home-smoke:
     needs: [detect-changes, build-home]

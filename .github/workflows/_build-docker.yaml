@@ -11,9 +11,17 @@ on:
       dockerfile:
         required: true
         type: string
+      image_tag_suffix:
+        required: false
+        type: string
+        default: ''
+      publish_latest:
+        required: false
+        type: boolean
+        default: false
     outputs:
       image_tag:
-        value: ghcr.io/${{ github.repository }}/${{ inputs.app }}:${{ github.sha }}
+        value: ${{ jobs.build.outputs.image_tag }}
 
 jobs:
   build:
@@ -23,6 +31,7 @@ jobs:
       contents: read
       packages: write
     outputs:
+      image_tag: ${{ steps.image-tags.outputs.image_tag }}
       version: ${{ steps.mfe-version.outputs.version }}
     steps:
       - uses: actions/checkout@v4
@@ -51,12 +60,32 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Resolve image tags
+        id: image-tags
+        env:
+          IMAGE_TAG_SUFFIX: ${{ inputs.image_tag_suffix }}
+        run: |
+          set -euo pipefail
+
+          image_tag="ghcr.io/${{ github.repository }}/${{ inputs.app }}:${{ github.sha }}${IMAGE_TAG_SUFFIX}"
+          tags="$image_tag"
+          if [ "${{ inputs.publish_latest }}" = "true" ]; then
+            tags="${tags}"$'\n'"ghcr.io/${{ github.repository }}/${{ inputs.app }}:latest"
+          fi
+
+          {
+            echo "image_tag=${image_tag}"
+            echo 'tags<<EOF'
+            printf '%s\n' "$tags"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
       - uses: docker/build-push-action@v5
         with:
           context: .
           file: ${{ inputs.dockerfile }}
           push: true
-          tags: ghcr.io/${{ github.repository }}/${{ inputs.app }}:${{ github.sha }}
+          tags: ${{ steps.image-tags.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
