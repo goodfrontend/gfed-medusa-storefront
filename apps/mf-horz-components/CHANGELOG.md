@@ -1,5 +1,11 @@
 # @gfed-medusa/mf-horz-components
 
+## 1.4.2
+
+### Patch Changes
+
+- 4042626: apply sorting and filtering to collections in home page and footer
+
 ## 1.4.1
 
 ### Patch Changes

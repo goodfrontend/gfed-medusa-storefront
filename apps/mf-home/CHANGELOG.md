@@ -1,5 +1,11 @@
 # @gfed-medusa/mf-home
 
+## 1.4.4
+
+### Patch Changes
+
+- 4042626: apply sorting and filtering to collections in home page and footer
+
 ## 1.4.3
 
 ### Patch Changes
