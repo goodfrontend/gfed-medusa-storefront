@@ -89,10 +89,11 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-            NEXT_PUBLIC_MEDUSA_BACKEND_URL=${{ secrets.MEDUSA_BACKEND_URL }}
-            NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=${{ secrets.MEDUSA_PUBLISHABLE_KEY }}
-            NEXT_PUBLIC_BFF_URL=${{ secrets.BFF_URL }}
-            NEXT_PUBLIC_BASE_URL=${{ secrets.STOREFRONT_BASE_URL }}
+            NEXT_PUBLIC_MEDUSA_BACKEND_URL=${{ secrets.NEXT_PUBLIC_MEDUSA_BACKEND_URL }}
+            NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY }}
+            NEXT_PUBLIC_BFF_URL=${{ secrets.NEXT_PUBLIC_BFF_URL }}
+            NEXT_PUBLIC_BASE_URL=${{ secrets.NEXT_PUBLIC_BASE_URL }}
+            NEXT_PUBLIC_BFF_BASE_URL=${{ secrets.NEXT_PUBLIC_BFF_BASE_URL }}
 
   # Trivy scan temporarily disabled
   # scan:
