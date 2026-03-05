@@ -1,5 +1,13 @@
 # @gfed-medusa/mf-horz-components
 
+## 1.4.6
+
+### Patch Changes
+
+- 83800ef: update collections fetching in home and footer
+- Updated dependencies [83800ef]
+  - @gfed-medusa/sf-lib-common@3.1.3
+
 ## 1.4.5
 
 ### Patch Changes
