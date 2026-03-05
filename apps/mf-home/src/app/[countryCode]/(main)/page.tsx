@@ -12,15 +12,9 @@ export const metadata: Metadata = {
 };
 
 export default async function Home() {
-  const { collections } = await listCollections();
-  const visibleCollections = ([...(collections ?? [])]
-    .filter((collection) => (collection.products?.count ?? 0) >= 3)
-    .sort(
-      (left, right) =>
-        (right.products?.count ?? 0) - (left.products?.count ?? 0)
-    )) as Collection[];
+  const { collections } = await listCollections({ limit: '6' });
 
-  if (visibleCollections.length === 0) {
+  if (!collections || collections.length === 0) {
     return (
       <>
         <Hero />
@@ -38,7 +32,7 @@ export default async function Home() {
       <Hero />
       <div className="py-10">
         <ul className="flex flex-col gap-x-6">
-          <FeaturedProducts collections={visibleCollections} />
+          <FeaturedProducts collections={collections as Collection[]} />
         </ul>
       </div>
     </>

@@ -22,9 +22,6 @@ export const GET_FOOTER_DATA_QUERY = gql`
       id
       title
       handle
-      products {
-        count
-      }
     }
     productCategories(parent_category_id: null, limit: $categoryLimit) {
       id
