@@ -1176,6 +1176,38 @@ export type GetFooterQuery = {
   } | null;
 };
 
+export type GetFooterDataQueryVariables = Exact<{
+  collectionLimit?: InputMaybe<Scalars['Int']['input']>;
+  categoryLimit?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+export type GetFooterDataQuery = {
+  __typename?: 'Query';
+  collections: Array<{
+    __typename?: 'Collection';
+    id: string;
+    title: string;
+    handle: string;
+  }>;
+  productCategories: Array<{
+    __typename?: 'ProductCategory';
+    id: string;
+    name: string;
+    handle: string;
+  }>;
+  footer?: {
+    __typename?: 'Footer';
+    storeName?: string | null;
+    copyright?: string | null;
+    social?: Array<{
+      __typename?: 'SocialLink';
+      text: string;
+      url: string;
+    }> | null;
+    poweredByCta?: { __typename?: 'PartialRichText'; text?: any | null } | null;
+  } | null;
+};
+
 export type OrderFieldsFragment = {
   __typename?: 'Order';
   id: string;
@@ -5243,6 +5275,120 @@ export const GetFooterDocument = {
     },
   ],
 } as unknown as DocumentNode<GetFooterQuery, GetFooterQueryVariables>;
+export const GetFooterDataDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetFooterData' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'collectionLimit' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'categoryLimit' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'collections' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'limit' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'collectionLimit' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'productCategories' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'parent_category_id' },
+                value: { kind: 'NullValue' },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'limit' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'categoryLimit' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
+              ],
+            },
+          },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'footer' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'storeName' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'social' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'text' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'url' } },
+                    ],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'copyright' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'poweredByCta' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'text' } },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetFooterDataQuery, GetFooterDataQueryVariables>;
 export const GetOrderDocument = {
   kind: 'Document',
   definitions: [

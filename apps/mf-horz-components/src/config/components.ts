@@ -2,6 +2,10 @@
 import type { ComponentType } from 'react';
 
 import { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
+import type {
+  GetFooterDataQuery,
+  GetFooterDataQueryVariables,
+} from '@gfed-medusa/sf-lib-common/types/graphql';
 
 import { Footer } from '../components/footer';
 import { Header } from '../components/header';
@@ -46,49 +50,29 @@ export const COMPONENT_REGISTRY: ComponentDefinition[] = [
     getData: async (ctx?: StorefrontContext) => {
       const [
         { createServerApolloClient, graphqlFetch },
-        { GET_COLLECTIONS_QUERY },
-        { GET_PRODUCT_CATEGORIES_QUERY },
-        { GET_FOOTER_QUERY },
+        { GET_FOOTER_DATA_QUERY },
       ] = await Promise.all([
         import('@gfed-medusa/sf-lib-common/lib/gql/apollo-client'),
-        import('@gfed-medusa/sf-lib-common/lib/gql/queries/collections'),
-        import('@gfed-medusa/sf-lib-common/lib/gql/queries/product'),
         import('@gfed-medusa/sf-lib-common/lib/gql/queries/footer'),
       ]);
 
       const apolloClient = createServerApolloClient(ctx?.cookieHeader ?? '');
 
-      const [collectionsResult, categoriesResult, footerResult] =
-        await Promise.all([
-          graphqlFetch<any, any>(
-            {
-              query: GET_COLLECTIONS_QUERY,
-              variables: { limit: 100, offset: 0 },
-            },
-            apolloClient
-          ).catch(() => ({ collections: [] })),
-          graphqlFetch<any, any>(
-            { query: GET_PRODUCT_CATEGORIES_QUERY },
-            apolloClient
-          ).catch(() => ({ productCategories: [] })),
-          graphqlFetch<any, any>(
-            { query: GET_FOOTER_QUERY },
-            apolloClient
-          ).catch(() => ({ footer: null })),
-        ]);
-
-      const collections = [...(collectionsResult?.collections ?? [])]
-        .filter((collection) => (collection.products?.count ?? 0) >= 3)
-        .sort(
-          (left, right) =>
-            (right.products?.count ?? 0) - (left.products?.count ?? 0)
-        )
-        .slice(0, 6);
+      const result = await graphqlFetch<
+        GetFooterDataQuery,
+        GetFooterDataQueryVariables
+      >(
+        {
+          query: GET_FOOTER_DATA_QUERY,
+          variables: { collectionLimit: 10, categoryLimit: 10 },
+        },
+        apolloClient
+      ).catch(() => ({ collections: [], productCategories: [], footer: null }));
 
       return {
-        collections,
-        productCategories: categoriesResult?.productCategories ?? [],
-        footerContent: footerResult?.footer,
+        collections: result?.collections ?? [],
+        productCategories: result?.productCategories ?? [],
+        footerContent: result?.footer,
       };
     },
     elementTag: 'mfe-footer',
