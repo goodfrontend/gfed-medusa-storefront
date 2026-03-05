@@ -89,3 +89,15 @@ export const COLLECTION_PRODUCTS_FRAGMENT = gql`
   ${PRODUCT_IMAGE_FRAGMENT}
   ${PRICE_FRAGMENT}
 `;
+
+export const COLLECTION_PRODUCTS_HOME_FRAGMENT = gql`
+  fragment CollectionProductsHome on ProductList {
+    count
+    items {
+      id
+      title
+      handle
+      thumbnail
+    }
+  }
+`;
