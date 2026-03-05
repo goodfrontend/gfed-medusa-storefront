@@ -1056,6 +1056,18 @@ export type CollectionProductsFragment = {
   }> | null;
 };
 
+export type CollectionProductsHomeFragment = {
+  __typename?: 'ProductList';
+  count: number;
+  items?: Array<{
+    __typename?: 'Product';
+    id: string;
+    title: string;
+    handle: string;
+    thumbnail?: string | null;
+  }> | null;
+};
+
 export type CreateCartMutationVariables = Exact<{
   data: CreateCartInput;
 }>;
@@ -1152,6 +1164,23 @@ export type GetCollectionsQuery = {
   >;
 };
 
+export type GetCollectionsHomeQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+export type GetCollectionsHomeQuery = {
+  __typename?: 'Query';
+  collections: Array<
+    {
+      __typename?: 'Collection';
+      products?:
+        | ({ __typename?: 'ProductList' } & CollectionProductsHomeFragment)
+        | null;
+    } & ProductCollectionFragment
+  >;
+};
+
 export type GetCustomerQueryVariables = Exact<{ [key: string]: never }>;
 
 export type GetCustomerQuery = {
@@ -1188,6 +1217,7 @@ export type GetFooterDataQuery = {
     id: string;
     title: string;
     handle: string;
+    products?: { __typename?: 'ProductList'; count: number } | null;
   }>;
   productCategories: Array<{
     __typename?: 'ProductCategory';
@@ -2562,6 +2592,38 @@ export const CollectionProductsFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<CollectionProductsFragment, unknown>;
+export const CollectionProductsHomeFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'CollectionProductsHome' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'ProductList' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'count' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'items' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'thumbnail' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<CollectionProductsHomeFragment, unknown>;
 export const OrderFieldsFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -5132,6 +5194,129 @@ export const GetCollectionsDocument = {
     },
   ],
 } as unknown as DocumentNode<GetCollectionsQuery, GetCollectionsQueryVariables>;
+export const GetCollectionsHomeDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetCollectionsHome' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'limit' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'offset' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'collections' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'limit' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'limit' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'offset' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'offset' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'FragmentSpread',
+                  name: { kind: 'Name', value: 'ProductCollection' },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'products' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'FragmentSpread',
+                        name: { kind: 'Name', value: 'CollectionProductsHome' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ProductCollection' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'Collection' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'CollectionProductsHome' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'ProductList' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'count' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'items' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'thumbnail' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetCollectionsHomeQuery,
+  GetCollectionsHomeQueryVariables
+>;
 export const GetCustomerDocument = {
   kind: 'Document',
   definitions: [
@@ -5322,6 +5507,16 @@ export const GetFooterDataDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'title' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'products' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'count' } },
+                    ],
+                  },
+                },
               ],
             },
           },

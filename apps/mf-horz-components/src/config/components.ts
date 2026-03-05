@@ -3,6 +3,7 @@ import type { ComponentType } from 'react';
 
 import { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import type {
+  Collection,
   GetFooterDataQuery,
   GetFooterDataQueryVariables,
 } from '@gfed-medusa/sf-lib-common/types/graphql';
@@ -64,13 +65,22 @@ export const COMPONENT_REGISTRY: ComponentDefinition[] = [
       >(
         {
           query: GET_FOOTER_DATA_QUERY,
-          variables: { collectionLimit: 10, categoryLimit: 10 },
+          variables: { collectionLimit: 45, categoryLimit: 4 },
         },
         apolloClient
       ).catch(() => ({ collections: [], productCategories: [], footer: null }));
 
+      const footerCollections: Collection[] = result?.collections ?? [];
+      const collections = [...footerCollections]
+        .filter((collection) => (collection.products?.count ?? 0) >= 3)
+        .sort(
+          (left, right) =>
+            (right.products?.count ?? 0) - (left.products?.count ?? 0)
+        )
+        .slice(0, 6);
+
       return {
-        collections: result?.collections ?? [],
+        collections: collections ?? [],
         productCategories: result?.productCategories ?? [],
         footerContent: result?.footer,
       };
