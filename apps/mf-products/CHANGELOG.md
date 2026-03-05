@@ -1,5 +1,15 @@
 # @gfed-medusa/mf-products
 
+## 1.3.5
+
+### Patch Changes
+
+- f0ca4f7: Separate each application's graphql endpoint to not overwhelm the home service
+- Updated dependencies [f0ca4f7]
+- Updated dependencies [f42ef4c]
+  - @gfed-medusa/sf-lib-common@3.1.1
+  - @gfed-medusa/sf-lib-products@1.3.8
+
 ## 1.3.4
 
 ### Patch Changes

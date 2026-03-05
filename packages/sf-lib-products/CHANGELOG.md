@@ -1,5 +1,13 @@
 # @gfed-medusa/sf-lib-products
 
+## 1.3.8
+
+### Patch Changes
+
+- f42ef4c: Remove unnecessary refetcehs of swr queries
+- Updated dependencies [f0ca4f7]
+  - @gfed-medusa/sf-lib-common@3.1.1
+
 ## 1.3.7
 
 ### Patch Changes

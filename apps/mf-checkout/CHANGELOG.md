@@ -1,5 +1,14 @@
 # @gfed-medusa/mf-checkout
 
+## 1.3.4
+
+### Patch Changes
+
+- f0ca4f7: Separate each application's graphql endpoint to not overwhelm the home service
+- Updated dependencies [f0ca4f7]
+  - @gfed-medusa/sf-lib-checkout@3.0.1
+  - @gfed-medusa/sf-lib-common@3.1.1
+
 ## 1.3.3
 
 ### Patch Changes

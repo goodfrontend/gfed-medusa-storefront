@@ -1,5 +1,13 @@
 # @gfed-medusa/mf-horz-components
 
+## 1.4.4
+
+### Patch Changes
+
+- f0ca4f7: Separate each application's graphql endpoint to not overwhelm the home service
+- Updated dependencies [f0ca4f7]
+  - @gfed-medusa/sf-lib-common@3.1.1
+
 ## 1.4.2
 
 ### Patch Changes

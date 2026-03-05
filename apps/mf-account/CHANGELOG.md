@@ -1,5 +1,14 @@
 # @gfed-medusa/mf-account
 
+## 1.5.1
+
+### Patch Changes
+
+- f0ca4f7: Separate each application's graphql endpoint to not overwhelm the home service
+- Updated dependencies [f0ca4f7]
+  - @gfed-medusa/sf-lib-checkout@3.0.1
+  - @gfed-medusa/sf-lib-common@3.1.1
+
 ## 1.5.0
 
 ### Minor Changes
@@ -7,6 +16,7 @@
 - Added a login link to the authentication service login page on the Account page when user is not logged in
 
 - fd809eb: remove test content and resolve css issues
+
 ### Patch Changes
 
 - Updated dependencies
