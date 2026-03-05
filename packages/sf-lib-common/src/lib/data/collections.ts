@@ -11,7 +11,7 @@ export const listCollections = async (
   queryParams: Record<string, string> = {}
 ) => {
   try {
-    const limit = parseInt(queryParams.limit || '100');
+    const limit = parseInt(queryParams.limit || '50');
     const offset = parseInt(queryParams.offset || '0');
 
     const data = await graphqlFetch<
