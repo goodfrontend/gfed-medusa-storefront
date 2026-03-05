@@ -25,7 +25,7 @@ const resolveContext = (c: Context): StorefrontContext => {
   };
 };
 
-app.get('/api/context', async (c) => {
+app.get('/api/horz/context', async (c) => {
   const cartId = getCookie(c, '_medusa_cart_id');
   const cacheId = getCookie(c, '_medusa_cache_id');
 
@@ -35,7 +35,7 @@ app.get('/api/context', async (c) => {
   });
 });
 
-app.get('/api/cart', async (c) => {
+app.get('/api/horz/cart', async (c) => {
   const cartId = getCookie(c, '_medusa_cart_id');
 
   if (!cartId) {
@@ -67,7 +67,7 @@ app.get('/api/cart', async (c) => {
   }
 });
 
-app.get('/api/customer', async (c) => {
+app.get('/api/horz/customer', async (c) => {
   const sessionId = getCookie(c, 'storefront.sid');
 
   if (!sessionId) {

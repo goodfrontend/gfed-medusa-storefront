@@ -8,17 +8,10 @@ export function determineTargetApp(url: URL, config: AppConfig): string {
   if (pathname.startsWith('/products-assets/')) return config.PRODUCTS;
   if (pathname.startsWith('/checkout-assets/')) return config.CHECKOUT;
 
-  // Horizontal component APIs (cart, context, etc.)
-  if (
-    pathname === '/api/cart' ||
-    pathname === '/api/context' ||
-    pathname === '/api/customer'
-  ) {
-    return config.HORIZONTAL_SERVICE;
-  }
-
-  // TODO(fcasibu): should be somewhere, but home for now
-  if (pathname.startsWith('/api/')) return config.HOME;
+  if (pathname.startsWith('/api/horz/')) return config.HORIZONTAL_SERVICE;
+  if (pathname.startsWith('/api/products/')) return config.PRODUCTS;
+  if (pathname.startsWith('/api/checkout/')) return config.CHECKOUT;
+  if (pathname.startsWith('/api/account/')) return config.ACCOUNT;
 
   return determineAppFromPath(pathname, config);
 }
@@ -49,5 +42,6 @@ export function transformPathname(pathname: string): string {
   if (pathname.startsWith('/horz-assets/')) {
     return pathname.replace('/horz-assets/', '/build/');
   }
+
   return pathname;
 }

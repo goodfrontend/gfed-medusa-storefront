@@ -11,8 +11,16 @@ import { getBaseURL } from '@gfed-medusa/sf-lib-common/lib/utils/env';
 
 const isServer = () => typeof window === 'undefined';
 
+const getGraphQLEndpoint = () => {
+  const endpoint = process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT;
+  if (endpoint) return isServer() ? `${getBaseURL()}${endpoint}` : endpoint;
+
+  // Defaults to home's graphql endpoint
+  return isServer() ? `${getBaseURL()}/api/graphql` : '/api/graphql';
+};
+
 const httpLink = new HttpLink({
-  uri: isServer() ? `${getBaseURL()}/api/graphql` : '/api/graphql',
+  uri: getGraphQLEndpoint(),
   credentials: 'include',
 });
 
