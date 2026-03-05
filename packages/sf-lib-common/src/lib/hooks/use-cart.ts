@@ -27,8 +27,8 @@ export const useCart = () => {
       return cart;
     },
     {
-      revalidateOnFocus: true,
-      revalidateOnReconnect: true,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     }
   );
 

@@ -25,8 +25,8 @@ export function useProductPrice(productId?: string, regionId?: string) {
       return { product: res?.product ?? null };
     },
     {
-      revalidateOnFocus: true,
-      revalidateOnReconnect: true,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     }
   );
 

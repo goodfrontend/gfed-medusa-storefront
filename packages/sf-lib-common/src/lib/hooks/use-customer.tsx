@@ -28,8 +28,8 @@ export const useCustomer = () => {
       return customer;
     },
     {
-      revalidateOnFocus: true,
-      revalidateOnReconnect: true,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     }
   );
 
