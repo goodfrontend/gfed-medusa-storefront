@@ -1,7 +1,7 @@
 'use server';
 
 import { graphqlFetch } from '@/lib/gql/apollo-client';
-import { GET_COLLECTIONS_QUERY } from '@/lib/gql/queries/collections';
+import { GET_COLLECTIONS_HOME_QUERY } from '@/lib/gql/queries/collections';
 import {
   GetCollectionsQuery,
   GetCollectionsQueryVariables,
@@ -18,7 +18,7 @@ export const listCollections = async (
       GetCollectionsQuery,
       GetCollectionsQueryVariables
     >({
-      query: GET_COLLECTIONS_QUERY,
+      query: GET_COLLECTIONS_HOME_QUERY,
       variables: { limit, offset },
     });
 
