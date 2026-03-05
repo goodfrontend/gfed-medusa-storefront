@@ -369,7 +369,7 @@ importers:
   apps/mf-horz-components:
     dependencies:
       '@gfed-medusa/sf-lib-common':
-        specifier: ^3.1.1
+        specifier: ^3.1.2
         version: link:../../packages/sf-lib-common
       '@gfed-medusa/sf-lib-ui':
         specifier: ^1.2.1
