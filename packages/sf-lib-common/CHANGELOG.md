@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-common
 
+## 3.1.2
+
+### Patch Changes
+
+- fc8a61c: optimize collections query in home
+
 ## 3.1.1
 
 ### Patch Changes

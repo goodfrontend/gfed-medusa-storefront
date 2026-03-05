@@ -1,5 +1,13 @@
 # @gfed-medusa/mf-horz-components
 
+## 1.4.5
+
+### Patch Changes
+
+- fc8a61c: optimize collections query in home
+- Updated dependencies [fc8a61c]
+  - @gfed-medusa/sf-lib-common@3.1.2
+
 ## 1.4.4
 
 ### Patch Changes
