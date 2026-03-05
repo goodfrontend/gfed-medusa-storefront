@@ -21,7 +21,7 @@ const StorefrontReactContext = createContext<StorefrontContext>({
 });
 
 const fetchContext = async (): Promise<ClientContext> => {
-  const response = await fetch('/api/context', {
+  const response = await fetch('/api/horz/context', {
     credentials: 'include',
   });
 

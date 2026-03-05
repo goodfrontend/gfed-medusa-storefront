@@ -15,7 +15,7 @@ export const useCustomer = () => {
   } = useSWR<Customer | null>(
     CUSTOMER_SWR_KEY,
     async () => {
-      const response = await fetch('/api/customer', {
+      const response = await fetch('/api/horz/customer', {
         credentials: 'include',
       });
 

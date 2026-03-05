@@ -15,7 +15,7 @@ export const useCart = () => {
   } = useSWR<Cart | null>(
     CART_SWR_KEY,
     async () => {
-      const response = await fetch('/api/cart', {
+      const response = await fetch('/api/horz/cart', {
         credentials: 'include',
       });
 

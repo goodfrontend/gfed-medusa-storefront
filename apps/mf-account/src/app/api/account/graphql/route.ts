@@ -26,27 +26,3 @@ export async function POST(req: NextRequest) {
     },
   });
 }
-
-export async function GET(req: NextRequest) {
-  const bodyText = await req.text();
-
-  const bffRes = await fetch(BFF_URL, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      cookie: req.headers.get('cookie') || '',
-    },
-    body: bodyText,
-    credentials: 'include',
-  });
-
-  const setCookie = bffRes.headers.get('set-cookie');
-
-  return new Response(await bffRes.text(), {
-    status: bffRes.status,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(setCookie ? { 'Set-Cookie': setCookie } : {}),
-    },
-  });
-}
