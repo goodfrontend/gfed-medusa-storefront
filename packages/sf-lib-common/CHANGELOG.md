@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-common
 
+## 3.1.1
+
+### Patch Changes
+
+- f0ca4f7: Separate each application's graphql endpoint to not overwhelm the home service
+
 ## 3.1.0
 
 ### Minor Changes

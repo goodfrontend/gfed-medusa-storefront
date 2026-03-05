@@ -1,6 +1,6 @@
 {
   "name": "@gfed-medusa/mf-products",
-  "version": "1.3.4",
+  "version": "1.3.5",
   "type": "module",
   "private": true,
   "description": "Products microfrontend for Medusa storefront",
@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@apollo/client": "^4.0.4",
-    "@gfed-medusa/sf-lib-common": "^3.0.0",
-    "@gfed-medusa/sf-lib-products": "^1.3.6",
+    "@gfed-medusa/sf-lib-common": "^3.1.1",
+    "@gfed-medusa/sf-lib-products": "^1.3.8",
     "@gfed-medusa/sf-lib-ui": "^1.2.1",
     "@headlessui/react": "^2.2.0",
     "@medusajs/icons": "2.12.1",
