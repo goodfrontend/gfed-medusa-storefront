@@ -32,6 +32,21 @@ export default defineConfig(({ mode }) => {
           process.env.NEXT_PUBLIC_BFF_BASE_URL ||
           ''
       ),
+      'process.env.NEXT_PUBLIC_ALGOLIA_APP_ID': JSON.stringify(
+        env.NEXT_PUBLIC_ALGOLIA_APP_ID ||
+          process.env.NEXT_PUBLIC_ALGOLIA_APP_ID ||
+          ''
+      ),
+      'process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY': JSON.stringify(
+        env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY ||
+          process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY ||
+          ''
+      ),
+      'process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME': JSON.stringify(
+        env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME ||
+          process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME ||
+          ''
+      ),
     },
     build: {
       assetsDir: '',
