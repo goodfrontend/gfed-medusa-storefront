@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-common
 
+## 3.1.3
+
+### Patch Changes
+
+- 83800ef: update collections fetching in home and footer
+
 ## 3.1.2
 
 ### Patch Changes
