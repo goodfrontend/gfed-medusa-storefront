@@ -428,6 +428,7 @@ export type PartialRichText = {
 export type Payment = {
   __typename?: 'Payment';
   amount: Scalars['Int']['output'];
+  cardLast4?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   currencyCode: Scalars['String']['output'];
   data?: Maybe<Scalars['JSON']['output']>;
