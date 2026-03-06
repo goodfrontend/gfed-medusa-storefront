@@ -84,7 +84,7 @@ export const listProducts = async (
   }
 };
 
-const listProductsPreview = async (
+export const listProductsPreview = async (
   {
     countryCode,
     regionId,
