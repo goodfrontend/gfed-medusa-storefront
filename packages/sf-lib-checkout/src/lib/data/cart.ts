@@ -61,6 +61,17 @@ import { GET_SHIPPING_OPTIONS_QUERY } from '@/lib/gql/queries/fulfillment';
 
 import { getRegion } from './regions';
 
+const isRedirectError = (err: unknown): boolean => {
+  if (!err || typeof err !== 'object') return false;
+
+  const maybeError = err as { message?: unknown; digest?: unknown };
+  const message =
+    typeof maybeError.message === 'string' ? maybeError.message : '';
+  const digest = typeof maybeError.digest === 'string' ? maybeError.digest : '';
+
+  return message.includes('NEXT_REDIRECT') || digest.includes('NEXT_REDIRECT');
+};
+
 /**
  * Retrieves a cart by its ID. If no ID is provided, it will use the cart ID from the cookies.
  * @param cartId - optional - The ID of the cart to retrieve.
@@ -393,7 +404,7 @@ export async function initiatePaymentSession(
     return cart;
   } catch (err) {
     medusaError(err);
-    return null;
+    throw err;
   }
 }
 
@@ -599,6 +610,9 @@ export async function placeOrder(
 
     return null;
   } catch (error: any) {
+    if (isRedirectError(error)) {
+      throw error;
+    }
     console.error('GraphQL completeCart error:', error.message);
     throw error;
   }

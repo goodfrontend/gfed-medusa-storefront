@@ -16,7 +16,11 @@ import { GET_PAYMENT_PROVIDERS_QUERY } from '@/lib/gql/queries/payment';
 export const listCartPaymentMethods = async (
   regionId: string,
   ctx: StorefrontContext
-): Promise<PaymentProviders[] | null> => {
+): Promise<PaymentProviders[]> => {
+  if (!regionId) {
+    return [];
+  }
+
   const apolloClient = createServerApolloClient(ctx.cookieHeader ?? '');
   try {
     const data = await graphqlFetch<
@@ -26,12 +30,12 @@ export const listCartPaymentMethods = async (
       { query: GET_PAYMENT_PROVIDERS_QUERY, variables: { regionId } },
       apolloClient
     );
-    return (
-      data?.paymentProviders?.sort((a, b) =>
-        (a?.id ?? '').localeCompare(b?.id ?? '')
-      ) ?? null
+    const paymentProviders = data?.paymentProviders ?? [];
+    return [...paymentProviders].sort((a, b) =>
+      (a?.id ?? '').localeCompare(b?.id ?? '')
     );
-  } catch {
-    return null;
+  } catch (error) {
+    console.error('Failed to fetch payment providers:', error);
+    return [];
   }
 };

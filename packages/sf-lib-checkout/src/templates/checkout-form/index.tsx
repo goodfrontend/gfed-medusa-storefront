@@ -27,10 +27,6 @@ export default async function CheckoutForm({
     ctx
   );
 
-  if (!shippingMethods || !paymentMethods) {
-    return null;
-  }
-
   return (
     <div className="grid w-full grid-cols-1 gap-y-8">
       <Addresses cart={cart} customer={customer} />

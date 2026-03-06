@@ -28,14 +28,20 @@ const Payment = ({
   const activeSession = cart.paymentCollection?.paymentSessions?.find(
     (paymentSession: any) => paymentSession.status === 'pending'
   );
+  const defaultPaymentMethod =
+    activeSession?.providerId ??
+    availablePaymentMethods?.find(
+      (paymentMethod) => paymentMethod.id === 'pp_system_default'
+    )?.id ??
+    availablePaymentMethods?.[0]?.id ??
+    '';
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [cardBrand, setCardBrand] = useState<string | null>(null);
   const [cardComplete, setCardComplete] = useState(false);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
-    activeSession?.providerId ?? 'manual'
-  );
+  const [selectedPaymentMethod, setSelectedPaymentMethod] =
+    useState(defaultPaymentMethod);
 
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -46,15 +52,36 @@ const Payment = ({
   const isStripe = isStripeFunc(selectedPaymentMethod);
   const ctx = useStorefrontContext();
 
+  const createOrRefreshPaymentSession = async (providerId: string) => {
+    if (!providerId) {
+      throw new Error('No payment method is available for this cart.');
+    }
+
+    const updatedCart = await initiatePaymentSession(cart.id, providerId, ctx);
+
+    if (!updatedCart) {
+      throw new Error('Failed to initialize payment session.');
+    }
+
+    router.refresh();
+
+    return updatedCart;
+  };
+
   const setPaymentMethod = async (method: string) => {
     setError(null);
     setSelectedPaymentMethod(method);
     if (isStripeFunc(method)) {
-      await initiatePaymentSession(cart.id, method, ctx);
+      try {
+        await createOrRefreshPaymentSession(method);
+      } catch (err: any) {
+        setError(err.message || 'Failed to initialize payment session.');
+      }
     }
   };
 
   const paidByGiftcard = cart?.giftCardTotal > 0 && cart?.total === 0;
+  const hasAvailablePaymentMethods = (availablePaymentMethods?.length ?? 0) > 0;
 
   const paymentReady =
     (activeSession && cart?.shippingMethods?.length !== 0) || paidByGiftcard;
@@ -85,7 +112,7 @@ const Payment = ({
         activeSession?.providerId === selectedPaymentMethod;
 
       if (!checkActiveSession) {
-        await initiatePaymentSession(cart.id, selectedPaymentMethod, ctx);
+        await createOrRefreshPaymentSession(selectedPaymentMethod);
       }
 
       if (!shouldInputCard) {
@@ -107,6 +134,10 @@ const Payment = ({
     setError(null);
   }, [isOpen]);
 
+  useEffect(() => {
+    setSelectedPaymentMethod(defaultPaymentMethod);
+  }, [defaultPaymentMethod]);
+
   return (
     <div className="bg-white">
       <div className="mb-6 flex flex-row items-center justify-between">
@@ -115,7 +146,7 @@ const Payment = ({
           className={clx(
             'text-3xl-regular flex flex-row items-baseline gap-x-2',
             {
-              'pointer-events-none select-none opacity-50':
+              'pointer-events-none opacity-50 select-none':
                 !isOpen && !paymentReady,
             }
           )}
@@ -137,7 +168,7 @@ const Payment = ({
       </div>
       <div>
         <div className={isOpen ? 'block' : 'hidden'}>
-          {!paidByGiftcard && availablePaymentMethods?.length && (
+          {!paidByGiftcard && hasAvailablePaymentMethods && (
             <>
               <RadioGroup
                 value={selectedPaymentMethod}
@@ -167,6 +198,13 @@ const Payment = ({
             </>
           )}
 
+          {!paidByGiftcard && !hasAvailablePaymentMethods && (
+            <ErrorMessage
+              error="No payment methods are available for this region. Verify Stripe is enabled and attached to the region in Medusa."
+              data-testid="payment-method-empty-message"
+            />
+          )}
+
           {paidByGiftcard && (
             <div className="flex w-1/3 flex-col">
               <Text className="txt-medium-plus text-ui-fg-base mb-1">
@@ -193,7 +231,8 @@ const Payment = ({
             isLoading={isLoading}
             disabled={
               (isStripe && !cardComplete) ||
-              (!selectedPaymentMethod && !paidByGiftcard)
+              (!selectedPaymentMethod && !paidByGiftcard) ||
+              (!hasAvailablePaymentMethods && !paidByGiftcard)
             }
             data-testid="submit-payment-button"
           >
