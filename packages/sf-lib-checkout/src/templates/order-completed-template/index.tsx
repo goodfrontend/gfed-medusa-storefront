@@ -16,7 +16,7 @@ export default async function OrderCompletedTemplate({
   const isOnboarding = cookies.get('_medusa_onboarding')?.value === 'true';
 
   return (
-    <div>
+    <div className="content-container py-10">
       <OrderCompletedClient order={order} isOnboarding={isOnboarding} />
     </div>
   );

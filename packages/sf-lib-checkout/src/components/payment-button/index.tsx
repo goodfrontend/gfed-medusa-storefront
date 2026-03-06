@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import { ErrorMessage } from '@gfed-medusa/sf-lib-common/components/error-message';
 import { useStorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import { Button } from '@medusajs/ui';
-import { useElements, useStripe } from '@stripe/react-stripe-js';
+import { CardNumberElement, useElements, useStripe } from '@stripe/react-stripe-js';
 
 import { isManual, isStripe } from '@/lib/constants';
 import { placeOrder } from '@/lib/data/cart';
@@ -14,6 +14,17 @@ import { Cart } from '@/lib/gql/generated-types/graphql';
 type PaymentButtonProps = {
   cart: Cart;
   'data-testid': string;
+};
+
+const isRedirectError = (err: unknown): boolean => {
+  if (!err || typeof err !== 'object') return false;
+
+  const maybeError = err as { message?: unknown; digest?: unknown };
+  const message =
+    typeof maybeError.message === 'string' ? maybeError.message : '';
+  const digest = typeof maybeError.digest === 'string' ? maybeError.digest : '';
+
+  return message.includes('NEXT_REDIRECT') || digest.includes('NEXT_REDIRECT');
 };
 
 const PaymentButton: React.FC<PaymentButtonProps> = ({
@@ -63,7 +74,10 @@ const StripePaymentButton = ({
   const onPaymentCompleted = async () => {
     await placeOrder(undefined, ctx)
       .catch((err) => {
-        setErrorMessage(err.message);
+        if (isRedirectError(err)) {
+          return;
+        }
+        setErrorMessage(err?.message ?? 'Failed to place order.');
       })
       .finally(() => {
         setSubmitting(false);
@@ -72,7 +86,7 @@ const StripePaymentButton = ({
 
   const stripe = useStripe();
   const elements = useElements();
-  const card = elements?.getElement('card');
+  const card = elements?.getElement(CardNumberElement);
 
   const session = cart.paymentCollection?.paymentSessions?.find(
     (s) => s?.status === 'pending'
@@ -163,7 +177,10 @@ const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
   const onPaymentCompleted = async () => {
     await placeOrder(undefined, ctx)
       .catch((err) => {
-        setErrorMessage(err.message);
+        if (isRedirectError(err)) {
+          return;
+        }
+        setErrorMessage(err?.message ?? 'Failed to place order.');
       })
       .finally(() => {
         setSubmitting(false);

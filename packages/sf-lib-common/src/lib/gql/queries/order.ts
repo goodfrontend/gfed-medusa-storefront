@@ -70,6 +70,7 @@ export const ORDER_FRAGMENT = gql`
         amount
         currencyCode
         providerId
+        cardLast4
         createdAt
       }
     }

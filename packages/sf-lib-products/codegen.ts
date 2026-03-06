@@ -1,8 +1,24 @@
+import { config as loadEnv } from 'dotenv';
+
 import type { CodegenConfig } from '@graphql-codegen/cli';
+
+loadEnv();
+
+const BFF_URL = process.env.BFF_URL;
+
+if (!BFF_URL) {
+  throw new Error(
+    'BFF_URL environment variable is required. Please set it to your GraphQL API endpoint.'
+  );
+}
 
 const config: CodegenConfig = {
   overwrite: true,
-  schema: process.env.BFF_URL,
+  schema: [
+    {
+      [BFF_URL]: {},
+    },
+  ],
   documents: ['src/lib/gql/**/*.{ts,tsx}'],
   generates: {
     './src/types/graphql.ts': {

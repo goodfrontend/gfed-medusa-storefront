@@ -11,6 +11,14 @@ type PaymentDetailsProps = {
 
 const PaymentDetails = ({ order }: PaymentDetailsProps) => {
   const payment = order.paymentCollections?.[0]?.payments?.[0];
+  const stripeLast4 =
+    (
+      payment as
+        | (typeof payment & {
+            cardLast4?: string | null;
+          })
+        | undefined
+    )?.cardLast4 ?? null;
 
   return (
     <div>
@@ -40,8 +48,8 @@ const PaymentDetails = ({ order }: PaymentDetailsProps) => {
                   {paymentInfoMap[payment.providerId]?.icon}
                 </Container>
                 <Text data-testid="payment-amount">
-                  {isStripe(payment.providerId) && payment.data?.card_last4
-                    ? `**** **** **** ${payment.data.card_last4}`
+                  {isStripe(payment.providerId)
+                    ? `**** **** **** ${stripeLast4 ?? '••••'}`
                     : `${convertToLocale({
                         amount: payment.amount,
                         currency_code: order.currencyCode,

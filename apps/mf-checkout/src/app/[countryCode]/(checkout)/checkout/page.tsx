@@ -14,6 +14,12 @@ export const metadata: Metadata = {
 };
 
 export default async function Checkout() {
+  if (!process.env.NEXT_PUBLIC_STRIPE_KEY) {
+    console.warn(
+      '[checkout] NEXT_PUBLIC_STRIPE_KEY is missing. Stripe credit card input will not be available.'
+    );
+  }
+
   const ctx = await resolveNextContext();
   const cart = await retrieveCart(undefined, ctx);
 

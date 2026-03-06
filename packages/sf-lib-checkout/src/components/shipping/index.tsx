@@ -225,6 +225,17 @@ const Shipping: React.FC<ShippingProps> = ({
                       option.priceType === 'calculated' &&
                       !isLoadingPrices &&
                       typeof calculatedPricesMap[option.id] !== 'number';
+                    const isFlatRateOption =
+                      option.priceType === 'flat' ||
+                      option.priceType === 'flat_rate';
+                    const flatAmount =
+                      option.amount ??
+                      option.prices?.find(
+                        (price) =>
+                          price?.currencyCode?.toLowerCase() ===
+                          cart?.currencyCode?.toLowerCase()
+                      )?.amount ??
+                      option.prices?.[0]?.amount;
 
                     return (
                       <Radio
@@ -251,9 +262,9 @@ const Shipping: React.FC<ShippingProps> = ({
                           </span>
                         </div>
                         <span className="text-ui-fg-base justify-self-end">
-                          {option.priceType === 'flat_rate' ? (
+                          {isFlatRateOption && typeof flatAmount === 'number' ? (
                             convertToLocale({
-                              amount: option.amount!,
+                              amount: flatAmount,
                               currency_code: cart?.currencyCode,
                             })
                           ) : calculatedPricesMap[option.id] ? (
