@@ -7,6 +7,7 @@ import {
   PRODUCT_CONTENT_FRAGMENT,
   PRODUCT_FRAGMENT,
   PRODUCT_HIT_FRAGMENT,
+  PRODUCT_PREVIEW_FRAGMENT,
   PRODUCT_VARIANT_PRICING_FRAGMENT,
 } from '../fragments/product';
 
@@ -42,6 +43,40 @@ export const GET_PRODUCTS_QUERY = gql`
     }
   }
   ${PRODUCT_FRAGMENT}
+`;
+
+export const GET_PRODUCTS_PREVIEW_QUERY = gql`
+  query GetProductsPreview(
+    $limit: Int
+    $offset: Int
+    $handle: String
+    $region_id: String
+    $category_id: [String]
+    $collection_id: [String]
+    $q: String
+    $is_giftcard: Boolean
+    $id: [ID!]
+    $tag_id: [String!]
+  ) {
+    products(
+      limit: $limit
+      offset: $offset
+      handle: $handle
+      region_id: $region_id
+      category_id: $category_id
+      collection_id: $collection_id
+      q: $q
+      id: $id
+      is_giftcard: $is_giftcard
+      tag_id: $tag_id
+    ) {
+      products {
+        ...ProductPreview
+      }
+      count
+    }
+  }
+  ${PRODUCT_PREVIEW_FRAGMENT}
 `;
 
 export const GET_PRODUCT_QUERY = gql`

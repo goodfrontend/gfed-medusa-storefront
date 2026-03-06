@@ -180,6 +180,26 @@ export const PRODUCT_FRAGMENT = gql`
   ${PRODUCT_COLLECTION_FRAGMENT}
 `;
 
+export const PRODUCT_PREVIEW_FRAGMENT = gql`
+  fragment ProductPreview on Product {
+    id
+    title
+    handle
+    thumbnail
+    createdAt
+    variants {
+      id
+      price {
+        ...Price
+      }
+      originalPrice {
+        ...Price
+      }
+    }
+  }
+  ${PRICE_FRAGMENT}
+`;
+
 export const COLLECTION_PRODUCTS_FRAGMENT = gql`
   fragment CollectionProducts on ProductList {
     count

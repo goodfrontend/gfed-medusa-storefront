@@ -1089,6 +1089,21 @@ export type ProductFragment = {
     | null;
 };
 
+export type ProductPreviewFragment = {
+  __typename?: 'Product';
+  id: string;
+  title: string;
+  handle: string;
+  thumbnail?: string | null;
+  createdAt: any;
+  variants?: Array<{
+    __typename?: 'ProductVariant';
+    id: string;
+    price?: ({ __typename?: 'Price' } & PriceFragment) | null;
+    originalPrice?: ({ __typename?: 'Price' } & PriceFragment) | null;
+  }> | null;
+};
+
 export type CollectionProductsFragment = {
   __typename?: 'ProductList';
   count: number;
@@ -1331,6 +1346,38 @@ export type GetProductsQuery = {
     count: number;
     products?: Array<
       ({ __typename?: 'Product' } & ProductFragment) | null
+    > | null;
+  };
+};
+
+export type GetProductsPreviewQueryVariables = Exact<{
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  handle?: InputMaybe<Scalars['String']['input']>;
+  region_id?: InputMaybe<Scalars['String']['input']>;
+  category_id?: InputMaybe<
+    | Array<InputMaybe<Scalars['String']['input']>>
+    | InputMaybe<Scalars['String']['input']>
+  >;
+  collection_id?: InputMaybe<
+    | Array<InputMaybe<Scalars['String']['input']>>
+    | InputMaybe<Scalars['String']['input']>
+  >;
+  q?: InputMaybe<Scalars['String']['input']>;
+  is_giftcard?: InputMaybe<Scalars['Boolean']['input']>;
+  id?: InputMaybe<Array<Scalars['ID']['input']> | Scalars['ID']['input']>;
+  tag_id?: InputMaybe<
+    Array<Scalars['String']['input']> | Scalars['String']['input']
+  >;
+}>;
+
+export type GetProductsPreviewQuery = {
+  __typename?: 'Query';
+  products: {
+    __typename?: 'ProductListResponse';
+    count: number;
+    products?: Array<
+      ({ __typename?: 'Product' } & ProductPreviewFragment) | null
     > | null;
   };
 };
@@ -2950,6 +2997,81 @@ export const ProductFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<ProductFragment, unknown>;
+export const ProductPreviewFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ProductPreview' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'Product' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'thumbnail' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'variants' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'price' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'FragmentSpread',
+                        name: { kind: 'Name', value: 'Price' },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'originalPrice' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'FragmentSpread',
+                        name: { kind: 'Name', value: 'Price' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'Price' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'Price' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'priceType' } },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<ProductPreviewFragment, unknown>;
 export const CollectionProductsFragmentDoc = {
   kind: 'Document',
   definitions: [
@@ -6974,6 +7096,299 @@ export const GetProductsDocument = {
     },
   ],
 } as unknown as DocumentNode<GetProductsQuery, GetProductsQueryVariables>;
+export const GetProductsPreviewDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetProductsPreview' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'limit' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'offset' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'handle' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'region_id' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'category_id' },
+          },
+          type: {
+            kind: 'ListType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'collection_id' },
+          },
+          type: {
+            kind: 'ListType',
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'q' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'is_giftcard' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Boolean' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: {
+            kind: 'ListType',
+            type: {
+              kind: 'NonNullType',
+              type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } },
+            },
+          },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'tag_id' },
+          },
+          type: {
+            kind: 'ListType',
+            type: {
+              kind: 'NonNullType',
+              type: {
+                kind: 'NamedType',
+                name: { kind: 'Name', value: 'String' },
+              },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'products' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'limit' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'limit' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'offset' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'offset' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'handle' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'handle' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'region_id' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'region_id' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'category_id' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'category_id' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'collection_id' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'collection_id' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'q' },
+                value: { kind: 'Variable', name: { kind: 'Name', value: 'q' } },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'id' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'is_giftcard' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'is_giftcard' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'tag_id' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'tag_id' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'products' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'FragmentSpread',
+                        name: { kind: 'Name', value: 'ProductPreview' },
+                      },
+                    ],
+                  },
+                },
+                { kind: 'Field', name: { kind: 'Name', value: 'count' } },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'Price' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'Price' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'priceType' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'ProductPreview' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'Product' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'thumbnail' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'createdAt' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'variants' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'price' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'FragmentSpread',
+                        name: { kind: 'Name', value: 'Price' },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'originalPrice' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'FragmentSpread',
+                        name: { kind: 'Name', value: 'Price' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetProductsPreviewQuery,
+  GetProductsPreviewQueryVariables
+>;
 export const GetProductDocument = {
   kind: 'Document',
   definitions: [
