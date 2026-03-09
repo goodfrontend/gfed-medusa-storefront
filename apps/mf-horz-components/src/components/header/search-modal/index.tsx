@@ -136,7 +136,7 @@ const SearchResults = () => {
   const { status, error, indexUiState } = useInstantSearch();
   const query: string = (indexUiState as { query?: string }).query ?? '';
 
-  const isLoading = status === 'loading' || status === 'stalled';
+  const isLoading = (status === 'loading' || status === 'stalled') && query.trim().length > 0;
   const isError = status === 'error';
 
   if (isLoading) {
