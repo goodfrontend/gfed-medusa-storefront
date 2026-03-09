@@ -98,7 +98,6 @@ export const GET_PRODUCT_CONTENT_BY_HANDLE_QUERY = gql`
       products {
         ...ProductContent
       }
-      count
     }
   }
   ${PRODUCT_CONTENT_FRAGMENT}
