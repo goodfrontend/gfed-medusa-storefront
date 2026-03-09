@@ -31,16 +31,6 @@ export const PRODUCT_VARIANT_FRAGMENT = gql`
   ${PRICE_FRAGMENT}
 `;
 
-export const PRODUCT_HIT_FRAGMENT = gql`
-  fragment ProductHit on ProductHit {
-    id
-    title
-    description
-    handle
-    thumbnail
-  }
-`;
-
 export const PRODUCT_CATEGORY_FRAGMENT = gql`
   fragment ProductCategory on ProductCategory {
     id

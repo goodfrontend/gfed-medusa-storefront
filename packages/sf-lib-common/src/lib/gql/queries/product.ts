@@ -1,20 +1,6 @@
 import { gql } from '@apollo/client';
 
-import {
-  PRODUCT_CATEGORY_FRAGMENT,
-  PRODUCT_HIT_FRAGMENT,
-} from '../fragments/product';
-
-export const SEARCH_SUGGESTIONS_QUERY = gql`
-  query SearchSuggestions($query: String!) {
-    searchProducts(query: $query) {
-      items {
-        ...ProductHit
-      }
-    }
-  }
-  ${PRODUCT_HIT_FRAGMENT}
-`;
+import { PRODUCT_CATEGORY_FRAGMENT } from '../fragments/product';
 
 export const GET_PRODUCT_CATEGORIES_QUERY = gql`
   query GetProductCategories(
