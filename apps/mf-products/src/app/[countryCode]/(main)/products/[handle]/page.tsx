@@ -1,3 +1,5 @@
+import { cache } from 'react';
+
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
@@ -6,50 +8,50 @@ import { graphqlFetch } from '@gfed-medusa/sf-lib-common/lib/gql/apollo-client';
 import { getRegion } from '@gfed-medusa/sf-lib-products/lib/data/regions';
 import { GET_PRODUCT_CONTENT_BY_HANDLE_QUERY } from '@gfed-medusa/sf-lib-products/lib/gql/queries/product';
 import ProductTemplate from '@gfed-medusa/sf-lib-products/templates/product-template';
-import type { Product, GetProductContentByHandleQuery, GetProductContentByHandleQueryVariables } from '@gfed-medusa/sf-lib-products/types/graphql';
+import type {
+  GetProductContentByHandleQuery,
+  GetProductContentByHandleQueryVariables,
+  Product,
+} from '@gfed-medusa/sf-lib-products/types/graphql';
 
 export type Props = {
   params: Promise<{ countryCode: string; handle: string }>;
 };
 
-async function getProductByHandle({
-  handle,
-  countryCode,
-}: {
-  handle: string;
-  countryCode: string;
-}): Promise<Product | null> {
+const getRegionForCountry = cache(async (countryCode: string) => {
   const ctx = await resolveNextContext();
-  const region = await getRegion(countryCode, ctx);
+  return getRegion(countryCode, ctx);
+});
 
-  if (!region) {
-    return null;
+const getProductByHandle = cache(
+  async (handle: string, regionId: string): Promise<Product | null> => {
+    const data = await graphqlFetch<
+      GetProductContentByHandleQuery,
+      GetProductContentByHandleQueryVariables
+    >({
+      query: GET_PRODUCT_CONTENT_BY_HANDLE_QUERY,
+      variables: {
+        handle,
+        region_id: regionId,
+        limit: 1,
+      },
+    });
+
+    const product = data?.products?.products?.[0] ?? null;
+
+    return product as Product | null;
   }
-
-  const data = await graphqlFetch<GetProductContentByHandleQuery, GetProductContentByHandleQueryVariables>({
-    query: GET_PRODUCT_CONTENT_BY_HANDLE_QUERY,
-    variables: {
-      handle,
-      region_id: region.id,
-      limit: 1,
-    },
-  });
-
-  const product = data?.products?.products?.[0] ?? null;
-
-  return product as Product | null;
-}
+);
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { handle, countryCode } = await params;
-  const ctx = await resolveNextContext();
-  const region = await getRegion(countryCode, ctx);
+  const region = await getRegionForCountry(countryCode);
 
   if (!region) {
     notFound();
   }
 
-  const product = await getProductByHandle({ handle, countryCode });
+  const product = await getProductByHandle(handle, region.id);
 
   if (!product) {
     notFound();
@@ -68,14 +70,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductPage({ params }: Props) {
   const { countryCode, handle } = await params;
-  const ctx = await resolveNextContext();
-  const region = await getRegion(countryCode, ctx);
+  const region = await getRegionForCountry(countryCode);
 
   if (!region) {
     notFound();
   }
 
-  const product = await getProductByHandle({ handle, countryCode });
+  const product = await getProductByHandle(handle, region.id);
 
   if (!product) {
     notFound();
