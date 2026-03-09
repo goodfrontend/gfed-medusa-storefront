@@ -1,5 +1,15 @@
 # @gfed-medusa/sf-lib-common
 
+## 3.2.0
+
+### Minor Changes
+
+- 8dc1d6d: stripe payment checkout flow update
+
+### Patch Changes
+
+- 21dd56b: Fix cart mismatch banner incorrect state and duplicate account nav
+
 ## 3.1.3
 
 ### Patch Changes

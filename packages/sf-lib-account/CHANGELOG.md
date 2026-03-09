@@ -1,5 +1,14 @@
 # @gfed-medusa/sf-lib-account
 
+## 2.1.1
+
+### Patch Changes
+
+- 21dd56b: Fix cart mismatch banner incorrect state and duplicate account nav
+- Updated dependencies [21dd56b]
+- Updated dependencies [8dc1d6d]
+  - @gfed-medusa/sf-lib-common@3.2.0
+
 ## 2.1.0
 
 ### Minor Changes
