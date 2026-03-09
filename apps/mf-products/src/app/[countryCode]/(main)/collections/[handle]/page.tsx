@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import { cache, Suspense } from 'react';
 
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -17,9 +17,13 @@ type Props = {
   }>;
 };
 
+const getCollectionByHandleCached = cache(async (handle: string) => {
+  return getCollectionByHandle(handle);
+});
+
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const params = await props.params;
-  const collection = await getCollectionByHandle(params.handle);
+  const collection = await getCollectionByHandleCached(params.handle);
 
   if (!collection) {
     notFound();
@@ -38,7 +42,7 @@ export default async function CollectionPage(props: Props) {
   const params = await props.params;
   const { sortBy, page } = searchParams;
 
-  const collection = await getCollectionByHandle(params.handle);
+  const collection = await getCollectionByHandleCached(params.handle);
 
   if (!collection) {
     notFound();

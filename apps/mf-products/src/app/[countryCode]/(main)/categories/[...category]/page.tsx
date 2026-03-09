@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import { cache, Suspense } from 'react';
 
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -17,10 +17,15 @@ type Props = {
   }>;
 };
 
+const getCategoryByPathCached = cache(async (categoryPath: string) => {
+  return getCategoryByHandle(categoryPath.split('/'));
+});
+
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const params = await props.params;
   try {
-    const productCategory = await getCategoryByHandle(params.category);
+    const categoryPath = params.category.join('/');
+    const productCategory = await getCategoryByPathCached(categoryPath);
 
     const title = productCategory?.name + ' | Medusa Store';
     const description = productCategory?.description ?? `${title} category.`;
@@ -41,8 +46,9 @@ export default async function CategoryPage(props: Props) {
   const searchParams = await props.searchParams;
   const params = await props.params;
   const { sortBy, page } = searchParams;
+  const categoryPath = params.category.join('/');
 
-  const productCategory = await getCategoryByHandle(params.category);
+  const productCategory = await getCategoryByPathCached(categoryPath);
 
   if (!productCategory) {
     notFound();
