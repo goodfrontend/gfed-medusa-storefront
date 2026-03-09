@@ -106,7 +106,6 @@ export const GET_PRODUCT_CONTENT_BY_HANDLE_QUERY = gql`
 export const GET_PRODUCT_PRICING_QUERY = gql`
   query GetProductPricing($id: ID!, $region_id: String) {
     product(id: $id, region_id: $region_id) {
-      id
       variants {
         ...ProductVariantPricing
       }

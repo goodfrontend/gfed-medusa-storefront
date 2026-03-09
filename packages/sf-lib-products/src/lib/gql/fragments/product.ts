@@ -50,7 +50,6 @@ export const PRODUCT_VARIANT_CONTENT_FRAGMENT = gql`
 export const PRODUCT_VARIANT_PRICING_FRAGMENT = gql`
   fragment ProductVariantPricing on ProductVariant {
     id
-    sku
     inventoryQuantity
     price {
       ...Price

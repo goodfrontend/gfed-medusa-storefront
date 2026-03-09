@@ -992,7 +992,6 @@ export type ProductVariantContentFragment = {
 export type ProductVariantPricingFragment = {
   __typename?: 'ProductVariant';
   id: string;
-  sku?: string | null;
   inventoryQuantity?: number | null;
   price?: ({ __typename?: 'Price' } & PriceFragment) | null;
   originalPrice?: ({ __typename?: 'Price' } & PriceFragment) | null;
@@ -1428,7 +1427,6 @@ export type GetProductPricingQuery = {
   __typename?: 'Query';
   product?: {
     __typename?: 'Product';
-    id: string;
     variants?: Array<
       { __typename?: 'ProductVariant' } & ProductVariantPricingFragment
     > | null;
@@ -2401,7 +2399,6 @@ export const ProductVariantPricingFragmentDoc = {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'sku' } },
           { kind: 'Field', name: { kind: 'Name', value: 'inventoryQuantity' } },
           {
             kind: 'Field',
@@ -7923,7 +7920,6 @@ export const GetProductPricingDocument = {
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'variants' },
@@ -7970,7 +7966,6 @@ export const GetProductPricingDocument = {
         kind: 'SelectionSet',
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'sku' } },
           { kind: 'Field', name: { kind: 'Name', value: 'inventoryQuantity' } },
           {
             kind: 'Field',
