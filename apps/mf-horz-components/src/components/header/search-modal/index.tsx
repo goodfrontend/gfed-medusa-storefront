@@ -1,10 +1,16 @@
 'use client';
 
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-import DOMPurify from 'isomorphic-dompurify';
 import { liteClient } from 'algoliasearch/lite';
-import { InstantSearch, useHits, useInstantSearch, useSearchBox } from 'react-instantsearch';
+import DOMPurify from 'isomorphic-dompurify';
+import {
+  Configure,
+  InstantSearch,
+  useHits,
+  useInstantSearch,
+  useSearchBox,
+} from 'react-instantsearch';
 
 import { Modal } from '@gfed-medusa/sf-lib-common/components/modal';
 import { PlaceholderImage } from '@gfed-medusa/sf-lib-ui/icons/placeholder-image';
@@ -19,7 +25,7 @@ const searchClient = liteClient(
 
 const INDEX_NAME = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME as string;
 
-const DEBOUNCE_MS = 300;
+const DEBOUNCE_MS = 200; // Reduce from 300
 
 type AlgoliaProductHit = {
   objectID: string;
@@ -66,8 +72,21 @@ function SearchModal({ buttonClassName }: SearchModalProps) {
         <InstantSearch
           searchClient={searchClient}
           indexName={INDEX_NAME}
+          stalledSearchDelay={200}
           future={{ preserveSharedStateOnUnmount: true }}
         >
+          <Configure
+            hitsPerPage={5}
+            attributesToRetrieve={[
+              'objectID',
+              'id',
+              'title',
+              'description',
+              'thumbnail',
+              'handle',
+            ]}
+            attributesToHighlight={[] as string[]}
+          />
           <div className="flex h-full max-h-[75vh] min-h-0 flex-col">
             <div className="shrink-0">
               <SearchBox isOpen={isOpen} />
@@ -132,12 +151,27 @@ const SearchBox = ({ isOpen }: { isOpen: boolean }) => {
 };
 
 const SearchResults = () => {
-  const { items } = useHits<AlgoliaProductHit>();
+  const { items, results } = useHits<AlgoliaProductHit>();
   const { status, error, indexUiState } = useInstantSearch();
   const query: string = (indexUiState as { query?: string }).query ?? '';
 
-  const isLoading = (status === 'loading' || status === 'stalled') && query.trim().length > 0;
+  // Stale when user has typed a new query but debounce hasn't fired yet —
+  // indexUiState.query updates on every keystroke but results.query only
+  // updates after Algolia responds, so they diverge during the debounce window.
+  const searchedQuery = results?.query ?? '';
+  const isStale =
+    query.trim().length > 0 &&
+    searchedQuery.length > 0 &&
+    query.trim() !== searchedQuery.trim();
+
+  const isLoading = status === 'stalled' && query.trim().length > 0;
+  const isPending =
+    (status === 'loading' || isStale) && query.trim().length > 0;
   const isError = status === 'error';
+
+  if (isPending) {
+    return null;
+  }
 
   if (isLoading) {
     return (
@@ -180,6 +214,11 @@ const SearchResults = () => {
 };
 
 const Hit = ({ hit }: { hit: AlgoliaProductHit }) => {
+  const sanitizedDescription = useMemo(
+    () => DOMPurify.sanitize(hit.description ?? ''),
+    [hit.description]
+  );
+
   return (
     <div
       className="relative mt-4 flex flex-row gap-x-2"
@@ -205,9 +244,7 @@ const Hit = ({ hit }: { hit: AlgoliaProductHit }) => {
         <h3>{hit.title}</h3>
         <p
           className="text-sm text-gray-500"
-          dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(hit.description ?? ''),
-          }}
+          dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
         />
       </div>
       <a
