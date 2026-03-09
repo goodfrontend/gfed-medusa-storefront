@@ -12,9 +12,13 @@ import type {
   GetCollectionQueryVariables,
   GetCollectionsQuery,
   GetCollectionsQueryVariables,
-  GetCollectionsSummaryQuery,
   GetCollectionsSummaryQueryVariables,
 } from '@/types/graphql';
+
+type CollectionSummary = {
+  id: string;
+  title: string;
+};
 
 export const retrieveCollection = async (id: string) => {
   try {
@@ -57,7 +61,7 @@ export const listCollections = async (
 export const getCollectionByHandle = async (handle: string) => {
   try {
     const data = await graphqlFetch<
-      GetCollectionsSummaryQuery,
+      { collections?: Array<CollectionSummary | null> | null },
       GetCollectionsSummaryQueryVariables
     >({
       query: GET_COLLECTIONS_SUMMARY_QUERY,

@@ -130,19 +130,11 @@ export const GET_PRODUCT_CATEGORIES_QUERY = gql`
       handle: $handle
       parent_category_id: $parent_category_id
     ) {
-      ...ProductCategory
-      parentCategory {
-        ...ProductCategory
-      }
-      categoryChildren {
-        ...ProductCategory
-      }
-      products {
-        count
-      }
+      id
+      name
+      description
     }
   }
-  ${PRODUCT_CATEGORY_FRAGMENT}
 `;
 
 export const GET_PRODUCT_CATEGORY_QUERY = gql`
@@ -182,13 +174,10 @@ export const GET_COLLECTIONS_QUERY = gql`
 export const GET_COLLECTIONS_SUMMARY_QUERY = gql`
   query GetCollectionsSummary($limit: Int, $offset: Int, $handle: [String]) {
     collections(limit: $limit, offset: $offset, handle: $handle) {
-      ...ProductCollection
-      products {
-        count
-      }
+      id
+      title
     }
   }
-  ${PRODUCT_COLLECTION_FRAGMENT}
 `;
 
 export const GET_COLLECTION_QUERY = gql`
