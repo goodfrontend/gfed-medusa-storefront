@@ -1,5 +1,17 @@
 # @gfed-medusa/sf-lib-checkout
 
+## 3.1.0
+
+### Minor Changes
+
+- 8dc1d6d: stripe payment checkout flow update
+
+### Patch Changes
+
+- Updated dependencies [21dd56b]
+- Updated dependencies [8dc1d6d]
+  - @gfed-medusa/sf-lib-common@3.2.0
+
 ## 3.0.1
 
 ### Patch Changes
