@@ -14,9 +14,10 @@ function CartMismatchBanner(props: { customer: Customer; cart: Cart }) {
   const { customer, cart } = props;
   const [isPending, setIsPending] = useState(false);
   const [actionText, setActionText] = useState('Run transfer again');
+  const [transferComplete, setTransferComplete] = useState(false);
   const ctx = useStorefrontContext();
 
-  if (!customer || !!cart.customerId) {
+  if (!customer || !!cart.customerId || transferComplete) {
     return;
   }
 
@@ -25,7 +26,14 @@ function CartMismatchBanner(props: { customer: Customer; cart: Cart }) {
       setIsPending(true);
       setActionText('Transferring..');
 
-      await transferCart(ctx);
+      const result = await transferCart(ctx);
+
+      setIsPending(false);
+      if (result?.customerId) {
+        setTransferComplete(true);
+      } else {
+        setActionText('Run transfer again');
+      }
     } catch {
       setActionText('Run transfer again');
       setIsPending(false);
