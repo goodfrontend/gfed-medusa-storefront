@@ -17,11 +17,10 @@ import { PlaceholderImage } from '@gfed-medusa/sf-lib-ui/icons/placeholder-image
 import { cn } from '@gfed-medusa/sf-lib-ui/lib/utils';
 import { Button } from '@medusajs/ui';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const searchClient = liteClient(
   process.env.NEXT_PUBLIC_ALGOLIA_APP_ID as string,
   process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY as string
-) as unknown as any;
+);
 
 const INDEX_NAME = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME as string;
 
