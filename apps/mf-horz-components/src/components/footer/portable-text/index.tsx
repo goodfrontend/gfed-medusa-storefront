@@ -1,5 +1,6 @@
 import { Fragment, ReactNode } from 'react';
 
+import { getImageKitUrl } from '@gfed-medusa/sf-lib-common/lib/utils/imagekit';
 import {
   FileBlock,
   IconLinkMark,
@@ -215,7 +216,10 @@ const PortableText = ({ value }: PortableTextProps) => {
         case 'sanity':
           return mark.iconImage?.asset?.url ? (
             <img
-              src={mark.iconImage.asset.url}
+              src={getImageKitUrl(mark.iconImage.asset.url, {
+                width: 32,
+                quality: 80,
+              })}
               alt={mark.iconImage.alt || 'Icon'}
               width={16}
               height={16}
@@ -225,7 +229,7 @@ const PortableText = ({ value }: PortableTextProps) => {
         case 'url':
           return mark.iconUrl ? (
             <img
-              src={mark.iconUrl}
+              src={getImageKitUrl(mark.iconUrl, { width: 32, quality: 80 })}
               alt="Icon"
               width={16}
               height={16}
@@ -298,7 +302,7 @@ const PortableText = ({ value }: PortableTextProps) => {
     return (
       <div className="my-6">
         <img
-          src={image.asset.url}
+          src={getImageKitUrl(image.asset.url, { width: 1200, quality: 80 })}
           alt={image.alt || ''}
           width={800}
           height={400}

@@ -115,12 +115,14 @@ export function ProductCard({
             'w-60 overflow-hidden rounded-2xl border p-0 shadow-sm'
           )}
         >
-          <div className="h-72 w-full overflow-hidden">
-            {/* eslint-disable-next-line @next/next/no-img-element -- needed for minimal variant */}
-            <img
+          <div className="relative h-72 w-full overflow-hidden">
+            <Image
               src={product.image.src}
               alt={product.image.alt ?? product.title}
-              className="h-full w-full object-cover"
+              fill
+              className="object-cover"
+              sizes="240px"
+              quality={60}
             />
           </div>
 
@@ -147,13 +149,15 @@ export function ProductCard({
       return (
         <div className={cn(productCardVariants({ variant, size }), className)}>
           {/* Image */}
-          <div className="relative">
+          <div className="relative aspect-[1/1]">
             <Image
-              src={product.image.src || '/assets/images/missing-img.webp'}
+              src={product.image.src}
               alt={product.image.alt ?? product.title}
-              width={500}
-              height={500}
-              className={cn('w-full object-cover')}
+              fill
+              className={cn('object-cover')}
+              priority
+              quality={60}
+              sizes="(max-width: 576px) 280px, (max-width: 768px) 360px, (max-width: 992px) 240px, 200px"
             />
             {badge && (
               <div className="absolute left-2 top-2">

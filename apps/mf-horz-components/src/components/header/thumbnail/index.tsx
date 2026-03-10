@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { getImageKitUrl } from '@gfed-medusa/sf-lib-common/lib/utils/imagekit';
 import { PlaceholderImage } from '@gfed-medusa/sf-lib-ui/icons/placeholder-image';
 import { Container, clx } from '@medusajs/ui';
 
@@ -51,7 +52,7 @@ const ImageOrPlaceholder = ({
 }: Pick<ThumbnailProps, 'size'> & { image?: string }) => {
   return image ? (
     <img
-      src={image}
+      src={getImageKitUrl(image, { width: 480, quality: 40 })}
       alt="Thumbnail"
       className="absolute inset-0 object-cover object-center"
       draggable={false}
