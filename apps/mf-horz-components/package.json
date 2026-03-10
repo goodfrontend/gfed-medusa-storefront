@@ -1,6 +1,6 @@
 {
   "name": "@gfed-medusa/mf-horz-components",
-  "version": "1.4.6",
+  "version": "1.4.7",
   "type": "module",
   "private": true,
   "scripts": {
@@ -25,17 +25,17 @@
     "@medusajs/ui-preset": "^2.12.2",
     "@packages/eslint-config": "workspace:*",
     "@tailwindcss/vite": "^4.1.18",
+    "algoliasearch": "^5.49.1",
     "dotenv": "^17.2.3",
     "hono": "^4.6.14",
     "isomorphic-dompurify": "2.34.0",
     "react": "^19.0.0",
     "react-country-flag": "^3.1.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-instantsearch": "^7.26.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
-    "next": "^15.3.8",
-    "tw-animate-css": "^1.3.7",
     "@types/node": "^20.0.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
@@ -43,11 +43,13 @@
     "autoprefixer": "^10.4.19",
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
+    "next": "^15.3.8",
     "postcss": "^8.5.6",
     "rollup-plugin-visualizer": "^6.0.5",
     "tailwindcss": "^4.1.18",
     "tsdown": "^0.17.3",
     "tsx": "^4.7.1",
+    "tw-animate-css": "^1.3.7",
     "typescript": "^5.0.0",
     "vite": "^5.2.0",
     "vite-node": "^5.2.0",

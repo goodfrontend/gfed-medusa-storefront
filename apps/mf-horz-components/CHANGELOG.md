@@ -1,5 +1,11 @@
 # @gfed-medusa/mf-horz-components
 
+## 1.4.7
+
+### Patch Changes
+
+- Implement algolia client-side and apply ssearch optimizations
+
 ## 1.4.6
 
 ### Patch Changes
