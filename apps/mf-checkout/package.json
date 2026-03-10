@@ -1,6 +1,6 @@
 {
   "name": "@gfed-medusa/mf-checkout",
-  "version": "1.3.4",
+  "version": "1.4.0",
   "type": "module",
   "private": true,
   "scripts": {
@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@gfed-medusa/sf-lib-checkout": "^3.0.1",
-    "@gfed-medusa/sf-lib-common": "^3.1.1",
+    "@gfed-medusa/sf-lib-common": "^3.3.0",
     "@gfed-medusa/sf-lib-ui": "^1.2.1",
     "@medusajs/ui": "^4.0.29",
     "@medusajs/ui-preset": "^2.12.2",

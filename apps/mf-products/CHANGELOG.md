@@ -1,5 +1,19 @@
 # @gfed-medusa/mf-products
 
+## 1.4.0
+
+### Minor Changes
+
+- 1a07c1b: Implement image kit loader for image optimization
+
+### Patch Changes
+
+- 6d5f0c4: resolve overfetching issues in pdp and plp
+- Updated dependencies [1a07c1b]
+- Updated dependencies [6d5f0c4]
+  - @gfed-medusa/sf-lib-products@1.5.0
+  - @gfed-medusa/sf-lib-common@3.3.0
+
 ## 1.3.5
 
 ### Patch Changes
