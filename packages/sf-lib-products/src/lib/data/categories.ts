@@ -1,15 +1,18 @@
 import { graphqlFetch } from '@gfed-medusa/sf-lib-common/lib/gql/apollo-client';
 
 import { GET_PRODUCT_CATEGORIES_QUERY } from '@/lib/gql/queries/product';
-import type {
-  GetProductCategoriesQuery,
-  GetProductCategoriesQueryVariables,
-} from '@/types/graphql';
+import type { GetProductCategoriesQueryVariables } from '@/types/graphql';
+
+type ProductCategorySummary = {
+  id: string;
+  name: string;
+  description?: string | null;
+};
 
 export const listCategories = async () => {
   try {
     const data = await graphqlFetch<
-      GetProductCategoriesQuery,
+      { productCategories?: Array<ProductCategorySummary | null> | null },
       GetProductCategoriesQueryVariables
     >({
       query: GET_PRODUCT_CATEGORIES_QUERY,
@@ -25,7 +28,7 @@ export const listCategories = async () => {
 export const getCategoryByHandle = async (handle: string[]) => {
   try {
     const data = await graphqlFetch<
-      GetProductCategoriesQuery,
+      { productCategories?: Array<ProductCategorySummary | null> | null },
       GetProductCategoriesQueryVariables
     >({
       query: GET_PRODUCT_CATEGORIES_QUERY,

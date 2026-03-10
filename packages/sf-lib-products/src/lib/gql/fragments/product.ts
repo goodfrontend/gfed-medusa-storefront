@@ -50,7 +50,6 @@ export const PRODUCT_VARIANT_CONTENT_FRAGMENT = gql`
 export const PRODUCT_VARIANT_PRICING_FRAGMENT = gql`
   fragment ProductVariantPricing on ProductVariant {
     id
-    sku
     inventoryQuantity
     price {
       ...Price
@@ -106,7 +105,6 @@ export const PRODUCT_CONTENT_FRAGMENT = gql`
   fragment ProductContent on Product {
     id
     title
-    handle
     description
     thumbnail
     width
@@ -117,7 +115,6 @@ export const PRODUCT_CONTENT_FRAGMENT = gql`
     material
     type
     collectionId
-    createdAt
     images {
       ...ProductImage
     }
@@ -125,20 +122,28 @@ export const PRODUCT_CONTENT_FRAGMENT = gql`
       ...ProductTag
     }
     options {
-      ...ProductOption
+      id
+      title
+      values {
+        value
+      }
     }
     variants {
-      ...ProductVariantContent
+      id
+      allowBackorder
+      manageInventory
+      options {
+        optionId
+        value
+      }
     }
     collection {
-      ...ProductCollection
+      title
+      handle
     }
   }
   ${PRODUCT_IMAGE_FRAGMENT}
   ${PRODUCT_TAG_FRAGMENT}
-  ${PRODUCT_OPTION_FRAGMENT}
-  ${PRODUCT_COLLECTION_FRAGMENT}
-  ${PRODUCT_VARIANT_CONTENT_FRAGMENT}
 `;
 
 export const PRODUCT_FRAGMENT = gql`
@@ -178,6 +183,26 @@ export const PRODUCT_FRAGMENT = gql`
   ${PRODUCT_OPTION_FRAGMENT}
   ${PRODUCT_VARIANT_FRAGMENT}
   ${PRODUCT_COLLECTION_FRAGMENT}
+`;
+
+export const PRODUCT_PREVIEW_FRAGMENT = gql`
+  fragment ProductPreview on Product {
+    id
+    title
+    handle
+    thumbnail
+    createdAt
+    variants {
+      id
+      price {
+        ...Price
+      }
+      originalPrice {
+        ...Price
+      }
+    }
+  }
+  ${PRICE_FRAGMENT}
 `;
 
 export const COLLECTION_PRODUCTS_FRAGMENT = gql`

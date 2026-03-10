@@ -4,7 +4,7 @@ import type { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/cont
 import { graphqlFetch } from '@gfed-medusa/sf-lib-common/lib/gql/apollo-client';
 import type { Region } from '@gfed-medusa/sf-lib-common/types/graphql';
 
-import { GET_PRODUCTS_QUERY } from '@/lib/gql/queries/product';
+import { GET_PRODUCTS_PREVIEW_QUERY, GET_PRODUCTS_QUERY } from '@/lib/gql/queries/product';
 import { sortProducts } from '@/lib/utils/sort-products';
 import type { SortOptions } from '@/types';
 import type {
@@ -84,9 +84,79 @@ export const listProducts = async (
   }
 };
 
+export const listProductsPreview = async (
+  {
+    countryCode,
+    regionId,
+    queryParams,
+  }: {
+    pageParam?: number;
+    queryParams?: GetProductsQueryVariables;
+    countryCode?: string;
+    regionId?: string;
+  },
+  ctx: StorefrontContext
+): Promise<{
+  response: {
+    products: Product[] | [];
+    count: number;
+  };
+  nextPage: number | null;
+  queryParams?: GetProductsQueryVariables;
+}> => {
+  if (!countryCode && !regionId) {
+    throw new Error('Country code or region ID is required');
+  }
+
+  let region: Region | undefined | null;
+
+  if (countryCode) {
+    region = await getRegion(countryCode, ctx);
+  } else {
+    region = await retrieveRegion(regionId!, ctx);
+  }
+
+  if (!region) {
+    return {
+      response: { products: [], count: 0 },
+      nextPage: null,
+    };
+  }
+
+  const variables: GetProductsQueryVariables = {
+    region_id: region.id,
+    ...queryParams,
+  };
+
+  try {
+    const data = await graphqlFetch<
+      { products: { products?: Product[] | null; count: number } },
+      GetProductsQueryVariables
+    >({
+      query: GET_PRODUCTS_PREVIEW_QUERY,
+      variables,
+    });
+
+    return {
+      response: {
+        products: data?.products?.products ?? [],
+        count: data?.products?.count || 0,
+      },
+      nextPage: null,
+    };
+  } catch (error) {
+    console.error('Error fetching products preview from BFF:', error);
+    return {
+      response: { products: [], count: 0 },
+      nextPage: null,
+    };
+  }
+};
+
 /**
- * This will fetch 100 products to the Next.js cache and sort them based on the sortBy parameter.
- * It will then return the paginated products based on the page and limit parameters.
+ * Price sorting is still handled locally, so it fetches a larger result set and
+ * slices it after sorting. For the default created_at sort, fetch only the
+ * requested page to avoid downloading unused products.
  */
 export const listProductsWithSort = async (
   {
@@ -107,10 +177,42 @@ export const listProductsWithSort = async (
   queryParams?: GetProductsQueryVariables;
 }> => {
   const limit = queryParams?.limit || 12;
+  const pageParam = Math.max(page - 1, 0) * limit;
+
+  if (sortBy === 'created_at') {
+    const {
+      response: { products, count },
+    } = await listProductsPreview(
+      {
+        queryParams: {
+          ...queryParams,
+          limit,
+          offset: pageParam,
+        },
+        countryCode,
+      },
+      ctx
+    );
+
+    const nextPage = count > pageParam + limit ? pageParam + limit : null;
+
+    return {
+      response: {
+        products: products ?? [],
+        count,
+      },
+      nextPage,
+      queryParams: {
+        ...queryParams,
+        limit,
+        offset: pageParam,
+      },
+    };
+  }
 
   const {
     response: { products: rawProducts, count },
-  } = await listProducts(
+  } = await listProductsPreview(
     {
       pageParam: 0,
       queryParams: {
@@ -124,8 +226,6 @@ export const listProductsWithSort = async (
 
   const products = rawProducts ?? [];
   const sortedProducts = sortProducts(products as Product[], sortBy);
-
-  const pageParam = (page - 1) * limit;
 
   const nextPage = count > pageParam + limit ? pageParam + limit : null;
 

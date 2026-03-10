@@ -1,8 +1,7 @@
 import { ProductPreview } from '@gfed-medusa/sf-lib-common/components/product-preview';
 import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
 
-import { listProducts } from '@/lib/data/products';
-import { getRegion } from '@/lib/data/regions';
+import { listProductsPreview } from '@/lib/data/products';
 import {
   GetProductsQueryVariables,
   Product as ProductType,
@@ -18,17 +17,11 @@ export default async function RelatedProducts({
   countryCode,
 }: RelatedProductsProps) {
   const ctx = await resolveNextContext();
-  const region = await getRegion(countryCode, ctx);
-
-  if (!region) {
-    return null;
-  }
 
   // edit this function to define your related products logic
-  const queryParams: GetProductsQueryVariables = {};
-  if (region?.id) {
-    queryParams.region_id = region.id;
-  }
+  const queryParams: GetProductsQueryVariables = {
+    limit: 9,
+  };
   if (product.collectionId) {
     queryParams.collection_id = [product.collectionId];
   }
@@ -39,7 +32,7 @@ export default async function RelatedProducts({
   }
   queryParams.is_giftcard = false;
 
-  const products = await listProducts(
+  const products = await listProductsPreview(
     {
       queryParams,
       countryCode,
