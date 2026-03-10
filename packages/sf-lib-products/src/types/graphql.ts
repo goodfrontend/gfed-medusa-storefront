@@ -685,6 +685,7 @@ export type Query_ProductsArgs = {
   is_giftcard?: InputMaybe<Scalars['Boolean']['input']>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
+  order?: InputMaybe<Scalars['String']['input']>;
   q?: InputMaybe<Scalars['String']['input']>;
   region_id?: InputMaybe<Scalars['String']['input']>;
   tag_id?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
@@ -1331,6 +1332,7 @@ export type GetCartQuery = {
 export type GetProductsQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
+  order?: InputMaybe<Scalars['String']['input']>;
   handle?: InputMaybe<Scalars['String']['input']>;
   region_id?: InputMaybe<Scalars['String']['input']>;
   category_id?: InputMaybe<
@@ -1363,6 +1365,7 @@ export type GetProductsQuery = {
 export type GetProductsPreviewQueryVariables = Exact<{
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
+  order?: InputMaybe<Scalars['String']['input']>;
   handle?: InputMaybe<Scalars['String']['input']>;
   region_id?: InputMaybe<Scalars['String']['input']>;
   category_id?: InputMaybe<
@@ -6617,6 +6620,14 @@ export const GetProductsDocument = {
           kind: 'VariableDefinition',
           variable: {
             kind: 'Variable',
+            name: { kind: 'Name', value: 'order' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
             name: { kind: 'Name', value: 'handle' },
           },
           type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
@@ -6720,6 +6731,14 @@ export const GetProductsDocument = {
                 value: {
                   kind: 'Variable',
                   name: { kind: 'Name', value: 'offset' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'order' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'order' },
                 },
               },
               {
@@ -7071,6 +7090,14 @@ export const GetProductsPreviewDocument = {
           kind: 'VariableDefinition',
           variable: {
             kind: 'Variable',
+            name: { kind: 'Name', value: 'order' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
             name: { kind: 'Name', value: 'handle' },
           },
           type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
@@ -7174,6 +7201,14 @@ export const GetProductsPreviewDocument = {
                 value: {
                   kind: 'Variable',
                   name: { kind: 'Name', value: 'offset' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'order' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'order' },
                 },
               },
               {

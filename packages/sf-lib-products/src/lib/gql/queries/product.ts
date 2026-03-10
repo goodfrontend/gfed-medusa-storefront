@@ -15,6 +15,7 @@ export const GET_PRODUCTS_QUERY = gql`
   query GetProducts(
     $limit: Int
     $offset: Int
+    $order: String
     $handle: String
     $region_id: String
     $category_id: [String]
@@ -27,6 +28,7 @@ export const GET_PRODUCTS_QUERY = gql`
     products(
       limit: $limit
       offset: $offset
+      order: $order
       handle: $handle
       region_id: $region_id
       category_id: $category_id
@@ -49,6 +51,7 @@ export const GET_PRODUCTS_PREVIEW_QUERY = gql`
   query GetProductsPreview(
     $limit: Int
     $offset: Int
+    $order: String
     $handle: String
     $region_id: String
     $category_id: [String]
@@ -61,6 +64,7 @@ export const GET_PRODUCTS_PREVIEW_QUERY = gql`
     products(
       limit: $limit
       offset: $offset
+      order: $order
       handle: $handle
       region_id: $region_id
       category_id: $category_id

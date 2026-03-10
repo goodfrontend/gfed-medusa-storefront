@@ -154,8 +154,9 @@ export const listProductsPreview = async (
 };
 
 /**
- * This will fetch 100 products to the Next.js cache and sort them based on the sortBy parameter.
- * It will then return the paginated products based on the page and limit parameters.
+ * Price sorting is still handled locally, so it fetches a larger result set and
+ * slices it after sorting. For the default created_at sort, fetch only the
+ * requested page to avoid downloading unused products.
  */
 export const listProductsWithSort = async (
   {
@@ -176,6 +177,38 @@ export const listProductsWithSort = async (
   queryParams?: GetProductsQueryVariables;
 }> => {
   const limit = queryParams?.limit || 12;
+  const pageParam = Math.max(page - 1, 0) * limit;
+
+  if (sortBy === 'created_at') {
+    const {
+      response: { products, count },
+    } = await listProductsPreview(
+      {
+        queryParams: {
+          ...queryParams,
+          limit,
+          offset: pageParam,
+        },
+        countryCode,
+      },
+      ctx
+    );
+
+    const nextPage = count > pageParam + limit ? pageParam + limit : null;
+
+    return {
+      response: {
+        products: products ?? [],
+        count,
+      },
+      nextPage,
+      queryParams: {
+        ...queryParams,
+        limit,
+        offset: pageParam,
+      },
+    };
+  }
 
   const {
     response: { products: rawProducts, count },
@@ -193,8 +226,6 @@ export const listProductsWithSort = async (
 
   const products = rawProducts ?? [];
   const sortedProducts = sortProducts(products as Product[], sortBy);
-
-  const pageParam = (page - 1) * limit;
 
   const nextPage = count > pageParam + limit ? pageParam + limit : null;
 
