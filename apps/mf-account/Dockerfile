@@ -49,6 +49,9 @@ COPY --from=installer /app/apps/mf-account/package.json .
 COPY --from=installer --chown=nextjs:nodejs /app/apps/mf-account/.next/standalone ./
 COPY --from=installer --chown=nextjs:nodejs /app/apps/mf-account/.next/static ./apps/mf-account/.next/static
 COPY --from=installer --chown=nextjs:nodejs /app/apps/mf-account/public ./apps/mf-account/public
+COPY --from=installer --chown=nextjs:nodejs \
+    /app/apps/mf-account/imagekit-loader.js \
+    ./apps/mf-account/imagekit-loader.js
 
 ENV NODE_ENV=production
 ENV HOSTNAME=0.0.0.0

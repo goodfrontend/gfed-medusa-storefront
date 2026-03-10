@@ -49,6 +49,9 @@ COPY --from=installer /app/apps/mf-checkout/package.json .
 COPY --from=installer --chown=nextjs:nodejs /app/apps/mf-checkout/.next/standalone ./
 COPY --from=installer --chown=nextjs:nodejs /app/apps/mf-checkout/.next/static ./apps/mf-checkout/.next/static
 COPY --from=installer --chown=nextjs:nodejs /app/apps/mf-checkout/public ./apps/mf-checkout/public
+COPY --from=installer --chown=nextjs:nodejs \
+    /app/apps/mf-checkout/imagekit-loader.js \
+    ./apps/mf-checkout/imagekit-loader.js
 
 ENV NODE_ENV=production
 ENV HOSTNAME=0.0.0.0
