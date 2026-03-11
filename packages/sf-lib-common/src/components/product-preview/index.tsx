@@ -10,9 +10,16 @@ import { Thumbnail } from '../thumbnail';
 export type ProductPreviewProps = {
   product: Product;
   isFeatured?: boolean;
+  imagePriority?: boolean;
+  imageFetchPriority?: 'auto' | 'high' | 'low';
 };
 
-function ProductPreview({ product, isFeatured }: ProductPreviewProps) {
+function ProductPreview({
+  product,
+  isFeatured,
+  imagePriority = false,
+  imageFetchPriority,
+}: ProductPreviewProps) {
   const { cheapestPrice } = getProductPrice({
     product,
   });
@@ -25,6 +32,8 @@ function ProductPreview({ product, isFeatured }: ProductPreviewProps) {
           images={product.images}
           size="full"
           isFeatured={isFeatured}
+          imagePriority={imagePriority}
+          imageFetchPriority={imageFetchPriority}
         />
         <div className="txt-compact-medium mt-4 flex justify-between">
           <Text className="text-ui-fg-subtle" data-testid="product-title">

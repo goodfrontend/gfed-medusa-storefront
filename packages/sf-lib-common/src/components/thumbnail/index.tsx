@@ -11,6 +11,8 @@ type ThumbnailProps = {
   images?: any[] | null;
   size?: 'small' | 'medium' | 'large' | 'full' | 'square';
   isFeatured?: boolean;
+  imagePriority?: boolean;
+  imageFetchPriority?: 'auto' | 'high' | 'low';
   className?: string;
   'data-testid'?: string;
 };
@@ -20,6 +22,8 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
   images,
   size = 'small',
   isFeatured,
+  imagePriority = false,
+  imageFetchPriority,
   className,
   'data-testid': dataTestid,
 }) => {
@@ -42,7 +46,12 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
       )}
       data-testid={dataTestid}
     >
-      <ImageOrPlaceholder image={initialImage} size={size} />
+      <ImageOrPlaceholder
+        image={initialImage}
+        size={size}
+        imagePriority={imagePriority}
+        imageFetchPriority={imageFetchPriority}
+      />
     </Container>
   );
 };
@@ -50,13 +59,20 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
 const ImageOrPlaceholder = ({
   image,
   size,
-}: Pick<ThumbnailProps, 'size'> & { image?: string }) => {
+  imagePriority,
+  imageFetchPriority,
+}: Pick<
+  ThumbnailProps,
+  'size' | 'imagePriority' | 'imageFetchPriority'
+> & { image?: string }) => {
   return image ? (
     <Image
       src={image}
       alt="Thumbnail"
       className="absolute inset-0 object-cover object-center"
       draggable={false}
+      priority={imagePriority}
+      {...(imageFetchPriority ? { fetchPriority: imageFetchPriority } : {})}
       quality={40}
       sizes="(max-width: 576px) 280px, (max-width: 768px) 360px, (max-width: 992px) 480px, 800px"
       fill
