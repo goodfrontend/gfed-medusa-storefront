@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-common
 
+## 3.3.0
+
+### Minor Changes
+
+- 1a07c1b: Implement image kit loader for image optimization
+
 ## 3.2.0
 
 ### Minor Changes
