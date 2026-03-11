@@ -44,6 +44,8 @@ const Item: React.FC<AccordionItemProps> = ({
   triggerable,
   ...props
 }) => {
+  const titleId = React.useId();
+
   return (
     <AccordionPrimitive.Item
       {...props}
@@ -57,9 +59,11 @@ const Item: React.FC<AccordionItemProps> = ({
         <div className="flex flex-col">
           <div className="flex w-full items-center justify-between">
             <div className="flex items-center gap-4">
-              <Text className="text-ui-fg-subtle text-sm">{title}</Text>
+              <Text id={titleId} className="text-ui-fg-subtle text-sm">
+                {title}
+              </Text>
             </div>
-            <AccordionPrimitive.Trigger>
+            <AccordionPrimitive.Trigger aria-labelledby={titleId}>
               {customTrigger || <MorphingTrigger />}
             </AccordionPrimitive.Trigger>
           </div>
