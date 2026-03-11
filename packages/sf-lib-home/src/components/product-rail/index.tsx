@@ -12,7 +12,10 @@ export function ProductRail({ collection }: { collection: Collection }) {
     <div className="content-container small:py-24 py-12">
       <div className="mb-8 flex justify-between">
         <Text className="txt-xlarge">{collection.title}</Text>
-        <InteractiveLink href={`/collections/${collection.handle}`}>
+        <InteractiveLink
+          className="text-ui-fg-base hover:text-ui-fg-subtle"
+          href={`/collections/${collection.handle}`}
+        >
           View all
         </InteractiveLink>
       </div>
