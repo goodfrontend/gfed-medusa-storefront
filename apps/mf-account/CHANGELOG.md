@@ -1,5 +1,16 @@
 # @gfed-medusa/mf-account
 
+## 1.6.0
+
+### Minor Changes
+
+- 1a07c1b: Implement image kit loader for image optimization
+
+### Patch Changes
+
+- Updated dependencies [1a07c1b]
+  - @gfed-medusa/sf-lib-common@3.3.0
+
 ## 1.5.1
 
 ### Patch Changes

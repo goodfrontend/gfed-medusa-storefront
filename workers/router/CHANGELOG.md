@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-gateway
 
+## 1.2.2
+
+### Patch Changes
+
+- 6d5f0c4: resolve overfetching issues in pdp and plp
+
 ## 1.2.1
 
 ### Patch Changes
