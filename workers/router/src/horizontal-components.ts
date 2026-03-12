@@ -100,10 +100,20 @@ export async function injectHorizontalComponents(
     }
   );
 
-  const bundleUrl = `/horz-assets/${jsFile}`;
-  const stylesheetUrl = `/horz-assets/${cssFile}`;
+  const bundleUrl = jsFile ? `/horz-assets/${jsFile}` : '';
+  const stylesheetUrl = cssFile ? `/horz-assets/${cssFile}` : '';
 
-  const bundleTag = `<script>window.__MFE_BUNDLE_URL__ = "${bundleUrl}";</script>`;
+  const preloadTags = [
+    stylesheetUrl
+      ? `<link rel="preload" href="${stylesheetUrl}" as="style">`
+      : '',
+  ]
+    .filter(Boolean)
+    .join('');
+
+  const bundleTag = bundleUrl
+    ? `<script>window.__MFE_BUNDLE_URL__ = "${bundleUrl}";</script>`
+    : '';
 
   const dataScripts = components
     .map(
@@ -114,14 +124,17 @@ export async function injectHorizontalComponents(
 
   let rewriter = new HTMLRewriter().on('head', {
     element(el) {
-      el.append(`${bundleTag}${dataScripts}`, { html: true });
+      el.append(`${preloadTags}${bundleTag}${dataScripts}`, { html: true });
     },
   });
 
   for (const comp of components) {
     const { html, config: compConfig } = comp;
 
-    const shadowContent = `<template shadowrootmode="open"><link rel="stylesheet" href="${stylesheetUrl}"><div id="root-${compConfig.elementTag}">${html}</div></template>`;
+    const stylesheetTag = stylesheetUrl
+      ? `<link rel="stylesheet" href="${stylesheetUrl}">`
+      : '';
+    const shadowContent = `<template shadowrootmode="open">${stylesheetTag}<div id="root-${compConfig.elementTag}">${html}</div></template>`;
 
     rewriter = rewriter.on(compConfig.elementTag, {
       element(el) {
@@ -136,6 +149,10 @@ export async function injectHorizontalComponents(
 
   const transformedResponse = rewriter.transform(hostResponse);
   const newHeaders = new Headers(transformedResponse.headers);
+
+  if (stylesheetUrl) {
+    newHeaders.append('Link', `<${stylesheetUrl}>; rel=preload; as=style`);
+  }
 
   newHeaders.delete('content-encoding');
   newHeaders.delete('content-length');

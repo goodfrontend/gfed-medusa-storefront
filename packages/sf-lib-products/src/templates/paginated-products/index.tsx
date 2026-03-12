@@ -7,6 +7,7 @@ import { listProductsWithSort } from '@/lib/data/products';
 import { getRegion } from '@/lib/data/regions';
 
 const PRODUCT_LIMIT = 12;
+const LCP_CANDIDATE_COUNT = 4;
 
 type PaginatedProductsParams = {
   limit: number;
@@ -78,10 +79,16 @@ export default async function PaginatedProducts({
         className="small:grid-cols-3 medium:grid-cols-4 grid w-full grid-cols-2 gap-x-6 gap-y-8"
         data-testid="products-list"
       >
-        {products.map((p) => {
+        {products.map((p, index) => {
+          const isLcpCandidate = index < LCP_CANDIDATE_COUNT;
+
           return (
             <li key={p.id}>
-              <ProductPreview product={p} />
+              <ProductPreview
+                product={p}
+                imagePriority={isLcpCandidate}
+                imageFetchPriority={isLcpCandidate ? 'high' : undefined}
+              />
             </li>
           );
         })}

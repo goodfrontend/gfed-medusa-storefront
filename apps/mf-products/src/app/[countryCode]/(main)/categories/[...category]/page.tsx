@@ -27,11 +27,14 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     const categoryPath = params.category.join('/');
     const productCategory = await getCategoryByPathCached(categoryPath);
 
-    const title = productCategory?.name + ' | Medusa Store';
-    const description = productCategory?.description ?? `${title} category.`;
+    const categoryName = productCategory?.name ?? 'Category';
+    const title = `${categoryName} | Medusa Store`;
+    const description =
+      productCategory?.description?.trim() ||
+      `Browse ${categoryName} products at Medusa Store.`;
 
     return {
-      title: `${title} | Medusa Store`,
+      title,
       description,
       alternates: {
         canonical: `${params.category.join('/')}`,

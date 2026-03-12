@@ -31,6 +31,7 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
                   style={{
                     objectFit: 'cover',
                   }}
+                  {...(index === 0 ? { fetchPriority: 'high' } : {})}
                 />
               )}
             </Container>
