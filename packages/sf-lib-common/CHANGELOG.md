@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-common
 
+## 3.3.1
+
+### Patch Changes
+
+- 5c7398a: Update sameSite for medusa cookies to none/lax in prod/dev
+
 ## 3.3.0
 
 ### Minor Changes
