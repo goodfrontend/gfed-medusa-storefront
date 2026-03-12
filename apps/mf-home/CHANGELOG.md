@@ -1,5 +1,15 @@
 # @gfed-medusa/mf-home
 
+## 1.5.1
+
+### Patch Changes
+
+- 1b94a2d: resolve lighthouse issues in home and product pages
+- Updated dependencies [1b94a2d]
+  - @gfed-medusa/sf-lib-common@3.3.2
+  - @gfed-medusa/sf-lib-home@1.2.3
+  - @gfed-medusa/sf-lib-ui@1.2.2
+
 ## 1.5.0
 
 ### Minor Changes
