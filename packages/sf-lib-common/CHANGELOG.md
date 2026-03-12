@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-common
 
+## 3.3.3
+
+### Patch Changes
+
+- 76e3f7c: Fix undefined environemnt variable
+
 ## 3.3.2
 
 ### Patch Changes
