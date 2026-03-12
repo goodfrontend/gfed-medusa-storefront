@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@gfed-medusa/sf-lib-checkout": "^3.0.1",
-    "@gfed-medusa/sf-lib-common": "^3.3.2",
+    "@gfed-medusa/sf-lib-common": "^3.3.3",
     "@gfed-medusa/sf-lib-ui": "^1.2.2",
     "@medusajs/ui": "^4.0.29",
     "@medusajs/ui-preset": "^2.12.2",
