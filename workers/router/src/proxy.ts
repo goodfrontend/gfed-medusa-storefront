@@ -23,6 +23,7 @@ export async function proxyRequest(
   const cacheKey = getCacheKey(request);
   const noCacheApps = getNoCacheApps(config);
   const canCacheApp = !noCacheApps.includes(targetOrigin);
+  const acceptsHtml = request.headers.get('accept')?.includes('text/html');
 
   if (
     request.method === 'GET' &&
@@ -35,6 +36,11 @@ export async function proxyRequest(
   }
 
   const targetUrl = new URL(targetOrigin + targetPathname + url.search);
+  const loadComponents = () =>
+    fetchAllComponentResources(horizontalComponents, config, request).then(
+      (components) => ({ components, error: null }),
+      (error) => ({ components: null, error })
+    );
 
   const modifiedRequest = new Request(targetUrl, {
     method: request.method,
@@ -44,6 +50,10 @@ export async function proxyRequest(
   });
   modifiedRequest.headers.set('X-Forwarded-Host', url.hostname);
   modifiedRequest.headers.set('Host', targetUrl.hostname);
+
+  // Start header/footer fetches alongside the origin HTML request.
+  const componentsPromise =
+    request.method === 'GET' && acceptsHtml ? loadComponents() : null;
 
   const response = await fetch(modifiedRequest);
 
@@ -56,14 +66,15 @@ export async function proxyRequest(
   );
 
   if (contentType.includes('text/html')) {
-    const components = await fetchAllComponentResources(
-      horizontalComponents,
-      config,
-      request
-    );
+    const componentResult = await (componentsPromise ?? loadComponents());
+
+    if (componentResult.error) {
+      throw componentResult.error;
+    }
+
     const transformedResponse = await injectHorizontalComponents(
       response,
-      components,
+      componentResult.components ?? [],
       config
     );
 
