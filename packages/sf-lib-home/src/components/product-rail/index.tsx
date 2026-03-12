@@ -19,7 +19,7 @@ export function ProductRail({ collection }: { collection: Collection }) {
           View all
         </InteractiveLink>
       </div>
-      <ul className="small:grid-cols-3 small:gap-y-36 grid grid-cols-2 gap-x-6 gap-y-24">
+      <ul className="small:grid-cols-3 small:gap-y-36 lg:grid-cols-3 lg:gap-y-36 grid grid-cols-2 gap-x-6 gap-y-24">
         {collection.products.items &&
           collection.products.items.map((product) => (
             <li key={product?.id}>
