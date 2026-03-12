@@ -1,13 +1,16 @@
 'use server';
 
+const isProd = process.env.NODE_ENV === 'production';
+
 export async function setCartIdAction(id: string) {
   const { cookies } = await import('next/headers');
   const c = await cookies();
   c.set('_medusa_cart_id', id, {
     maxAge: 60 * 60 * 24 * 7,
     httpOnly: true,
-    sameSite: 'strict',
-    secure: process.env.NODE_ENV === 'production',
+    sameSite: isProd ? 'none' : 'lax',
+    secure: isProd,
+    domain: isProd ? '.justgood.win' : undefined,
   });
 }
 
@@ -23,8 +26,9 @@ export async function setAuthTokenAction(token: string) {
   c.set('_medusa_jwt', token, {
     maxAge: 60 * 60 * 24 * 7,
     httpOnly: true,
-    sameSite: 'strict',
-    secure: process.env.NODE_ENV === 'production',
+    sameSite: isProd ? 'none' : 'lax',
+    secure: isProd,
+    domain: isProd ? '.justgood.win' : undefined,
   });
 }
 
