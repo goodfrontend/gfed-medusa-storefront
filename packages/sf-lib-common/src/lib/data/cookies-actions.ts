@@ -1,8 +1,7 @@
 'use server';
 
-const isProd = process.env.NODE_ENV === 'production';
-
 export async function setCartIdAction(id: string) {
+  const isProd = process.env.NODE_ENV === 'production';
   const { cookies } = await import('next/headers');
   const c = await cookies();
   c.set('_medusa_cart_id', id, {
@@ -21,6 +20,7 @@ export async function removeCartIdAction() {
 }
 
 export async function setAuthTokenAction(token: string) {
+  const isProd = process.env.NODE_ENV === 'production';
   const { cookies } = await import('next/headers');
   const c = await cookies();
   c.set('_medusa_jwt', token, {
