@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-checkout
 
+## 3.1.1
+
+### Patch Changes
+
+- e894a49: Resolve cart components flicker
+
 ## 3.1.0
 
 ### Minor Changes
