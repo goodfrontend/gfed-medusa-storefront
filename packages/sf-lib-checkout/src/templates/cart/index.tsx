@@ -8,15 +8,16 @@ import SignInPrompt from '@/components/sign-in-prompt';
 import { Customer } from '@/lib/gql/generated-types/graphql';
 
 import ItemsTemplate from '../items';
+import SkeletonCartPage from '../skeleton-cart-page';
 import Summary from '../summary';
 
 const CartTemplate = ({ customer }: { customer: Customer | null }) => {
-  const { cart } = useCart();
+  const { cart, isLoading } = useCart();
 
   return (
     <div className="py-12">
       <div className="content-container" data-testid="cart-container">
-        {cart?.items?.length ? (
+        {cart?.items?.length && !isLoading ? (
           <div className="small:grid-cols-[1fr_360px] grid grid-cols-1 gap-x-40">
             <div className="flex flex-col gap-y-6 bg-white py-6">
               {!customer && (
@@ -39,11 +40,11 @@ const CartTemplate = ({ customer }: { customer: Customer | null }) => {
               </div>
             </div>
           </div>
-        ) : (
+        ) : !isLoading ? (
           <div>
             <EmptyCartMessage />
           </div>
-        )}
+        ) : <SkeletonCartPage />}
       </div>
     </div>
   );
