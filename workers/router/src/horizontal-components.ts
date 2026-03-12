@@ -39,17 +39,33 @@ function extractBodyContent(html: string): string {
   return content.replace(/<script\b[^>]*>([\s\S]*?)<\/script>/gim, '').trim();
 }
 
-async function fetchComponentResources(
-  componentConfig: HorizontalComponentConfig,
-  config: AppConfig,
-  request: Request
-): Promise<ComponentResources> {
+function getComponentRequestHeaders(request: Request): Record<string, string> {
   const headers: Record<string, string> = {};
   const cookie = request.headers.get('Cookie');
   if (cookie) {
     headers['Cookie'] = cookie;
   }
 
+  return headers;
+}
+
+function isSsrComponentPayload(
+  payload: unknown
+): payload is { html: string; data: unknown } {
+  return (
+    typeof payload === 'object' &&
+    payload !== null &&
+    'html' in payload &&
+    typeof payload.html === 'string' &&
+    'data' in payload
+  );
+}
+
+async function fetchComponentResourcesLegacy(
+  componentConfig: HorizontalComponentConfig,
+  config: AppConfig,
+  headers: Record<string, string>
+): Promise<ComponentResources> {
   const fragmentUrl = `${config.HORIZONTAL_SERVICE}/fragment/${componentConfig.name}`;
   const dataUrl = `${config.HORIZONTAL_SERVICE}/api/${componentConfig.name}`;
 
@@ -66,6 +82,35 @@ async function fetchComponentResources(
     data,
     config: componentConfig,
   };
+}
+
+async function fetchComponentResources(
+  componentConfig: HorizontalComponentConfig,
+  config: AppConfig,
+  request: Request
+): Promise<ComponentResources> {
+  const headers = getComponentRequestHeaders(request);
+  const ssrUrl = `${config.HORIZONTAL_SERVICE}/ssr/${componentConfig.name}`;
+
+  try {
+    const ssrRes = await fetch(ssrUrl, { headers });
+
+    if (ssrRes.ok) {
+      const payload = await ssrRes.json();
+
+      if (isSsrComponentPayload(payload)) {
+        return {
+          html: payload.html,
+          data: JSON.stringify(payload.data ?? null),
+          config: componentConfig,
+        };
+      }
+    }
+  } catch {
+    // Fall back to the legacy fragment+api flow if the combined endpoint is unavailable.
+  }
+
+  return fetchComponentResourcesLegacy(componentConfig, config, headers);
 }
 
 export async function fetchAllComponentResources(
