@@ -1,3 +1,8 @@
+const EXTERNAL_STORAGES = [
+  'cdn.shopify.com',
+  'medusa-public-images.s3.eu-west-1.amazonaws.com',
+];
+
 export function getImageKitUrl(
   src: string,
   options?: { width?: number; height?: number; quality?: number }
@@ -21,7 +26,9 @@ export function getImageKitUrl(
 
   if (src.startsWith('http://') || src.startsWith('https://')) {
     let urlPath = src.replace(/^https?:\/\//, '');
-    urlPath = urlPath.replace(/^cdn\.shopify\.com\//, '');
+    for (const domain of EXTERNAL_STORAGES) {
+      urlPath = urlPath.replace(new RegExp(`^${domain}/`), '');
+    }
     return transformStr
       ? `${normalizedEndpoint}/${transformStr}/${urlPath}`
       : `${normalizedEndpoint}/${urlPath}`;
