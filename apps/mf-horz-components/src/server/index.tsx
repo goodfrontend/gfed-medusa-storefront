@@ -25,6 +25,22 @@ const resolveContext = (c: Context): StorefrontContext => {
   };
 };
 
+const loadComponentData = async (
+  c: Context,
+  name: string
+): Promise<{ component: NonNullable<ReturnType<typeof getComponent>>; data: any }> => {
+  const component = getComponent(name);
+
+  if (!component) {
+    throw new Error(`Component '${name}' not found`);
+  }
+
+  const ctx = resolveContext(c);
+  const data = await component.getData(ctx);
+
+  return { component, data };
+};
+
 app.get('/api/horz/context', async (c) => {
   const cartId = getCookie(c, '_medusa_cart_id');
   const cacheId = getCookie(c, '_medusa_cache_id');
@@ -107,8 +123,7 @@ app.get('/api/:name', async (c) => {
     return c.json({ error: `Component '${name}' not found` }, 404);
 
   try {
-    const ctx = resolveContext(c);
-    const data = await component.getData(ctx);
+    const { data } = await loadComponentData(c, name);
     return c.json(data);
   } catch (error) {
     console.error('Error fetching data for component:', name, error);
@@ -125,14 +140,35 @@ app.get('/fragment/:name', async (c) => {
   }
 
   try {
-    const ctx = resolveContext(c);
-    const data = await component.getData(ctx);
+    const { data } = await loadComponentData(c, name);
     const Component = component.component;
     const html = renderToString(<Component {...data} />);
     return c.html(html);
   } catch (error) {
     console.error('Error rendering component:', name, error);
     return c.html(`<!-- Error rendering component '${name}' -->`, 500);
+  }
+});
+
+app.get('/ssr/:name', async (c) => {
+  const name = c.req.param('name');
+
+  if (!getComponent(name)) {
+    return c.json({ error: `Component '${name}' not found` }, 404);
+  }
+
+  try {
+    const { component, data } = await loadComponentData(c, name);
+    const Component = component.component;
+    const html = renderToString(<Component {...data} />);
+
+    return c.json({
+      html,
+      data,
+    });
+  } catch (error) {
+    console.error('Error rendering SSR payload for component:', name, error);
+    return c.json({ error: 'Failed to render component payload' }, 500);
   }
 });
 
