@@ -1,5 +1,13 @@
 # @gfed-medusa/mf-home
 
+## 1.5.2
+
+### Patch Changes
+
+- 5a0007c: Include medusa external storage to the iamgekit loader
+- Updated dependencies [5a0007c]
+  - @gfed-medusa/sf-lib-common@3.3.5
+
 ## 1.5.1
 
 ### Patch Changes

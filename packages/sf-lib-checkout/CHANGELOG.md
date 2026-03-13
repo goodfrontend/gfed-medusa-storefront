@@ -1,5 +1,16 @@
 # @gfed-medusa/sf-lib-checkout
 
+## 3.2.0
+
+### Minor Changes
+
+- 7471d51: checkout payment/redirect and hydration fixes, and Stripe build env wiring
+
+### Patch Changes
+
+- Updated dependencies [5a0007c]
+  - @gfed-medusa/sf-lib-common@3.3.5
+
 ## 3.1.2
 
 ### Patch Changes
