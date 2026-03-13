@@ -7,9 +7,9 @@ export enum LOGIN_VIEW {
   REGISTER = 'register',
 }
 
-const LoginTemplate = () => {
+const LoginTemplate = ({ bffBaseUrl }: { bffBaseUrl: string }) => {
   const goToLogin = () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_BFF_BASE_URL}/auth/login`;
+    window.location.href = `${bffBaseUrl}/auth/login`;
   };
 
   return (

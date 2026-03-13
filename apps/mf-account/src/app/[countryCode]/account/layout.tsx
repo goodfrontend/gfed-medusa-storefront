@@ -28,6 +28,7 @@ export default async function PageLayout({
   const customer = await retrieveCustomer(ctx);
   const cart = await retrieveCart(ctx);
   let shippingOptions = await (cart ? listCartOptions(ctx) : Promise.resolve(null));
+  const bffBaseUrl = process.env.NEXT_PUBLIC_BFF_BASE_URL ?? '' ;
 
   return (
     <>
@@ -44,7 +45,7 @@ export default async function PageLayout({
           shippingOptions={shippingOptions ?? []}
         />
       )}
-      <AccountLayout customer={customer}>
+      <AccountLayout bffBaseUrl={bffBaseUrl}>
         {customer ? dashboard : login}
         <Toaster />
       </AccountLayout>
