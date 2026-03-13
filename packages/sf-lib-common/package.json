@@ -1,6 +1,6 @@
 {
   "name": "@gfed-medusa/sf-lib-common",
-  "version": "3.3.3",
+  "version": "3.3.4",
   "private": false,
   "type": "module",
   "license": "MIT",
@@ -48,7 +48,7 @@
   },
   "dependencies": {
     "@apollo/client": "^4.0.9",
-    "@gfed-medusa/sf-lib-ui": "^1.2.2",
+    "@gfed-medusa/sf-lib-ui": "^1.2.3",
     "@headlessui/react": "^2.2.9",
     "@medusajs/icons": "^2.12.1",
     "@medusajs/js-sdk": "^2.12.1",

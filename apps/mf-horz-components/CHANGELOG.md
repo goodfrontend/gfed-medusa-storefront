@@ -1,5 +1,14 @@
 # @gfed-medusa/mf-horz-components
 
+## 1.5.1
+
+### Patch Changes
+
+- e28687f: horz components data fetching perf improvements
+- Updated dependencies [2cf94b0]
+  - @gfed-medusa/sf-lib-common@3.3.4
+  - @gfed-medusa/sf-lib-ui@1.2.3
+
 ## 1.5.0
 
 ### Minor Changes
