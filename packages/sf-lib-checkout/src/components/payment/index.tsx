@@ -25,15 +25,20 @@ const Payment = ({
   cart: Cart;
   availablePaymentMethods: any[];
 }) => {
+  const isDev = process.env.NODE_ENV === 'development';
+  const visiblePaymentMethods = (availablePaymentMethods ?? []).filter(
+    (paymentMethod) => isDev || paymentMethod.id !== 'pp_system_default'
+  );
+
   const activeSession = cart.paymentCollection?.paymentSessions?.find(
     (paymentSession: any) => paymentSession.status === 'pending'
   );
   const defaultPaymentMethod =
     activeSession?.providerId ??
-    availablePaymentMethods?.find(
+    visiblePaymentMethods?.find(
       (paymentMethod) => paymentMethod.id === 'pp_system_default'
     )?.id ??
-    availablePaymentMethods?.[0]?.id ??
+    visiblePaymentMethods?.[0]?.id ??
     '';
 
   const [isLoading, setIsLoading] = useState(false);
@@ -81,7 +86,7 @@ const Payment = ({
   };
 
   const paidByGiftcard = cart?.giftCardTotal > 0 && cart?.total === 0;
-  const hasAvailablePaymentMethods = (availablePaymentMethods?.length ?? 0) > 0;
+  const hasAvailablePaymentMethods = (visiblePaymentMethods?.length ?? 0) > 0;
 
   const paymentReady =
     (activeSession && cart?.shippingMethods?.length !== 0) || paidByGiftcard;
@@ -174,7 +179,7 @@ const Payment = ({
                 value={selectedPaymentMethod}
                 onChange={(value: string) => setPaymentMethod(value)}
               >
-                {availablePaymentMethods.map((paymentMethod) => (
+                {visiblePaymentMethods.map((paymentMethod) => (
                   <div key={paymentMethod.id}>
                     {isStripeFunc(paymentMethod.id) ? (
                       <StripeCardContainer

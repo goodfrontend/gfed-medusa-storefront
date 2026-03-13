@@ -5,7 +5,6 @@ import { redirect } from 'next/navigation';
 
 import { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import {
-  removeCartIdAction,
   setCartIdAction,
 } from '@gfed-medusa/sf-lib-common/lib/data/cookies-actions';
 import {
@@ -60,17 +59,6 @@ import { GET_CART_QUERY } from '@/lib/gql/queries/cart';
 import { GET_SHIPPING_OPTIONS_QUERY } from '@/lib/gql/queries/fulfillment';
 
 import { getRegion } from './regions';
-
-const isRedirectError = (err: unknown): boolean => {
-  if (!err || typeof err !== 'object') return false;
-
-  const maybeError = err as { message?: unknown; digest?: unknown };
-  const message =
-    typeof maybeError.message === 'string' ? maybeError.message : '';
-  const digest = typeof maybeError.digest === 'string' ? maybeError.digest : '';
-
-  return message.includes('NEXT_REDIRECT') || digest.includes('NEXT_REDIRECT');
-};
 
 /**
  * Retrieves a cart by its ID. If no ID is provided, it will use the cart ID from the cookies.
@@ -562,7 +550,7 @@ export async function setAddresses(
 export async function placeOrder(
   cartId: string | undefined,
   ctx: StorefrontContext
-) {
+): Promise<{ redirectUrl?: string }> {
   const id = cartId || getCartId(ctx);
 
   if (!id) throw new Error('No existing cart found when placing an order');
@@ -590,10 +578,9 @@ export async function placeOrder(
       const orderCacheTag = getCacheTag('orders', ctx);
       revalidateTag(orderCacheTag);
 
-      await removeCartIdAction();
-      redirect(`/${countryCode}/order/${order?.id}/confirmed`);
-
-      return order;
+      return {
+        redirectUrl: `/${countryCode}/order/${order?.id}/confirmed`,
+      };
     }
 
     if (completed.__typename === 'CompleteCartErrorResult') {
@@ -605,14 +592,11 @@ export async function placeOrder(
       const cartCacheTag = getCacheTag('carts', ctx);
       revalidateTag(cartCacheTag);
 
-      return completed.cart;
+      throw new Error(completed.error?.message || 'Failed to complete cart.');
     }
 
-    return null;
+    return {};
   } catch (error: any) {
-    if (isRedirectError(error)) {
-      throw error;
-    }
     console.error('GraphQL completeCart error:', error.message);
     throw error;
   }

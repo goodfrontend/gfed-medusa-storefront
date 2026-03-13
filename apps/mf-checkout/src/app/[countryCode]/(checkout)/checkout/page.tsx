@@ -3,7 +3,6 @@ import { notFound } from 'next/navigation';
 
 import PaymentWrapper from '@gfed-medusa/sf-lib-checkout/components/payment-wrapper';
 import { retrieveCart } from '@gfed-medusa/sf-lib-checkout/lib/data/cart';
-import { Cart } from '@gfed-medusa/sf-lib-checkout/lib/gql/generated-types/graphql';
 import CheckoutForm from '@gfed-medusa/sf-lib-checkout/templates/checkout-form';
 import CheckoutSummary from '@gfed-medusa/sf-lib-checkout/templates/checkout-summary';
 import { retrieveCustomer } from '@gfed-medusa/sf-lib-common/lib/data/customer';
@@ -14,7 +13,9 @@ export const metadata: Metadata = {
 };
 
 export default async function Checkout() {
-  if (!process.env.NEXT_PUBLIC_STRIPE_KEY) {
+  const stripeKey = process.env.NEXT_PUBLIC_STRIPE_KEY;
+
+  if (!stripeKey) {
     console.warn(
       '[checkout] NEXT_PUBLIC_STRIPE_KEY is missing. Stripe credit card input will not be available.'
     );
@@ -31,10 +32,10 @@ export default async function Checkout() {
 
   return (
     <div className="content-container small:grid-cols-[1fr_416px] grid grid-cols-1 gap-x-40 py-12">
-      <PaymentWrapper cart={cart as Cart}>
-        <CheckoutForm cart={cart as Cart} customer={customer} />
+      <PaymentWrapper stripeKey={stripeKey}>
+        <CheckoutForm cart={cart} customer={customer} />
       </PaymentWrapper>
-      <CheckoutSummary cart={cart as Cart} />
+      <CheckoutSummary cart={cart} />
     </div>
   );
 }
