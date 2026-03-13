@@ -16,17 +16,6 @@ type PaymentButtonProps = {
   'data-testid': string;
 };
 
-const isRedirectError = (err: unknown): boolean => {
-  if (!err || typeof err !== 'object') return false;
-
-  const maybeError = err as { message?: unknown; digest?: unknown };
-  const message =
-    typeof maybeError.message === 'string' ? maybeError.message : '';
-  const digest = typeof maybeError.digest === 'string' ? maybeError.digest : '';
-
-  return message.includes('NEXT_REDIRECT') || digest.includes('NEXT_REDIRECT');
-};
-
 const PaymentButton: React.FC<PaymentButtonProps> = ({
   cart,
   'data-testid': dataTestId,
@@ -72,16 +61,18 @@ const StripePaymentButton = ({
   const ctx = useStorefrontContext();
 
   const onPaymentCompleted = async () => {
-    await placeOrder(undefined, ctx)
-      .catch((err) => {
-        if (isRedirectError(err)) {
-          return;
-        }
-        setErrorMessage(err?.message ?? 'Failed to place order.');
-      })
-      .finally(() => {
-        setSubmitting(false);
-      });
+    try {
+      const result = await placeOrder(undefined, ctx);
+      if (result?.redirectUrl) {
+        window.location.assign(result.redirectUrl);
+      } else {
+        setErrorMessage('Failed to place order.');
+      }
+    } catch (err: any) {
+      setErrorMessage(err?.message ?? 'Failed to place order.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const stripe = useStripe();
@@ -153,6 +144,7 @@ const StripePaymentButton = ({
   return (
     <>
       <Button
+        type="button"
         disabled={disabled || notReady}
         onClick={handlePayment}
         size="large"
@@ -175,16 +167,18 @@ const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
   const ctx = useStorefrontContext();
 
   const onPaymentCompleted = async () => {
-    await placeOrder(undefined, ctx)
-      .catch((err) => {
-        if (isRedirectError(err)) {
-          return;
-        }
-        setErrorMessage(err?.message ?? 'Failed to place order.');
-      })
-      .finally(() => {
-        setSubmitting(false);
-      });
+    try {
+      const result = await placeOrder(undefined, ctx);
+      if (result?.redirectUrl) {
+        window.location.assign(result.redirectUrl);
+      } else {
+        setErrorMessage('Failed to place order.');
+      }
+    } catch (err: any) {
+      setErrorMessage(err?.message ?? 'Failed to place order.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handlePayment = () => {
@@ -196,6 +190,7 @@ const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
   return (
     <>
       <Button
+        type="button"
         disabled={notReady}
         isLoading={submitting}
         onClick={handlePayment}

@@ -50,8 +50,8 @@
     "@medusajs/icons": "^2.12.1",
     "@medusajs/ui": "^4.0.29",
     "@medusajs/types": "^2.12.1",
-    "@stripe/react-stripe-js": "^1.7.2",
-    "@stripe/stripe-js": "^1.29.0",
+    "@stripe/react-stripe-js": "^5.4.1",
+    "@stripe/stripe-js": "^8.4.0",
     "lodash": "^4.17.21",
     "server-only": "^0.0.1"
   },

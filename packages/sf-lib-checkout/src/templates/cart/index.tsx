@@ -1,5 +1,7 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+
 import { useCart } from '@gfed-medusa/sf-lib-common/lib/hooks/use-cart';
 import { Divider } from '@gfed-medusa/sf-lib-ui/components/divider';
 
@@ -13,11 +15,20 @@ import Summary from '../summary';
 
 const CartTemplate = ({ customer }: { customer: Customer | null }) => {
   const { cart, isLoading } = useCart();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const hasItems = (cart?.items?.length ?? 0) > 0;
 
   return (
     <div className="py-12">
       <div className="content-container" data-testid="cart-container">
-        {cart?.items?.length && !isLoading ? (
+        {!isMounted || isLoading ? (
+          <SkeletonCartPage />
+        ) : hasItems ? (
           <div className="small:grid-cols-[1fr_360px] grid grid-cols-1 gap-x-40">
             <div className="flex flex-col gap-y-6 bg-white py-6">
               {!customer && (
@@ -40,11 +51,11 @@ const CartTemplate = ({ customer }: { customer: Customer | null }) => {
               </div>
             </div>
           </div>
-        ) : !isLoading ? (
+        ) : (
           <div>
             <EmptyCartMessage />
           </div>
-        ) : <SkeletonCartPage />}
+        )}
       </div>
     </div>
   );

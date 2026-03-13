@@ -1,5 +1,7 @@
 'use client';
 
+import { useEffect } from 'react';
+
 import { Heading } from '@medusajs/ui';
 
 import CartTotals from '@/components/cart-totals';
@@ -11,6 +13,13 @@ import PaymentDetails from '@/components/payment-details';
 import ShippingDetails from '@/components/shipping-details';
 import { Order } from '@/lib/gql/generated-types/graphql';
 
+const clearCartCookie = async () => {
+  await fetch('/api/checkout/clear-cart', {
+    method: 'POST',
+    credentials: 'include',
+  });
+};
+
 export default function OrderCompletedClient({
   order,
   isOnboarding,
@@ -18,6 +27,10 @@ export default function OrderCompletedClient({
   order: Order;
   isOnboarding: boolean;
 }) {
+  useEffect(() => {
+    void clearCartCookie();
+  }, []);
+
   return (
     <>
       {isOnboarding && <OnboardingCta orderId={order.id} />}

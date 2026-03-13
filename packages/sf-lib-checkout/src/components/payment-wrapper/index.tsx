@@ -2,21 +2,34 @@
 
 import React from 'react';
 
-import { loadStripe } from '@stripe/stripe-js';
-
-import { Cart } from '@/lib/gql/generated-types/graphql';
+import { Stripe, loadStripe } from '@stripe/stripe-js';
 
 import StripeWrapper from './stripe-wrapper';
 
 type PaymentWrapperProps = {
-  cart: Cart;
+  stripeKey?: string;
   children: React.ReactNode;
 };
 
-const stripeKey = process.env.NEXT_PUBLIC_STRIPE_KEY;
-const stripePromise = stripeKey ? loadStripe(stripeKey) : null;
+const stripePromiseCache = new Map<string, Promise<Stripe | null>>();
 
-const PaymentWrapper: React.FC<PaymentWrapperProps> = ({ children }) => {
+const getStripePromise = (key: string) => {
+  const cachedPromise = stripePromiseCache.get(key);
+  if (cachedPromise) {
+    return cachedPromise;
+  }
+
+  const nextPromise = loadStripe(key);
+  stripePromiseCache.set(key, nextPromise);
+  return nextPromise;
+};
+
+const PaymentWrapper: React.FC<PaymentWrapperProps> = ({
+  stripeKey,
+  children,
+}) => {
+  const stripePromise = stripeKey ? getStripePromise(stripeKey) : null;
+
   if (stripePromise) {
     return (
       <StripeWrapper stripeKey={stripeKey} stripePromise={stripePromise}>
