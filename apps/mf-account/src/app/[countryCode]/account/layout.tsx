@@ -45,7 +45,7 @@ export default async function PageLayout({
           shippingOptions={shippingOptions ?? []}
         />
       )}
-      <AccountLayout bffBaseUrl={bffBaseUrl}>
+      <AccountLayout bffBaseUrl={bffBaseUrl} customer={customer}>
         {customer ? dashboard : login}
         <Toaster />
       </AccountLayout>

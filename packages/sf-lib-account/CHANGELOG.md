@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-account
 
+## 2.1.3
+
+### Patch Changes
+
+- 9e637f2: Fix undefined environment variable in client
+
 ## 2.1.2
 
 ### Patch Changes
