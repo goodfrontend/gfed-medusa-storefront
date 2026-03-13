@@ -3,22 +3,13 @@
 import { useParams, usePathname } from 'next/navigation';
 
 import { LocalizedClientLink } from '@gfed-medusa/sf-lib-common/components/localized-client-link';
-import { ChevronDown } from '@gfed-medusa/sf-lib-ui/icons/chevron-down';
-import { MapPin } from '@gfed-medusa/sf-lib-ui/icons/map-pin';
-import { Package } from '@gfed-medusa/sf-lib-ui/icons/package';
-import { User } from '@gfed-medusa/sf-lib-ui/icons/user';
-import { ArrowRightOnRectangle } from '@medusajs/icons';
 import { clx } from '@medusajs/ui';
 
-import { Customer } from '@/types/graphql';
-
-const AccountNav = ({ customer }: { customer: Customer | null }) => {
+const AccountNav = ({ bffBaseUrl }: { bffBaseUrl: string }) => {
   const route = usePathname();
 
-  const { countryCode } = useParams() as { countryCode: string };
-
   const handleLogout = async () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_BFF_BASE_URL}/auth/logout`;
+    window.location.href = `${bffBaseUrl}/auth/logout`;
   };
 
   return (

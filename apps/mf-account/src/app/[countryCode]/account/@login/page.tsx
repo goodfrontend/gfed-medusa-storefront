@@ -1,8 +1,6 @@
 import { Metadata } from 'next';
 
-// TODO: Update sf-lib-account so that login-template is exported in index.tsx
-// Requires major version update for sf-lib-account
-import LoginTemplate from '@/modules/account/templates/login-template';
+import LoginTemplate from '@/modules/account/templates';
 
 export const metadata: Metadata = {
   title: 'Sign in',
@@ -10,5 +8,7 @@ export const metadata: Metadata = {
 };
 
 export default function Login() {
-  return <LoginTemplate />;
+  const bffBaseUrl = process.env.NEXT_PUBLIC_BFF_BASE_URL ?? '';
+
+  return <LoginTemplate bffBaseUrl={bffBaseUrl} />;
 }
