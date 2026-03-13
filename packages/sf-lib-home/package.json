@@ -29,7 +29,7 @@
     }
   },
   "scripts": {
-    "build": "tsdown",
+    "build": "tsdown --env.NODE_ENV=production",
     "dev": "tsdown --watch",
     "test": "jest --passWithNoTests",
     "check-types": "tsc --noEmit",
