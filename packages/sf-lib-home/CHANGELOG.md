@@ -1,5 +1,13 @@
 # @gfed-medusa/sf-lib-home
 
+## 1.2.4
+
+### Patch Changes
+
+- 2cf94b0: Add --env flag to package build script with tsdown
+- Updated dependencies [2cf94b0]
+  - @gfed-medusa/sf-lib-common@3.3.4
+
 ## 1.2.3
 
 ### Patch Changes

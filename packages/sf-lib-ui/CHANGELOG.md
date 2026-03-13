@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-ui
 
+## 1.2.3
+
+### Patch Changes
+
+- 2cf94b0: Add --env flag to package build script with tsdown
+
 ## 1.2.2
 
 ### Patch Changes

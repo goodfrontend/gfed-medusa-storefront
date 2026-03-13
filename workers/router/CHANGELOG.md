@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-gateway
 
+## 1.2.4
+
+### Patch Changes
+
+- e28687f: horz components data fetching perf improvements
+
 ## 1.2.3
 
 ### Patch Changes
