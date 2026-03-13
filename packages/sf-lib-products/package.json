@@ -50,7 +50,7 @@
     }
   },
   "scripts": {
-    "build": "tsdown",
+    "build": "tsdown --env.NODE_ENV=production",
     "codegen": "graphql-codegen --config codegen.ts",
     "codegen:watch": "graphql-codegen --config codegen.ts --watch",
     "dev": "tsc --watch",
