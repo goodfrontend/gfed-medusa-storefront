@@ -95,6 +95,13 @@ export type AuthPayload = {
   token: Scalars['String']['output'];
 };
 
+export type BannerButton = {
+  __typename?: 'BannerButton';
+  href?: Maybe<Scalars['String']['output']>;
+  label?: Maybe<Scalars['String']['output']>;
+  openInNewTab?: Maybe<Scalars['Boolean']['output']>;
+};
+
 export enum CacheControlScope {
   Private = 'PRIVATE',
   Public = 'PUBLIC',
@@ -232,6 +239,18 @@ export type Footer = {
   poweredByCta?: Maybe<PartialRichText>;
   social?: Maybe<Array<SocialLink>>;
   storeName?: Maybe<Scalars['String']['output']>;
+};
+
+export type HomeBanner = {
+  __typename?: 'HomeBanner';
+  _id: Scalars['ID']['output'];
+  _type: Scalars['String']['output'];
+  buttons?: Maybe<Array<BannerButton>>;
+  description?: Maybe<Scalars['String']['output']>;
+  eyebrow?: Maybe<Scalars['String']['output']>;
+  footerNote?: Maybe<Scalars['String']['output']>;
+  image?: Maybe<SanityImage>;
+  title?: Maybe<Scalars['String']['output']>;
 };
 
 export type LineItem = {
@@ -428,6 +447,7 @@ export type PartialRichText = {
 export type Payment = {
   __typename?: 'Payment';
   amount: Scalars['Int']['output'];
+  cardLast4?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   currencyCode: Scalars['String']['output'];
   data?: Maybe<Scalars['JSON']['output']>;
@@ -534,6 +554,15 @@ export type ProductCategory = {
   products?: Maybe<ProductList>;
 };
 
+export type ProductHit = {
+  __typename?: 'ProductHit';
+  description?: Maybe<Scalars['String']['output']>;
+  handle: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  thumbnail?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+};
+
 export type ProductImage = {
   __typename?: 'ProductImage';
   id: Scalars['ID']['output'];
@@ -606,6 +635,7 @@ export type Query = {
   collection?: Maybe<Collection>;
   collections: Array<Collection>;
   footer?: Maybe<Footer>;
+  homeBanner?: Maybe<HomeBanner>;
   me?: Maybe<Customer>;
   order?: Maybe<Order>;
   orders?: Maybe<OrderListResponse>;
@@ -616,6 +646,7 @@ export type Query = {
   products: ProductListResponse;
   region?: Maybe<Region>;
   regions: Array<Region>;
+  searchProducts: SearchProducts;
   shippingOptions?: Maybe<Array<Maybe<ShippingOption>>>;
 };
 
@@ -674,6 +705,7 @@ export type Query_ProductsArgs = {
   is_giftcard?: InputMaybe<Scalars['Boolean']['input']>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
+  order?: InputMaybe<Scalars['String']['input']>;
   q?: InputMaybe<Scalars['String']['input']>;
   region_id?: InputMaybe<Scalars['String']['input']>;
   tag_id?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
@@ -681,6 +713,15 @@ export type Query_ProductsArgs = {
 
 export type Query_RegionArgs = {
   id: Scalars['ID']['input'];
+};
+
+export type Query_SearchProductsArgs = {
+  facets?: InputMaybe<Array<Scalars['String']['input']>>;
+  filters?: InputMaybe<Scalars['String']['input']>;
+  hitsPerPage?: InputMaybe<Scalars['Int']['input']>;
+  indexName?: InputMaybe<Scalars['String']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  query?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Query_ShippingOptionsArgs = {
@@ -702,6 +743,28 @@ export type RegisterCustomerInput = {
   lastName?: InputMaybe<Scalars['String']['input']>;
   password: Scalars['String']['input'];
   phone?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type SanityImage = {
+  __typename?: 'SanityImage';
+  alt?: Maybe<Scalars['String']['output']>;
+  asset?: Maybe<SanityImageAsset>;
+};
+
+export type SanityImageAsset = {
+  __typename?: 'SanityImageAsset';
+  url?: Maybe<Scalars['String']['output']>;
+};
+
+export type SearchProducts = {
+  __typename?: 'SearchProducts';
+  hitsPerPage: Scalars['Int']['output'];
+  items: Array<ProductHit>;
+  page: Scalars['Int']['output'];
+  params: Scalars['String']['output'];
+  query: Scalars['String']['output'];
+  total: Scalars['Int']['output'];
+  totalPages: Scalars['Int']['output'];
 };
 
 export type ServiceZone = {
@@ -1198,6 +1261,32 @@ export type GetFooterDataQuery = {
   } | null;
 };
 
+export type GetHomeBannerQueryVariables = Exact<{ [key: string]: never }>;
+
+export type GetHomeBannerQuery = {
+  __typename?: 'Query';
+  homeBanner?: {
+    __typename?: 'HomeBanner';
+    _id: string;
+    _type: string;
+    eyebrow?: string | null;
+    title?: string | null;
+    description?: string | null;
+    footerNote?: string | null;
+    buttons?: Array<{
+      __typename?: 'BannerButton';
+      label?: string | null;
+      href?: string | null;
+      openInNewTab?: boolean | null;
+    }> | null;
+    image?: {
+      __typename?: 'SanityImage';
+      alt?: string | null;
+      asset?: { __typename?: 'SanityImageAsset'; url?: string | null } | null;
+    } | null;
+  } | null;
+};
+
 export type OrderFieldsFragment = {
   __typename?: 'Order';
   id: string;
@@ -1276,6 +1365,7 @@ export type OrderFieldsFragment = {
       amount: number;
       currencyCode: string;
       providerId: string;
+      cardLast4?: string | null;
       createdAt?: any | null;
     } | null> | null;
   } | null> | null;
@@ -2720,6 +2810,10 @@ export const OrderFieldsFragmentDoc = {
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'providerId' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'cardLast4' },
                       },
                       {
                         kind: 'Field',
@@ -5499,6 +5593,74 @@ export const GetFooterDataDocument = {
     },
   ],
 } as unknown as DocumentNode<GetFooterDataQuery, GetFooterDataQueryVariables>;
+export const GetHomeBannerDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetHomeBanner' },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'homeBanner' },
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: '_id' } },
+                { kind: 'Field', name: { kind: 'Name', value: '_type' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'eyebrow' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'footerNote' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'buttons' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'label' } },
+                      { kind: 'Field', name: { kind: 'Name', value: 'href' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'openInNewTab' },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'image' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'alt' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'asset' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'url' },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<GetHomeBannerQuery, GetHomeBannerQueryVariables>;
 export const GetOrderDocument = {
   kind: 'Document',
   definitions: [
@@ -5713,6 +5875,10 @@ export const GetOrderDocument = {
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'providerId' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'cardLast4' },
                       },
                       {
                         kind: 'Field',
@@ -5971,6 +6137,10 @@ export const GetOrdersDocument = {
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'providerId' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'cardLast4' },
                       },
                       {
                         kind: 'Field',
