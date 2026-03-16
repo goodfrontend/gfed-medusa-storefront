@@ -8,6 +8,13 @@ type BannerAction = {
   openInNewTab?: boolean | null;
 };
 
+type SecondaryBanner = {
+  button?: BannerAction | null;
+  description?: string | null;
+  imageUrl?: string | null;
+  title?: string | null;
+};
+
 type HeroProps = {
   bannerContent?: HomeBannerContent | null;
 };
@@ -18,14 +25,43 @@ type BannerActionLike = {
   openInNewTab?: boolean | null;
 };
 
+type SecondaryBannerLike = {
+  button?: BannerActionLike | null;
+  description?: string | null;
+  image?: {
+    asset?: {
+      url?: string | null;
+    } | null;
+  } | null;
+  title?: string | null;
+};
+
 function isBannerAction(
   button: BannerActionLike | null | undefined
 ): button is BannerAction {
   return Boolean(button?.label && button.href);
 }
 
-function BannerButton({ action }: { action: BannerAction }) {
-  const button = <Button variant="primary">{action.label}</Button>;
+function hasSecondaryBannerContent(
+  banner: SecondaryBannerLike | null | undefined
+): banner is SecondaryBanner {
+  return Boolean(
+    banner &&
+      (banner.title ||
+        banner.description ||
+        banner.image?.asset?.url ||
+        isBannerAction(banner.button))
+  );
+}
+
+function BannerButton({
+  action,
+  variant,
+}: {
+  action: BannerAction;
+  variant: 'primary' | 'secondary';
+}) {
+  const button = <Button variant={variant}>{action.label}</Button>;
   const rel = action.openInNewTab ? 'noreferrer' : undefined;
   const target = action.openInNewTab ? '_blank' : undefined;
   const isExternalLink =
@@ -58,78 +94,144 @@ function BannerButton({ action }: { action: BannerAction }) {
 
 export function Hero({ bannerContent }: HeroProps) {
   const buttons = bannerContent?.buttons?.filter(isBannerAction).slice(0, 2) ?? [];
+  const secondaryBanners =
+    bannerContent?.secondaryBanners
+      ?.filter(hasSecondaryBannerContent)
+      .slice(0, 2)
+      .map((banner) => ({
+        description: banner.description,
+        imageUrl: banner.image?.asset?.url ?? null,
+        title: banner.title,
+        button: isBannerAction(banner.button) ? banner.button : null,
+      })) ?? [];
   const title = bannerContent?.title;
   const eyebrow = bannerContent?.eyebrow;
   const description = bannerContent?.description;
   const footerNote = bannerContent?.footerNote;
   const imageUrl = bannerContent?.image?.asset?.url;
-  const hasContent = Boolean(
+  const hasMainContent = Boolean(
     imageUrl || eyebrow || title || description || footerNote || buttons.length
   );
+  const hasSecondaryContent = secondaryBanners.length > 0;
 
-  if (!hasContent) {
+  if (!hasMainContent && !hasSecondaryContent) {
     return null;
   }
 
   return (
     <section className="border-ui-border-base border-b">
-      <div className="bg-ui-bg-subtle relative isolate overflow-hidden">
-        {imageUrl && (
-          <img
-            src={imageUrl}
-            alt=""
-            aria-hidden="true"
-            loading="eager"
-            fetchPriority="high"
-            className="absolute inset-0 h-full w-full object-cover"
-          />
-        )}
+      {hasMainContent && (
+        <div className="bg-ui-bg-subtle relative isolate overflow-hidden">
+          {imageUrl && (
+            <img
+              src={imageUrl}
+              alt=""
+              aria-hidden="true"
+              loading="eager"
+              fetchPriority="high"
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          )}
 
-        <div className="content-container relative flex min-h-[420px] flex-col justify-between py-10 md:min-h-[540px] md:py-14">
-          <div className="w-full max-w-2xl pt-8 text-left md:pt-14">
-            {eyebrow && (
-              <p className="text-ui-fg-muted text-xs font-medium uppercase tracking-[0.3em] [text-shadow:0_1px_10px_rgba(255,255,255,0.45)]">
-                {eyebrow}
-              </p>
-            )}
-            {(title || description) && (
-              <div className="mt-4 flex flex-col gap-3">
-                {title && (
-                  <Heading
-                    level="h1"
-                    className="text-ui-fg-base text-4xl leading-tight font-normal [text-shadow:0_1px_14px_rgba(255,255,255,0.4)] md:text-5xl"
-                  >
-                    {title}
-                  </Heading>
-                )}
-                {description && (
-                  <p className="text-ui-fg-subtle max-w-xl text-base leading-7 [text-shadow:0_1px_10px_rgba(255,255,255,0.38)]">
-                    {description}
-                  </p>
-                )}
-              </div>
-            )}
-            {buttons.length > 0 && (
-              <div className="mt-6 flex flex-wrap gap-3">
-                {buttons.map((button, index) => (
-                  <BannerButton
-                    key={`${button.label}-${button.href}-${index}`}
-                    action={button}
-                  />
-                ))}
+          <div className="content-container relative flex min-h-[420px] flex-col justify-between py-10 md:min-h-[540px] md:py-14">
+            <div className="w-full max-w-2xl pt-8 text-left md:pt-14">
+              {eyebrow && (
+                <p className="text-ui-fg-muted text-xs font-medium uppercase tracking-[0.3em] [text-shadow:0_1px_10px_rgba(255,255,255,0.45)]">
+                  {eyebrow}
+                </p>
+              )}
+              {(title || description) && (
+                <div className="mt-4 flex flex-col gap-3">
+                  {title && (
+                    <Heading
+                      level="h1"
+                      className="text-ui-fg-base text-4xl leading-tight font-normal [text-shadow:0_1px_14px_rgba(255,255,255,0.4)] md:text-5xl"
+                    >
+                      {title}
+                    </Heading>
+                  )}
+                  {description && (
+                    <p className="text-ui-fg-subtle max-w-xl text-base leading-7 [text-shadow:0_1px_10px_rgba(255,255,255,0.38)]">
+                      {description}
+                    </p>
+                  )}
+                </div>
+              )}
+              {buttons.length > 0 && (
+                <div className="mt-6 flex flex-wrap gap-3">
+                  {buttons.map((button, index) => (
+                    <BannerButton
+                      key={`${button.label}-${button.href}-${index}`}
+                      action={button}
+                      variant="primary"
+                    />
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {footerNote && (
+              <div className="w-full max-w-2xl pt-8 text-left">
+                <p className="text-ui-fg-subtle text-sm [text-shadow:0_1px_10px_rgba(255,255,255,0.45)]">
+                  {footerNote}
+                </p>
               </div>
             )}
           </div>
-
-          {footerNote && (
-            <div className="w-full max-w-2xl pt-8 text-left">
-              <p className="text-ui-fg-subtle text-sm [text-shadow:0_1px_10px_rgba(255,255,255,0.45)]">
-                {footerNote}
-              </p>
-            </div>
-          )}
         </div>
-      </div>
+      )}
+
+      {hasSecondaryContent && (
+        <div className="content-container py-6 md:py-8">
+          <div className="grid gap-4 md:grid-cols-2">
+            {secondaryBanners.map((banner, index) => (
+              <article
+                key={`${banner.title || 'secondary-banner'}-${index}`}
+                className="bg-ui-bg-subtle border-ui-border-base relative isolate flex aspect-[16/9] flex-col justify-end overflow-hidden rounded-2xl border p-6 md:p-8"
+              >
+                {banner.imageUrl && (
+                  <img
+                    src={banner.imageUrl}
+                    alt=""
+                    aria-hidden="true"
+                    loading="lazy"
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                )}
+
+                <div
+                  className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/55 via-black/18 to-transparent"
+                  aria-hidden="true"
+                />
+
+                <div className="relative flex flex-col items-start gap-3">
+                  {banner.title && (
+                    <Heading
+                      level="h2"
+                      className="text-ui-fg-on-color text-2xl leading-tight font-normal [text-shadow:0_2px_18px_rgba(0,0,0,0.45)] md:text-3xl"
+                    >
+                      {banner.title}
+                    </Heading>
+                  )}
+                  {banner.description && (
+                    <p className="text-ui-fg-on-color/90 max-w-xl text-base leading-7 [text-shadow:0_2px_14px_rgba(0,0,0,0.42)]">
+                      {banner.description}
+                    </p>
+                  )}
+                  {banner.button && (
+                    <div className="mt-3">
+                      <BannerButton
+                        action={banner.button}
+                        variant="secondary"
+                      />
+                    </div>
+                  )}
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   );
 }

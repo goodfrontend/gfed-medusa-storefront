@@ -38,6 +38,14 @@ export type BannerLink = {
   openInNewTab?: boolean | null;
 };
 
+export type SecondaryBannerContent = {
+  __typename?: 'SecondaryBanner';
+  button?: BannerLink | null;
+  description?: string | null;
+  image?: SanityImage | null;
+  title?: string | null;
+};
+
 export type HomeBannerContent = {
   __typename?: 'HomeBanner';
   _id: string;
@@ -47,6 +55,7 @@ export type HomeBannerContent = {
   eyebrow?: string | null;
   footerNote?: string | null;
   image?: SanityImage | null;
+  secondaryBanners?: SecondaryBannerContent[] | null;
   title?: string | null;
 };
 

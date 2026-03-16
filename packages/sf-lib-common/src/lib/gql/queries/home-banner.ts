@@ -14,6 +14,21 @@ export const GET_HOME_BANNER_QUERY = gql`
         href
         openInNewTab
       }
+      secondaryBanners {
+        title
+        description
+        image {
+          alt
+          asset {
+            url
+          }
+        }
+        button {
+          label
+          href
+          openInNewTab
+        }
+      }
       image {
         alt
         asset {

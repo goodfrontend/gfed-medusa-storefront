@@ -250,6 +250,7 @@ export type HomeBanner = {
   eyebrow?: Maybe<Scalars['String']['output']>;
   footerNote?: Maybe<Scalars['String']['output']>;
   image?: Maybe<SanityImage>;
+  secondaryBanners?: Maybe<Array<SecondaryBanner>>;
   title?: Maybe<Scalars['String']['output']>;
 };
 
@@ -767,6 +768,14 @@ export type SearchProducts = {
   totalPages: Scalars['Int']['output'];
 };
 
+export type SecondaryBanner = {
+  __typename?: 'SecondaryBanner';
+  button?: Maybe<BannerButton>;
+  description?: Maybe<Scalars['String']['output']>;
+  image?: Maybe<SanityImage>;
+  title?: Maybe<Scalars['String']['output']>;
+};
+
 export type ServiceZone = {
   __typename?: 'ServiceZone';
   fulfillmentSetType?: Maybe<Scalars['String']['output']>;
@@ -1278,6 +1287,22 @@ export type GetHomeBannerQuery = {
       label?: string | null;
       href?: string | null;
       openInNewTab?: boolean | null;
+    }> | null;
+    secondaryBanners?: Array<{
+      __typename?: 'SecondaryBanner';
+      title?: string | null;
+      description?: string | null;
+      image?: {
+        __typename?: 'SanityImage';
+        alt?: string | null;
+        asset?: { __typename?: 'SanityImageAsset'; url?: string | null } | null;
+      } | null;
+      button?: {
+        __typename?: 'BannerButton';
+        label?: string | null;
+        href?: string | null;
+        openInNewTab?: boolean | null;
+      } | null;
     }> | null;
     image?: {
       __typename?: 'SanityImage';
@@ -5626,6 +5651,67 @@ export const GetHomeBannerDocument = {
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'openInNewTab' },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'secondaryBanners' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'description' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'image' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'alt' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'asset' },
+                              selectionSet: {
+                                kind: 'SelectionSet',
+                                selections: [
+                                  {
+                                    kind: 'Field',
+                                    name: { kind: 'Name', value: 'url' },
+                                  },
+                                ],
+                              },
+                            },
+                          ],
+                        },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'button' },
+                        selectionSet: {
+                          kind: 'SelectionSet',
+                          selections: [
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'label' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'href' },
+                            },
+                            {
+                              kind: 'Field',
+                              name: { kind: 'Name', value: 'openInNewTab' },
+                            },
+                          ],
+                        },
                       },
                     ],
                   },
