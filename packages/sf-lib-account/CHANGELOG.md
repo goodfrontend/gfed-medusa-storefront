@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-account
 
+## 2.1.4
+
+### Patch Changes
+
+- 8b6b0d2: Fix null values in account profile info
+
 ## 2.1.3
 
 ### Patch Changes
