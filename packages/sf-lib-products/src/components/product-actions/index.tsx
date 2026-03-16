@@ -7,7 +7,6 @@ import { useParams } from 'next/navigation';
 import { isEqual } from 'lodash';
 
 import { ErrorMessage } from '@gfed-medusa/sf-lib-common/components/error-message';
-import { useStorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import { mutateCart } from '@gfed-medusa/sf-lib-common/lib/hooks/use-cart';
 import { Divider } from '@gfed-medusa/sf-lib-ui/components/divider';
 import { HttpTypes } from '@medusajs/types';
@@ -164,7 +163,6 @@ export default function ProductActions({
   const actionsRef = useRef<HTMLDivElement>(null);
 
   const inView = useIntersection(actionsRef, '0px');
-  const ctx = useStorefrontContext();
 
   // add the selected variant to the cart
   const handleAddToCart = async () => {
@@ -178,8 +176,7 @@ export default function ProductActions({
           variantId: selectedVariant.id,
           quantity: 1,
           countryCode,
-        },
-        ctx
+        }
       );
 
       mutateCart();
