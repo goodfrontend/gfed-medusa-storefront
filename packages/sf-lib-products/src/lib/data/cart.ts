@@ -7,6 +7,7 @@ import {
   getCartId,
 } from '@gfed-medusa/sf-lib-common/lib/data/cookies-utils';
 import {
+  createServerApolloClient,
   graphqlFetch,
   graphqlMutation,
 } from '@gfed-medusa/sf-lib-common/lib/gql/apollo-client';
@@ -30,6 +31,7 @@ import {
 import { GET_CART_QUERY } from '@/lib/gql/queries/cart';
 
 import { getRegion } from './regions';
+import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
 
 export const retrieveCart = async (
   cartId: string,
@@ -65,16 +67,21 @@ export const getOrSetCart = async (
 
   let cart = await retrieveCart(getCartId(ctx) || '', ctx);
 
+  const apolloClient = createServerApolloClient(ctx.cookieHeader);
+
   if (!cart) {
     const data = await graphqlMutation<
       CreateCartMutation,
       CreateCartMutationVariables
-    >({
-      mutation: CREATE_CART_MUTATION,
-      variables: {
-        data: { regionId: region.id },
+    >(
+      {
+        mutation: CREATE_CART_MUTATION,
+        variables: {
+          data: { regionId: region.id },
+        },
       },
-    });
+      apolloClient
+    );
 
     cart = data?.createCart ?? null;
 
@@ -95,13 +102,16 @@ export const getOrSetCart = async (
     const data = await graphqlMutation<
       UpdateCartMutation,
       UpdateCartMutationVariables
-    >({
-      mutation: UPDATE_CART_MUTATION,
-      variables: {
-        id: cart.id,
-        data: { regionId: region.id },
+    >(
+      {
+        mutation: UPDATE_CART_MUTATION,
+        variables: {
+          id: cart.id,
+          data: { regionId: region.id },
+        },
       },
-    });
+      apolloClient
+    );
 
     cart = data?.updateCart ?? cart;
 
@@ -128,8 +138,7 @@ export const addToCart = async (
     variantId: string;
     quantity: number;
     countryCode: string;
-  },
-  ctx: StorefrontContext
+  }
 ): Promise<CreateLineItemMutation['createLineItem'] | null> => {
   if (!variantId) {
     throw new Error('Missing variant ID when adding to cart');
@@ -139,6 +148,8 @@ export const addToCart = async (
     throw new Error('Missing country code when adding to cart');
   }
 
+  const ctx = await resolveNextContext();
+  const apolloClient = createServerApolloClient(ctx.cookieHeader ?? '');
   const cart = await getOrSetCart(countryCode, ctx);
 
   if (!cart) {
@@ -149,16 +160,19 @@ export const addToCart = async (
     const result = await graphqlMutation<
       CreateLineItemMutation,
       CreateLineItemMutationVariables
-    >({
-      mutation: CREATE_LINE_ITEM_MUTATION,
-      variables: {
-        cartId: cart.id,
-        data: {
-          variantId: variantId,
-          quantity,
+    >(
+      {
+        mutation: CREATE_LINE_ITEM_MUTATION,
+        variables: {
+          cartId: cart.id,
+          data: {
+            variantId: variantId,
+            quantity,
+          },
         },
       },
-    });
+      apolloClient
+    );
 
     const lineItem = result?.createLineItem ?? null;
 
