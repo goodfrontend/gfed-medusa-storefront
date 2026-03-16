@@ -1,5 +1,13 @@
 # @gfed-medusa/mf-products
 
+## 1.4.3
+
+### Patch Changes
+
+- 3bd69e5: Fix add to cart not associated to customer
+- Updated dependencies [3bd69e5]
+  - @gfed-medusa/sf-lib-products@1.5.3
+
 ## 1.4.2
 
 ### Patch Changes
