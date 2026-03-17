@@ -221,7 +221,7 @@ export function Hero({ bannerContent }: HeroProps) {
             {secondaryBanners.map((banner, index) => (
               <article
                 key={`${banner.title || 'secondary-banner'}-${index}`}
-                className="bg-ui-bg-subtle border-ui-border-base relative isolate flex aspect-[16/9] flex-col justify-end overflow-hidden rounded-2xl border p-6 md:p-8"
+                className="bg-ui-bg-subtle border-ui-border-base relative isolate flex h-full min-h-[220px] flex-col justify-end overflow-hidden rounded-2xl border p-5 sm:min-h-[240px] sm:p-6 md:min-h-[clamp(240px,calc((100vw-4rem)*9/32),387px)] lg:p-8"
               >
                 {banner.imageUrl && (
                   <Image
@@ -236,26 +236,26 @@ export function Hero({ bannerContent }: HeroProps) {
                 )}
 
                 <div
-                  className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/55 via-black/18 to-transparent"
+                  className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/24 to-black/12"
                   aria-hidden="true"
                 />
 
-                <div className="relative flex flex-col items-start gap-3">
+                <div className="relative flex flex-col items-start gap-2.5 sm:gap-3">
                   {banner.title && (
                     <Heading
                       level="h2"
-                      className="text-ui-fg-on-color text-2xl leading-tight font-normal [text-shadow:0_2px_18px_rgba(0,0,0,0.45)] md:text-3xl"
+                      className="text-ui-fg-on-color text-xl leading-tight font-normal [text-shadow:0_2px_18px_rgba(0,0,0,0.45)] sm:text-2xl md:text-3xl"
                     >
                       {banner.title}
                     </Heading>
                   )}
                   {banner.description && (
-                    <p className="text-ui-fg-on-color/90 max-w-xl text-base leading-7 [text-shadow:0_2px_14px_rgba(0,0,0,0.42)]">
+                    <p className="text-ui-fg-on-color/90 max-w-xl text-sm leading-6 [text-shadow:0_2px_14px_rgba(0,0,0,0.42)] sm:text-base sm:leading-7">
                       {banner.description}
                     </p>
                   )}
                   {(banner.button || banner.showPoweredBy) && (
-                    <div className="mt-3 flex w-full items-end justify-between gap-4">
+                    <div className="mt-2 flex w-full flex-wrap items-end justify-between gap-3 sm:mt-3 sm:gap-4">
                       <div>
                         {banner.button && (
                           <BannerButton
