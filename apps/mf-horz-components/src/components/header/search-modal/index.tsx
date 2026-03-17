@@ -46,7 +46,7 @@ type SearchModalProps = {
 function SearchModal({ buttonClassName }: SearchModalProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
-  const { searches, save, clear } = useRecentSearches();
+  const { searches, save, clear, remove } = useRecentSearches();
 
   useEffect(() => {
     setIsOpen(false);
@@ -113,6 +113,7 @@ function SearchModal({ buttonClassName }: SearchModalProps) {
                 recentSearches={searches}
                 onSave={save}
                 onClearHistory={clear}
+                onRemoveHistory={remove}
                 setInputValue={setInputValue}
               />
             </div>
@@ -210,6 +211,7 @@ type SearchResultsProps = {
   recentSearches: string[];
   onSave: (term: string) => void;
   onClearHistory: () => void;
+  onRemoveHistory: (term: string) => void;
   setInputValue: (value: string) => void;
 };
 
@@ -217,6 +219,7 @@ const SearchResults = ({
   recentSearches,
   onSave,
   onClearHistory,
+  onRemoveHistory,
   setInputValue,
 }: SearchResultsProps) => {
   const { items, results } = useHits<AlgoliaProductHit>();
@@ -302,6 +305,7 @@ const SearchResults = ({
             searches={recentSearches}
             onSelect={handleTermSelect}
             onClear={onClearHistory}
+            onRemove={onRemoveHistory}
           />
         </div>
       </div>

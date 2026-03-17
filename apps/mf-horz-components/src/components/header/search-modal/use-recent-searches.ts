@@ -48,7 +48,17 @@ function useRecentSearches() {
     setSearches([]);
   }, []);
 
-  return { searches, save, clear };
+  const remove = useCallback((term: string) => {
+    setSearches((prev) => {
+      const next = prev.filter(
+        (s) => s.toLowerCase() !== term.toLowerCase()
+      );
+      writeToStorage(next);
+      return next;
+    });
+  }, []);
+
+  return { searches, save, clear, remove };
 }
 
 export { useRecentSearches };
