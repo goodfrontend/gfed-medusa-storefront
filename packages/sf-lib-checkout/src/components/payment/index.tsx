@@ -110,9 +110,6 @@ const Payment = ({
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
-      const shouldInputCard =
-        isStripeFunc(selectedPaymentMethod) && !activeSession;
-
       const checkActiveSession =
         activeSession?.providerId === selectedPaymentMethod;
 
@@ -120,14 +117,9 @@ const Payment = ({
         await createOrRefreshPaymentSession(selectedPaymentMethod);
       }
 
-      if (!shouldInputCard) {
-        return router.push(
-          pathname + '?' + createQueryString('step', 'review'),
-          {
-            scroll: false,
-          }
-        );
-      }
+      return router.push(pathname + '?' + createQueryString('step', 'review'), {
+        scroll: false,
+      });
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -241,9 +233,7 @@ const Payment = ({
             }
             data-testid="submit-payment-button"
           >
-            {!activeSession && isStripeFunc(selectedPaymentMethod)
-              ? ' Enter card details'
-              : 'Continue to review'}
+            Continue to review
           </Button>
         </div>
 
