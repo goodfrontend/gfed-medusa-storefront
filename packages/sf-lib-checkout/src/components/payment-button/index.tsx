@@ -5,7 +5,11 @@ import React, { useState } from 'react';
 import { ErrorMessage } from '@gfed-medusa/sf-lib-common/components/error-message';
 import { useStorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import { Button } from '@medusajs/ui';
-import { CardNumberElement, useElements, useStripe } from '@stripe/react-stripe-js';
+import {
+  CardNumberElement,
+  useElements,
+  useStripe,
+} from '@stripe/react-stripe-js';
 
 import { isManual, isStripe } from '@/lib/constants';
 import { placeOrder } from '@/lib/data/cart';
@@ -14,6 +18,13 @@ import { Cart } from '@/lib/gql/generated-types/graphql';
 type PaymentButtonProps = {
   cart: Cart;
   'data-testid': string;
+};
+
+const clearCartCookie = async () => {
+  await fetch('/api/checkout/clear-cart', {
+    method: 'POST',
+    credentials: 'include',
+  });
 };
 
 const PaymentButton: React.FC<PaymentButtonProps> = ({
@@ -64,6 +75,7 @@ const StripePaymentButton = ({
     try {
       const result = await placeOrder(undefined, ctx);
       if (result?.redirectUrl) {
+        await clearCartCookie().catch(() => null);
         window.location.assign(result.redirectUrl);
       } else {
         setErrorMessage('Failed to place order.');
@@ -170,6 +182,7 @@ const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
     try {
       const result = await placeOrder(undefined, ctx);
       if (result?.redirectUrl) {
+        await clearCartCookie().catch(() => null);
         window.location.assign(result.redirectUrl);
       } else {
         setErrorMessage('Failed to place order.');
