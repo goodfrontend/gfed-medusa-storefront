@@ -248,9 +248,9 @@ export type HomeBanner = {
   buttons?: Maybe<Array<BannerButton>>;
   description?: Maybe<Scalars['String']['output']>;
   eyebrow?: Maybe<Scalars['String']['output']>;
-  footerNote?: Maybe<Scalars['String']['output']>;
   image?: Maybe<SanityImage>;
   secondaryBanners?: Maybe<Array<SecondaryBanner>>;
+  showPoweredBy?: Maybe<Scalars['Boolean']['output']>;
   title?: Maybe<Scalars['String']['output']>;
 };
 
@@ -773,6 +773,7 @@ export type SecondaryBanner = {
   button?: Maybe<BannerButton>;
   description?: Maybe<Scalars['String']['output']>;
   image?: Maybe<SanityImage>;
+  showPoweredBy?: Maybe<Scalars['Boolean']['output']>;
   title?: Maybe<Scalars['String']['output']>;
 };
 
@@ -1281,7 +1282,7 @@ export type GetHomeBannerQuery = {
     eyebrow?: string | null;
     title?: string | null;
     description?: string | null;
-    footerNote?: string | null;
+    showPoweredBy?: boolean | null;
     buttons?: Array<{
       __typename?: 'BannerButton';
       label?: string | null;
@@ -1292,6 +1293,7 @@ export type GetHomeBannerQuery = {
       __typename?: 'SecondaryBanner';
       title?: string | null;
       description?: string | null;
+      showPoweredBy?: boolean | null;
       image?: {
         __typename?: 'SanityImage';
         alt?: string | null;
@@ -1431,18 +1433,12 @@ export type GetProductCategoriesQueryVariables = Exact<{
 
 export type GetProductCategoriesQuery = {
   __typename?: 'Query';
-  productCategories: Array<
-    {
-      __typename?: 'ProductCategory';
-      parentCategory?:
-        | ({ __typename?: 'ProductCategory' } & ProductCategoryFragment)
-        | null;
-      categoryChildren?: Array<
-        { __typename?: 'ProductCategory' } & ProductCategoryFragment
-      > | null;
-      products?: { __typename?: 'ProductList'; count: number } | null;
-    } & ProductCategoryFragment
-  >;
+  productCategories: Array<{
+    __typename?: 'ProductCategory';
+    id: string;
+    name: string;
+    handle: string;
+  }>;
 };
 
 export type ListRegionsQueryVariables = Exact<{ [key: string]: never }>;
@@ -5639,7 +5635,10 @@ export const GetHomeBannerDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'eyebrow' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'title' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'description' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'footerNote' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'showPoweredBy' },
+                },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'buttons' },
@@ -5665,6 +5664,10 @@ export const GetHomeBannerDocument = {
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'description' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'showPoweredBy' },
                       },
                       {
                         kind: 'Field',
@@ -6337,66 +6340,12 @@ export const GetProductCategoriesDocument = {
             selectionSet: {
               kind: 'SelectionSet',
               selections: [
-                {
-                  kind: 'FragmentSpread',
-                  name: { kind: 'Name', value: 'ProductCategory' },
-                },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'parentCategory' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      {
-                        kind: 'FragmentSpread',
-                        name: { kind: 'Name', value: 'ProductCategory' },
-                      },
-                    ],
-                  },
-                },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'categoryChildren' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      {
-                        kind: 'FragmentSpread',
-                        name: { kind: 'Name', value: 'ProductCategory' },
-                      },
-                    ],
-                  },
-                },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'products' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'count' } },
-                    ],
-                  },
-                },
+                { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'name' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
               ],
             },
           },
-        ],
-      },
-    },
-    {
-      kind: 'FragmentDefinition',
-      name: { kind: 'Name', value: 'ProductCategory' },
-      typeCondition: {
-        kind: 'NamedType',
-        name: { kind: 'Name', value: 'ProductCategory' },
-      },
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'name' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'description' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
         ],
       },
     },

@@ -31,6 +31,15 @@ const buildBannerLinkFields = () => [
   }),
 ];
 
+const buildShowPoweredByField = () =>
+  defineField({
+    name: 'showPoweredBy',
+    title: 'Show powered by text',
+    type: 'boolean',
+    description: 'Shows "Powered by Sanity CMS" at the bottom of the banner.',
+    initialValue: false,
+  });
+
 export default defineType({
   name: 'homeBanner',
   title: 'Home Banner',
@@ -98,6 +107,7 @@ export default defineType({
               type: 'text',
               rows: 3,
             }),
+            buildShowPoweredByField(),
             defineField({
               name: 'button',
               title: 'Button',
@@ -151,17 +161,28 @@ export default defineType({
         }),
       ],
     }),
-    defineField({
-      name: 'footerNote',
-      title: 'Footer note',
-      type: 'string',
-    }),
+    buildShowPoweredByField(),
   ],
   preview: {
     select: {
       title: 'title',
-      subtitle: 'footerNote',
+      showPoweredBy: 'showPoweredBy',
       media: 'image',
+    },
+    prepare({
+      title,
+      showPoweredBy,
+      media,
+    }: {
+      title?: string;
+      showPoweredBy?: boolean;
+      media?: any;
+    }) {
+      return {
+        title,
+        subtitle: showPoweredBy ? 'Powered by note enabled' : undefined,
+        media,
+      };
     },
   },
 });

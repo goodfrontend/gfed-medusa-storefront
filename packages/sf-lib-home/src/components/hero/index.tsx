@@ -8,10 +8,11 @@ type BannerAction = {
   openInNewTab?: boolean | null;
 };
 
-type SecondaryBanner = {
+type SecondaryBannerCard = {
   button?: BannerAction | null;
   description?: string | null;
   imageUrl?: string | null;
+  showPoweredBy?: boolean | null;
   title?: string | null;
 };
 
@@ -33,8 +34,31 @@ type SecondaryBannerLike = {
       url?: string | null;
     } | null;
   } | null;
+  showPoweredBy?: boolean | null;
   title?: string | null;
 };
+
+const SANITY_CMS_URL = 'https://www.sanity.io/';
+
+function PoweredBySanity({
+  className,
+}: {
+  className: string;
+}) {
+  return (
+    <p className={className}>
+      Powered by{' '}
+      <a
+        href={SANITY_CMS_URL}
+        target="_blank"
+        rel="noreferrer"
+        className="underline underline-offset-2"
+      >
+        Sanity CMS
+      </a>
+    </p>
+  );
+}
 
 function isBannerAction(
   button: BannerActionLike | null | undefined
@@ -44,12 +68,13 @@ function isBannerAction(
 
 function hasSecondaryBannerContent(
   banner: SecondaryBannerLike | null | undefined
-): banner is SecondaryBanner {
+): banner is SecondaryBannerLike {
   return Boolean(
     banner &&
       (banner.title ||
         banner.description ||
         banner.image?.asset?.url ||
+        banner.showPoweredBy ||
         isBannerAction(banner.button))
   );
 }
@@ -94,23 +119,24 @@ function BannerButton({
 
 export function Hero({ bannerContent }: HeroProps) {
   const buttons = bannerContent?.buttons?.filter(isBannerAction).slice(0, 2) ?? [];
-  const secondaryBanners =
+  const secondaryBanners: SecondaryBannerCard[] =
     bannerContent?.secondaryBanners
       ?.filter(hasSecondaryBannerContent)
       .slice(0, 2)
       .map((banner) => ({
         description: banner.description,
         imageUrl: banner.image?.asset?.url ?? null,
+        showPoweredBy: banner.showPoweredBy,
         title: banner.title,
         button: isBannerAction(banner.button) ? banner.button : null,
       })) ?? [];
   const title = bannerContent?.title;
   const eyebrow = bannerContent?.eyebrow;
   const description = bannerContent?.description;
-  const footerNote = bannerContent?.footerNote;
+  const showPoweredBy = bannerContent?.showPoweredBy;
   const imageUrl = bannerContent?.image?.asset?.url;
   const hasMainContent = Boolean(
-    imageUrl || eyebrow || title || description || footerNote || buttons.length
+    imageUrl || eyebrow || title || description || showPoweredBy || buttons.length
   );
   const hasSecondaryContent = secondaryBanners.length > 0;
 
@@ -170,11 +196,9 @@ export function Hero({ bannerContent }: HeroProps) {
               )}
             </div>
 
-            {footerNote && (
-              <div className="w-full max-w-2xl pt-8 text-left">
-                <p className="text-ui-fg-subtle text-sm [text-shadow:0_1px_10px_rgba(255,255,255,0.45)]">
-                  {footerNote}
-                </p>
+            {showPoweredBy && (
+              <div className="mt-8 w-full">
+                <PoweredBySanity className="text-ui-fg-subtle w-fit text-left text-[11px] [text-shadow:0_1px_10px_rgba(255,255,255,0.45)]" />
               </div>
             )}
           </div>
@@ -218,12 +242,19 @@ export function Hero({ bannerContent }: HeroProps) {
                       {banner.description}
                     </p>
                   )}
-                  {banner.button && (
-                    <div className="mt-3">
-                      <BannerButton
-                        action={banner.button}
-                        variant="secondary"
-                      />
+                  {(banner.button || banner.showPoweredBy) && (
+                    <div className="mt-3 flex w-full items-end justify-between gap-4">
+                      <div>
+                        {banner.button && (
+                          <BannerButton
+                            action={banner.button}
+                            variant="secondary"
+                          />
+                        )}
+                      </div>
+                      {banner.showPoweredBy && (
+                        <PoweredBySanity className="text-ui-fg-on-color/75 ml-auto text-right text-[10px] [text-shadow:0_2px_14px_rgba(0,0,0,0.42)] md:text-[11px]" />
+                      )}
                     </div>
                   )}
                 </div>

@@ -43,6 +43,7 @@ export type SecondaryBannerContent = {
   button?: BannerLink | null;
   description?: string | null;
   image?: SanityImage | null;
+  showPoweredBy?: boolean | null;
   title?: string | null;
 };
 
@@ -53,8 +54,8 @@ export type HomeBannerContent = {
   buttons?: BannerLink[] | null;
   description?: string | null;
   eyebrow?: string | null;
-  footerNote?: string | null;
   image?: SanityImage | null;
+  showPoweredBy?: boolean | null;
   secondaryBanners?: SecondaryBannerContent[] | null;
   title?: string | null;
 };

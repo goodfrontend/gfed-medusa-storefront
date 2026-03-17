@@ -8,7 +8,7 @@ export const GET_HOME_BANNER_QUERY = gql`
       eyebrow
       title
       description
-      footerNote
+      showPoweredBy
       buttons {
         label
         href
@@ -17,6 +17,7 @@ export const GET_HOME_BANNER_QUERY = gql`
       secondaryBanners {
         title
         description
+        showPoweredBy
         image {
           alt
           asset {
