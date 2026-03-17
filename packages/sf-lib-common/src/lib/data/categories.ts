@@ -1,17 +1,26 @@
 import { graphqlFetch } from '@/lib/gql/apollo-client';
 import { GET_PRODUCT_CATEGORIES_QUERY } from '@/lib/gql/queries/product';
 import {
-  GetProductCategoriesQuery,
   GetProductCategoriesQueryVariables,
+  ProductCategory,
 } from '@/types/graphql';
 
-export const listCategories = async () => {
+export type ListCategoryItem = Pick<ProductCategory, 'id' | 'name' | 'handle'>;
+
+type ListCategoriesResult = {
+  productCategories: ListCategoryItem[];
+};
+
+export const listCategories = async (
+  queryParams: GetProductCategoriesQueryVariables = {}
+): Promise<ListCategoryItem[]> => {
   try {
     const data = await graphqlFetch<
-      GetProductCategoriesQuery,
+      ListCategoriesResult,
       GetProductCategoriesQueryVariables
     >({
       query: GET_PRODUCT_CATEGORIES_QUERY,
+      variables: queryParams,
     });
 
     return data?.productCategories || [];
