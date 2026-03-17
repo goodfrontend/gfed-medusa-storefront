@@ -1,5 +1,12 @@
 # @gfed-medusa/sf-lib-checkout
 
+## 3.2.1
+
+### Patch Changes
+
+- c06e2d6: remove Stripe double click flow by combining session init and review navigation
+- 7256e7e: clear cart cookie during place-order redirect to keep confirmation cart state in sync
+
 ## 3.2.0
 
 ### Minor Changes
