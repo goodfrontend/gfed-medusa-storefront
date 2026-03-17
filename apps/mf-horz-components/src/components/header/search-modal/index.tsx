@@ -17,6 +17,7 @@ import { PlaceholderImage } from '@gfed-medusa/sf-lib-ui/icons/placeholder-image
 import { cn } from '@gfed-medusa/sf-lib-ui/lib/utils';
 import { Button } from '@medusajs/ui';
 
+import { PopularSearches } from './popular-searches';
 import { RecentSearches } from './recent-searches';
 import { useRecentSearches } from './use-recent-searches';
 
@@ -277,12 +278,33 @@ const SearchResults = ({
   }
 
   if (!query.trim()) {
-    return (
-      <RecentSearches
-        searches={recentSearches}
-        onSelect={handleTermSelect}
-        onClear={onClearHistory}
+    const hasRecent = recentSearches.length > 0;
+
+    const popularColumn = (
+      <PopularSearches
+        searchClient={searchClient}
+        onSelect={(term) => {
+          handleTermSelect(term);
+          onSave(term);
+        }}
       />
+    );
+
+    if (!hasRecent) {
+      return <div>{popularColumn}</div>;
+    }
+
+    return (
+      <div className="grid grid-cols-2 gap-4">
+        <div>{popularColumn}</div>
+        <div>
+          <RecentSearches
+            searches={recentSearches}
+            onSelect={handleTermSelect}
+            onClear={onClearHistory}
+          />
+        </div>
+      </div>
     );
   }
 

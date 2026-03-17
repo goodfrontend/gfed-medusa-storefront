@@ -13,18 +13,9 @@ function RecentSearches({ searches, onSelect, onClear }: RecentSearchesProps) {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-          Recent Searched Terms
-        </span>
-        <button
-          type="button"
-          onClick={onClear}
-          className="cursor-pointer text-xs text-gray-400 transition-colors hover:text-gray-600"
-        >
-          Clear history
-        </button>
-      </div>
+      <span className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+        Recent Searched Terms
+      </span>
 
       <ul className="mt-2">
         {searches.map((term) => (
@@ -44,6 +35,15 @@ function RecentSearches({ searches, onSelect, onClear }: RecentSearchesProps) {
           </li>
         ))}
       </ul>
+
+      <button
+        type="button"
+        onClick={onClear}
+        style={{ textDecoration: 'underline' }}
+        className="mt-1 cursor-pointer text-xs text-gray-400 transition-colors hover:text-gray-600"
+      >
+        Clear history
+      </button>
     </div>
   );
 }
