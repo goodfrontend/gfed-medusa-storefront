@@ -358,7 +358,7 @@ const Hit = ({ hit, onSave, query }: HitProps) => {
         <h3>{hit.title}</h3>
         <p
           className="text-sm text-gray-500"
-          dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
+          dangerouslySetInnerHTML={{ __html: sanitizedDescription }} // nosemgrep: react-dangerouslysetinnerhtml
         />
       </div>
       <a
