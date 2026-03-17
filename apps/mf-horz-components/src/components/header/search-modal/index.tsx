@@ -107,7 +107,7 @@ function SearchModal({ buttonClassName }: SearchModalProps) {
                 onSave={save}
               />
             </div>
-            <div className="mt-4 min-h-0 flex-1 overflow-y-auto">
+            <div className="border-t border-gray-200 pt-4 min-h-0 flex-1 overflow-y-auto">
               <SearchResults
                 recentSearches={searches}
                 onSave={save}
@@ -172,7 +172,23 @@ const SearchBox = ({
   };
 
   return (
-    <div className="relative w-full">
+    <div className="flex items-center gap-x-2 w-full">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="shrink-0 text-gray-400"
+        aria-hidden="true"
+      >
+        <circle cx="11" cy="11" r="8" />
+        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+      </svg>
       <input
         ref={inputRef}
         type="text"
@@ -180,8 +196,9 @@ const SearchBox = ({
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         placeholder="Search products..."
-        className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus-visible:outline-2 focus-visible:outline-blue-500"
+        className="w-full px-2 py-2 focus:outline-none focus-visible:outline-2 focus-visible:outline-blue-500"
         autoFocus
+        aria-label="Search products"
         data-testid="search-input"
       />
     </div>
