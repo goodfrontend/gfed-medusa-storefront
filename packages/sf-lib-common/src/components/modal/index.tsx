@@ -42,16 +42,16 @@ const Modal = ({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 h-screen bg-opacity-75 backdrop-blur-md" />
+          <div className="fixed inset-0 h-screen backdrop-blur-xl" />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-hidden">
           <div
             className={clx(
-              'flex h-full min-h-full justify-center p-4 text-center',
+              'flex h-full min-h-full justify-center text-center',
               {
-                'items-center': !search,
-                'items-start': search,
+                'items-center p-4': !search,
+                'items-start pt-[68px] px-4 pb-4': search,
               }
             )}
           >
