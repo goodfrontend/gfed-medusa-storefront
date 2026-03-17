@@ -71,11 +71,15 @@ function PopularSearches({ searchClient, onSelect }: PopularSearchesProps) {
           Popular
         </span>
         <ul className="mt-2">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <li key={i} className="flex min-h-[44px] items-center py-2">
-              <div className="h-3 w-24 animate-pulse rounded bg-gray-200" />
-            </li>
-          ))}
+          <li className="flex min-h-[44px] items-center">
+            <div className="h-3 w-20 animate-pulse rounded bg-gray-300" />
+          </li>
+          <li className="flex min-h-[44px] items-center">
+            <div className="h-3 w-24 animate-pulse rounded bg-gray-300" />
+          </li>
+          <li className="flex min-h-[44px] items-center">
+            <div className="h-3 w-16 animate-pulse rounded bg-gray-300" />
+          </li>
         </ul>
       </div>
     );
@@ -99,7 +103,7 @@ function PopularSearches({ searchClient, onSelect }: PopularSearchesProps) {
               onClick={() => onSelect(term)}
               className={cn(
                 'flex min-h-[44px] w-full items-center text-left',
-                'py-2 text-sm text-gray-700',
+                'text-sm text-gray-700',
                 'hover:bg-gray-50',
                 'cursor-pointer'
               )}

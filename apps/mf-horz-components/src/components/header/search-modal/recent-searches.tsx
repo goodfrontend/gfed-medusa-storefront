@@ -25,7 +25,7 @@ function RecentSearches({ searches, onSelect, onClear }: RecentSearchesProps) {
               onClick={() => onSelect(term)}
               className={cn(
                 'flex min-h-[44px] w-full items-center text-left',
-                'py-2 text-sm text-gray-700',
+                'text-sm text-gray-700',
                 'hover:bg-gray-50',
                 'cursor-pointer'
               )}
