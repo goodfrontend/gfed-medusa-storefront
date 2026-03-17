@@ -2,6 +2,8 @@ import { defineArrayMember, defineField, defineType } from 'sanity';
 
 const linkValidationMessage =
   'Use a relative path like /collections/new-arrivals or a full https:// URL.';
+const bannerImageGuidance =
+  'Prefer a wide JPG/WebP under roughly 500 KB. Avoid oversized PNGs when the image is purely photographic.';
 
 const buildBannerLinkFields = () => [
   defineField({
@@ -119,6 +121,7 @@ export default defineType({
               name: 'image',
               title: 'Background image',
               type: 'image',
+              description: bannerImageGuidance,
               options: {
                 hotspot: true,
               },
@@ -148,7 +151,7 @@ export default defineType({
       title: 'Image',
       type: 'image',
       description:
-        'Upload the sample at apps/mf-home/public/images/home-banner-sample.svg or replace it with your own artwork.',
+        `Upload the sample at apps/mf-home/public/images/home-banner-sample.svg or replace it with your own artwork. ${bannerImageGuidance}`,
       options: {
         hotspot: true,
       },

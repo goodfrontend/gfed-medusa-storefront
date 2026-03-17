@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 import { LocalizedClientLink } from '@gfed-medusa/sf-lib-common/components/localized-client-link';
 import { HomeBannerContent } from '@gfed-medusa/sf-lib-common/types/cms';
 import { Button, Heading } from '@medusajs/ui';
@@ -39,6 +41,11 @@ type SecondaryBannerLike = {
 };
 
 const SANITY_CMS_URL = 'https://www.sanity.io/';
+const MAIN_BANNER_IMAGE_SIZES = '(max-width: 1600px) 100vw, 1600px';
+const SECONDARY_BANNER_IMAGE_SIZES =
+  '(max-width: 768px) 100vw, (max-width: 1600px) 50vw, 800px';
+const MAIN_BANNER_IMAGE_QUALITY = 70;
+const SECONDARY_BANNER_IMAGE_QUALITY = 65;
 
 function PoweredBySanity({
   className,
@@ -149,13 +156,16 @@ export function Hero({ bannerContent }: HeroProps) {
       {hasMainContent && (
         <div className="bg-ui-bg-subtle relative isolate overflow-hidden">
           {imageUrl && (
-            <img
+            <Image
               src={imageUrl}
               alt=""
               aria-hidden="true"
-              loading="eager"
+              priority
               fetchPriority="high"
               className="absolute inset-0 h-full w-full object-cover"
+              quality={MAIN_BANNER_IMAGE_QUALITY}
+              sizes={MAIN_BANNER_IMAGE_SIZES}
+              fill
             />
           )}
 
@@ -214,12 +224,14 @@ export function Hero({ bannerContent }: HeroProps) {
                 className="bg-ui-bg-subtle border-ui-border-base relative isolate flex aspect-[16/9] flex-col justify-end overflow-hidden rounded-2xl border p-6 md:p-8"
               >
                 {banner.imageUrl && (
-                  <img
+                  <Image
                     src={banner.imageUrl}
                     alt=""
                     aria-hidden="true"
-                    loading="lazy"
                     className="absolute inset-0 h-full w-full object-cover"
+                    quality={SECONDARY_BANNER_IMAGE_QUALITY}
+                    sizes={SECONDARY_BANNER_IMAGE_SIZES}
+                    fill
                   />
                 )}
 
