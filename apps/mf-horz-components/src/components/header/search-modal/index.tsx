@@ -151,7 +151,7 @@ function SearchModal({ buttonClassName }: SearchModalProps) {
                 setInputValue={setInputValue}
               />
             </div>
-            <div className="shrink-0 border-t border-gray-100 flex justify-end px-4 py-2 opacity-60 [&_.ais-PoweredBy-link]:flex [&_.ais-PoweredBy-link]:items-center [&_.ais-PoweredBy-logo]:h-4 [&_.ais-PoweredBy-logo]:w-auto">
+            <div className="shrink-0 border-t border-gray-100 flex justify-end px-4 pt-3 pb-2 mt-4 opacity-60 [&_.ais-PoweredBy-link]:flex [&_.ais-PoweredBy-link]:items-center [&_.ais-PoweredBy-logo]:h-4 [&_.ais-PoweredBy-logo]:w-auto">
               <PoweredBy theme="light" />
             </div>
           </div>

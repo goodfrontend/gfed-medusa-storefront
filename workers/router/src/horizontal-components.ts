@@ -152,6 +152,9 @@ export async function injectHorizontalComponents(
     stylesheetUrl
       ? `<link rel="preload" href="${stylesheetUrl}" as="style">`
       : '',
+    stylesheetUrl
+      ? `<link rel="stylesheet" href="${stylesheetUrl}">`
+      : '',
   ]
     .filter(Boolean)
     .join('');
