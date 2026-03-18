@@ -51,7 +51,7 @@ importers:
         specifier: ^3.2.0
         version: link:../../packages/sf-lib-checkout
       '@gfed-medusa/sf-lib-common':
-        specifier: ^3.3.5
+        specifier: ^3.3.6
         version: link:../../packages/sf-lib-common
       '@gfed-medusa/sf-lib-home':
         specifier: ^1.2.3
@@ -193,7 +193,7 @@ importers:
         specifier: ^3.2.0
         version: link:../../packages/sf-lib-checkout
       '@gfed-medusa/sf-lib-common':
-        specifier: ^3.3.5
+        specifier: ^3.3.6
         version: link:../../packages/sf-lib-common
       '@gfed-medusa/sf-lib-ui':
         specifier: ^1.2.2
@@ -272,7 +272,7 @@ importers:
         specifier: ^4.0.4
         version: 4.0.11(graphql-ws@6.0.6(graphql@16.12.0)(ws@8.18.3))(graphql@16.12.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(rxjs@7.8.2)
       '@gfed-medusa/sf-lib-common':
-        specifier: ^3.3.5
+        specifier: ^3.3.6
         version: link:../../packages/sf-lib-common
       '@gfed-medusa/sf-lib-home':
         specifier: ^1.2.3
@@ -369,7 +369,7 @@ importers:
   apps/mf-horz-components:
     dependencies:
       '@gfed-medusa/sf-lib-common':
-        specifier: ^3.3.4
+        specifier: ^3.3.6
         version: link:../../packages/sf-lib-common
       '@gfed-medusa/sf-lib-ui':
         specifier: ^1.2.3
@@ -487,10 +487,10 @@ importers:
         specifier: ^4.0.4
         version: 4.0.11(graphql-ws@6.0.6(graphql@16.12.0)(ws@8.18.3))(graphql@16.12.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(rxjs@7.8.2)
       '@gfed-medusa/sf-lib-common':
-        specifier: ^3.3.5
+        specifier: ^3.3.6
         version: link:../../packages/sf-lib-common
       '@gfed-medusa/sf-lib-products':
-        specifier: ^1.5.3
+        specifier: ^1.5.4
         version: link:../../packages/sf-lib-products
       '@gfed-medusa/sf-lib-ui':
         specifier: ^1.2.2
@@ -1262,7 +1262,7 @@ importers:
         specifier: ^4.0.9
         version: 4.0.11(graphql-ws@6.0.6(graphql@16.12.0)(ws@8.18.3))(graphql@16.12.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(rxjs@7.8.2)
       '@gfed-medusa/sf-lib-common':
-        specifier: ^3.3.4
+        specifier: ^3.3.6
         version: link:../sf-lib-common
       '@gfed-medusa/sf-lib-ui':
         specifier: ^1.2.3
