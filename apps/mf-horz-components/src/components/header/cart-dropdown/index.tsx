@@ -8,6 +8,7 @@ import { LineItemPrice } from '@gfed-medusa/sf-lib-common/components/line-item-p
 import { convertToLocale } from '@gfed-medusa/sf-lib-common/lib/utils/money';
 import { Cart } from '@gfed-medusa/sf-lib-common/types/graphql';
 import { Popover, PopoverPanel, Transition } from '@headlessui/react';
+import { ShoppingCart } from '@medusajs/icons';
 import { Button } from '@medusajs/ui';
 
 import { Link } from '../../link';
@@ -91,8 +92,23 @@ const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
           className="flex h-full cursor-pointer items-center"
           onClick={openAndCancel}
         >
+          {/* Mobile: cart icon + badge */}
           <Link
-            className="hover:text-ui-fg-base"
+            href="/cart"
+            className="flex small:hidden relative min-w-[32px] min-h-[32px] items-center justify-center text-ui-fg-subtle hover:text-ui-fg-base cursor-pointer focus:outline-none"
+            aria-label={`Cart, ${totalItems} items`}
+            data-testid="mobile-cart-button"
+          >
+            <ShoppingCart className="w-5 h-5" />
+            {totalItems > 0 && (
+              <span className="absolute -top-1 -right-1 min-w-4 min-h-4 rounded-full bg-gray-900 text-white text-[10px] font-semibold leading-none flex items-center justify-center px-1">
+                {totalItems}
+              </span>
+            )}
+          </Link>
+          {/* Desktop: text link */}
+          <Link
+            className="small:flex hidden hover:text-ui-fg-base"
             href="/cart"
             data-testid="nav-cart-link"
           >{`Cart (${totalItems})`}</Link>

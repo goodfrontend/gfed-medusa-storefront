@@ -5,7 +5,7 @@ import * as medusaUIPreset from '@medusajs/ui-preset';
 const config = {
   darkMode: 'class',
   presets: [medusaUIPreset],
-  content: ['./src/client/**/*.{js,ts,jsx,tsx}'],
+  content: ['./src/**/*.{js,ts,jsx,tsx}'],
   theme: {
     extend: {
       transitionProperty: {
