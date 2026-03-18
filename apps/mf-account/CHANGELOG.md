@@ -1,5 +1,13 @@
 # @gfed-medusa/mf-account
 
+## 1.6.5
+
+### Patch Changes
+
+- 063fa36: Add recent/popular search terms in search modal
+- Updated dependencies [063fa36]
+  - @gfed-medusa/sf-lib-common@3.3.6
+
 ## 1.6.4
 
 ### Patch Changes

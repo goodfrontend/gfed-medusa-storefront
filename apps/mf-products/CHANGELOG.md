@@ -1,5 +1,15 @@
 # @gfed-medusa/mf-products
 
+## 1.4.4
+
+### Patch Changes
+
+- 063fa36: Add recent/popular search terms in search modal
+- Updated dependencies [063fa36]
+- Updated dependencies [063fa36]
+  - @gfed-medusa/sf-lib-common@3.3.6
+  - @gfed-medusa/sf-lib-products@1.5.4
+
 ## 1.4.3
 
 ### Patch Changes
