@@ -7,6 +7,23 @@ const structure = (S: StructureBuilder) =>
     .title('Content')
     .items([
       S.listItem()
+        .title('Home Page')
+        .icon(CogIcon)
+        .child(
+          S.list()
+            .title('Home Page')
+            .items([
+              S.listItem()
+                .title('Main Banner')
+                .child(
+                  S.document()
+                    .schemaType('homeBanner')
+                    .documentId('homeBannerId')
+                    .title('Main Banner')
+                ),
+            ])
+        ),
+      S.listItem()
         .title('Navigation')
         .icon(CogIcon)
         .child(

@@ -29,11 +29,13 @@ export const getPricesForVariant = (variant: any) => {
   };
 };
 
+type ProductWithPricing = Pick<Product, 'id' | 'variants'>;
+
 export function getProductPrice({
   product,
   variantId,
 }: {
-  product: Product;
+  product: ProductWithPricing;
   variantId?: string;
 }) {
   if (!product || !product.id) {

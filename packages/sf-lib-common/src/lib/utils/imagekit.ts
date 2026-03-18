@@ -1,6 +1,6 @@
 const EXTERNAL_STORAGES = [
+  'cdn.sanity.io',
   'cdn.shopify.com',
-  'medusa-public-images.s3.eu-west-1.amazonaws.com',
 ];
 
 export function getImageKitUrl(

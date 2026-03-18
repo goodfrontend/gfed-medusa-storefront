@@ -7,8 +7,13 @@ import { LocalizedClientLink } from '../localized-client-link';
 import { PreviewPrice } from '../preview-price';
 import { Thumbnail } from '../thumbnail';
 
+export type ProductPreviewProduct = Pick<
+  Product,
+  'id' | 'title' | 'handle' | 'thumbnail' | 'images' | 'variants'
+>;
+
 export type ProductPreviewProps = {
-  product: Product;
+  product: ProductPreviewProduct;
   isFeatured?: boolean;
   imagePriority?: boolean;
   imageFetchPriority?: 'auto' | 'high' | 'low';

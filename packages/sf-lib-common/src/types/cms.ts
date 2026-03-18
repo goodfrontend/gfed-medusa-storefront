@@ -31,6 +31,35 @@ export type SanityImage = {
   caption?: string | null;
 };
 
+export type BannerLink = {
+  __typename?: 'BannerButton';
+  href?: string | null;
+  label?: string | null;
+  openInNewTab?: boolean | null;
+};
+
+export type SecondaryBannerContent = {
+  __typename?: 'SecondaryBanner';
+  button?: BannerLink | null;
+  description?: string | null;
+  image?: SanityImage | null;
+  showPoweredBy?: boolean | null;
+  title?: string | null;
+};
+
+export type HomeBannerContent = {
+  __typename?: 'HomeBanner';
+  _id: string;
+  _type: string;
+  buttons?: BannerLink[] | null;
+  description?: string | null;
+  eyebrow?: string | null;
+  image?: SanityImage | null;
+  showPoweredBy?: boolean | null;
+  secondaryBanners?: SecondaryBannerContent[] | null;
+  title?: string | null;
+};
+
 export type FileBlock = {
   __typename?: 'FileBlock';
   _key: string;

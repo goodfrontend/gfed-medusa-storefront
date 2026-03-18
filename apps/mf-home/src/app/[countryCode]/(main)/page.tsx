@@ -1,9 +1,10 @@
 import { Metadata } from 'next';
 
-import { listCollections } from '@gfed-medusa/sf-lib-common/lib/data/collections';
-import { Collection } from '@gfed-medusa/sf-lib-common/types/graphql';
-import { FeaturedProducts } from '@gfed-medusa/sf-lib-home/components/featured-products';
+import { getHomeBannerContent } from '@gfed-medusa/sf-lib-common/lib/data/home-banner';
 import { Hero } from '@gfed-medusa/sf-lib-home/components/hero';
+
+import { FeaturedCategoryRail } from '../../../components/featured-category-rail';
+import { getFeaturedCategories } from '../../../lib/data/featured-categories';
 
 export const metadata: Metadata = {
   title: 'Medusa Next.js Starter Template',
@@ -11,16 +12,25 @@ export const metadata: Metadata = {
     'A performant frontend ecommerce starter template with Next.js 15 and Medusa.',
 };
 
-export default async function Home() {
-  const { collections } = await listCollections({ limit: '6' });
+type Props = {
+  params: Promise<{ countryCode: string }>;
+};
 
-  if (!collections || collections.length === 0) {
+export default async function Home({ params }: Props) {
+  const { countryCode } = await params;
+
+  const [featuredCategories, bannerContent] = await Promise.all([
+    getFeaturedCategories(countryCode),
+    getHomeBannerContent(),
+  ]);
+
+  if (featuredCategories.length === 0) {
     return (
       <>
-        <Hero />
+        <Hero bannerContent={bannerContent} />
         <div className="py-10">
           <p className="text-ui-fg-subtle text-center">
-            No featured collections available at the moment.
+            No featured category products available at the moment.
           </p>
         </div>
       </>
@@ -29,10 +39,18 @@ export default async function Home() {
 
   return (
     <>
-      <Hero />
-      <div className="py-10">
+      <Hero bannerContent={bannerContent} />
+      <div>
         <ul className="flex flex-col gap-x-6">
-          <FeaturedProducts collections={collections as Collection[]} />
+          {featuredCategories.map(({ category, products, title }) => (
+            <li key={category.id}>
+              <FeaturedCategoryRail
+                handle={category.handle}
+                products={products}
+                title={title}
+              />
+            </li>
+          ))}
         </ul>
       </div>
     </>
