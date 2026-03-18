@@ -4,7 +4,7 @@ import { Fragment } from 'react';
 
 import { Region } from '@gfed-medusa/sf-lib-common/types/graphql';
 import { Popover, PopoverPanel, Transition } from '@headlessui/react';
-import { ArrowRightMini, XMark } from '@medusajs/icons';
+import { ArrowRightMini, BarsThree, XMark } from '@medusajs/icons';
 import { Text, clx, useToggleState } from '@medusajs/ui';
 
 import { Link } from '../../link';
@@ -31,7 +31,10 @@ const SideMenu = ({ regions }: { regions: Region[] | null }) => {
                   data-testid="nav-menu-button"
                   className="hover:text-ui-fg-base relative flex h-full cursor-pointer items-center transition-all duration-200 ease-out focus:outline-none"
                 >
-                  Menu
+                  <span className="flex small:hidden min-w-[32px] min-h-[32px] items-center justify-center text-ui-fg-subtle hover:text-ui-fg-base" aria-label="Open menu" data-testid="mobile-menu-button">
+                    <BarsThree className="w-5 h-5" />
+                  </span>
+                  <span className="small:flex hidden">Menu</span>
                 </Popover.Button>
               </div>
 

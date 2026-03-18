@@ -37,7 +37,7 @@ function Header({ regions }: { regions: Region[] }) {
               </Link>
             </div>
 
-            <div className="flex h-full flex-1 basis-0 items-center justify-end gap-x-6">
+            <div className="flex h-full flex-1 basis-0 items-center justify-end gap-x-4 small:gap-x-6">
               <SearchModal />
               <div className="small:flex hidden h-full items-center gap-x-6">
                 {customer ? (

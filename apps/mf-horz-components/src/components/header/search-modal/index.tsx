@@ -79,7 +79,7 @@ function SearchModal({ buttonClassName }: SearchModalProps) {
       </div>
       <button
         onClick={() => setIsOpen(true)}
-        className="flex small:hidden min-w-[44px] min-h-[44px] items-center justify-center cursor-pointer text-ui-fg-subtle hover:text-ui-fg-base focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+        className="flex small:hidden min-w-[32px] min-h-[32px] items-center justify-center cursor-pointer text-ui-fg-subtle hover:text-ui-fg-base focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
         aria-label="Open search"
         data-testid="mobile-search-button"
       >
@@ -127,7 +127,7 @@ function SearchModal({ buttonClassName }: SearchModalProps) {
             <div className="flex small:hidden justify-end px-4 pt-4">
               <button
                 onClick={() => setIsOpen(false)}
-                className="min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                className="min-w-[32px] min-h-[32px] flex items-center justify-center text-gray-400 hover:text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                 aria-label="Close search"
                 data-testid="close-search-button"
               >
