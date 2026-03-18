@@ -1,5 +1,18 @@
 # @gfed-medusa/mf-account
 
+## 1.6.6
+
+### Patch Changes
+
+- cf073e6: Storefront rebranding
+- 36e87d3: add home banners
+- Updated dependencies [cf073e6]
+- Updated dependencies [36e87d3]
+- Updated dependencies [a338bca]
+  - @gfed-medusa/sf-lib-account@2.1.5
+  - @gfed-medusa/sf-lib-common@3.3.7
+  - @gfed-medusa/sf-lib-home@1.2.5
+
 ## 1.6.5
 
 ### Patch Changes

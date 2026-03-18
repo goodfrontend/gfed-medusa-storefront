@@ -1,6 +1,6 @@
 {
   "name": "@gfed-medusa/mf-home",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "type": "module",
   "private": true,
   "scripts": {
@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@apollo/client": "^4.0.4",
-    "@gfed-medusa/sf-lib-common": "^3.3.6",
-    "@gfed-medusa/sf-lib-home": "^1.2.3",
+    "@gfed-medusa/sf-lib-common": "^3.3.7",
+    "@gfed-medusa/sf-lib-home": "^1.2.5",
     "@gfed-medusa/sf-lib-ui": "^1.2.2",
     "@medusajs/ui": "^4.0.29",
     "@medusajs/ui-preset": "^2.12.2",

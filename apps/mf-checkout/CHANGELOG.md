@@ -1,5 +1,15 @@
 # @gfed-medusa/mf-checkout
 
+## 1.5.2
+
+### Patch Changes
+
+- cf073e6: Storefront rebranding
+- 36e87d3: add home banners
+- Updated dependencies [36e87d3]
+- Updated dependencies [a338bca]
+  - @gfed-medusa/sf-lib-common@3.3.7
+
 ## 1.5.1
 
 ### Patch Changes

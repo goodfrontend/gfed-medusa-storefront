@@ -1,5 +1,13 @@
 # @gfed-medusa/sf-lib-common
 
+## 3.3.7
+
+### Patch Changes
+
+- 36e87d3: add home banners
+- a338bca: - Add poweredBy component in search modal
+  - Replace text nav with icons when in mobile view
+
 ## 3.3.6
 
 ### Patch Changes

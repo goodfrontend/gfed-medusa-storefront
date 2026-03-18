@@ -1,5 +1,14 @@
 # @gfed-medusa/sf-lib-home
 
+## 1.2.5
+
+### Patch Changes
+
+- 36e87d3: add home banners
+- Updated dependencies [36e87d3]
+- Updated dependencies [a338bca]
+  - @gfed-medusa/sf-lib-common@3.3.7
+
 ## 1.2.4
 
 ### Patch Changes

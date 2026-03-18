@@ -1,5 +1,14 @@
 # @gfed-medusa/sf-lib-account
 
+## 2.1.5
+
+### Patch Changes
+
+- cf073e6: Storefront rebranding
+- Updated dependencies [36e87d3]
+- Updated dependencies [a338bca]
+  - @gfed-medusa/sf-lib-common@3.3.7
+
 ## 2.1.4
 
 ### Patch Changes
