@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-common
 
+## 3.3.6
+
+### Patch Changes
+
+- 063fa36: Adjust modal for search redesign
+
 ## 3.3.5
 
 ### Patch Changes

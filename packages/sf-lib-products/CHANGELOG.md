@@ -1,5 +1,13 @@
 # @gfed-medusa/sf-lib-products
 
+## 1.5.4
+
+### Patch Changes
+
+- 063fa36: Adjust accordion trigger buton in PDP
+- Updated dependencies [063fa36]
+  - @gfed-medusa/sf-lib-common@3.3.6
+
 ## 1.5.3
 
 ### Patch Changes
