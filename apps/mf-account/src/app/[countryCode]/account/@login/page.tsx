@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
-
-import LoginTemplate from '@/modules/account/templates';
+import { redirect } from 'next/navigation';
 
 export const metadata: Metadata = {
   title: 'Sign in',
@@ -9,6 +8,5 @@ export const metadata: Metadata = {
 
 export default function Login() {
   const bffBaseUrl = process.env.NEXT_PUBLIC_BFF_BASE_URL ?? '';
-
-  return <LoginTemplate bffBaseUrl={bffBaseUrl} />;
+  redirect(`${bffBaseUrl}/auth/login`);
 }
