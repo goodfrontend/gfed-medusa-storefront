@@ -17,6 +17,10 @@ import { PlaceholderImage } from '@gfed-medusa/sf-lib-ui/icons/placeholder-image
 import { cn } from '@gfed-medusa/sf-lib-ui/lib/utils';
 import { Button } from '@medusajs/ui';
 
+import { PopularSearches } from './popular-searches';
+import { RecentSearches } from './recent-searches';
+import { useRecentSearches } from './use-recent-searches';
+
 const searchClient = liteClient(
   process.env.NEXT_PUBLIC_ALGOLIA_APP_ID as string,
   process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY as string
@@ -41,10 +45,18 @@ type SearchModalProps = {
 
 function SearchModal({ buttonClassName }: SearchModalProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+  const { searches, save, clear, remove } = useRecentSearches();
 
   useEffect(() => {
     setIsOpen(false);
   }, []);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setInputValue('');
+    }
+  }, [isOpen]);
 
   return (
     <>
@@ -66,6 +78,7 @@ function SearchModal({ buttonClassName }: SearchModalProps) {
       <Modal
         isOpen={isOpen}
         close={() => setIsOpen(false)}
+        search={true}
         aria-label="Search modal"
       >
         <InstantSearch
@@ -88,10 +101,21 @@ function SearchModal({ buttonClassName }: SearchModalProps) {
           />
           <div className="flex h-full max-h-[75vh] min-h-0 flex-col">
             <div className="shrink-0">
-              <SearchBox isOpen={isOpen} />
+              <SearchBox
+                isOpen={isOpen}
+                inputValue={inputValue}
+                setInputValue={setInputValue}
+                onSave={save}
+              />
             </div>
-            <div className="mt-4 min-h-0 flex-1 overflow-y-auto">
-              <SearchResults />
+            <div className="border-t border-gray-200 pt-4 min-h-0 flex-1 overflow-y-auto">
+              <SearchResults
+                recentSearches={searches}
+                onSave={save}
+                onClearHistory={clear}
+                onRemoveHistory={remove}
+                setInputValue={setInputValue}
+              />
             </div>
           </div>
         </InstantSearch>
@@ -100,7 +124,19 @@ function SearchModal({ buttonClassName }: SearchModalProps) {
   );
 }
 
-const SearchBox = ({ isOpen }: { isOpen: boolean }) => {
+type SearchBoxProps = {
+  isOpen: boolean;
+  inputValue: string;
+  setInputValue: (value: string) => void;
+  onSave: (term: string) => void;
+};
+
+const SearchBox = ({
+  isOpen,
+  inputValue,
+  setInputValue,
+  onSave,
+}: SearchBoxProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -113,11 +149,9 @@ const SearchBox = ({ isOpen }: { isOpen: boolean }) => {
   );
 
   const { refine } = useSearchBox({ queryHook });
-  const [inputValue, setInputValue] = useState('');
 
   useEffect(() => {
     if (!isOpen) {
-      setInputValue('');
       refine('');
     }
   }, [isOpen, refine]);
@@ -133,25 +167,64 @@ const SearchBox = ({ isOpen }: { isOpen: boolean }) => {
     refine(e.target.value);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && inputValue.trim()) {
+      onSave(inputValue.trim());
+    }
+  };
+
   return (
-    <div className="relative w-full">
+    <div className="flex items-center gap-x-2 w-full">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        className="shrink-0 text-gray-400"
+        aria-hidden="true"
+      >
+        <circle cx="11" cy="11" r="8" />
+        <line x1="21" y1="21" x2="16.65" y2="16.65" />
+      </svg>
       <input
         ref={inputRef}
         type="text"
         value={inputValue}
         onChange={handleChange}
+        onKeyDown={handleKeyDown}
         placeholder="Search products..."
-        className="w-full rounded-md border border-gray-300 px-4 py-2 focus:outline-none focus-visible:outline-2 focus-visible:outline-blue-500"
+        className="w-full px-2 py-2 focus:outline-none focus-visible:outline-2 focus-visible:outline-blue-500"
         autoFocus
+        aria-label="Search products"
         data-testid="search-input"
       />
     </div>
   );
 };
 
-const SearchResults = () => {
+type SearchResultsProps = {
+  recentSearches: string[];
+  onSave: (term: string) => void;
+  onClearHistory: () => void;
+  onRemoveHistory: (term: string) => void;
+  setInputValue: (value: string) => void;
+};
+
+const SearchResults = ({
+  recentSearches,
+  onSave,
+  onClearHistory,
+  onRemoveHistory,
+  setInputValue,
+}: SearchResultsProps) => {
   const { items, results } = useHits<AlgoliaProductHit>();
   const { status, error, indexUiState } = useInstantSearch();
+  const { refine } = useSearchBox();
   const query: string = (indexUiState as { query?: string }).query ?? '';
 
   // Stale when user has typed a new query but debounce hasn't fired yet —
@@ -167,6 +240,14 @@ const SearchResults = () => {
   const isPending =
     (status === 'loading' || isStale) && query.trim().length > 0;
   const isError = status === 'error';
+
+  const handleTermSelect = useCallback(
+    (term: string) => {
+      setInputValue(term);
+      refine(term);
+    },
+    [setInputValue, refine]
+  );
 
   if (isPending) {
     return null;
@@ -200,19 +281,53 @@ const SearchResults = () => {
   }
 
   if (!query.trim()) {
-    return null;
+    const hasRecent = recentSearches.length > 0;
+
+    const popularColumn = (
+      <PopularSearches
+        searchClient={searchClient}
+        onSelect={(term) => {
+          handleTermSelect(term);
+          onSave(term);
+        }}
+      />
+    );
+
+    if (!hasRecent) {
+      return <div>{popularColumn}</div>;
+    }
+
+    return (
+      <div className="grid grid-cols-2 gap-4">
+        <div>{popularColumn}</div>
+        <div>
+          <RecentSearches
+            searches={recentSearches}
+            onSelect={handleTermSelect}
+            onClear={onClearHistory}
+            onRemove={onRemoveHistory}
+          />
+        </div>
+      </div>
+    );
   }
 
   return (
     <div>
       {items.map((hit) => (
-        <Hit key={hit.objectID} hit={hit} />
+        <Hit key={hit.objectID} hit={hit} onSave={onSave} query={query} />
       ))}
     </div>
   );
 };
 
-const Hit = ({ hit }: { hit: AlgoliaProductHit }) => {
+type HitProps = {
+  hit: AlgoliaProductHit;
+  onSave: (term: string) => void;
+  query: string;
+};
+
+const Hit = ({ hit, onSave, query }: HitProps) => {
   const sanitizedDescription = useMemo(
     () => DOMPurify.sanitize(hit.description ?? ''),
     [hit.description]
@@ -243,13 +358,14 @@ const Hit = ({ hit }: { hit: AlgoliaProductHit }) => {
         <h3>{hit.title}</h3>
         <p
           className="text-sm text-gray-500"
-          dangerouslySetInnerHTML={{ __html: sanitizedDescription }}
+          dangerouslySetInnerHTML={{ __html: sanitizedDescription }} // nosemgrep: react-dangerouslysetinnerhtml
         />
       </div>
       <a
         href={`/products/${hit.handle}`}
         className="absolute right-0 top-0 h-full w-full"
         aria-label={`View Product: ${hit.title}`}
+        onClick={() => onSave(query)}
       />
     </div>
   );

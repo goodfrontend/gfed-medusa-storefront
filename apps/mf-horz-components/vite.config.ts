@@ -47,6 +47,11 @@ export default defineConfig(({ mode }) => {
           process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME ||
           ''
       ),
+      'process.env.NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME': JSON.stringify(
+        env.NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME ||
+          process.env.NEXT_PUBLIC_ALGOLIA_SUGGESTIONS_INDEX_NAME ||
+          ''
+      ),
     },
     build: {
       assetsDir: '',

@@ -1,7 +1,8 @@
 @config "../../tailwind.config.ts";
 @import 'tailwindcss';
-@import "@gfed-medusa/sf-lib-ui/styles.css";
+@import '@gfed-medusa/sf-lib-ui/styles.css';
 @source "../../node_modules/@gfed-medusa/sf-lib-common";
 @source "../../node_modules/@gfed-medusa/sf-lib-ui";
 @source "../../node_modules/@gfed-medusa/sf-lib-home";
 @source "../../node_modules/@medusajs/ui";
+@source "../../../mf-horz-components/src/components";

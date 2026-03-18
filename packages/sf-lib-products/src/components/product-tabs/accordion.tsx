@@ -93,11 +93,9 @@ Accordion.Item = Item;
 
 const MorphingTrigger = () => {
   return (
-    <div className="active:text-violet-60 focus:border-violet-60 rounded-rounded text-grey-90 hover:bg-grey-5 active:bg-grey-5 disabled:text-grey-30 group relative bg-transparent p-[6px] disabled:bg-transparent">
-      <div className="h-5 w-5">
-        <span className="rounded-circle bg-grey-50 group-radix-state-open:rotate-90 absolute inset-y-[31.75%] left-[48%] right-1/2 w-[1.5px] duration-300" />
-        <span className="rounded-circle bg-grey-50 group-radix-state-open:left-1/2 group-radix-state-open:right-1/2 group-radix-state-open:rotate-90 absolute inset-x-[31.75%] bottom-1/2 top-[48%] h-[1.5px] duration-300" />
-      </div>
+    <div className="relative h-5 w-5">
+      <span className="bg-grey-50 absolute inset-x-[15%] top-1/2 h-[1.5px] -translate-y-1/2" />
+      <span className="bg-grey-50 absolute inset-y-[15%] left-1/2 w-[1.5px] -translate-x-1/2 group-data-[state=open]:hidden" />
     </div>
   );
 };
