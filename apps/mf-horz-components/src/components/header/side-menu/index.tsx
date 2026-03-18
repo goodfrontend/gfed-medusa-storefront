@@ -91,7 +91,7 @@ const SideMenu = ({ regions }: { regions: Region[] | null }) => {
                         />
                       </div>
                       <Text className="txt-compact-small flex justify-between">
-                        © {new Date().getFullYear()} Medusa Store. All rights
+                        © {new Date().getFullYear()} JustGood Store. All rights
                         reserved.
                       </Text>
                     </div>

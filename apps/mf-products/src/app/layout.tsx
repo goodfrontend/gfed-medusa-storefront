@@ -11,6 +11,10 @@ import '@/styles/globals.css';
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
+  icons: {
+    icon: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
 };
 
 export default async function RootLayout(props: { children: React.ReactNode }) {

@@ -28,8 +28,13 @@ export default function CheckoutLayout({
             href="/"
             className="txt-compact-xlarge-plus text-ui-fg-subtle hover:text-ui-fg-base uppercase"
             data-testid="store-link"
+            style={{
+              fontWeight: 600,
+              letterSpacing: '0.15em',
+              fontSize: '0.875rem',
+            }}
           >
-            Medusa Store
+            JustGood Store
           </LocalizedClientLink>
           <div className="flex-1 basis-0" />
         </nav>

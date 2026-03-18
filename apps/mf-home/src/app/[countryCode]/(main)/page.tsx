@@ -7,9 +7,8 @@ import { FeaturedCategoryRail } from '../../../components/featured-category-rail
 import { getFeaturedCategories } from '../../../lib/data/featured-categories';
 
 export const metadata: Metadata = {
-  title: 'Medusa Next.js Starter Template',
-  description:
-    'A performant frontend ecommerce starter template with Next.js 15 and Medusa.',
+  title: 'JustGood Store',
+  description: 'A performant frontend ecommerce store with the best products.',
 };
 
 type Props = {

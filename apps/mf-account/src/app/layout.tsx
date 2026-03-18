@@ -12,6 +12,10 @@ import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-con
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
+  icons: {
+    icon: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
 };
 
 export default async function RootLayout(props: { children: React.ReactNode }) {
