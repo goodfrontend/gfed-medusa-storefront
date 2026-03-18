@@ -1,5 +1,18 @@
 # @gfed-medusa/sf-lib-products
 
+## 1.6.0
+
+### Minor Changes
+
+- 74ff8df: replace PDP selection button text
+
+### Patch Changes
+
+- fef6c48: fix pdp mobile actions issues
+- Updated dependencies [36e87d3]
+- Updated dependencies [a338bca]
+  - @gfed-medusa/sf-lib-common@3.3.7
+
 ## 1.5.4
 
 ### Patch Changes
