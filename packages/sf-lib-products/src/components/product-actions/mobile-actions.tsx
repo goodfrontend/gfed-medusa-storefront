@@ -1,11 +1,12 @@
 import React, { Fragment, useMemo } from 'react';
 
+import { isEqual } from 'lodash';
+
 import useToggleState from '@gfed-medusa/sf-lib-common/lib/hooks/use-toggle-state';
 import { getProductPrice } from '@gfed-medusa/sf-lib-common/lib/utils/get-product-price';
 import { ChevronDown } from '@gfed-medusa/sf-lib-ui/icons/chevron-down';
 import { X } from '@gfed-medusa/sf-lib-ui/icons/x';
 import { Dialog, Transition } from '@headlessui/react';
-import { HttpTypes } from '@medusajs/types';
 import { Button, clx } from '@medusajs/ui';
 
 import { useProductPrice } from '@/lib/hooks/use-product-price';
@@ -26,6 +27,20 @@ type MobileActionsProps = {
   isAdding?: boolean;
   show: boolean;
   optionsDisabled: boolean;
+};
+
+const optionsAsKeymap = (
+  variantOptions: ProductVariant['options'] | null | undefined
+) => {
+  return variantOptions?.reduce<Record<string, string>>((acc, varopt) => {
+    if (!varopt) {
+      return acc;
+    }
+
+    acc[varopt.optionId] = varopt.value;
+
+    return acc;
+  }, {});
 };
 
 const MobileActions: React.FC<MobileActionsProps> = ({
@@ -78,10 +93,27 @@ const MobileActions: React.FC<MobileActionsProps> = ({
 
   const isSimple = isSimpleProduct(product);
 
+  const handleUpdateOption = (optionId: string, value: string) => {
+    updateOptions(optionId, value);
+
+    const nextOptions = {
+      ...options,
+      [optionId]: value,
+    };
+
+    const hasMatchingVariant = (product.variants ?? []).some((productVariant) =>
+      isEqual(optionsAsKeymap(productVariant.options), nextOptions)
+    );
+
+    if (hasMatchingVariant) {
+      close();
+    }
+  };
+
   return (
     <>
       <div
-        className={clx('fixed inset-x-0 bottom-0 lg:hidden', {
+        className={clx('fixed inset-x-0 bottom-0 z-40 lg:hidden', {
           'pointer-events-none': !show,
         })}
       >
@@ -216,7 +248,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                               <OptionSelect
                                 option={option}
                                 current={options[option.id]}
-                                updateOption={updateOptions}
+                                updateOption={handleUpdateOption}
                                 title={option.title ?? ''}
                                 disabled={optionsDisabled}
                               />
