@@ -1,13 +1,22 @@
 'use server';
 
 import type { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
-import { graphqlFetch } from '@gfed-medusa/sf-lib-common/lib/gql/apollo-client';
+import {
+  createServerApolloClient,
+  graphqlFetch,
+} from '@gfed-medusa/sf-lib-common/lib/gql/apollo-client';
 import type { Region } from '@gfed-medusa/sf-lib-common/types/graphql';
 
-import { GET_PRODUCTS_PREVIEW_QUERY, GET_PRODUCTS_QUERY } from '@/lib/gql/queries/product';
+import {
+  GET_PRODUCT_PRICING_QUERY,
+  GET_PRODUCTS_PREVIEW_QUERY,
+  GET_PRODUCTS_QUERY,
+} from '@/lib/gql/queries/product';
 import { sortProducts } from '@/lib/utils/sort-products';
-import type { SortOptions } from '@/types';
+import type { PricingProduct, SortOptions } from '@/types';
 import type {
+  GetProductPricingQuery,
+  GetProductPricingQueryVariables,
   GetProductsQuery,
   GetProductsQueryVariables,
   Product,
@@ -150,6 +159,40 @@ export const listProductsPreview = async (
       response: { products: [], count: 0 },
       nextPage: null,
     };
+  }
+};
+
+export const retrieveProductPricing = async (
+  {
+    id,
+    regionId,
+  }: {
+    id: string;
+    regionId: string;
+  },
+  ctx: StorefrontContext
+): Promise<PricingProduct | null> => {
+  const apolloClient = createServerApolloClient(ctx.cookieHeader ?? '');
+
+  try {
+    const data = await graphqlFetch<
+      GetProductPricingQuery,
+      GetProductPricingQueryVariables
+    >(
+      {
+        query: GET_PRODUCT_PRICING_QUERY,
+        variables: {
+          id,
+          region_id: regionId,
+        },
+      },
+      apolloClient
+    );
+
+    return data?.product ?? null;
+  } catch (error) {
+    console.error('Error fetching product pricing from BFF:', error);
+    return null;
   }
 };
 

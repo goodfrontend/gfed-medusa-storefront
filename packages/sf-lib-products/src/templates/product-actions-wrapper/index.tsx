@@ -1,32 +1,56 @@
+import { unstable_noStore as noStore } from 'next/cache';
+
 import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
 import { Region } from '@gfed-medusa/sf-lib-common/types/graphql';
 
 import ProductActions from '@/components/product-actions';
-import { listProducts } from '@/lib/data/products';
-import { Product } from '@/types/graphql';
+import { retrieveProductPricing } from '@/lib/data/products';
+import type { ProductActionsProduct, PricingProduct } from '@/types';
+
+const mergeProductPricing = (
+  product: ProductActionsProduct,
+  pricingProduct: PricingProduct | null
+): ProductActionsProduct => {
+  const pricingById = new Map(
+    (pricingProduct?.variants ?? []).map((variant) => [variant.id, variant] as const)
+  );
+
+  return {
+    ...product,
+    variants: (product.variants ?? []).map((variant) => {
+      const pricingVariant = pricingById.get(variant.id);
+
+      return {
+        ...variant,
+        inventoryQuantity:
+          pricingVariant?.inventoryQuantity ?? variant.inventoryQuantity,
+        price: pricingVariant?.price ?? variant.price,
+        originalPrice: pricingVariant?.originalPrice ?? variant.originalPrice,
+      };
+    }),
+  };
+};
 
 /**
- * Fetches real time pricing for a product and renders the product actions component.
+ * Reuses page product data and merges in fresh server-side pricing.
  */
 export default async function ProductActionsWrapper({
-  id,
+  product,
   region,
 }: {
-  id: string;
+  product: ProductActionsProduct;
   region: Region;
 }) {
+  noStore();
+
   const ctx = await resolveNextContext();
-  const product = await listProducts(
+  const pricingProduct = await retrieveProductPricing(
     {
-      queryParams: { id: [id] },
+      id: product.id,
       regionId: region.id,
     },
     ctx
-  ).then(({ response }) => response.products?.[0] ?? null);
+  );
 
-  if (!product) {
-    return null;
-  }
-
-  return <ProductActions product={product as Product} regionId={region.id} />;
+  return <ProductActions product={mergeProductPricing(product, pricingProduct)} />;
 }

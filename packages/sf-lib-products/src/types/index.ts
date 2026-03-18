@@ -1,3 +1,5 @@
+import type { Product } from './graphql';
+
 export type VariantPrice = {
   calculated_price_number: number;
   calculated_price: string;
@@ -9,3 +11,10 @@ export type VariantPrice = {
 };
 
 export type SortOptions = 'created_at' | 'price_asc' | 'price_desc';
+
+export type PricingProduct = Pick<Product, 'variants'>;
+
+export type ProductActionsProduct = Pick<
+  Product,
+  'id' | 'title' | 'options' | 'variants'
+>;

@@ -2,39 +2,18 @@
 
 import { getProductPrice } from '@gfed-medusa/sf-lib-common/lib/utils/get-product-price';
 
-import { useProductPrice } from '@/lib/hooks/use-product-price';
-import { Product, ProductVariant } from '@/types/graphql';
+import { ProductActionsProduct } from '@/types';
+import { ProductVariant } from '@/types/graphql';
 
 export default function ProductPrice({
   product,
   variant,
-  regionId,
 }: {
-  product: Product;
+  product: ProductActionsProduct;
   variant?: ProductVariant;
-  regionId: string;
 }) {
-  const { product: pricingProduct } = useProductPrice(product.id, regionId);
-
-  const pricingById = new Map(
-    (pricingProduct?.variants ?? []).map((v: any) => [v.id, v])
-  );
-
-  const sourceProduct = {
-    ...product,
-    variants: (product.variants ?? []).map((v: any) => {
-      const p = pricingById.get(v.id);
-      return {
-        ...v,
-        price: p?.price,
-        originalPrice: p?.originalPrice,
-        inventoryQuantity: p?.inventoryQuantity,
-      };
-    }),
-  } as Product;
-
   const { cheapestPrice, variantPrice } = getProductPrice({
-    product: sourceProduct,
+    product,
     variantId: variant?.id,
   });
 

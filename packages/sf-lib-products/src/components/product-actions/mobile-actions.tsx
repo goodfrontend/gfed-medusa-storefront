@@ -9,20 +9,18 @@ import { X } from '@gfed-medusa/sf-lib-ui/icons/x';
 import { Dialog, Transition } from '@headlessui/react';
 import { Button, clx } from '@medusajs/ui';
 
-import { useProductPrice } from '@/lib/hooks/use-product-price';
 import { isSimpleProduct } from '@/lib/utils/product';
-import { Product, ProductVariant } from '@/types/graphql';
+import { ProductActionsProduct } from '@/types';
+import { ProductVariant } from '@/types/graphql';
 
 import OptionSelect from './option-select';
 
 type MobileActionsProps = {
-  product: Product;
+  product: ProductActionsProduct;
   variant?: ProductVariant;
-  regionId: string;
   options: Record<string, string | undefined>;
   updateOptions: (title: string, value: string) => void;
-  inStock?: boolean;
-  stockStatus?: 'unknown' | 'checking' | 'in_stock' | 'out_of_stock';
+  stockStatus?: 'unknown' | 'in_stock' | 'out_of_stock';
   handleAddToCart: () => void;
   isAdding?: boolean;
   show: boolean;
@@ -46,10 +44,8 @@ const optionsAsKeymap = (
 const MobileActions: React.FC<MobileActionsProps> = ({
   product,
   variant,
-  regionId,
   options,
   updateOptions,
-  inStock,
   stockStatus,
   handleAddToCart,
   isAdding,
@@ -58,27 +54,8 @@ const MobileActions: React.FC<MobileActionsProps> = ({
 }) => {
   const { state, open, close } = useToggleState();
 
-  const { product: pricingProduct } = useProductPrice(product.id, regionId);
-
-  const pricingById = new Map(
-    (pricingProduct?.variants ?? []).map((v: any) => [v.id, v])
-  );
-
-  const sourceProduct = {
-    ...product,
-    variants: (product.variants ?? []).map((v: any) => {
-      const p = pricingById.get(v.id);
-      return {
-        ...v,
-        price: p?.price,
-        originalPrice: p?.originalPrice,
-        inventoryQuantity: p?.inventoryQuantity,
-      };
-    }),
-  } as Product;
-
   const price = getProductPrice({
-    product: sourceProduct,
+    product,
     variantId: variant?.id,
   });
 
@@ -180,22 +157,16 @@ const MobileActions: React.FC<MobileActionsProps> = ({
               )}
               <Button
                 onClick={handleAddToCart}
-                disabled={
-                  !variant ||
-                  stockStatus === 'checking' ||
-                  stockStatus === 'out_of_stock'
-                }
+                disabled={!variant || stockStatus === 'out_of_stock'}
                 className="w-full"
                 isLoading={isAdding}
                 data-testid="mobile-cart-button"
               >
                 {!variant
                   ? 'Select size'
-                  : stockStatus === 'checking'
-                    ? 'Checking stock'
-                    : stockStatus === 'out_of_stock'
-                      ? 'Out of stock'
-                      : 'Add to cart'}
+                  : stockStatus === 'out_of_stock'
+                    ? 'Out of stock'
+                    : 'Add to cart'}
               </Button>
             </div>
           </div>
