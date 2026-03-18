@@ -29,7 +29,7 @@ function Footer({
               href="/"
               className="txt-compact-xlarge-plus text-ui-fg-subtle hover:text-ui-fg-base uppercase"
             >
-              {footerContent?.storeName || 'Medusa Store'}
+              {footerContent?.storeName || 'JustGood Store'}
             </Link>
           </div>
           <div className="text-small-regular grid grid-cols-2 gap-10 sm:grid-cols-3 md:gap-x-16">
@@ -118,7 +118,7 @@ function Footer({
               </div>
             )}
             <div className="flex flex-col gap-y-2">
-              <span className="txt-ui-fg-base txt-small-plus">Medusa</span>
+              <span className="txt-ui-fg-base txt-small-plus">JustGood</span>
               <ul className="txt-small text-ui-fg-subtle grid grid-cols-1 gap-y-2">
                 {footerContent?.social &&
                   footerContent?.social.map(

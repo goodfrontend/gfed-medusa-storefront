@@ -1,4 +1,4 @@
-import { cache, Suspense } from 'react';
+import { Suspense, cache } from 'react';
 
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -30,7 +30,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   }
 
   const metadata = {
-    title: `${collection.title} | Medusa Store`,
+    title: `${collection.title} | JustGood Store`,
     description: `${collection.title} collection`,
   } as Metadata;
 

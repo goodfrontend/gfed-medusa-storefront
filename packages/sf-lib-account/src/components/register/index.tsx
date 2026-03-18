@@ -25,10 +25,10 @@ const Register = ({ setCurrentView }: Props) => {
       data-testid="register-page"
     >
       <h1 className="text-large-semi mb-6 uppercase">
-        Become a Medusa Store Member
+        Become a JustGood Store Member
       </h1>
       <p className="text-base-regular text-ui-fg-base mb-4 text-center">
-        Create your Medusa Store Member profile, and get access to an enhanced
+        Create your JustGood Store Member profile, and get access to an enhanced
         shopping experience.
       </p>
       <form className="flex w-full flex-col" action={formAction}>
@@ -80,7 +80,7 @@ const Register = ({ setCurrentView }: Props) => {
           </div>
         )}
         <span className="text-small-regular text-ui-fg-base mt-6 text-center">
-          By creating an account, you agree to Medusa Store&apos;s{' '}
+          By creating an account, you agree to JustGood Store&apos;s{' '}
           <LocalizedClientLink
             href="/content/privacy-policy"
             className="underline"

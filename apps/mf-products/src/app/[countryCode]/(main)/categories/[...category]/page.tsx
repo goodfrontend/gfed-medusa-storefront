@@ -1,4 +1,4 @@
-import { cache, Suspense } from 'react';
+import { Suspense, cache } from 'react';
 
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -28,10 +28,10 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     const productCategory = await getCategoryByPathCached(categoryPath);
 
     const categoryName = productCategory?.name ?? 'Category';
-    const title = `${categoryName} | Medusa Store`;
+    const title = `${categoryName} | JustGood Store`;
     const description =
       productCategory?.description?.trim() ||
-      `Browse ${categoryName} products at Medusa Store.`;
+      `Browse ${categoryName} products at JustGood Store.`;
 
     return {
       title,

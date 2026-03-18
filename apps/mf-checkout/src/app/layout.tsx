@@ -11,6 +11,10 @@ import { getBaseURL } from '@gfed-medusa/sf-lib-common/lib/utils/env';
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
+  icons: {
+    icon: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
 };
 
 export default async function RootLayout({
