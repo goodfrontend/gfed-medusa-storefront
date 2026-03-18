@@ -171,13 +171,11 @@ export default function ProductActions({
     setStatus(AddToCartStatus.ADDING);
 
     try {
-      await addToCart(
-        {
-          variantId: selectedVariant.id,
-          quantity: 1,
-          countryCode,
-        }
-      );
+      await addToCart({
+        variantId: selectedVariant.id,
+        quantity: 1,
+        countryCode,
+      });
 
       mutateCart();
 
@@ -243,7 +241,7 @@ export default function ProductActions({
           data-testid="add-product-button"
         >
           {!selectedVariant
-            ? 'Select variant'
+            ? 'Select size'
             : stockStatus === 'checking'
               ? 'Checking stock'
               : !inStock || !isValidVariant
