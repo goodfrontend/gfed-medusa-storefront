@@ -7,6 +7,7 @@ import DOMPurify from 'isomorphic-dompurify';
 import {
   Configure,
   InstantSearch,
+  PoweredBy,
   useHits,
   useInstantSearch,
   useSearchBox,
@@ -116,6 +117,9 @@ function SearchModal({ buttonClassName }: SearchModalProps) {
                 onRemoveHistory={remove}
                 setInputValue={setInputValue}
               />
+            </div>
+            <div className="shrink-0 border-t border-gray-100 flex justify-end px-4 py-2 opacity-60 [&_.ais-PoweredBy-link]:flex [&_.ais-PoweredBy-link]:items-center [&_.ais-PoweredBy-logo]:h-4 [&_.ais-PoweredBy-logo]:w-auto">
+              <PoweredBy theme="light" />
             </div>
           </div>
         </InstantSearch>
