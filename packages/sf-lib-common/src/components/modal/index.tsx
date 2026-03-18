@@ -51,7 +51,7 @@ const Modal = ({
               'flex h-full min-h-full justify-center text-center',
               {
                 'items-center p-4': !search,
-                'items-start pt-[68px] px-4 pb-4': search,
+                'items-start small:pt-[68px] small:px-4 small:pb-4': search,
               }
             )}
           >
@@ -67,7 +67,7 @@ const Modal = ({
               <Dialog.Panel
                 data-testid={dataTestId}
                 className={clx(
-                  'flex h-fit max-h-[75vh] w-full transform flex-col justify-start rounded-rounded border bg-white p-5 shadow-xl text-left align-middle transition-all',
+                  'flex h-dvh small:h-fit small:max-h-[75vh] w-full transform flex-col justify-start rounded-none small:rounded-rounded border bg-white p-4 small:p-5 shadow-xl text-left align-middle transition-all',
                   {
                     'max-w-md': size === 'small',
                     'max-w-xl': size === 'medium',

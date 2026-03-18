@@ -15,6 +15,7 @@ import {
 
 import { Modal } from '@gfed-medusa/sf-lib-common/components/modal';
 import { PlaceholderImage } from '@gfed-medusa/sf-lib-ui/icons/placeholder-image';
+import { X } from '@gfed-medusa/sf-lib-ui/icons/x';
 import { cn } from '@gfed-medusa/sf-lib-ui/lib/utils';
 import { Button } from '@medusajs/ui';
 
@@ -76,6 +77,28 @@ function SearchModal({ buttonClassName }: SearchModalProps) {
           Search
         </Button>
       </div>
+      <button
+        onClick={() => setIsOpen(true)}
+        className="flex small:hidden min-w-[44px] min-h-[44px] items-center justify-center cursor-pointer text-ui-fg-subtle hover:text-ui-fg-base focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+        aria-label="Open search"
+        data-testid="mobile-search-button"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+      </button>
       <Modal
         isOpen={isOpen}
         close={() => setIsOpen(false)}
@@ -100,7 +123,17 @@ function SearchModal({ buttonClassName }: SearchModalProps) {
             ]}
             attributesToHighlight={[] as string[]}
           />
-          <div className="flex h-full max-h-[75vh] min-h-0 flex-col">
+          <div className="flex h-dvh small:h-full small:max-h-[75vh] min-h-0 flex-col">
+            <div className="flex small:hidden justify-end px-4 pt-4">
+              <button
+                onClick={() => setIsOpen(false)}
+                className="min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                aria-label="Close search"
+                data-testid="close-search-button"
+              >
+                <X size={20} />
+              </button>
+            </div>
             <div className="shrink-0">
               <SearchBox
                 isOpen={isOpen}
@@ -202,7 +235,7 @@ const SearchBox = ({
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         placeholder="Search products..."
-        className="w-full px-2 py-2 focus:outline-none focus-visible:outline-2 focus-visible:outline-blue-500"
+        className="w-full px-2 py-2 text-base focus:outline-none focus-visible:outline-2 focus-visible:outline-blue-500"
         autoFocus
         aria-label="Search products"
         data-testid="search-input"
