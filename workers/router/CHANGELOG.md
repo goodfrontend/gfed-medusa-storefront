@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-gateway
 
+## 1.2.5
+
+### Patch Changes
+
+- af3bd3a: Include stylesheet url to load in head tag
+
 ## 1.2.4
 
 ### Patch Changes

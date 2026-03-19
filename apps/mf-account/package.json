@@ -1,6 +1,6 @@
 {
   "name": "@gfed-medusa/mf-account",
-  "version": "1.6.6",
+  "version": "1.6.7",
   "type": "module",
   "private": true,
   "description": "Account MFE from Medusa V2 Next.js starter",

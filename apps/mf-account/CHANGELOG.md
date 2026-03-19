@@ -1,5 +1,11 @@
 # @gfed-medusa/mf-account
 
+## 1.6.7
+
+### Patch Changes
+
+- af3bd3a: Remove @source from global.css of each MFE
+
 ## 1.6.6
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @gfed-medusa/mf-horz-components
 
+## 1.5.4
+
+### Patch Changes
+
+- af3bd3a: Remove @source from global.css of each MFE
+
 ## 1.5.3
 
 ### Patch Changes

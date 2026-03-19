@@ -1,6 +1,6 @@
 {
   "name": "@gfed-medusa/mf-checkout",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "type": "module",
   "private": true,
   "scripts": {
