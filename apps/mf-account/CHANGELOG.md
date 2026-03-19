@@ -1,5 +1,11 @@
 # @gfed-medusa/mf-account
 
+## 1.7.0
+
+### Minor Changes
+
+- 53d0313: prevent account page flash before auth redirect
+
 ## 1.6.7
 
 ### Patch Changes
