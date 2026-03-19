@@ -4,8 +4,8 @@ import { Fragment, useState } from 'react';
 
 import { Region } from '@gfed-medusa/sf-lib-common/types/graphql';
 import { Dialog, Transition } from '@headlessui/react';
-import { ArrowRightMini, BarsThree, XMark } from '@medusajs/icons';
-import { Text, clx, useToggleState } from '@medusajs/ui';
+import { BarsThree, XMark } from '@medusajs/icons';
+import { Text } from '@medusajs/ui';
 
 import { Link } from '../../link';
 import { CountrySelect } from '../country-select';
@@ -18,7 +18,6 @@ const SideMenuItems = {
 };
 
 const SideMenu = ({ regions }: { regions: Region[] | null }) => {
-  const toggleState = useToggleState();
   const [isOpen, setIsOpen] = useState(false);
 
   const open = () => setIsOpen(true);
@@ -100,24 +99,7 @@ const SideMenu = ({ regions }: { regions: Region[] | null }) => {
                           })}
                         </ul>
                         <div className="flex flex-col gap-y-6">
-                          <div
-                            className="flex justify-between"
-                            onMouseEnter={toggleState.open}
-                            onMouseLeave={toggleState.close}
-                          >
-                            {regions && (
-                              <CountrySelect
-                                toggleState={toggleState}
-                                regions={regions}
-                              />
-                            )}
-                            <ArrowRightMini
-                              className={clx(
-                                'transition-transform duration-150',
-                                toggleState.state ? '-rotate-90' : ''
-                              )}
-                            />
-                          </div>
+                          {regions && <CountrySelect regions={regions} />}
                           <Text className="txt-compact-small text-ui-fg-base flex justify-between">
                             © {new Date().getFullYear()} JustGood Store. All
                             rights reserved.
