@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { redirect } from 'next/navigation';
 
 import { AccountLayout } from '@gfed-medusa/sf-lib-account/components/account-layout';
 import { CartMismatchBanner } from '@gfed-medusa/sf-lib-common/components/cart-mismatch-banner';
@@ -19,16 +20,21 @@ export const metadata: Metadata = {
 
 export default async function PageLayout({
   dashboard,
-  login,
 }: {
   dashboard?: React.ReactNode;
-  login?: React.ReactNode;
 }) {
   const ctx = await resolveNextContext();
   const customer = await retrieveCustomer(ctx);
+  const bffBaseUrl = process.env.NEXT_PUBLIC_BFF_BASE_URL ?? '';
+
+  if (!customer) {
+    redirect(`${bffBaseUrl}/auth/login`);
+  }
+
   const cart = await retrieveCart(ctx);
-  let shippingOptions = await (cart ? listCartOptions(ctx) : Promise.resolve(null));
-  const bffBaseUrl = process.env.NEXT_PUBLIC_BFF_BASE_URL ?? '' ;
+  const shippingOptions = await (cart
+    ? listCartOptions(ctx)
+    : Promise.resolve(null));
 
   return (
     <>
@@ -46,7 +52,7 @@ export default async function PageLayout({
         />
       )}
       <AccountLayout bffBaseUrl={bffBaseUrl} customer={customer}>
-        {customer ? dashboard : login}
+        {dashboard}
         <Toaster />
       </AccountLayout>
       {/* @ts-expect-error -- Web Component */}
