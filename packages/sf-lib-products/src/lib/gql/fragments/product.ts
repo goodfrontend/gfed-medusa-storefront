@@ -130,11 +130,18 @@ export const PRODUCT_CONTENT_FRAGMENT = gql`
     }
     variants {
       id
+      inventoryQuantity
       allowBackorder
       manageInventory
       options {
         optionId
         value
+      }
+      price {
+        ...Price
+      }
+      originalPrice {
+        ...Price
       }
     }
     collection {
@@ -144,6 +151,7 @@ export const PRODUCT_CONTENT_FRAGMENT = gql`
   }
   ${PRODUCT_IMAGE_FRAGMENT}
   ${PRODUCT_TAG_FRAGMENT}
+  ${PRICE_FRAGMENT}
 `;
 
 export const PRODUCT_FRAGMENT = gql`
