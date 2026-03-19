@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-products
 
+## 1.6.2
+
+### Patch Changes
+
+- 991a78a: remove extra pricing fetch and include in the initial PDP product fetch
+
 ## 1.6.1
 
 ### Patch Changes
