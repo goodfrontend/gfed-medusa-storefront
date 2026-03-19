@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-products
 
+## 1.6.1
+
+### Patch Changes
+
+- f0d2db9: fetch product price in the server
+
 ## 1.6.0
 
 ### Minor Changes
