@@ -23,6 +23,21 @@ import { PopularSearches } from './popular-searches';
 import { RecentSearches } from './recent-searches';
 import { useRecentSearches } from './use-recent-searches';
 
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState(() =>
+    typeof window !== 'undefined'
+      ? window.matchMedia('(min-width: 1024px)').matches
+      : false
+  );
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)');
+    const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+  return isDesktop;
+}
+
 const searchClient = liteClient(
   process.env.NEXT_PUBLIC_ALGOLIA_APP_ID as string,
   process.env.NEXT_PUBLIC_ALGOLIA_SEARCH_KEY as string
@@ -46,6 +61,7 @@ type SearchModalProps = {
 };
 
 function SearchModal({ buttonClassName }: SearchModalProps) {
+  const isDesktop = useIsDesktop();
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const { searches, save, clear, remove } = useRecentSearches();
@@ -79,7 +95,7 @@ function SearchModal({ buttonClassName }: SearchModalProps) {
       </div>
       <button
         onClick={() => setIsOpen(true)}
-        className="flex small:hidden min-w-[32px] min-h-[32px] items-center justify-center cursor-pointer text-ui-fg-subtle hover:text-ui-fg-base focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+        className="small:hidden text-ui-fg-subtle hover:text-ui-fg-base flex min-h-[32px] min-w-[32px] cursor-pointer items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
         aria-label="Open search"
         data-testid="mobile-search-button"
       >
@@ -123,11 +139,20 @@ function SearchModal({ buttonClassName }: SearchModalProps) {
             ]}
             attributesToHighlight={[] as string[]}
           />
-          <div className="flex h-dvh small:h-full small:max-h-[75vh] min-h-0 flex-col">
-            <div className="flex small:hidden justify-end px-4 pt-4">
+          <div
+            className="flex min-h-0 flex-col"
+            style={{
+              height: isDesktop ? '100%' : '100dvh',
+              maxHeight: isDesktop ? '75vh' : undefined,
+            }}
+          >
+            <div
+              className="flex justify-end px-4 pt-4"
+              style={{ display: isDesktop ? 'none' : 'flex' }}
+            >
               <button
                 onClick={() => setIsOpen(false)}
-                className="min-w-[32px] min-h-[32px] flex items-center justify-center text-gray-400 hover:text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+                className="flex min-h-[32px] min-w-[32px] items-center justify-center text-gray-400 hover:text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                 aria-label="Close search"
                 data-testid="close-search-button"
               >
@@ -142,7 +167,7 @@ function SearchModal({ buttonClassName }: SearchModalProps) {
                 onSave={save}
               />
             </div>
-            <div className="border-t border-gray-200 pt-4 min-h-0 flex-1 overflow-y-auto">
+            <div className="min-h-0 flex-1 overflow-y-auto border-t border-gray-200 pt-4">
               <SearchResults
                 recentSearches={searches}
                 onSave={save}
@@ -151,7 +176,7 @@ function SearchModal({ buttonClassName }: SearchModalProps) {
                 setInputValue={setInputValue}
               />
             </div>
-            <div className="shrink-0 border-t border-gray-100 flex justify-end px-4 pt-3 pb-2 mt-4 opacity-60 [&_.ais-PoweredBy-link]:flex [&_.ais-PoweredBy-link]:items-center [&_.ais-PoweredBy-logo]:h-4 [&_.ais-PoweredBy-logo]:w-auto">
+            <div className="mt-4 flex shrink-0 justify-end border-t border-gray-100 px-4 pb-2 pt-3 opacity-60 [&_.ais-PoweredBy-link]:flex [&_.ais-PoweredBy-link]:items-center [&_.ais-PoweredBy-logo]:h-4 [&_.ais-PoweredBy-logo]:w-auto">
               <PoweredBy theme="light" />
             </div>
           </div>
@@ -211,7 +236,7 @@ const SearchBox = ({
   };
 
   return (
-    <div className="flex items-center gap-x-2 w-full">
+    <div className="flex w-full items-center gap-x-2">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="16"

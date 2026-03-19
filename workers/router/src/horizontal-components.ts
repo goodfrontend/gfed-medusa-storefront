@@ -152,9 +152,7 @@ export async function injectHorizontalComponents(
     stylesheetUrl
       ? `<link rel="preload" href="${stylesheetUrl}" as="style">`
       : '',
-    stylesheetUrl
-      ? `<link rel="stylesheet" href="${stylesheetUrl}">`
-      : '',
+    stylesheetUrl ? `<link rel="stylesheet" href="${stylesheetUrl}">` : '',
   ]
     .filter(Boolean)
     .join('');
@@ -172,7 +170,7 @@ export async function injectHorizontalComponents(
 
   let rewriter = new HTMLRewriter().on('head', {
     element(el) {
-      el.append(`${preloadTags}${bundleTag}${dataScripts}`, { html: true });
+      el.prepend(`${preloadTags}${bundleTag}${dataScripts}`, { html: true });
     },
   });
 
