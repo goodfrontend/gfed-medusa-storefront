@@ -15,15 +15,14 @@ import { Button } from '@medusajs/ui';
 import OptionSelect from '@/components/product-actions/option-select';
 import { addToCart } from '@/lib/data/cart';
 import { useIntersection } from '@/lib/hooks/use-intersection';
-import { useProductPrice } from '@/lib/hooks/use-product-price';
-import { Product, ProductVariant } from '@/types/graphql';
+import { ProductActionsProduct } from '@/types';
+import { ProductVariant } from '@/types/graphql';
 
 import ProductPrice from '../product-price';
 import MobileActions from './mobile-actions';
 
 export type ProductActionsProps = {
-  product: Product;
-  regionId: string;
+  product: ProductActionsProduct;
   disabled?: boolean;
   enableMobileActions?: boolean;
 };
@@ -50,7 +49,6 @@ const optionsAsKeymap = (
 
 export default function ProductActions({
   product,
-  regionId,
   disabled,
   enableMobileActions = true,
 }: ProductActionsProps) {
@@ -97,19 +95,6 @@ export default function ProductActions({
     });
   }, [product.variants, options]);
 
-  // check if the selected variant is in stock
-  const { product: pricingProduct, isLoading: pricingLoading } =
-    useProductPrice(product.id, regionId);
-
-  const pricingVariant = useMemo(() => {
-    if (!selectedVariant?.id) {
-      return null;
-    }
-    return (pricingProduct?.variants ?? []).find(
-      (v: any) => v.id === selectedVariant.id
-    );
-  }, [pricingProduct?.variants, selectedVariant?.id]);
-
   const stockStatus = useMemo(() => {
     if (!selectedVariant) {
       return 'unknown' as const;
@@ -123,18 +108,14 @@ export default function ProductActions({
       return 'in_stock' as const;
     }
 
-    const qty = pricingVariant?.inventoryQuantity;
-
-    if (pricingLoading && typeof qty !== 'number') {
-      return 'checking' as const;
-    }
+    const qty = selectedVariant.inventoryQuantity;
 
     if (typeof qty !== 'number') {
       return 'in_stock' as const;
     }
 
     return qty > 0 ? ('in_stock' as const) : ('out_of_stock' as const);
-  }, [selectedVariant, pricingVariant?.inventoryQuantity, pricingLoading]);
+  }, [selectedVariant]);
 
   const inStock = useMemo(() => {
     // If we don't manage inventory, we can always add to cart
@@ -148,7 +129,7 @@ export default function ProductActions({
     }
 
     if (selectedVariant?.manageInventory) {
-      const qty = pricingVariant?.inventoryQuantity;
+      const qty = selectedVariant.inventoryQuantity;
       if (typeof qty === 'number') {
         return qty > 0;
       }
@@ -158,7 +139,7 @@ export default function ProductActions({
 
     // Otherwise, we can't add to cart
     return false;
-  }, [selectedVariant, pricingVariant?.inventoryQuantity]);
+  }, [selectedVariant]);
 
   const actionsRef = useRef<HTMLDivElement>(null);
 
@@ -211,11 +192,7 @@ export default function ProductActions({
           )}
         </div>
 
-        <ProductPrice
-          product={product}
-          variant={selectedVariant}
-          regionId={regionId}
-        />
+        <ProductPrice product={product} variant={selectedVariant} />
 
         {status === AddToCartStatus.ERROR && (
           <ErrorMessage error="Failed adding product to cart. Please try again." />
@@ -232,8 +209,7 @@ export default function ProductActions({
             !selectedVariant ||
             !!disabled ||
             status === AddToCartStatus.ADDING ||
-            !isValidVariant ||
-            stockStatus === 'checking'
+            !isValidVariant
           }
           variant="primary"
           className="h-10 w-full"
@@ -242,20 +218,16 @@ export default function ProductActions({
         >
           {!selectedVariant
             ? 'Select size'
-            : stockStatus === 'checking'
-              ? 'Checking stock'
-              : !inStock || !isValidVariant
-                ? 'Out of stock'
-                : 'Add to cart'}
+            : !inStock || !isValidVariant
+              ? 'Out of stock'
+              : 'Add to cart'}
         </Button>
         {enableMobileActions && (
           <MobileActions
             product={product}
             variant={selectedVariant}
-            regionId={regionId}
             options={options}
             updateOptions={setOptionValue}
-            inStock={inStock}
             stockStatus={stockStatus}
             handleAddToCart={handleAddToCart}
             isAdding={status === AddToCartStatus.ADDING}
