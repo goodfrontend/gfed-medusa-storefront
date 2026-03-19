@@ -1,6 +1,6 @@
 {
   "name": "@gfed-medusa/mf-horz-components",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "type": "module",
   "private": true,
   "scripts": {

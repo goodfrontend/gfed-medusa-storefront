@@ -1,5 +1,11 @@
 # @gfed-medusa/mf-products
 
+## 1.4.6
+
+### Patch Changes
+
+- af3bd3a: Remove @source from global.css of each MFE
+
 ## 1.4.5
 
 ### Patch Changes

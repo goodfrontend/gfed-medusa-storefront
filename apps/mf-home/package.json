@@ -1,6 +1,6 @@
 {
   "name": "@gfed-medusa/mf-home",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "type": "module",
   "private": true,
   "scripts": {
