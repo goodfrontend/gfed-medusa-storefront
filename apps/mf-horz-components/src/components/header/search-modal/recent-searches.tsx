@@ -66,7 +66,7 @@ function RecentSearches({ searches, onSelect, onClear, onRemove }: RecentSearche
         type="button"
         onClick={onClear}
         style={{ textDecoration: 'underline' }}
-        className="mt-1 cursor-pointer text-xs text-gray-400 transition-colors hover:text-gray-600"
+        className="mt-3 cursor-pointer text-xs text-gray-400 transition-colors hover:text-gray-600"
       >
         Clear history
       </button>
