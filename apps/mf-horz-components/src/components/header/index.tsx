@@ -3,6 +3,7 @@ import { Suspense } from 'react';
 import { StorefrontProvider } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import { useCustomer } from '@gfed-medusa/sf-lib-common/lib/hooks/use-customer';
 import { Region } from '@gfed-medusa/sf-lib-common/types/graphql';
+import { ShoppingCart, User } from '@medusajs/icons';
 
 import { Link } from '../link';
 import { CartButton } from './cart-button';
@@ -75,34 +76,37 @@ function Header({ regions }: { regions: Region[] }) {
               </Link>
             </div>
 
-            <div className="flex h-full flex-1 basis-0 items-center justify-end gap-x-4 small:gap-x-6">
+            <div className="small:gap-x-6 flex h-full flex-1 basis-0 items-center justify-end gap-x-4">
               <SearchModal />
               <div className="small:flex hidden h-full items-center gap-x-6">
                 {customer ? (
                   <Link
-                    className="hover:text-ui-fg-base cursor-pointer"
+                    className="text-ui-fg-subtle hover:text-ui-fg-base flex min-h-[32px] min-w-[32px] cursor-pointer items-center justify-center focus:outline-none"
                     href="/account"
                     data-testid="nav-account-link"
+                    aria-label="Account"
                   >
-                    Account
+                    <User width={16} height={16} />
                   </Link>
                 ) : (
                   <button
-                    className="hover:text-ui-fg-base cursor-pointer"
+                    className="text-ui-fg-subtle hover:text-ui-fg-base flex min-h-[32px] min-w-[32px] cursor-pointer items-center justify-center focus:outline-none"
                     onClick={goToLogin}
+                    aria-label="Log in"
+                    data-testid="nav-login-button"
                   >
-                    Log In
+                    <User width={16} height={16} />
                   </button>
                 )}
               </div>
               <Suspense
                 fallback={
                   <Link
-                    className="hover:text-ui-fg-base flex gap-2"
+                    className="text-ui-fg-subtle hover:text-ui-fg-base flex min-h-[32px] min-w-[32px] cursor-pointer items-center justify-center focus:outline-none"
                     href="/cart"
                     data-testid="nav-cart-link"
                   >
-                    Cart (0)
+                    <ShoppingCart width={16} height={16} />
                   </Link>
                 }
               >

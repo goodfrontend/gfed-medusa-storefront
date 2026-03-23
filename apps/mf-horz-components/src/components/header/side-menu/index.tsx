@@ -30,17 +30,11 @@ const SideMenu = ({ regions }: { regions: Region[] | null }) => {
           <div className="relative flex h-full">
             <button
               data-testid="nav-menu-button"
-              className="hover:text-ui-fg-base relative flex h-full cursor-pointer items-center transition-all duration-200 ease-out focus:outline-none"
+              className="hover:text-ui-fg-base text-ui-fg-subtle relative flex min-h-[32px] min-w-[32px] cursor-pointer items-center justify-center transition-all duration-200 ease-out focus:outline-none"
               onClick={open}
+              aria-label="Menu"
             >
-              <span
-                className="small:hidden text-ui-fg-subtle hover:text-ui-fg-base flex min-h-[32px] min-w-[32px] items-center justify-center"
-                aria-label="Open menu"
-                data-testid="mobile-menu-button"
-              >
-                <BarsThree className="h-5 w-5" />
-              </span>
-              <span className="small:flex hidden">Menu</span>
+              <BarsThree width={16} height={16} />
             </button>
           </div>
 
