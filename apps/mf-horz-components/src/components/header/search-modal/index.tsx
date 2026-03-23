@@ -17,7 +17,6 @@ import { Modal } from '@gfed-medusa/sf-lib-common/components/modal';
 import { PlaceholderImage } from '@gfed-medusa/sf-lib-ui/icons/placeholder-image';
 import { X } from '@gfed-medusa/sf-lib-ui/icons/x';
 import { cn } from '@gfed-medusa/sf-lib-ui/lib/utils';
-import { Button } from '@medusajs/ui';
 
 import { PopularSearches } from './popular-searches';
 import { RecentSearches } from './recent-searches';
@@ -84,14 +83,28 @@ function SearchModal({ buttonClassName }: SearchModalProps) {
           buttonClassName
         )}
       >
-        <Button
+        <button
           onClick={() => setIsOpen(true)}
-          variant="transparent"
-          className="text-small-regular hover:text-ui-fg-base cursor-pointer px-0 hover:bg-transparent focus:!bg-transparent"
+          className="text-ui-fg-subtle hover:text-ui-fg-base flex min-h-[32px] min-w-[32px] cursor-pointer items-center justify-center focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+          aria-label="Open search"
           data-testid="search-button"
         >
-          Search
-        </Button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            aria-hidden="true"
+          >
+            <circle cx="11" cy="11" r="8" />
+            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+          </svg>
+        </button>
       </div>
       <button
         onClick={() => setIsOpen(true)}
@@ -101,8 +114,8 @@ function SearchModal({ buttonClassName }: SearchModalProps) {
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
+          width="16"
+          height="16"
           viewBox="0 0 24 24"
           fill="none"
           stroke="currentColor"

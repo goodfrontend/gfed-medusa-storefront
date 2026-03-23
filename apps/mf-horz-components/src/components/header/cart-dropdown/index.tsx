@@ -19,7 +19,6 @@ const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
     undefined
   );
   const [cartDropdownOpen, setCartDropdownOpen] = useState(false);
-  const isMounted = useRef(false);
   const initialLoadComplete = useRef(false);
 
   const open = () => setCartDropdownOpen(true);
@@ -83,7 +82,7 @@ const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
 
   return (
     <div
-      className="z-50 h-full"
+      className="z-50 h-[30px]"
       onMouseEnter={openAndCancel}
       onMouseLeave={close}
     >
@@ -92,26 +91,19 @@ const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
           className="flex h-full cursor-pointer items-center"
           onClick={openAndCancel}
         >
-          {/* Mobile: cart icon + badge */}
           <Link
             href="/cart"
-            className="flex small:hidden relative min-w-[32px] min-h-[32px] items-center justify-center text-ui-fg-subtle hover:text-ui-fg-base cursor-pointer focus:outline-none"
+            className="text-ui-fg-subtle hover:text-ui-fg-base flex min-h-[32px] min-w-[32px] cursor-pointer items-center justify-center focus:outline-none"
             aria-label={`Cart, ${totalItems} items`}
-            data-testid="mobile-cart-button"
+            data-testid="cart-button"
           >
-            <ShoppingCart className="w-5 h-5" />
+            <ShoppingCart width={16} height={16} />
             {totalItems > 0 && (
-              <span className="absolute -top-1 -right-1 min-w-4 min-h-4 rounded-full bg-gray-900 text-white text-[10px] font-semibold leading-none flex items-center justify-center px-1">
+              <span className="absolute -right-1 -top-1 flex min-h-4 min-w-4 items-center justify-center rounded-full bg-gray-900 px-1 text-[10px] font-semibold leading-none text-white">
                 {totalItems}
               </span>
             )}
           </Link>
-          {/* Desktop: text link */}
-          <Link
-            className="small:flex hidden hover:text-ui-fg-base"
-            href="/cart"
-            data-testid="nav-cart-link"
-          >{`Cart (${totalItems})`}</Link>
         </div>
         <Transition
           show={cartDropdownOpen}
