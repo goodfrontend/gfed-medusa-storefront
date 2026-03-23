@@ -22,6 +22,7 @@ type ProductTemplateProps = {
 
 const ProductTemplate: React.FC<ProductTemplateProps> = ({
   product,
+  region,
   countryCode,
   breadcrumbs,
 }) => {
@@ -47,7 +48,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
         </div>
         <div className="small:sticky small:top-48 small:max-w-[300px] small:py-0 flex w-full flex-col gap-y-12 py-8">
           <ProductOnboardingCta />
-          <ProductActions product={product} />
+          <ProductActions product={product} regionId={region.id} />
         </div>
       </div>
       <div
