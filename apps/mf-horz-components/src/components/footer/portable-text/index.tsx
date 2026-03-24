@@ -28,13 +28,23 @@ import { Trash } from '@gfed-medusa/sf-lib-ui/icons/trash';
 import { User } from '@gfed-medusa/sf-lib-ui/icons/user';
 import { X } from '@gfed-medusa/sf-lib-ui/icons/x';
 import { ArrowUpRightMini } from '@medusajs/icons';
-import { Heading, Text } from '@medusajs/ui';
+import { Heading, Text, clx } from '@medusajs/ui';
 
 type PortableTextProps = {
   value: RichTextBlock[];
+  className?: string;
+  paragraphClassName?: string;
+  linkClassName?: string;
+  iconLinkClassName?: string;
 };
 
-const PortableText = ({ value }: PortableTextProps) => {
+const PortableText = ({
+  value,
+  className,
+  paragraphClassName,
+  linkClassName,
+  iconLinkClassName,
+}: PortableTextProps) => {
   if (!value || !Array.isArray(value)) {
     return null;
   }
@@ -45,6 +55,13 @@ const PortableText = ({ value }: PortableTextProps) => {
       if (typename === 'textblock') return 'block';
       return typename.replace('block', '');
     }
+
+    if ('_type' in block && typeof block._type === 'string') {
+      const blockType = block._type.toLowerCase();
+      if (blockType === 'textblock') return 'block';
+      return blockType;
+    }
+
     return 'unknown';
   };
 
@@ -147,7 +164,10 @@ const PortableText = ({ value }: PortableTextProps) => {
         <a
           href={resolvedLinkMark.href}
           target={resolvedLinkMark.target ?? ''}
-          className="text-ui-fg-interactive hover:underline"
+          className={clx(
+            'text-ui-fg-interactive hover:underline',
+            linkClassName
+          )}
         >
           {content}
         </a>
@@ -245,7 +265,10 @@ const PortableText = ({ value }: PortableTextProps) => {
       <a
         href={mark.href}
         target={mark.target ?? ''}
-        className="text-ui-fg-interactive inline-flex items-center gap-1 hover:underline"
+        className={clx(
+          'text-ui-fg-interactive inline-flex items-center gap-1 hover:underline',
+          iconLinkClassName ?? linkClassName
+        )}
       >
         {children}
         {renderIcon()}
@@ -292,7 +315,11 @@ const PortableText = ({ value }: PortableTextProps) => {
           </blockquote>
         );
       default:
-        return <Text className="mb-4 leading-relaxed">{content}</Text>;
+        return (
+          <Text className={clx('leading-relaxed', paragraphClassName)}>
+            {content}
+          </Text>
+        );
     }
   };
 
@@ -430,7 +457,11 @@ const PortableText = ({ value }: PortableTextProps) => {
     );
   }
 
-  return <div className="prose prose-ui max-w-none">{processedContent}</div>;
+  return (
+    <div className={clx('prose prose-ui max-w-none space-y-4', className)}>
+      {processedContent}
+    </div>
+  );
 };
 
 export { PortableText };
