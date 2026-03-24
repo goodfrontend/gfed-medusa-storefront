@@ -1,6 +1,113 @@
 @config "../../tailwind.config.ts";
 @import 'tailwindcss';
-@import "@gfed-medusa/sf-lib-ui/styles.css";
+@import '@gfed-medusa/sf-lib-ui/styles.css';
 @source "../../node_modules/@gfed-medusa/sf-lib-common";
 @source "../../node_modules/@gfed-medusa/sf-lib-ui";
 @source "../../node_modules/@medusajs/ui";
+
+/* HTML <dialog> reset and animations */
+dialog {
+  padding: 0;
+  border: none;
+  background: transparent;
+  max-width: none;
+  max-height: none;
+  overflow: visible;
+}
+
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Menu dialog */
+dialog.side-menu-dialog[open] {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: flex-start;
+}
+
+dialog.side-menu-dialog::backdrop {
+  opacity: 0;
+  transition: opacity 150ms ease-out;
+}
+
+dialog.side-menu-dialog[open]::backdrop {
+  opacity: 1;
+}
+
+dialog.side-menu-dialog .side-menu-panel {
+  transform: translateX(-100%);
+  opacity: 0;
+  transition:
+    transform 150ms ease-out,
+    opacity 150ms ease-out;
+}
+
+dialog.side-menu-dialog[data-visible] .side-menu-panel {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+dialog.side-menu-dialog[data-closing] .side-menu-panel {
+  transform: translateX(-100%);
+  opacity: 0;
+  transition:
+    transform 150ms ease-in,
+    opacity 150ms ease-in;
+}
+
+dialog.side-menu-dialog[data-closing]::backdrop {
+  opacity: 0;
+  transition: opacity 150ms ease-in;
+}
+
+/* Search Modal dialog */
+dialog.search-modal-dialog[open] {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+dialog.search-modal-dialog::backdrop {
+  opacity: 0;
+  transition: opacity 300ms ease-out;
+}
+
+dialog.search-modal-dialog[open]::backdrop {
+  opacity: 1;
+}
+
+dialog.search-modal-dialog .search-modal-panel {
+  transform: scale(0.95);
+  opacity: 0;
+  transition:
+    transform 300ms ease-out,
+    opacity 300ms ease-out;
+}
+
+dialog.search-modal-dialog[data-visible] .search-modal-panel {
+  transform: scale(1);
+  opacity: 1;
+}
+
+dialog.search-modal-dialog[data-closing] .search-modal-panel {
+  transform: scale(0.95);
+  opacity: 0;
+  transition:
+    transform 200ms ease-in,
+    opacity 200ms ease-in;
+}
+
+dialog.search-modal-dialog[data-closing]::backdrop {
+  opacity: 0;
+  transition: opacity 200ms ease-in;
+}
