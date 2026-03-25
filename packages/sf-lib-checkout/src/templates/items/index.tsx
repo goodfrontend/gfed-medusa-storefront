@@ -19,9 +19,8 @@ const ItemsTemplate = () => {
         <Table.Header className="border-t-0">
           <Table.Row className="txt-medium-plus text-ui-fg-subtle">
             <Table.HeaderCell className="!pl-0">Item</Table.HeaderCell>
-            <Table.HeaderCell></Table.HeaderCell>
             <Table.HeaderCell>Quantity</Table.HeaderCell>
-            <Table.HeaderCell className="small:table-cell hidden">
+            <Table.HeaderCell className="max-small:hidden">
               Price
             </Table.HeaderCell>
             <Table.HeaderCell className="!pr-0 text-right">

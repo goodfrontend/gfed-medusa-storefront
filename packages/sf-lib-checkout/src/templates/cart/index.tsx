@@ -29,7 +29,7 @@ const CartTemplate = ({ customer }: { customer: Customer | null }) => {
         {!isMounted || isLoading ? (
           <SkeletonCartPage />
         ) : hasItems ? (
-          <div className="small:grid-cols-[1fr_360px] grid grid-cols-1 gap-x-40">
+          <div className="small:grid-cols-[1fr_360px] grid gap-x-40">
             <div className="flex flex-col gap-y-6 bg-white py-6">
               {!customer && (
                 <>

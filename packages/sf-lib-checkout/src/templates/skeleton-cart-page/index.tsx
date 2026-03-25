@@ -1,65 +1,41 @@
-import { Table } from '@medusajs/ui';
-
-import SkeletonCartItem from '@/components/skeleton-cart-item';
-import SkeletonCartTotals from '@/components/skeleton-cart-totals';
 import repeat from '@/lib/util/repeat';
 
 const SkeletonCartPage = () => {
   return (
-    <div className="py-12">
-      <div className="content-container">
-        <div className="small:grid-cols-[1fr_360px] grid grid-cols-1 gap-x-40">
-          <div className="flex flex-col gap-y-6 bg-white py-6">
-            {/* Sign-in prompt skeleton */}
-            <div className="flex items-center justify-between bg-white">
-              <div className="flex flex-col gap-y-2">
-                <div className="h-6 w-48 animate-pulse bg-gray-200" />
-                <div className="mt-2 h-4 w-40 animate-pulse bg-gray-200" />
-              </div>
-              <div>
-                <div className="h-10 w-20 animate-pulse bg-gray-200" />
-              </div>
+    <div className="small:grid-cols-[1fr_360px] grid gap-x-40 gap-y-6">
+      {/* Left column — cart items */}
+      <div className="flex flex-col gap-y-6 bg-white py-6">
+        {/* Sign-in prompt skeleton */}
+        <div className="flex items-start justify-between gap-x-4">
+          <div className="h-14 flex-1 animate-pulse bg-gray-200" />
+          <div className="h-9 w-24 shrink-0 animate-pulse bg-gray-200" />
+        </div>
+
+        {/* Cart heading */}
+        <div className="h-8 w-20 animate-pulse bg-gray-200" />
+
+        {/* Cart items */}
+        <div className="flex flex-col gap-y-2">
+          {repeat(3).map((index) => (
+            <div key={index} className="h-20 w-full animate-pulse bg-gray-200" />
+          ))}
+        </div>
+      </div>
+
+      {/* Right column — summary */}
+      <div className="relative">
+        <div className="sticky top-12 flex flex-col gap-y-8">
+          <div className="bg-white py-6">
+            <div className="flex flex-col gap-y-4">
+              {/* Summary heading */}
+              <div className="h-8 w-24 animate-pulse bg-gray-200" />
+
+              {/* Summary content */}
+              <div className="h-44 w-full animate-pulse bg-gray-200" />
+
+              {/* Checkout button */}
+              <div className="h-10 w-full animate-pulse bg-gray-200" />
             </div>
-            {/* Cart heading */}
-            <div>
-              <div className="flex items-center pb-3">
-                <div className="h-11 w-20 animate-pulse bg-gray-200" />
-              </div>
-              <Table>
-                <Table.Header className="border-t-0">
-                  <Table.Row>
-                    <Table.HeaderCell className="!pl-0">
-                      <div className="h-5 w-10 animate-pulse bg-gray-200" />
-                    </Table.HeaderCell>
-                    <Table.HeaderCell></Table.HeaderCell>
-                    <Table.HeaderCell>
-                      <div className="h-5 w-16 animate-pulse bg-gray-200" />
-                    </Table.HeaderCell>
-                    <Table.HeaderCell>
-                      <div className="h-5 w-10 animate-pulse bg-gray-200" />
-                    </Table.HeaderCell>
-                    <Table.HeaderCell className="!pr-0">
-                      <div className="flex justify-end">
-                        <div className="h-5 w-10 animate-pulse bg-gray-200" />
-                      </div>
-                    </Table.HeaderCell>
-                  </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                  {repeat(3).map((index) => (
-                    <SkeletonCartItem key={index} />
-                  ))}
-                </Table.Body>
-              </Table>
-            </div>
-          </div>
-          {/* Summary skeleton */}
-          <div className="flex flex-col gap-y-4">
-            <div className="h-11 w-28 animate-pulse bg-gray-200" />
-            <div className="h-4 w-36 animate-pulse bg-gray-200" />
-            <div className="w-full border-t border-gray-200" />
-            <SkeletonCartTotals header={false} />
-            <div className="h-10 w-full animate-pulse bg-gray-200" />
           </div>
         </div>
       </div>
