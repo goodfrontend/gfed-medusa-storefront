@@ -13,7 +13,6 @@ import {
   useSearchBox,
 } from 'react-instantsearch';
 
-import { Modal } from '@gfed-medusa/sf-lib-common/components/modal';
 import { PlaceholderImage } from '@gfed-medusa/sf-lib-ui/icons/placeholder-image';
 import { X } from '@gfed-medusa/sf-lib-ui/icons/x';
 import { cn } from '@gfed-medusa/sf-lib-ui/lib/utils';
@@ -21,6 +20,80 @@ import { cn } from '@gfed-medusa/sf-lib-ui/lib/utils';
 import { PopularSearches } from './popular-searches';
 import { RecentSearches } from './recent-searches';
 import { useRecentSearches } from './use-recent-searches';
+
+function SearchDialog({
+  isOpen,
+  onClose,
+  children,
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+}) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    if (isOpen && !dialog.open) {
+      document.body.style.overflow = 'hidden';
+      dialog.showModal();
+      requestAnimationFrame(() => {
+        dialog.setAttribute('data-visible', '');
+      });
+    } else if (!isOpen && dialog.open) {
+      dialog.removeAttribute('data-visible');
+      dialog.setAttribute('data-closing', '');
+
+      const panel = panelRef.current;
+      const finish = () => {
+        panel?.removeEventListener('transitionend', finish);
+        dialog.removeAttribute('data-closing');
+        dialog.close();
+        document.body.style.overflow = '';
+      };
+
+      panel?.addEventListener('transitionend', finish, { once: true });
+      setTimeout(finish, 250);
+    }
+  }, [isOpen]);
+
+  const handleCancel = useCallback(
+    (e: React.SyntheticEvent<HTMLDialogElement>) => {
+      e.preventDefault();
+      onClose();
+    },
+    [onClose]
+  );
+
+  const handleDialogClick = useCallback(
+    (e: React.MouseEvent<HTMLDialogElement>) => {
+      if (e.target === dialogRef.current) {
+        onClose();
+      }
+    },
+    [onClose]
+  );
+
+  return (
+    <dialog
+      ref={dialogRef}
+      className="search-modal-dialog"
+      onCancel={handleCancel}
+      onClick={handleDialogClick}
+      aria-label="Search modal"
+    >
+      <div
+        ref={panelRef}
+        className="search-modal-panel flex h-dvh w-full transform flex-col justify-start rounded-none border bg-white p-4 text-left shadow-xl small:mt-[68px] small:mx-4 small:h-fit small:max-h-[75vh] small:max-w-xl small:rounded-rounded small:p-5"
+      >
+        {children}
+      </div>
+    </dialog>
+  );
+}
 
 function useIsDesktop() {
   const [isDesktop, setIsDesktop] = useState(() =>
@@ -128,12 +201,7 @@ function SearchModal({ buttonClassName }: SearchModalProps) {
           <line x1="21" y1="21" x2="16.65" y2="16.65" />
         </svg>
       </button>
-      <Modal
-        isOpen={isOpen}
-        close={() => setIsOpen(false)}
-        search={true}
-        aria-label="Search modal"
-      >
+      <SearchDialog isOpen={isOpen} onClose={() => setIsOpen(false)}>
         <InstantSearch
           searchClient={searchClient}
           indexName={INDEX_NAME}
@@ -194,7 +262,7 @@ function SearchModal({ buttonClassName }: SearchModalProps) {
             </div>
           </div>
         </InstantSearch>
-      </Modal>
+      </SearchDialog>
     </>
   );
 }
