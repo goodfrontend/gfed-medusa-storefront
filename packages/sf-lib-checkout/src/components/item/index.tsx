@@ -51,44 +51,51 @@ const Item = ({ item, type = 'full', currencyCode }: ItemProps) => {
 
   return (
     <Table.Row className="w-full" data-testid="product-row">
-      <Table.Cell className="w-24 p-4 !pl-0">
-        <LocalizedClientLink
-          href={`/products/${item.productHandle}`}
-          className={clx('flex', {
-            'w-16': type === 'preview',
-            'small:w-24 w-12': type === 'full',
+      <Table.Cell className="!pl-0 py-4">
+        <div
+          className={clx('flex gap-x-4 gap-y-2', {
+            'max-small:flex-col max-small:items-start small:flex-row small:items-center':
+              type === 'full',
+            'flex-row items-center': type === 'preview',
           })}
         >
-          <Thumbnail
-            thumbnail={item.thumbnail}
-            images={item.variant?.product?.images}
-            size="square"
-          />
-        </LocalizedClientLink>
-      </Table.Cell>
-
-      <Table.Cell className="text-left">
-        <Text
-          className="txt-medium-plus text-ui-fg-base"
-          data-testid="product-title"
-        >
-          {item.productTitle}
-        </Text>
-        <LineItemOptions
-          variant={item.variant}
-          data-testid="product-variant"
-          data-value={item.variant}
-        />
+          <LocalizedClientLink
+            href={`/products/${item.productHandle}`}
+            className={clx('flex shrink-0', {
+              'w-16': type === 'preview',
+              'w-24 max-small:w-12': type === 'full',
+            })}
+          >
+            <Thumbnail
+              thumbnail={item.thumbnail}
+              images={item.variant?.product?.images}
+              size="square"
+            />
+          </LocalizedClientLink>
+          <div>
+            <Text
+              className="txt-medium-plus text-ui-fg-base"
+              data-testid="product-title"
+            >
+              {item.productTitle}
+            </Text>
+            <LineItemOptions
+              variant={item.variant}
+              data-testid="product-variant"
+              data-value={item.variant}
+            />
+          </div>
+        </div>
       </Table.Cell>
 
       {type === 'full' && (
         <Table.Cell>
-          <div className="flex w-28 items-center gap-2">
+          <div className="flex items-center gap-1 small:gap-2">
             <DeleteButton id={item.id} data-testid="product-delete-button" />
             <CartItemSelect
               value={item.quantity}
               onChange={(value) => changeQuantity(parseInt(value.target.value))}
-              className="h-10 w-14 p-4"
+              className="h-10 w-14 p-4 max-small:h-8 max-small:w-10 max-small:p-1"
               data-testid="product-select-button"
             >
               {/* TODO: Update this with the v2 way of managing inventory */}
@@ -102,10 +109,6 @@ const Item = ({ item, type = 'full', currencyCode }: ItemProps) => {
                   </option>
                 )
               )}
-
-              <option value={1} key={1}>
-                1
-              </option>
             </CartItemSelect>
             {updating && <Spinner />}
           </div>
@@ -114,7 +117,7 @@ const Item = ({ item, type = 'full', currencyCode }: ItemProps) => {
       )}
 
       {type === 'full' && (
-        <Table.Cell className="small:table-cell hidden">
+        <Table.Cell className="max-small:hidden">
           <LineItemUnitPrice
             item={item}
             style="tight"
