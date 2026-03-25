@@ -69,7 +69,6 @@ const MobileActions: React.FC<MobileActionsProps> = ({
   }, [price]);
 
   const isSimple = isSimpleProduct(product);
-
   const handleUpdateOption = (optionId: string, value: string) => {
     updateOptions(optionId, value);
 
@@ -149,7 +148,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                     <span>
                       {variant
                         ? Object.values(options).join(' / ')
-                        : 'Select Options'}
+                        : 'Select Size'}
                     </span>
                     <ChevronDown />
                   </div>
@@ -162,11 +161,9 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                 isLoading={isAdding}
                 data-testid="mobile-cart-button"
               >
-                {!variant
-                  ? 'Select size'
-                  : stockStatus === 'out_of_stock'
-                    ? 'Out of stock'
-                    : 'Add to cart'}
+                {stockStatus === 'out_of_stock'
+                  ? 'Out of stock'
+                  : 'Add to cart'}
               </Button>
             </div>
           </div>
@@ -183,7 +180,7 @@ const MobileActions: React.FC<MobileActionsProps> = ({
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            <div className="fixed inset-0 bg-gray-700 bg-opacity-75 backdrop-blur-sm" />
+            <div className="fixed inset-0 h-screen bg-black/20 backdrop-blur-sm" />
           </Transition.Child>
 
           <div className="fixed inset-x-0 bottom-0">
