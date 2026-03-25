@@ -20,6 +20,12 @@ function Footer({
   productCategories = [],
   footerContent = null,
 }: FooterProps) {
+  const socialLinks =
+    footerContent?.social?.filter(
+      (social): social is { text: string; url: string } =>
+        Boolean(social?.text && social?.url)
+    ) ?? [];
+
   return (
     <footer className="border-ui-border-base w-full border-t">
       <div className="content-container flex w-full flex-col">
@@ -117,26 +123,25 @@ function Footer({
                 </ul>
               </div>
             )}
-            <div className="flex flex-col gap-y-2">
-              <span className="txt-ui-fg-base txt-small-plus">JustGood</span>
-              <ul className="txt-small text-ui-fg-subtle grid grid-cols-1 gap-y-2">
-                {footerContent?.social &&
-                  footerContent?.social.map(
-                    (social: { text: string; url: string }, index: number) => (
-                      <li key={index}>
-                        <a
-                          href={social.url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="hover:text-ui-fg-base capitalize"
-                        >
-                          {social.text}
-                        </a>
-                      </li>
-                    )
-                  )}
-              </ul>
-            </div>
+            {socialLinks.length > 0 && (
+              <div className="flex flex-col gap-y-2">
+                <span className="txt-ui-fg-base txt-small-plus">JustGood</span>
+                <ul className="txt-small text-ui-fg-subtle grid grid-cols-1 gap-y-2">
+                  {socialLinks.map((social, index) => (
+                    <li key={index}>
+                      <a
+                        href={social.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="hover:text-ui-fg-base capitalize"
+                      >
+                        {social.text}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
         <div className="text-ui-fg-muted mb-6 flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
