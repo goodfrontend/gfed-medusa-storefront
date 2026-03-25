@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Check } from 'lucide-react';
 
-import { Label, clx } from '@medusajs/ui';
+import { clx } from '@medusajs/ui';
 
 type CheckboxProps = {
   checked?: boolean;
@@ -25,7 +25,7 @@ const CheckboxWithLabel: React.FC<CheckboxProps> = ({
   return (
     <label
       htmlFor={inputId}
-      className="flex cursor-pointer items-center gap-x-2"
+      className="inline-grid min-h-5 grid-cols-[auto_1fr] items-center gap-x-2 align-middle"
     >
       <input
         id={inputId}
@@ -39,7 +39,7 @@ const CheckboxWithLabel: React.FC<CheckboxProps> = ({
       <span
         aria-hidden
         className={clx(
-          'flex h-5 w-5 items-center justify-center rounded transition-all',
+          'flex h-5 w-5 shrink-0 items-center justify-center self-center rounded transition-all',
           'border-ui-border-base bg-ui-bg-base shadow-borders-base border',
           'peer-focus-visible:shadow-borders-interactive-with-focus',
           checked &&
@@ -54,13 +54,9 @@ const CheckboxWithLabel: React.FC<CheckboxProps> = ({
           strokeWidth={2.5}
         />
       </span>
-      <Label
-        htmlFor={inputId}
-        className="!txt-medium !transform-none"
-        size="large"
-      >
+      <span className="txt-medium m-0 leading-5">
         {label}
-      </Label>
+      </span>
     </label>
   );
 };
