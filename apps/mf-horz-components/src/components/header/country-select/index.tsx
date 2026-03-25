@@ -73,12 +73,14 @@ const CountrySelect = ({ regions }: CountrySelectProps) => {
   }, [options, countryCode]);
 
   const handleChange = (option: CountryOption) => {
-    if (option.country === countryCode) {
+    const currentCountryCode = window.location.pathname.split('/')[1] || 'dk';
+
+    if (option.country === currentCountryCode) {
       return;
     }
 
     const currentPath =
-      window.location.pathname.split(`/${countryCode}`)[1] || '';
+      window.location.pathname.split(`/${currentCountryCode}`)[1] || '';
 
     actions.updateRegion(option.country, currentPath);
   };
