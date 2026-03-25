@@ -65,8 +65,8 @@ const MobileActions: React.FC<MobileActionsProps> = ({
     }
     const { variantPrice, cheapestPrice } = price;
 
-    return variantPrice || cheapestPrice || null;
-  }, [price]);
+    return (variant ? variantPrice : cheapestPrice) || null;
+  }, [price, variant]);
 
   const isSimple = isSimpleProduct(product);
   const handleUpdateOption = (optionId: string, value: string) => {
@@ -107,11 +107,12 @@ const MobileActions: React.FC<MobileActionsProps> = ({
             className="text-large-regular flex h-full w-full flex-col items-center justify-center gap-y-3 border-t border-gray-200 bg-white p-4"
             data-testid="mobile-actions"
           >
-            <div className="flex items-center gap-x-2">
-              <span data-testid="mobile-title">{product.title}</span>
-              <span>—</span>
+            <div className="flex w-full items-start justify-between gap-x-4">
+              <span className="flex-1 text-left" data-testid="mobile-title">
+                {product.title}
+              </span>
               {selectedPrice ? (
-                <div className="text-ui-fg-base flex items-end gap-x-2">
+                <div className="text-ui-fg-base flex shrink-0 items-start gap-x-2 self-start">
                   {selectedPrice.price_type === 'sale' && (
                     <p>
                       <span className="text-small-regular line-through">
@@ -125,11 +126,12 @@ const MobileActions: React.FC<MobileActionsProps> = ({
                         selectedPrice.price_type === 'sale',
                     })}
                   >
+                    {!variant && 'From '}
                     {selectedPrice.calculated_price}
                   </span>
                 </div>
               ) : (
-                <div className="h-5 w-24 animate-pulse bg-gray-100" />
+                <div className="h-5 w-24 shrink-0 self-start animate-pulse bg-gray-100" />
               )}
             </div>
             <div
