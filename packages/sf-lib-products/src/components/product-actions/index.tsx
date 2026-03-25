@@ -14,7 +14,9 @@ import { Button } from '@medusajs/ui';
 
 import OptionSelect from '@/components/product-actions/option-select';
 import { addToCart } from '@/lib/data/cart';
+import { useProductPrice } from '@/lib/hooks/use-product-price';
 import { useIntersection } from '@/lib/hooks/use-intersection';
+import { mergeProductPricing } from '@/lib/utils/merge-product-pricing';
 import { ProductActionsProduct } from '@/types';
 import { ProductVariant } from '@/types/graphql';
 
@@ -23,6 +25,7 @@ import MobileActions from './mobile-actions';
 
 export type ProductActionsProps = {
   product: ProductActionsProduct;
+  regionId?: string;
   disabled?: boolean;
   enableMobileActions?: boolean;
 };
@@ -49,6 +52,7 @@ const optionsAsKeymap = (
 
 export default function ProductActions({
   product,
+  regionId,
   disabled,
   enableMobileActions = true,
 }: ProductActionsProps) {
@@ -57,27 +61,32 @@ export default function ProductActions({
   );
   const [status, setStatus] = useState<AddToCartStatus>(AddToCartStatus.IDLE);
   const countryCode = useParams().countryCode as string;
+  const { product: pricingProduct } = useProductPrice(product.id, regionId);
+  const pricedProduct = useMemo(
+    () => mergeProductPricing(product, pricingProduct),
+    [product, pricingProduct]
+  );
 
   // If there is only 1 variant, preselect the options
   useEffect(() => {
-    if (product?.variants && product.variants.length === 1) {
+    if (pricedProduct?.variants && pricedProduct.variants.length === 1) {
       const variantOptions = optionsAsKeymap(
-        product.variants[0]?.options || null
+        pricedProduct.variants[0]?.options || null
       );
       setOptions(variantOptions ?? {});
     }
-  }, [product.variants]);
+  }, [pricedProduct.variants]);
 
   const selectedVariant = useMemo(() => {
-    if (!product.variants || product.variants.length === 0) {
+    if (!pricedProduct.variants || pricedProduct.variants.length === 0) {
       return;
     }
 
-    return product.variants.find((v) => {
+    return pricedProduct.variants.find((v) => {
       const variantOptions = optionsAsKeymap(v.options);
       return isEqual(variantOptions, options);
     });
-  }, [product.variants, options]);
+  }, [pricedProduct.variants, options]);
 
   // update the options when a variant is selected
   const setOptionValue = (optionId: string, value: string) => {
@@ -89,11 +98,11 @@ export default function ProductActions({
 
   //check if the selected options produce a valid variant
   const isValidVariant = useMemo(() => {
-    return product.variants?.some((v) => {
+    return pricedProduct.variants?.some((v) => {
       const variantOptions = optionsAsKeymap(v.options);
       return isEqual(variantOptions, options);
     });
-  }, [product.variants, options]);
+  }, [pricedProduct.variants, options]);
 
   const stockStatus = useMemo(() => {
     if (!selectedVariant) {
@@ -192,7 +201,7 @@ export default function ProductActions({
           )}
         </div>
 
-        <ProductPrice product={product} variant={selectedVariant} />
+        <ProductPrice product={pricedProduct} variant={selectedVariant} />
 
         {status === AddToCartStatus.ERROR && (
           <ErrorMessage error="Failed adding product to cart. Please try again." />
@@ -224,7 +233,7 @@ export default function ProductActions({
         </Button>
         {enableMobileActions && (
           <MobileActions
-            product={product}
+            product={pricedProduct}
             variant={selectedVariant}
             options={options}
             updateOptions={setOptionValue}
