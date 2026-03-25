@@ -139,7 +139,7 @@ function Footer({
             </div>
           </div>
         </div>
-        <div className="text-ui-fg-muted mb-16 flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="text-ui-fg-muted mb-6 flex w-full flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <Text className="txt-compact-small">
             ©{`${new Date().getFullYear()} ${footerContent?.copyright}`}
           </Text>
@@ -147,6 +147,9 @@ function Footer({
             {footerContent?.poweredByCta && (
               <PortableText
                 value={footerContent.poweredByCta.text as RichTextBlock[]}
+                className="text-ui-fg-muted space-y-0 [&_p]:m-0"
+                paragraphClassName="m-0 flex items-center gap-1.5 leading-none"
+                iconLinkClassName="text-ui-fg-muted"
               />
             )}
           </div>
