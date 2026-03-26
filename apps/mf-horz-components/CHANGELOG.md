@@ -1,5 +1,16 @@
 # @gfed-medusa/mf-horz-components
 
+## 1.5.5
+
+### Patch Changes
+
+- 97fa7bb: resolove issues in product cards, footer, mobile actions, and checkout fields
+- b9cf115: update cart drawer styles for new dialog system
+- dd05dbf: resolve "powered by" text not showing in footer
+- Updated dependencies [97fa7bb]
+  - @gfed-medusa/sf-lib-common@3.3.8
+  - @gfed-medusa/sf-lib-ui@1.2.4
+
 ## 1.5.4
 
 ### Patch Changes
