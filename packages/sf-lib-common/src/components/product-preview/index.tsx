@@ -40,11 +40,14 @@ function ProductPreview({
           imagePriority={imagePriority}
           imageFetchPriority={imageFetchPriority}
         />
-        <div className="txt-compact-medium mt-4 flex justify-between">
-          <Text className="text-ui-fg-subtle" data-testid="product-title">
+        <div className="txt-compact-medium mt-4 flex items-start justify-between gap-x-4">
+          <Text
+            className="text-ui-fg-subtle flex-1"
+            data-testid="product-title"
+          >
             {product.title}
           </Text>
-          <div className="flex items-center gap-x-2">
+          <div className="flex shrink-0 items-start gap-x-2">
             {cheapestPrice && <PreviewPrice price={cheapestPrice} />}
           </div>
         </div>
