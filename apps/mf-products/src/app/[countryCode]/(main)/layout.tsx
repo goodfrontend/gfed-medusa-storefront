@@ -1,11 +1,3 @@
-import { Metadata } from 'next';
-
-import { getBaseURL } from '@gfed-medusa/sf-lib-common/lib/utils/env';
-
-export const metadata: Metadata = {
-  metadataBase: new URL(getBaseURL()),
-};
-
 export default async function MainLayout(props: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">

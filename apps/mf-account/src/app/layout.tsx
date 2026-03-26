@@ -12,6 +12,11 @@ import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-con
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
+  title: {
+    template: '%s | JustGood Store',
+    default: 'JustGood Store',
+  },
+  description: 'Manage your JustGood Store account.',
   icons: {
     icon: '/favicon.svg',
     apple: '/favicon.svg',

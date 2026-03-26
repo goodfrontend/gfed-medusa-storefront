@@ -9,6 +9,10 @@ import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-con
 export const metadata: Metadata = {
   title: 'Account',
   description: 'Overview of your account activity.',
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default async function OverviewTemplate() {

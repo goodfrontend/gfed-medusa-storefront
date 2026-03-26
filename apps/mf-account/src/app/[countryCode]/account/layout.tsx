@@ -1,4 +1,3 @@
-import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 
 import { AccountLayout } from '@gfed-medusa/sf-lib-account/components/account-layout';
@@ -10,13 +9,8 @@ import {
 } from '@gfed-medusa/sf-lib-common/lib/data/cart';
 import { retrieveCustomer } from '@gfed-medusa/sf-lib-common/lib/data/customer';
 import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
-import { getBaseURL } from '@gfed-medusa/sf-lib-common/lib/utils/env';
 import { Cart } from '@gfed-medusa/sf-lib-common/types/graphql';
 import { Toaster } from '@medusajs/ui';
-
-export const metadata: Metadata = {
-  metadataBase: new URL(getBaseURL()),
-};
 
 export default async function PageLayout({
   dashboard,
