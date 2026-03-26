@@ -1,28 +1,29 @@
 'use client';
 
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { DeleteButton } from '@gfed-medusa/sf-lib-common/components/delete-button';
 import { LineItemOptions } from '@gfed-medusa/sf-lib-common/components/line-item-options';
 import { LineItemPrice } from '@gfed-medusa/sf-lib-common/components/line-item-price';
 import { convertToLocale } from '@gfed-medusa/sf-lib-common/lib/utils/money';
 import { Cart } from '@gfed-medusa/sf-lib-common/types/graphql';
-import { Popover, PopoverPanel, Transition } from '@headlessui/react';
-import { ShoppingCart } from '@medusajs/icons';
+import { CheckCircleMiniSolid, ShoppingCart, XMark } from '@medusajs/icons';
 import { Button } from '@medusajs/ui';
 
 import { Link } from '../../link';
 import { Thumbnail } from '../thumbnail';
 
-const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
-  const [activeTimer, setActiveTimer] = useState<NodeJS.Timeout | undefined>(
-    undefined
-  );
-  const [cartDropdownOpen, setCartDropdownOpen] = useState(false);
-  const initialLoadComplete = useRef(false);
+const MINI_CART_CLOSE_DELAY_MS = 5000;
 
-  const open = () => setCartDropdownOpen(true);
-  const close = () => setCartDropdownOpen(false);
+const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
+  const [cartDropdownOpen, setCartDropdownOpen] = useState(false);
+  const previousTotalItemsRef = useRef<number | null>(null);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const dialogRef = useRef<HTMLDialogElement | null>(null);
+  const panelRef = useRef<HTMLDivElement | null>(null);
+  const touchInteractionRef = useRef(false);
+  const bodyOverflowRef = useRef<string | null>(null);
+  const bodyPaddingRightRef = useRef<string | null>(null);
 
   const totalItems =
     cartState?.items?.reduce((acc, item) => {
@@ -30,115 +31,237 @@ const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
     }, 0) || 0;
 
   const subtotal = cartState?.subtotal ?? 0;
-  const itemRef = useRef<number | undefined>(undefined);
 
-  const timedOpen = () => {
-    open();
-
-    const timer = setTimeout(close, 5000);
-
-    setActiveTimer(timer);
-  };
-
-  const openAndCancel = () => {
-    if (activeTimer) {
-      clearTimeout(activeTimer);
+  const clearCloseTimer = useCallback(() => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
     }
+  }, []);
 
-    open();
-  };
+  const startCloseTimer = useCallback(() => {
+    clearCloseTimer();
+
+    closeTimerRef.current = setTimeout(() => {
+      setCartDropdownOpen(false);
+      closeTimerRef.current = null;
+    }, MINI_CART_CLOSE_DELAY_MS);
+  }, [clearCloseTimer]);
+
+  const lockBodyScroll = useCallback(() => {
+    const scrollbarWidth =
+      window.innerWidth - document.documentElement.clientWidth;
+
+    bodyOverflowRef.current = document.body.style.overflow;
+    bodyPaddingRightRef.current = document.body.style.paddingRight;
+
+    document.body.style.overflow = 'hidden';
+
+    if (scrollbarWidth > 0) {
+      document.body.style.paddingRight = `${scrollbarWidth}px`;
+    }
+  }, []);
+
+  const unlockBodyScroll = useCallback(() => {
+    document.body.style.overflow = bodyOverflowRef.current ?? '';
+    document.body.style.paddingRight = bodyPaddingRightRef.current ?? '';
+  }, []);
 
   useEffect(() => {
     return () => {
-      if (activeTimer) {
-        clearTimeout(activeTimer);
-      }
+      clearCloseTimer();
+      unlockBodyScroll();
     };
-  }, [activeTimer]);
+  }, [clearCloseTimer, unlockBodyScroll]);
+
+  useEffect(() => {
+    const dialog = dialogRef.current;
+    const panel = panelRef.current;
+
+    if (!dialog || !panel) {
+      return;
+    }
+
+    if (cartDropdownOpen && !dialog.open) {
+      lockBodyScroll();
+      dialog.showModal();
+      requestAnimationFrame(() => {
+        dialog.setAttribute('data-visible', '');
+      });
+      return;
+    }
+
+    if (!cartDropdownOpen && dialog.open) {
+      dialog.removeAttribute('data-visible');
+      dialog.setAttribute('data-closing', '');
+
+      const finish = () => {
+        panel.removeEventListener('transitionend', finish);
+        dialog.removeAttribute('data-closing');
+        dialog.close();
+        unlockBodyScroll();
+      };
+
+      panel.addEventListener('transitionend', finish, { once: true });
+      setTimeout(finish, 250);
+    }
+  }, [cartDropdownOpen, lockBodyScroll, unlockBodyScroll]);
 
   useEffect(() => {
     if (cartState === undefined) {
       return;
     }
 
-    if (!initialLoadComplete.current) {
-      initialLoadComplete.current = true;
-      itemRef.current = totalItems;
+    const previousTotalItems = previousTotalItemsRef.current;
+    previousTotalItemsRef.current = totalItems;
+
+    if (previousTotalItems === null) {
       return;
     }
 
     const pathname = window.location.pathname;
+    const itemCountIncreased = totalItems > previousTotalItems;
 
-    if (
-      itemRef.current !== undefined &&
-      itemRef.current !== totalItems &&
-      !pathname.includes('/cart')
-    ) {
-      timedOpen();
+    if (!itemCountIncreased || totalItems === 0 || pathname.includes('/cart')) {
+      return;
     }
 
-    itemRef.current = totalItems;
-  }, [totalItems, cartState]);
+    setCartDropdownOpen(true);
+    startCloseTimer();
+  }, [cartState, startCloseTimer, totalItems]);
+
+  const closeMiniCart = useCallback(() => {
+    clearCloseTimer();
+    setCartDropdownOpen(false);
+  }, [clearCloseTimer]);
+
+  const handleTouchInteractionStart = () => {
+    touchInteractionRef.current = true;
+    clearCloseTimer();
+  };
+
+  const handleTouchInteractionEnd = () => {
+    window.setTimeout(() => {
+      touchInteractionRef.current = false;
+
+      const activeElement = document.activeElement;
+
+      if (activeElement && panelRef.current?.contains(activeElement)) {
+        return;
+      }
+
+      startCloseTimer();
+    }, 150);
+  };
 
   return (
-    <div
-      className="z-50 h-[30px]"
-      onMouseEnter={openAndCancel}
-      onMouseLeave={close}
-    >
-      <Popover className="relative h-full">
+    <div className="relative z-50 flex h-[30px] items-center">
+      <Link
+        href="/cart"
+        className="text-ui-fg-subtle hover:text-ui-fg-base flex min-h-[32px] min-w-[32px] cursor-pointer items-center justify-center focus:outline-none"
+        aria-label={`Cart, ${totalItems} items`}
+        data-testid="cart-button"
+      >
+        <ShoppingCart width={16} height={16} />
+        {totalItems > 0 && (
+          <span className="absolute -right-1 -top-1 flex min-h-4 min-w-4 items-center justify-center rounded-full bg-gray-900 px-1 text-[10px] font-semibold leading-none text-white">
+            {totalItems}
+          </span>
+        )}
+      </Link>
+
+      <dialog
+        ref={dialogRef}
+        className="mini-cart-dialog"
+        onCancel={(event) => {
+          event.preventDefault();
+          closeMiniCart();
+        }}
+        onClick={(event) => {
+          if (event.target === dialogRef.current) {
+            closeMiniCart();
+          }
+        }}
+        aria-label="Mini cart"
+      >
         <div
-          className="flex h-full cursor-pointer items-center"
-          onClick={openAndCancel}
+          ref={panelRef}
+          className="mini-cart-panel text-ui-fg-base small:h-full small:max-h-none small:max-w-[440px] small:rounded-none flex max-h-[min(520px,82dvh)] w-full flex-col overflow-hidden overflow-x-hidden rounded-t-2xl bg-white text-left shadow-2xl"
+          data-testid="nav-cart-dropdown"
+          onMouseEnter={clearCloseTimer}
+          onMouseLeave={() => {
+            if (touchInteractionRef.current) {
+              return;
+            }
+
+            const activeElement = document.activeElement;
+
+            if (activeElement && panelRef.current?.contains(activeElement)) {
+              return;
+            }
+
+            startCloseTimer();
+          }}
+          onTouchStart={handleTouchInteractionStart}
+          onTouchMove={handleTouchInteractionStart}
+          onTouchEnd={handleTouchInteractionEnd}
+          onTouchCancel={handleTouchInteractionEnd}
+          onFocusCapture={clearCloseTimer}
+          onBlurCapture={(event) => {
+            const nextFocusedElement = event.relatedTarget as Node | null;
+
+            if (
+              nextFocusedElement &&
+              panelRef.current?.contains(nextFocusedElement)
+            ) {
+              return;
+            }
+
+            startCloseTimer();
+          }}
         >
-          <Link
-            href="/cart"
-            className="text-ui-fg-subtle hover:text-ui-fg-base flex min-h-[32px] min-w-[32px] cursor-pointer items-center justify-center focus:outline-none"
-            aria-label={`Cart, ${totalItems} items`}
-            data-testid="cart-button"
-          >
-            <ShoppingCart width={16} height={16} />
-            {totalItems > 0 && (
-              <span className="absolute -right-1 -top-1 flex min-h-4 min-w-4 items-center justify-center rounded-full bg-gray-900 px-1 text-[10px] font-semibold leading-none text-white">
-                {totalItems}
-              </span>
-            )}
-          </Link>
-        </div>
-        <Transition
-          show={cartDropdownOpen}
-          as={Fragment}
-          enter="transition ease-out duration-200"
-          enterFrom="opacity-0 translate-y-1"
-          enterTo="opacity-100 translate-y-0"
-          leave="transition ease-in duration-150"
-          leaveFrom="opacity-100 translate-y-0"
-          leaveTo="opacity-0 translate-y-1"
-        >
-          <PopoverPanel
-            static
-            className="text-ui-fg-base small:block small:w-[420px] absolute right-0 top-[calc(100%+1px)] w-[calc(100vw-2rem)] border-x border-b border-gray-200 bg-white"
-            data-testid="nav-cart-dropdown"
-          >
-            <div className="flex items-center justify-center p-4">
-              <h3 className="text-large-semi">Cart</h3>
+          <div className="mini-cart-header small:px-6 flex items-center justify-between border-b border-gray-200 px-4 py-4">
+            <div className="min-w-0">
+              <h2 className="mini-cart-title text-large-semi">Cart</h2>
+              <p className="mini-cart-count text-small-regular text-ui-fg-subtle mt-1">
+                {totalItems} {totalItems === 1 ? 'item' : 'items'}
+              </p>
+              {totalItems > 0 && (
+                <p className="mini-cart-status mt-2 flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.16em] text-green-600">
+                  <CheckCircleMiniSolid className="h-4 w-4 shrink-0" />
+                  <span>Added to cart</span>
+                </p>
+              )}
             </div>
-            {cartState && cartState.items?.length ? (
-              <>
-                <div className="no-scrollbar grid max-h-[402px] grid-cols-1 gap-y-8 overflow-y-scroll p-px px-4">
+            <button
+              type="button"
+              className="text-ui-fg-subtle hover:text-ui-fg-base flex min-h-[32px] min-w-[32px] items-center justify-center"
+              onClick={closeMiniCart}
+              data-testid="close-cart-button"
+              aria-label="Close cart"
+            >
+              <XMark width={20} height={20} />
+            </button>
+          </div>
+
+          {cartState && cartState.items?.length ? (
+            <>
+              <div className="no-scrollbar small:px-6 min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-4 py-4">
+                <div className="grid grid-cols-1 gap-y-6">
                   {[...cartState.items]
                     .sort((a, b) => {
                       return (a.createdAt ?? '') > (b.createdAt ?? '') ? -1 : 1;
                     })
                     .map((item) => (
                       <div
-                        className="grid grid-cols-[122px_1fr] gap-x-4"
+                        className="small:grid-cols-[122px_1fr] grid grid-cols-[96px_1fr] gap-x-4"
                         key={item.id}
                         data-testid="cart-item"
                       >
                         <Link
                           href={`/products/${item.productHandle}`}
                           className="w-24"
+                          onClick={closeMiniCart}
                         >
                           <Thumbnail
                             thumbnail={item.thumbnail}
@@ -146,14 +269,16 @@ const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
                             size="square"
                           />
                         </Link>
-                        <div className="flex flex-1 flex-col justify-between">
+                        <div className="flex min-w-0 flex-1 flex-col justify-between">
                           <div className="flex flex-1 flex-col">
-                            <div className="flex items-start justify-between">
-                              <div className="mr-4 flex w-[180px] flex-col overflow-ellipsis whitespace-nowrap">
-                                <h3 className="text-base-regular overflow-hidden text-ellipsis">
+                            <div className="flex items-start justify-between gap-x-4">
+                              <div className="min-w-0 flex-1">
+                                <h3 className="text-base-regular min-w-0">
                                   <Link
                                     href={`/products/${item.productHandle}`}
                                     data-testid="product-link"
+                                    onClick={closeMiniCart}
+                                    className="block truncate"
                                   >
                                     {item.title}
                                   </Link>
@@ -181,7 +306,7 @@ const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
                           </div>
                           <DeleteButton
                             id={item.id}
-                            className="mt-1"
+                            className="mt-2"
                             data-testid="cart-item-remove-button"
                           >
                             Remove
@@ -190,55 +315,62 @@ const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
                       </div>
                     ))}
                 </div>
-                <div className="text-small-regular flex flex-col gap-y-4 p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-ui-fg-base font-semibold">
-                      Subtotal{' '}
-                      <span className="font-normal">(excl. taxes)</span>
-                    </span>
-                    <span
-                      className="text-large-semi"
-                      data-testid="cart-subtotal"
-                      data-value={subtotal}
-                    >
-                      {convertToLocale({
-                        amount: subtotal,
-                        currency_code: cartState.currencyCode,
-                      })}
-                    </span>
-                  </div>
-                  <Link href="/cart">
-                    <Button
-                      className="w-full"
-                      size="large"
-                      data-testid="go-to-cart-button"
-                    >
-                      Go to cart
-                    </Button>
-                  </Link>
-                </div>
-              </>
-            ) : (
-              <div>
-                <div className="flex flex-col items-center justify-center gap-y-4 py-16">
-                  <div className="text-small-regular flex h-6 w-6 items-center justify-center rounded-full bg-gray-900 text-white">
-                    <span>0</span>
-                  </div>
-                  <span>Your shopping bag is empty.</span>
-                  <div>
-                    <Link href="/store">
-                      <>
-                        <span className="sr-only">Go to all products page</span>
-                        <Button onClick={close}>Explore products</Button>
-                      </>
-                    </Link>
-                  </div>
-                </div>
               </div>
-            )}
-          </PopoverPanel>
-        </Transition>
-      </Popover>
+
+              <div className="text-small-regular small:p-6 shrink-0 border-t border-gray-200 bg-white p-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+                <div className="mb-4 flex items-center justify-between">
+                  <span className="text-ui-fg-base font-semibold">
+                    Subtotal <span className="font-normal">(excl. taxes)</span>
+                  </span>
+                  <span
+                    className="text-large-semi"
+                    data-testid="cart-subtotal"
+                    data-value={subtotal}
+                  >
+                    {convertToLocale({
+                      amount: subtotal,
+                      currency_code: cartState.currencyCode,
+                    })}
+                  </span>
+                </div>
+                <Link href="/cart" onClick={closeMiniCart}>
+                  <Button
+                    className="w-full"
+                    size="large"
+                    data-testid="go-to-cart-button"
+                  >
+                    Go to cart
+                  </Button>
+                </Link>
+                <Link
+                  href="/checkout?step=address"
+                  onClick={closeMiniCart}
+                  className="mt-3 block"
+                >
+                  <Button
+                    className="border-ui-border-base text-ui-fg-base hover:bg-ui-bg-subtle w-full border bg-white"
+                    size="large"
+                    data-testid="go-to-checkout-button"
+                  >
+                    Go to checkout
+                  </Button>
+                </Link>
+              </div>
+            </>
+          ) : (
+            <div className="small:px-6 flex flex-1 flex-col items-center justify-center gap-y-4 px-4 py-16 text-center">
+              <div className="text-small-regular flex h-6 w-6 items-center justify-center rounded-full bg-gray-900 text-white">
+                <span>0</span>
+              </div>
+              <span>Your shopping bag is empty.</span>
+              <Link href="/store" onClick={closeMiniCart}>
+                <span className="sr-only">Go to all products page</span>
+                <Button>Explore products</Button>
+              </Link>
+            </div>
+          )}
+        </div>
+      </dialog>
     </div>
   );
 };
