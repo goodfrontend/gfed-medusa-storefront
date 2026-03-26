@@ -10,6 +10,11 @@ import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-con
 
 export const metadata: Metadata = {
   title: 'Checkout',
+  description: 'Complete your purchase securely.',
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default async function Checkout() {

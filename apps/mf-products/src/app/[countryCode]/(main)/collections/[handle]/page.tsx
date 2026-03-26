@@ -29,12 +29,20 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     notFound();
   }
 
-  const metadata = {
-    title: `${collection.title} | JustGood Store`,
-    description: `${collection.title} collection`,
-  } as Metadata;
-
-  return metadata;
+  return {
+    title: collection.title,
+    description: `Shop the ${collection.title} collection at JustGood Store.`,
+    openGraph: {
+      title: `${collection.title} | JustGood Store`,
+      description: `Shop the ${collection.title} collection at JustGood Store.`,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${collection.title} | JustGood Store`,
+      description: `Shop the ${collection.title} collection at JustGood Store.`,
+    },
+  };
 }
 
 export default async function CollectionPage(props: Props) {

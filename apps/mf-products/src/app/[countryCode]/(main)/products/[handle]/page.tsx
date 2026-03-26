@@ -58,11 +58,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 
   return {
-    title: `${product.title} | JustGood Store`,
-    description: `${product.title}`,
+    title: product.title,
+    description: product.description
+      ? product.description.slice(0, 160)
+      : `Shop ${product.title} at JustGood Store.`,
     openGraph: {
       title: `${product.title} | JustGood Store`,
-      description: `${product.title}`,
+      description: product.description
+        ? product.description.slice(0, 200)
+        : `Shop ${product.title} at JustGood Store.`,
+      images: product.thumbnail ? [{ url: product.thumbnail, alt: product.title }] : [],
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${product.title} | JustGood Store`,
+      description: product.description
+        ? product.description.slice(0, 200)
+        : `Shop ${product.title} at JustGood Store.`,
       images: product.thumbnail ? [product.thumbnail] : [],
     },
   };

@@ -28,16 +28,28 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     const productCategory = await getCategoryByPathCached(categoryPath);
 
     const categoryName = productCategory?.name ?? 'Category';
-    const title = `${categoryName} | JustGood Store`;
-    const description =
-      productCategory?.description?.trim() ||
-      `Browse ${categoryName} products at JustGood Store.`;
 
     return {
-      title,
-      description,
+      title: categoryName,
+      description:
+        productCategory?.description?.trim() ||
+        `Browse ${categoryName} products at JustGood Store.`,
       alternates: {
-        canonical: `${params.category.join('/')}`,
+        canonical: `/${params.countryCode}/categories/${params.category.join('/')}`,
+      },
+      openGraph: {
+        title: `${categoryName} | JustGood Store`,
+        description:
+          productCategory?.description?.trim() ||
+          `Browse ${categoryName} products at JustGood Store.`,
+        type: 'website',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: `${categoryName} | JustGood Store`,
+        description:
+          productCategory?.description?.trim() ||
+          `Browse ${categoryName} products at JustGood Store.`,
       },
     };
   } catch (error) {

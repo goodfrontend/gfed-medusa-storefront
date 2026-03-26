@@ -11,6 +11,11 @@ import { StorefrontProvider } from '@gfed-medusa/sf-lib-common/lib/data/context'
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
+  title: {
+    template: '%s | JustGood Store',
+    default: 'JustGood Store',
+  },
+  description: 'Shop the latest products at JustGood Store.',
   icons: {
     icon: '/favicon.svg',
     apple: '/favicon.svg',

@@ -14,6 +14,10 @@ import { listRegions } from '@gfed-medusa/sf-lib-common/lib/data/regions';
 export const metadata: Metadata = {
   title: 'Profile',
   description: 'View and edit your JustGood Store profile.',
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default async function Profile() {
