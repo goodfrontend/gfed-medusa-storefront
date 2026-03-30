@@ -1,6 +1,17 @@
+import { Metadata } from 'next';
+
 import TransferActions from '@gfed-medusa/sf-lib-checkout/components/transfer-actions';
 import TransferImage from '@gfed-medusa/sf-lib-checkout/components/transfer-image';
 import { Heading, Text } from '@medusajs/ui';
+
+export const metadata: Metadata = {
+  title: 'Order Transfer',
+  description: 'Review and respond to an order transfer request.',
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default async function TransferPage({
   params,

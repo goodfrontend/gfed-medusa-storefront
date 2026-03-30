@@ -7,8 +7,18 @@ import { FeaturedCategoryRail } from '../../../components/featured-category-rail
 import { getFeaturedCategories } from '../../../lib/data/featured-categories';
 
 export const metadata: Metadata = {
-  title: 'JustGood Store',
-  description: 'A performant frontend ecommerce store with the best products.',
+  title: 'Home',
+  description: 'Discover quality products curated for you at JustGood Store.',
+  openGraph: {
+    title: 'JustGood Store',
+    description: 'Discover quality products curated for you at JustGood Store.',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'JustGood Store',
+    description: 'Discover quality products curated for you at JustGood Store.',
+  },
 };
 
 type Props = {

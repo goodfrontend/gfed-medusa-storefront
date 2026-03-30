@@ -6,7 +6,11 @@ import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-con
 
 export const metadata: Metadata = {
   title: 'Cart',
-  description: 'View your cart',
+  description: 'Review and manage the items in your shopping cart.',
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default async function Cart() {

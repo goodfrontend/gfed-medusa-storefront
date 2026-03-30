@@ -10,7 +10,11 @@ type Props = {
 };
 export const metadata: Metadata = {
   title: 'Order Confirmed',
-  description: 'You purchase was successful',
+  description: 'Your purchase was successful',
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default async function OrderConfirmedPage(props: Props) {

@@ -1,7 +1,18 @@
+import { Metadata } from 'next';
+
 import TransferImage from '@gfed-medusa/sf-lib-checkout/components/transfer-image';
 import { declineTransferRequest } from '@gfed-medusa/sf-lib-checkout/lib/data/orders';
 import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
 import { Heading, Text } from '@medusajs/ui';
+
+export const metadata: Metadata = {
+  title: 'Transfer Declined',
+  description: 'Order transfer has been declined.',
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default async function TransferPage({
   params,
