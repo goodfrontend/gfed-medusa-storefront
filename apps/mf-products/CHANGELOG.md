@@ -1,5 +1,17 @@
 # @gfed-medusa/mf-products
 
+## 1.4.7
+
+### Patch Changes
+
+- 9033942: Add/Adjust SEO metadata
+- Updated dependencies [97fa7bb]
+- Updated dependencies [f4340ee]
+- Updated dependencies [4b57934]
+  - @gfed-medusa/sf-lib-products@1.6.3
+  - @gfed-medusa/sf-lib-common@3.3.8
+  - @gfed-medusa/sf-lib-ui@1.2.4
+
 ## 1.4.6
 
 ### Patch Changes

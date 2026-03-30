@@ -1,5 +1,16 @@
 # @gfed-medusa/sf-lib-products
 
+## 1.6.3
+
+### Patch Changes
+
+- 97fa7bb: resolove issues in product cards, footer, mobile actions, and checkout fields
+- f4340ee: use a translucent mobile size-selector backdrop and use "Add to cart" label on disabled cta
+- 4b57934: revalidate product price on the client
+- Updated dependencies [97fa7bb]
+  - @gfed-medusa/sf-lib-common@3.3.8
+  - @gfed-medusa/sf-lib-ui@1.2.4
+
 ## 1.6.2
 
 ### Patch Changes

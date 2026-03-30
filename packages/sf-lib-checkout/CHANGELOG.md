@@ -1,5 +1,14 @@
 # @gfed-medusa/sf-lib-checkout
 
+## 3.2.2
+
+### Patch Changes
+
+- 2b0a3a5: Adjust cart page mobile view
+- Updated dependencies [97fa7bb]
+  - @gfed-medusa/sf-lib-common@3.3.8
+  - @gfed-medusa/sf-lib-ui@1.2.4
+
 ## 3.2.1
 
 ### Patch Changes
