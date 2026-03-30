@@ -1,5 +1,17 @@
 # @gfed-medusa/mf-checkout
 
+## 1.5.4
+
+### Patch Changes
+
+- 9033942: Add/Adjust SEO metadata
+- 2b0a3a5: Adjust cart page mobile view
+- Updated dependencies [97fa7bb]
+- Updated dependencies [2b0a3a5]
+  - @gfed-medusa/sf-lib-common@3.3.8
+  - @gfed-medusa/sf-lib-ui@1.2.4
+  - @gfed-medusa/sf-lib-checkout@3.2.2
+
 ## 1.5.3
 
 ### Patch Changes

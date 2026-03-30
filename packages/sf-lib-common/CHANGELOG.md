@@ -1,5 +1,13 @@
 # @gfed-medusa/sf-lib-common
 
+## 3.3.8
+
+### Patch Changes
+
+- 97fa7bb: resolove issues in product cards, footer, mobile actions, and checkout fields
+- Updated dependencies [97fa7bb]
+  - @gfed-medusa/sf-lib-ui@1.2.4
+
 ## 3.3.7
 
 ### Patch Changes
