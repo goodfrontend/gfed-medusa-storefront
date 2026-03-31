@@ -29,8 +29,8 @@ function Footer({
   return (
     <footer className="border-ui-border-base w-full border-t">
       <div className="content-container flex w-full flex-col">
-        <div className="xsmall:flex-row flex flex-col items-start justify-between gap-y-6 py-40">
-          <div>
+        <div className="flex flex-col items-start gap-10 py-40 lg:flex-row lg:gap-16">
+          <div className="flex flex-col gap-y-2 lg:shrink-0">
             <Link
               href="/"
               className="txt-compact-xlarge-plus text-ui-fg-subtle hover:text-ui-fg-base uppercase"
@@ -38,7 +38,7 @@ function Footer({
               {footerContent?.storeName || 'JustGood Store'}
             </Link>
           </div>
-          <div className="text-small-regular grid grid-cols-2 gap-10 sm:grid-cols-3 md:gap-x-16">
+          <div className="grid w-full grid-cols-1 gap-10 md:gap-16 md:[grid-template-columns:repeat(auto-fit,minmax(180px,1fr))] lg:flex-1">
             {productCategories && productCategories?.length > 0 && (
               <div className="flex flex-col gap-y-2">
                 <span className="txt-ui-fg-base txt-small-plus">
@@ -106,7 +106,7 @@ function Footer({
                   className={clx(
                     'txt-small text-ui-fg-subtle grid grid-cols-1 gap-2',
                     {
-                      'grid-cols-2': (collections?.length || 0) > 3,
+                      'sm:grid-cols-2': (collections?.length || 0) > 3,
                     }
                   )}
                 >
