@@ -41,8 +41,9 @@ const labelVariants = cva(
 
 export interface InputProps
   extends
-    React.InputHTMLAttributes<HTMLInputElement>,
+    Omit<React.InputHTMLAttributes<HTMLInputElement>, 'id'>,
     VariantProps<typeof inputContainerVariants> {
+  id: string;
   label: string;
   isLoading?: boolean;
   height?: string;
@@ -84,7 +85,6 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             {...props}
             ref={ref}
             id={id}
-            data-testid={id}
             disabled={disabled || isLoading}
             placeholder=" " // Required for floating label behavior
             aria-invalid={hasError}
