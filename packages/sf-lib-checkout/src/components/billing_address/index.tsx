@@ -33,6 +33,7 @@ const BillingAddress = ({ cart }: { cart: Cart }) => {
     <>
       <div className="grid grid-cols-2 gap-4">
         <Input
+          id="billing-first-name-input"
           label="First name"
           name="billing_address.first_name"
           autoComplete="given-name"
@@ -42,6 +43,7 @@ const BillingAddress = ({ cart }: { cart: Cart }) => {
           data-testid="billing-first-name-input"
         />
         <Input
+          id="billing-last-name-input"
           label="Last name"
           name="billing_address.last_name"
           autoComplete="family-name"
@@ -51,6 +53,7 @@ const BillingAddress = ({ cart }: { cart: Cart }) => {
           data-testid="billing-last-name-input"
         />
         <Input
+          id="billing-address-input"
           label="Address"
           name="billing_address.address_1"
           autoComplete="address-line1"
@@ -60,6 +63,7 @@ const BillingAddress = ({ cart }: { cart: Cart }) => {
           data-testid="billing-address-input"
         />
         <Input
+          id="billing-company-input"
           label="Company"
           name="billing_address.company"
           value={formData['billing_address.company']}
@@ -68,6 +72,7 @@ const BillingAddress = ({ cart }: { cart: Cart }) => {
           data-testid="billing-company-input"
         />
         <Input
+          id="billing-postal-input"
           label="Postal code"
           name="billing_address.postal_code"
           autoComplete="postal-code"
@@ -77,6 +82,7 @@ const BillingAddress = ({ cart }: { cart: Cart }) => {
           data-testid="billing-postal-input"
         />
         <Input
+          id="billing-city-input"
           label="City"
           name="billing_address.city"
           autoComplete="address-level2"
@@ -93,6 +99,7 @@ const BillingAddress = ({ cart }: { cart: Cart }) => {
           data-testid="billing-country-select"
         />
         <Input
+          id="billing-province-input"
           label="State / Province"
           name="billing_address.province"
           autoComplete="address-level1"
@@ -101,6 +108,7 @@ const BillingAddress = ({ cart }: { cart: Cart }) => {
           data-testid="billing-province-input"
         />
         <Input
+          id="billing-phone-input"
           label="Phone"
           name="billing_address.phone"
           autoComplete="tel"

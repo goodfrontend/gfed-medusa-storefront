@@ -116,6 +116,7 @@ const ShippingAddress = ({
       )}
       <div className="grid grid-cols-2 gap-4">
         <Input
+          id="shipping-first-name-input"
           label="First name"
           name="shippingAddress.firstName"
           autoComplete="given-name"
@@ -125,6 +126,7 @@ const ShippingAddress = ({
           data-testid="shipping-first-name-input"
         />
         <Input
+          id="shipping-last-name-input"
           label="Last name"
           name="shippingAddress.lastName"
           autoComplete="family-name"
@@ -134,6 +136,7 @@ const ShippingAddress = ({
           data-testid="shipping-last-name-input"
         />
         <Input
+          id="shipping-address-input"
           label="Address"
           name="shippingAddress.address1"
           autoComplete="address-line1"
@@ -143,6 +146,7 @@ const ShippingAddress = ({
           data-testid="shipping-address-input"
         />
         <Input
+          id="shipping-company-input"
           label="Company"
           name="shippingAddress.company"
           value={formData['shippingAddress.company']}
@@ -151,6 +155,7 @@ const ShippingAddress = ({
           data-testid="shipping-company-input"
         />
         <Input
+          id="shipping-postal-code-input"
           label="Postal code"
           name="shippingAddress.postalCode"
           autoComplete="postal-code"
@@ -160,6 +165,7 @@ const ShippingAddress = ({
           data-testid="shipping-postal-code-input"
         />
         <Input
+          id="shipping-city-input"
           label="City"
           name="shippingAddress.city"
           autoComplete="address-level2"
@@ -178,6 +184,7 @@ const ShippingAddress = ({
           data-testid="shipping-country-select"
         />
         <Input
+          id="shipping-province-input"
           label="State / Province"
           name="shippingAddress.province"
           autoComplete="address-level1"
@@ -197,6 +204,7 @@ const ShippingAddress = ({
       </div>
       <div className="mb-4 grid grid-cols-2 gap-4">
         <Input
+          id="shipping-email-input"
           label="Email"
           name="email"
           type="email"
@@ -208,6 +216,7 @@ const ShippingAddress = ({
           data-testid="shipping-email-input"
         />
         <Input
+          id="shipping-phone-input"
           label="Phone"
           name="shippingAddress.phone"
           autoComplete="tel"
