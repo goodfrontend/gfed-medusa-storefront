@@ -8,7 +8,7 @@ type OrderSummaryProps = {
 
 const OrderSummary = ({ order }: OrderSummaryProps) => {
   const getAmount = (amount?: number | null) => {
-    if (!amount) {
+    if (amount == null) {
       return;
     }
 
@@ -27,13 +27,13 @@ const OrderSummary = ({ order }: OrderSummaryProps) => {
           <span>{getAmount(order.subtotal)}</span>
         </div>
         <div className="flex flex-col gap-y-1">
-          {order.discountTotal && order.discountTotal > 0 && (
+          {!!order.discountTotal && order.discountTotal > 0 && (
             <div className="flex items-center justify-between">
               <span>Discount</span>
               <span>- {getAmount(order.discountTotal)}</span>
             </div>
           )}
-          {order.giftCardTotal && order.giftCardTotal > 0 && (
+          {!!order.giftCardTotal && order.giftCardTotal > 0 && (
             <div className="flex items-center justify-between">
               <span>Discount</span>
               <span>- {getAmount(order.giftCardTotal)}</span>

@@ -31,7 +31,7 @@ const BillingAddress = ({ cart }: { cart: Cart }) => {
 
   return (
     <>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 xsmall:grid-cols-2">
         <Input
           id="billing-first-name-input"
           label="First name"
