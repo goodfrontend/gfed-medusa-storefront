@@ -1238,19 +1238,11 @@ export type BrowseProductHitFragment = {
   __typename?: 'BrowseProductHit';
   id: string;
   title?: string | null;
-  description?: string | null;
   handle: string;
   thumbnail?: string | null;
-  collectionId?: string | null;
-  collectionHandle?: string | null;
-  categoryIds: Array<string>;
-  categoryHandles: Array<string>;
-  isSellable: boolean;
   priceAmount?: number | null;
   originalPriceAmount?: number | null;
   currencyCode?: string | null;
-  displayPrice?: string | null;
-  displayOriginalPrice?: string | null;
 };
 
 export type CreateCartMutationVariables = Exact<{
@@ -3353,25 +3345,14 @@ export const BrowseProductHitFragmentDoc = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'description' } },
           { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
           { kind: 'Field', name: { kind: 'Name', value: 'thumbnail' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'collectionId' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'collectionHandle' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'categoryIds' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'categoryHandles' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'isSellable' } },
           { kind: 'Field', name: { kind: 'Name', value: 'priceAmount' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'originalPriceAmount' },
           },
           { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'displayPrice' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'displayOriginalPrice' },
-          },
         ],
       },
     },
@@ -9256,25 +9237,14 @@ export const BrowseProductsDocument = {
         selections: [
           { kind: 'Field', name: { kind: 'Name', value: 'id' } },
           { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'description' } },
           { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
           { kind: 'Field', name: { kind: 'Name', value: 'thumbnail' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'collectionId' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'collectionHandle' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'categoryIds' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'categoryHandles' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'isSellable' } },
           { kind: 'Field', name: { kind: 'Name', value: 'priceAmount' } },
           {
             kind: 'Field',
             name: { kind: 'Name', value: 'originalPriceAmount' },
           },
           { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
-          { kind: 'Field', name: { kind: 'Name', value: 'displayPrice' } },
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'displayOriginalPrice' },
-          },
         ],
       },
     },
