@@ -4,17 +4,21 @@ import { useCallback } from 'react';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
+import { clx } from '@medusajs/ui';
+
 import SortProducts, { SortOptions } from './sort-products';
 
 type RefinementListProps = {
   sortBy: SortOptions;
   search?: boolean;
   'data-testid'?: string;
+  className?: string;
 };
 
 const RefinementList = ({
   sortBy,
   'data-testid': dataTestId,
+  className,
 }: RefinementListProps) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -39,12 +43,22 @@ const RefinementList = ({
   };
 
   return (
-    <div className="small:ml-[1.675rem] small:min-w-[250px] small:flex-col small:px-0 mb-8 flex gap-12 py-4 pl-6">
-      <SortProducts
-        sortBy={sortBy}
-        setQueryParams={setQueryParams}
-        data-testid={dataTestId}
-      />
+    <div className={clx('w-full', className)}>
+      <div className="small:hidden">
+        <SortProducts
+          sortBy={sortBy}
+          setQueryParams={setQueryParams}
+          data-testid={dataTestId}
+          variant="dropdown"
+        />
+      </div>
+      <div className="small:ml-[1.675rem] small:min-w-[250px] small:flex-col small:px-0 small:py-4 small:pr-6 small:block hidden">
+        <SortProducts
+          sortBy={sortBy}
+          setQueryParams={setQueryParams}
+          data-testid={dataTestId}
+        />
+      </div>
     </div>
   );
 };
