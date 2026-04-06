@@ -95,6 +95,48 @@ export type AuthPayload = {
   token: Scalars['String']['output'];
 };
 
+export type BannerButton = {
+  __typename?: 'BannerButton';
+  href?: Maybe<Scalars['String']['output']>;
+  label?: Maybe<Scalars['String']['output']>;
+  openInNewTab?: Maybe<Scalars['Boolean']['output']>;
+};
+
+export type BrowseProductHit = {
+  __typename?: 'BrowseProductHit';
+  categoryHandles: Array<Scalars['String']['output']>;
+  categoryIds: Array<Scalars['String']['output']>;
+  collectionHandle?: Maybe<Scalars['String']['output']>;
+  collectionId?: Maybe<Scalars['String']['output']>;
+  currencyCode?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  displayOriginalPrice?: Maybe<Scalars['String']['output']>;
+  displayPrice?: Maybe<Scalars['String']['output']>;
+  handle: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  isSellable: Scalars['Boolean']['output'];
+  originalPriceAmount?: Maybe<Scalars['Float']['output']>;
+  priceAmount?: Maybe<Scalars['Float']['output']>;
+  thumbnail?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+};
+
+export type BrowseProducts = {
+  __typename?: 'BrowseProducts';
+  hitsPerPage: Scalars['Int']['output'];
+  items: Array<BrowseProductHit>;
+  page: Scalars['Int']['output'];
+  params: Scalars['String']['output'];
+  total: Scalars['Int']['output'];
+  totalPages: Scalars['Int']['output'];
+};
+
+export enum BrowseProductsSort {
+  Latest = 'LATEST',
+  PriceAsc = 'PRICE_ASC',
+  PriceDesc = 'PRICE_DESC',
+}
+
 export enum CacheControlScope {
   Private = 'PRIVATE',
   Public = 'PUBLIC',
@@ -232,6 +274,19 @@ export type Footer = {
   poweredByCta?: Maybe<PartialRichText>;
   social?: Maybe<Array<SocialLink>>;
   storeName?: Maybe<Scalars['String']['output']>;
+};
+
+export type HomeBanner = {
+  __typename?: 'HomeBanner';
+  _id: Scalars['ID']['output'];
+  _type: Scalars['String']['output'];
+  buttons?: Maybe<Array<BannerButton>>;
+  description?: Maybe<Scalars['String']['output']>;
+  eyebrow?: Maybe<Scalars['String']['output']>;
+  image?: Maybe<SanityImage>;
+  secondaryBanners?: Maybe<Array<SecondaryBanner>>;
+  showPoweredBy?: Maybe<Scalars['Boolean']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
 };
 
 export type LineItem = {
@@ -612,10 +667,12 @@ export type Promotion = {
 export type Query = {
   __typename?: 'Query';
   _empty?: Maybe<Scalars['String']['output']>;
+  browseProducts: BrowseProducts;
   cart?: Maybe<Cart>;
   collection?: Maybe<Collection>;
   collections: Array<Collection>;
   footer?: Maybe<Footer>;
+  homeBanner?: Maybe<HomeBanner>;
   me?: Maybe<Customer>;
   order?: Maybe<Order>;
   orders?: Maybe<OrderListResponse>;
@@ -628,6 +685,16 @@ export type Query = {
   regions: Array<Region>;
   searchProducts: SearchProducts;
   shippingOptions?: Maybe<Array<Maybe<ShippingOption>>>;
+};
+
+export type Query_BrowseProductsArgs = {
+  countryCode?: InputMaybe<Scalars['String']['input']>;
+  facets?: InputMaybe<Array<Scalars['String']['input']>>;
+  filters?: InputMaybe<Scalars['String']['input']>;
+  hitsPerPage?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  regionId?: InputMaybe<Scalars['String']['input']>;
+  sort?: InputMaybe<BrowseProductsSort>;
 };
 
 export type Query_CartArgs = {
@@ -725,6 +792,17 @@ export type RegisterCustomerInput = {
   phone?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type SanityImage = {
+  __typename?: 'SanityImage';
+  alt?: Maybe<Scalars['String']['output']>;
+  asset?: Maybe<SanityImageAsset>;
+};
+
+export type SanityImageAsset = {
+  __typename?: 'SanityImageAsset';
+  url?: Maybe<Scalars['String']['output']>;
+};
+
 export type SearchProducts = {
   __typename?: 'SearchProducts';
   hitsPerPage: Scalars['Int']['output'];
@@ -734,6 +812,15 @@ export type SearchProducts = {
   query: Scalars['String']['output'];
   total: Scalars['Int']['output'];
   totalPages: Scalars['Int']['output'];
+};
+
+export type SecondaryBanner = {
+  __typename?: 'SecondaryBanner';
+  button?: Maybe<BannerButton>;
+  description?: Maybe<Scalars['String']['output']>;
+  image?: Maybe<SanityImage>;
+  showPoweredBy?: Maybe<Scalars['Boolean']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
 };
 
 export type ServiceZone = {
@@ -1056,6 +1143,7 @@ export type ProductContentFragment = {
   variants?: Array<{
     __typename?: 'ProductVariant';
     id: string;
+    inventoryQuantity?: number | null;
     allowBackorder?: boolean | null;
     manageInventory?: boolean | null;
     options?: Array<{
@@ -1063,6 +1151,8 @@ export type ProductContentFragment = {
       optionId: string;
       value: string;
     } | null> | null;
+    price?: ({ __typename?: 'Price' } & PriceFragment) | null;
+    originalPrice?: ({ __typename?: 'Price' } & PriceFragment) | null;
   }> | null;
   collection?: {
     __typename?: 'Collection';
@@ -1142,6 +1232,25 @@ export type ProductHitFragment = {
   description?: string | null;
   handle: string;
   thumbnail?: string | null;
+};
+
+export type BrowseProductHitFragment = {
+  __typename?: 'BrowseProductHit';
+  id: string;
+  title?: string | null;
+  description?: string | null;
+  handle: string;
+  thumbnail?: string | null;
+  collectionId?: string | null;
+  collectionHandle?: string | null;
+  categoryIds: Array<string>;
+  categoryHandles: Array<string>;
+  isSellable: boolean;
+  priceAmount?: number | null;
+  originalPriceAmount?: number | null;
+  currencyCode?: string | null;
+  displayPrice?: string | null;
+  displayOriginalPrice?: string | null;
 };
 
 export type CreateCartMutationVariables = Exact<{
@@ -1535,6 +1644,33 @@ export type SearchSuggestionsQuery = {
   searchProducts: {
     __typename?: 'SearchProducts';
     items: Array<{ __typename?: 'ProductHit' } & ProductHitFragment>;
+  };
+};
+
+export type BrowseProductsQueryVariables = Exact<{
+  countryCode?: InputMaybe<Scalars['String']['input']>;
+  regionId?: InputMaybe<Scalars['String']['input']>;
+  sort?: InputMaybe<BrowseProductsSort>;
+  hitsPerPage?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  filters?: InputMaybe<Scalars['String']['input']>;
+  facets?: InputMaybe<
+    Array<Scalars['String']['input']> | Scalars['String']['input']
+  >;
+}>;
+
+export type BrowseProductsQuery = {
+  __typename?: 'Query';
+  browseProducts: {
+    __typename?: 'BrowseProducts';
+    total: number;
+    page: number;
+    totalPages: number;
+    hitsPerPage: number;
+    params: string;
+    items: Array<
+      { __typename?: 'BrowseProductHit' } & BrowseProductHitFragment
+    >;
   };
 };
 
@@ -2590,6 +2726,10 @@ export const ProductContentFragmentDoc = {
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 {
                   kind: 'Field',
+                  name: { kind: 'Name', value: 'inventoryQuantity' },
+                },
+                {
+                  kind: 'Field',
                   name: { kind: 'Name', value: 'allowBackorder' },
                 },
                 {
@@ -2607,6 +2747,32 @@ export const ProductContentFragmentDoc = {
                         name: { kind: 'Name', value: 'optionId' },
                       },
                       { kind: 'Field', name: { kind: 'Name', value: 'value' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'price' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'FragmentSpread',
+                        name: { kind: 'Name', value: 'Price' },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'originalPrice' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'FragmentSpread',
+                        name: { kind: 'Name', value: 'Price' },
+                      },
                     ],
                   },
                 },
@@ -2652,6 +2818,22 @@ export const ProductContentFragmentDoc = {
       selectionSet: {
         kind: 'SelectionSet',
         selections: [{ kind: 'Field', name: { kind: 'Name', value: 'id' } }],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'Price' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'Price' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'priceType' } },
+        ],
       },
     },
   ],
@@ -3156,6 +3338,45 @@ export const ProductHitFragmentDoc = {
     },
   ],
 } as unknown as DocumentNode<ProductHitFragment, unknown>;
+export const BrowseProductHitFragmentDoc = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'BrowseProductHit' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'BrowseProductHit' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'thumbnail' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'collectionId' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'collectionHandle' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'categoryIds' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'categoryHandles' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isSellable' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'priceAmount' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'originalPriceAmount' },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'displayPrice' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'displayOriginalPrice' },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<BrowseProductHitFragment, unknown>;
 export const CreateCartDocument = {
   kind: 'Document',
   definitions: [
@@ -7785,6 +8006,22 @@ export const GetProductContentByHandleDocument = {
     },
     {
       kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'Price' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'Price' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'amount' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'priceType' } },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
       name: { kind: 'Name', value: 'ProductContent' },
       typeCondition: {
         kind: 'NamedType',
@@ -7861,6 +8098,10 @@ export const GetProductContentByHandleDocument = {
                 { kind: 'Field', name: { kind: 'Name', value: 'id' } },
                 {
                   kind: 'Field',
+                  name: { kind: 'Name', value: 'inventoryQuantity' },
+                },
+                {
+                  kind: 'Field',
                   name: { kind: 'Name', value: 'allowBackorder' },
                 },
                 {
@@ -7878,6 +8119,32 @@ export const GetProductContentByHandleDocument = {
                         name: { kind: 'Name', value: 'optionId' },
                       },
                       { kind: 'Field', name: { kind: 'Name', value: 'value' } },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'price' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'FragmentSpread',
+                        name: { kind: 'Name', value: 'Price' },
+                      },
+                    ],
+                  },
+                },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'originalPrice' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'FragmentSpread',
+                        name: { kind: 'Name', value: 'Price' },
+                      },
                     ],
                   },
                 },
@@ -8814,3 +9081,202 @@ export const SearchSuggestionsDocument = {
   SearchSuggestionsQuery,
   SearchSuggestionsQueryVariables
 >;
+export const BrowseProductsDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'BrowseProducts' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'countryCode' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'regionId' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'sort' } },
+          type: {
+            kind: 'NamedType',
+            name: { kind: 'Name', value: 'BrowseProductsSort' },
+          },
+          defaultValue: { kind: 'EnumValue', value: 'LATEST' },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'hitsPerPage' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'page' } },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'Int' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'filters' },
+          },
+          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
+        },
+        {
+          kind: 'VariableDefinition',
+          variable: {
+            kind: 'Variable',
+            name: { kind: 'Name', value: 'facets' },
+          },
+          type: {
+            kind: 'ListType',
+            type: {
+              kind: 'NonNullType',
+              type: {
+                kind: 'NamedType',
+                name: { kind: 'Name', value: 'String' },
+              },
+            },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'browseProducts' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'countryCode' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'countryCode' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'regionId' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'regionId' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'sort' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'sort' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'hitsPerPage' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'hitsPerPage' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'page' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'page' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'filters' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'filters' },
+                },
+              },
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'facets' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'facets' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                { kind: 'Field', name: { kind: 'Name', value: 'total' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'page' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'totalPages' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'hitsPerPage' } },
+                { kind: 'Field', name: { kind: 'Name', value: 'params' } },
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'items' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'FragmentSpread',
+                        name: { kind: 'Name', value: 'BrowseProductHit' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+    {
+      kind: 'FragmentDefinition',
+      name: { kind: 'Name', value: 'BrowseProductHit' },
+      typeCondition: {
+        kind: 'NamedType',
+        name: { kind: 'Name', value: 'BrowseProductHit' },
+      },
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          { kind: 'Field', name: { kind: 'Name', value: 'id' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'title' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'description' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'thumbnail' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'collectionId' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'collectionHandle' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'categoryIds' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'categoryHandles' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'isSellable' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'priceAmount' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'originalPriceAmount' },
+          },
+          { kind: 'Field', name: { kind: 'Name', value: 'currencyCode' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'displayPrice' } },
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'displayOriginalPrice' },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<BrowseProductsQuery, BrowseProductsQueryVariables>;

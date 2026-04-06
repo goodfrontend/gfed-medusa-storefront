@@ -8,13 +8,17 @@ import {
 import type { Region } from '@gfed-medusa/sf-lib-common/types/graphql';
 
 import {
-  GET_PRODUCT_PRICING_QUERY,
+  BROWSE_PRODUCTS_QUERY,
   GET_PRODUCTS_PREVIEW_QUERY,
   GET_PRODUCTS_QUERY,
+  GET_PRODUCT_PRICING_QUERY,
 } from '@/lib/gql/queries/product';
-import { sortProducts } from '@/lib/utils/sort-products';
 import type { PricingProduct, SortOptions } from '@/types';
+import { BrowseProductsSort } from '@/types/graphql';
 import type {
+  BrowseProductHitFragment,
+  BrowseProductsQuery,
+  BrowseProductsQueryVariables,
   GetProductPricingQuery,
   GetProductPricingQueryVariables,
   GetProductsQuery,
@@ -23,6 +27,47 @@ import type {
 } from '@/types/graphql';
 
 import { getRegion, retrieveRegion } from './regions';
+
+export type BrowseProductsListItem = BrowseProductHitFragment;
+
+export type BrowseProductsListParams = {
+  limit?: number;
+  collection_id?: string[];
+  category_id?: string[];
+  id?: string[];
+};
+
+const BROWSE_SORT_BY: Record<SortOptions, BrowseProductsSort> = {
+  created_at: BrowseProductsSort.Latest,
+  price_asc: BrowseProductsSort.PriceAsc,
+  price_desc: BrowseProductsSort.PriceDesc,
+};
+
+const buildFacetFilter = (attribute: string, values?: string[]) => {
+  if (!values?.length) {
+    return null;
+  }
+
+  if (values.length === 1) {
+    return `${attribute}:${values[0]}`;
+  }
+
+  return `(${values.map((value) => `${attribute}:${value}`).join(' OR ')})`;
+};
+
+const buildBrowseFilters = (queryParams?: BrowseProductsListParams) => {
+  if (!queryParams) {
+    return undefined;
+  }
+
+  const filters = [
+    buildFacetFilter('collection_id', queryParams.collection_id),
+    buildFacetFilter('category_ids', queryParams.category_id),
+    buildFacetFilter('id', queryParams.id),
+  ].filter(Boolean);
+
+  return filters.length ? filters.join(' AND ') : undefined;
+};
 
 export const listProducts = async (
   {
@@ -196,11 +241,6 @@ export const retrieveProductPricing = async (
   }
 };
 
-/**
- * Price sorting is still handled locally, so it fetches a larger result set and
- * slices it after sorting. For the default created_at sort, fetch only the
- * requested page to avoid downloading unused products.
- */
 export const listProductsWithSort = async (
   {
     page = 0,
@@ -209,77 +249,56 @@ export const listProductsWithSort = async (
     countryCode,
   }: {
     page?: number;
-    queryParams?: GetProductsQueryVariables;
+    queryParams?: BrowseProductsListParams;
     sortBy?: SortOptions;
     countryCode: string;
   },
   ctx: StorefrontContext
 ): Promise<{
-  response: { products: Product[]; count: number };
+  response: { products: BrowseProductsListItem[]; count: number };
   nextPage: number | null;
-  queryParams?: GetProductsQueryVariables;
+  queryParams?: BrowseProductsListParams;
 }> => {
   const limit = queryParams?.limit || 12;
-  const pageParam = Math.max(page - 1, 0) * limit;
+  const zeroBasedPage = Math.max(page - 1, 0);
+  const apolloClient = createServerApolloClient(ctx.cookieHeader ?? '');
 
-  if (sortBy === 'created_at') {
-    const {
-      response: { products, count },
-    } = await listProductsPreview(
+  try {
+    const data = await graphqlFetch<
+      BrowseProductsQuery,
+      BrowseProductsQueryVariables
+    >(
       {
-        queryParams: {
-          ...queryParams,
-          limit,
-          offset: pageParam,
+        query: BROWSE_PRODUCTS_QUERY,
+        variables: {
+          countryCode,
+          sort: BROWSE_SORT_BY[sortBy],
+          hitsPerPage: limit,
+          page: zeroBasedPage,
+          filters: buildBrowseFilters(queryParams),
         },
-        countryCode,
       },
-      ctx
+      apolloClient
     );
 
-    const nextPage = count > pageParam + limit ? pageParam + limit : null;
+    const count = data?.browseProducts?.total ?? 0;
+    const totalPages = data?.browseProducts?.totalPages ?? 0;
 
     return {
       response: {
-        products: products ?? [],
+        products: data?.browseProducts?.items ?? [],
         count,
       },
-      nextPage,
-      queryParams: {
-        ...queryParams,
-        limit,
-        offset: pageParam,
-      },
+      nextPage: zeroBasedPage + 1 < totalPages ? zeroBasedPage + 1 : null,
+      queryParams,
+    };
+  } catch (error) {
+    console.error('Error fetching browse products from BFF:', error);
+
+    return {
+      response: { products: [], count: 0 },
+      nextPage: null,
+      queryParams,
     };
   }
-
-  const {
-    response: { products: rawProducts, count },
-  } = await listProductsPreview(
-    {
-      pageParam: 0,
-      queryParams: {
-        ...queryParams,
-        limit: 100,
-      },
-      countryCode,
-    },
-    ctx
-  );
-
-  const products = rawProducts ?? [];
-  const sortedProducts = sortProducts(products as Product[], sortBy);
-
-  const nextPage = count > pageParam + limit ? pageParam + limit : null;
-
-  const paginatedProducts = sortedProducts.slice(pageParam, pageParam + limit);
-
-  return {
-    response: {
-      products: paginatedProducts,
-      count,
-    },
-    nextPage,
-    queryParams,
-  };
 };

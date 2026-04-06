@@ -1,6 +1,7 @@
 import { gql } from '@apollo/client';
 
 import {
+  BROWSE_PRODUCT_HIT_FRAGMENT,
   COLLECTION_PRODUCTS_FRAGMENT,
   PRODUCT_CATEGORY_FRAGMENT,
   PRODUCT_COLLECTION_FRAGMENT,
@@ -205,4 +206,36 @@ export const SEARCH_SUGGESTIONS_QUERY = gql`
     }
   }
   ${PRODUCT_HIT_FRAGMENT}
+`;
+
+export const BROWSE_PRODUCTS_QUERY = gql`
+  query BrowseProducts(
+    $countryCode: String
+    $regionId: String
+    $sort: BrowseProductsSort = LATEST
+    $hitsPerPage: Int
+    $page: Int
+    $filters: String
+    $facets: [String!]
+  ) {
+    browseProducts(
+      countryCode: $countryCode
+      regionId: $regionId
+      sort: $sort
+      hitsPerPage: $hitsPerPage
+      page: $page
+      filters: $filters
+      facets: $facets
+    ) {
+      total
+      page
+      totalPages
+      hitsPerPage
+      params
+      items {
+        ...BrowseProductHit
+      }
+    }
+  }
+  ${BROWSE_PRODUCT_HIT_FRAGMENT}
 `;
