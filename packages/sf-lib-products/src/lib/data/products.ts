@@ -262,6 +262,7 @@ export const listProductsWithSort = async (
   const limit = queryParams?.limit || 12;
   const zeroBasedPage = Math.max(page - 1, 0);
   const apolloClient = createServerApolloClient(ctx.cookieHeader ?? '');
+  const region = await getRegion(countryCode, ctx).catch(() => null);
 
   try {
     const data = await graphqlFetch<
@@ -272,6 +273,7 @@ export const listProductsWithSort = async (
         query: BROWSE_PRODUCTS_QUERY,
         variables: {
           countryCode,
+          regionId: region?.id,
           sort: BROWSE_SORT_BY[sortBy],
           hitsPerPage: limit,
           page: zeroBasedPage,
