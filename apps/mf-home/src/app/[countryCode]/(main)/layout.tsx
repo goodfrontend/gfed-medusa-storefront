@@ -19,12 +19,18 @@ export default async function PageLayout(props: { children: React.ReactNode }) {
   const ctx = await resolveNextContext();
   const customer = await retrieveCustomer(ctx);
   const cart = await retrieveCart(ctx);
-  let shippingOptions = await (cart ? listCartOptions(ctx) : Promise.resolve(null));
+  let shippingOptions = await (cart
+    ? listCartOptions(ctx)
+    : Promise.resolve(null));
 
   return (
     <>
       {/* @ts-expect-error -- Web Component */}
-      <mfe-header suppressHydrationWarning></mfe-header>
+      <mfe-header suppressHydrationWarning>
+        {/* @ts-expect-error -- Web Component */}
+        <mfe-cart slot="cart" suppressHydrationWarning></mfe-cart>
+        {/* @ts-expect-error -- Web Component */}
+      </mfe-header>
       {customer && cart && (
         <CartMismatchBanner customer={customer} cart={cart as Cart} />
       )}

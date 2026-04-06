@@ -10,7 +10,11 @@ export default async function MainLayout(props: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">
       {/* @ts-expect-error -- Web Component */}
-      <mfe-header suppressHydrationWarning></mfe-header>
+      <mfe-header suppressHydrationWarning>
+        {/* @ts-expect-error -- Web Component */}
+        <mfe-cart slot="cart" suppressHydrationWarning></mfe-cart>
+        {/* @ts-expect-error -- Web Component */}
+      </mfe-header>
       <main className="flex-1">{props.children}</main>
       {/* @ts-expect-error -- Web Component */}
       <mfe-footer suppressHydrationWarning></mfe-footer>

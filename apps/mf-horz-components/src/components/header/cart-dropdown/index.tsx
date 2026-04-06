@@ -15,9 +15,19 @@ import { Thumbnail } from '../thumbnail';
 
 const MINI_CART_CLOSE_DELAY_MS = 5000;
 
-const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
+interface CartDropdownProps {
+  cart?: Cart | null;
+  initialCartItemCount?: number;
+}
+
+const CartDropdown = ({
+  cart: cartState,
+  initialCartItemCount,
+}: CartDropdownProps) => {
   const [cartDropdownOpen, setCartDropdownOpen] = useState(false);
-  const previousTotalItemsRef = useRef<number | null>(null);
+  const previousTotalItemsRef = useRef<number | null>(
+    initialCartItemCount ?? null
+  );
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dialogRef = useRef<HTMLDialogElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
@@ -25,10 +35,15 @@ const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
   const bodyOverflowRef = useRef<string | null>(null);
   const bodyPaddingRightRef = useRef<string | null>(null);
 
-  const totalItems =
+  const isLoading = cartState === undefined;
+  const clientSideTotalItems =
     cartState?.items?.reduce((acc, item) => {
       return acc + item.quantity;
     }, 0) || 0;
+  const totalItems =
+    isLoading && initialCartItemCount
+      ? initialCartItemCount
+      : clientSideTotalItems;
 
   const subtotal = cartState?.subtotal ?? 0;
 
@@ -163,7 +178,7 @@ const CartDropdown = ({ cart: cartState }: { cart?: Cart | null }) => {
         data-testid="cart-button"
       >
         <ShoppingCart width={16} height={16} />
-        {totalItems > 0 && (
+        {totalItems >= 1 && (
           <span className="absolute -right-1 -top-1 flex min-h-4 min-w-4 items-center justify-center rounded-full bg-gray-900 px-1 text-[10px] font-semibold leading-none text-white">
             {totalItems}
           </span>

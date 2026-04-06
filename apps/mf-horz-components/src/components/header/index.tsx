@@ -1,16 +1,17 @@
-import { Suspense } from 'react';
-
 import { StorefrontProvider } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import { useCustomer } from '@gfed-medusa/sf-lib-common/lib/hooks/use-customer';
 import { Region } from '@gfed-medusa/sf-lib-common/types/graphql';
-import { ShoppingCart, User } from '@medusajs/icons';
+import { User } from '@medusajs/icons';
 
 import { Link } from '../link';
-import { CartButton } from './cart-button';
 import { SearchModal } from './search-modal';
 import { SideMenu } from './side-menu';
 
-function Header({ regions }: { regions: Region[] }) {
+interface HeaderProps {
+  regions: Region[];
+}
+
+function Header({ regions }: HeaderProps) {
   const { customer } = useCustomer();
 
   const goToLogin = () => {
@@ -99,19 +100,7 @@ function Header({ regions }: { regions: Region[] }) {
                   </button>
                 )}
               </div>
-              <Suspense
-                fallback={
-                  <Link
-                    className="text-ui-fg-subtle hover:text-ui-fg-base flex min-h-[32px] min-w-[32px] cursor-pointer items-center justify-center focus:outline-none"
-                    href="/cart"
-                    data-testid="nav-cart-link"
-                  >
-                    <ShoppingCart width={16} height={16} />
-                  </Link>
-                }
-              >
-                <CartButton />
-              </Suspense>
+              <slot name="cart" />
             </div>
           </nav>
         </header>
