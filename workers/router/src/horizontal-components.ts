@@ -61,6 +61,70 @@ function isSsrComponentPayload(
   );
 }
 
+function getComponentCacheKey(
+  componentName: string,
+  config: AppConfig
+): Request {
+  const url = `${config.HORIZONTAL_SERVICE}/__component-cache/${componentName}`;
+  return new Request(url, { method: 'GET' });
+}
+
+async function getCachedComponentResources(
+  componentConfig: HorizontalComponentConfig,
+  config: AppConfig
+): Promise<ComponentResources | null> {
+  if (componentConfig.cacheable === false) {
+    return null;
+  }
+
+  try {
+    const cache = caches.default;
+    const cacheKey = getComponentCacheKey(componentConfig.name, config);
+    const cached = await cache.match(cacheKey);
+
+    if (cached) {
+      const payload = await cached.json<{ html: string; data: string }>();
+      return {
+        html: payload.html,
+        data: payload.data,
+        config: componentConfig,
+      };
+    }
+  } catch {
+    // Cache miss or error, fall through to fresh fetch.
+  }
+
+  return null;
+}
+
+async function cacheComponentResources(
+  resources: ComponentResources,
+  config: AppConfig,
+  ctx: ExecutionContext
+): Promise<void> {
+  if (resources.config.cacheable === false) {
+    return;
+  }
+
+  try {
+    const cache = caches.default;
+    const cacheKey = getComponentCacheKey(resources.config.name, config);
+    const body = JSON.stringify({
+      html: resources.html,
+      data: resources.data,
+    });
+
+    const response = new Response(body, {
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': `public, max-age=${CACHE_TTL.COMPONENT}`,
+      },
+    });
+
+    ctx.waitUntil(cache.put(cacheKey, response));
+  } catch {}
+}
+
 async function fetchComponentResourcesLegacy(
   componentConfig: HorizontalComponentConfig,
   config: AppConfig,
@@ -116,11 +180,35 @@ async function fetchComponentResources(
 export async function fetchAllComponentResources(
   configs: HorizontalComponentConfig[],
   appConfig: AppConfig,
-  request: Request
+  request: Request,
+  ctx: ExecutionContext
 ): Promise<ComponentResources[]> {
-  return Promise.all(
-    configs.map((config) => fetchComponentResources(config, appConfig, request))
+  const results = await Promise.all(
+    configs.map(async (componentConfig) => {
+      // Try cache first for cacheable components.
+      const cached = await getCachedComponentResources(
+        componentConfig,
+        appConfig
+      );
+      if (cached) {
+        return cached;
+      }
+
+      // Fetch fresh from the horz service.
+      const resources = await fetchComponentResources(
+        componentConfig,
+        appConfig,
+        request
+      );
+
+      // Cache the result for cacheable components.
+      cacheComponentResources(resources, appConfig, ctx);
+
+      return resources;
+    })
   );
+
+  return results;
 }
 
 export async function injectHorizontalComponents(
@@ -181,10 +269,18 @@ export async function injectHorizontalComponents(
       : '';
     const shadowContent = `<template shadowrootmode="open">${stylesheetTag}<div id="root-${compConfig.elementTag}">${html}</div></template>`;
 
+    const injectionMode = compConfig.injectionMode ?? 'replace';
+
     rewriter = rewriter.on(compConfig.elementTag, {
       element(el) {
         try {
-          el.setInnerContent(shadowContent, { html: true });
+          if (injectionMode === 'prepend') {
+            // Prepend preserves existing children (e.g. slotted child web
+            // components like <mfe-cart slot="cart"> inside <mfe-header>).
+            el.prepend(shadowContent, { html: true });
+          } else {
+            el.setInnerContent(shadowContent, { html: true });
+          }
         } catch (e) {
           console.error('Failed to inject:', compConfig.elementTag, e);
         }

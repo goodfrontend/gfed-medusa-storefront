@@ -3,10 +3,15 @@ import type { ComponentType } from 'react';
 
 import { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import type {
+  GetCartItemCountQuery,
+  GetCartItemCountQueryVariables,
   GetFooterDataQuery,
   GetFooterDataQueryVariables,
+  ListRegionsQuery,
+  ListRegionsQueryVariables,
 } from '@gfed-medusa/sf-lib-common/types/graphql';
 
+import { Cart } from '../components/cart';
 import { Footer } from '../components/footer';
 import { Header } from '../components/header';
 
@@ -32,17 +37,61 @@ export const COMPONENT_REGISTRY: ComponentDefinition[] = [
       ]);
 
       const apolloClient = createServerApolloClient(ctx?.cookieHeader ?? '');
-      const data = await graphqlFetch<any, any>(
-        { query: LIST_REGIONS_QUERY },
-        apolloClient
-      ).catch(() => null);
+
+      const regionsData = await graphqlFetch<
+        ListRegionsQuery,
+        ListRegionsQueryVariables
+      >({ query: LIST_REGIONS_QUERY }, apolloClient).catch(() => null);
 
       return {
-        regions: data?.regions ?? [],
+        regions: regionsData?.regions ?? [],
       };
     },
     elementTag: 'mfe-header',
     dataVariable: '__HEADER_DATA__',
+  },
+  {
+    name: 'cart',
+    component: Cart,
+    getData: async (ctx?: StorefrontContext) => {
+      if (!ctx?.cartId) {
+        return {};
+      }
+
+      const [
+        { createServerApolloClient, graphqlFetch },
+        { GET_CART_ITEM_COUNT_QUERY },
+      ] = await Promise.all([
+        import('@gfed-medusa/sf-lib-common/lib/gql/apollo-client'),
+        import('@gfed-medusa/sf-lib-common/lib/gql/queries/cart-summary'),
+      ]);
+
+      const apolloClient = createServerApolloClient(ctx.cookieHeader ?? '');
+
+      const cartData = await graphqlFetch<
+        GetCartItemCountQuery,
+        GetCartItemCountQueryVariables
+      >(
+        {
+          query: GET_CART_ITEM_COUNT_QUERY,
+          variables: { id: ctx.cartId },
+        },
+        apolloClient
+      ).catch(() => null);
+
+      const cartItemCount = cartData?.cart?.items?.reduce(
+        (acc, item) => acc + item.quantity,
+        0
+      );
+
+      return {
+        ...(cartItemCount !== undefined && cartItemCount > 0
+          ? { cartItemCount }
+          : {}),
+      };
+    },
+    elementTag: 'mfe-cart',
+    dataVariable: '__CART_DATA__',
   },
   {
     name: 'footer',

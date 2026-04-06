@@ -1172,6 +1172,18 @@ export type TransferCartMutation = {
   transferCart?: ({ __typename?: 'Cart' } & CartFieldsFragment) | null;
 };
 
+export type GetCartItemCountQueryVariables = Exact<{
+  id: Scalars['ID']['input'];
+}>;
+
+export type GetCartItemCountQuery = {
+  __typename?: 'Query';
+  cart?: {
+    __typename?: 'Cart';
+    items?: Array<{ __typename?: 'LineItem'; quantity: number }> | null;
+  } | null;
+};
+
 export type GetCartQueryVariables = Exact<{
   id: Scalars['ID']['input'];
 }>;
@@ -4598,6 +4610,66 @@ export const TransferCartDocument = {
 } as unknown as DocumentNode<
   TransferCartMutation,
   TransferCartMutationVariables
+>;
+export const GetCartItemCountDocument = {
+  kind: 'Document',
+  definitions: [
+    {
+      kind: 'OperationDefinition',
+      operation: 'query',
+      name: { kind: 'Name', value: 'GetCartItemCount' },
+      variableDefinitions: [
+        {
+          kind: 'VariableDefinition',
+          variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
+          type: {
+            kind: 'NonNullType',
+            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } },
+          },
+        },
+      ],
+      selectionSet: {
+        kind: 'SelectionSet',
+        selections: [
+          {
+            kind: 'Field',
+            name: { kind: 'Name', value: 'cart' },
+            arguments: [
+              {
+                kind: 'Argument',
+                name: { kind: 'Name', value: 'id' },
+                value: {
+                  kind: 'Variable',
+                  name: { kind: 'Name', value: 'id' },
+                },
+              },
+            ],
+            selectionSet: {
+              kind: 'SelectionSet',
+              selections: [
+                {
+                  kind: 'Field',
+                  name: { kind: 'Name', value: 'items' },
+                  selectionSet: {
+                    kind: 'SelectionSet',
+                    selections: [
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'quantity' },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+} as unknown as DocumentNode<
+  GetCartItemCountQuery,
+  GetCartItemCountQueryVariables
 >;
 export const GetCartDocument = {
   kind: 'Document',

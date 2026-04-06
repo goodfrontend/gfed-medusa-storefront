@@ -15,11 +15,20 @@ export const HORIZONTAL_COMPONENTS: HorizontalComponentConfig[] = [
     name: 'header',
     elementTag: 'mfe-header',
     dataVariable: '__HEADER_DATA__',
+    cacheable: true,
+    injectionMode: 'prepend',
+  },
+  {
+    name: 'cart',
+    elementTag: 'mfe-cart',
+    dataVariable: '__CART_DATA__',
+    cacheable: false,
   },
   {
     name: 'footer',
     elementTag: 'mfe-footer',
     dataVariable: '__FOOTER_DATA__',
+    cacheable: true,
   },
 ];
 
@@ -32,4 +41,6 @@ export const CACHE_TTL = {
   HTML: 300,
   /** Manifest file (1 minute) */
   MANIFEST: 60,
+  /** Cached horizontal component (5 minutes) */
+  COMPONENT: 300,
 } as const;
