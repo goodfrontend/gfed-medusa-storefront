@@ -1,5 +1,19 @@
 # @gfed-medusa/sf-lib-checkout
 
+## 3.3.0
+
+### Minor Changes
+
+- b095935: require input ids to restore label click focus in checkout forms
+
+### Patch Changes
+
+- c3f0920: adjust checkout field inputs layout
+- Updated dependencies [fad5528]
+- Updated dependencies [b095935]
+  - @gfed-medusa/sf-lib-common@3.4.0
+  - @gfed-medusa/sf-lib-ui@1.3.0
+
 ## 3.2.2
 
 ### Patch Changes

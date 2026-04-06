@@ -1,5 +1,16 @@
 # @gfed-medusa/sf-lib-common
 
+## 3.4.0
+
+### Minor Changes
+
+- fad5528: Fresh cart implementation and injection of cart/horz components to cached response
+
+### Patch Changes
+
+- Updated dependencies [b095935]
+  - @gfed-medusa/sf-lib-ui@1.3.0
+
 ## 3.3.8
 
 ### Patch Changes
