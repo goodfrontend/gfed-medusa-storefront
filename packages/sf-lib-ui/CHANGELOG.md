@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-ui
 
+## 1.3.0
+
+### Minor Changes
+
+- b095935: require input ids to restore label click focus in checkout forms
+
 ## 1.2.4
 
 ### Patch Changes

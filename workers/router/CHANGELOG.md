@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-gateway
 
+## 1.3.0
+
+### Minor Changes
+
+- fad5528: Fresh cart implementation and injection of cart/horz components to cached response
+
 ## 1.2.5
 
 ### Patch Changes

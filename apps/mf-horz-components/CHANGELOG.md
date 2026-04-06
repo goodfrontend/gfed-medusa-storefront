@@ -1,5 +1,19 @@
 # @gfed-medusa/mf-horz-components
 
+## 1.6.0
+
+### Minor Changes
+
+- fad5528: Fresh cart implementation and injection of cart/horz components to cached response
+- 0d68c77: improve footer mobile ui display
+
+### Patch Changes
+
+- Updated dependencies [fad5528]
+- Updated dependencies [b095935]
+  - @gfed-medusa/sf-lib-common@3.4.0
+  - @gfed-medusa/sf-lib-ui@1.3.0
+
 ## 1.5.5
 
 ### Patch Changes

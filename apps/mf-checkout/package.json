@@ -1,6 +1,6 @@
 {
   "name": "@gfed-medusa/mf-checkout",
-  "version": "1.5.4",
+  "version": "1.6.0",
   "type": "module",
   "private": true,
   "scripts": {
@@ -12,9 +12,9 @@
     "check-types": "next typegen && tsc --noEmit"
   },
   "dependencies": {
-    "@gfed-medusa/sf-lib-checkout": "^3.2.2",
-    "@gfed-medusa/sf-lib-common": "^3.3.8",
-    "@gfed-medusa/sf-lib-ui": "^1.2.4",
+    "@gfed-medusa/sf-lib-checkout": "^3.3.0",
+    "@gfed-medusa/sf-lib-common": "^3.4.0",
+    "@gfed-medusa/sf-lib-ui": "^1.3.0",
     "@medusajs/ui": "^4.0.29",
     "@medusajs/ui-preset": "^2.12.2",
     "next": "^15.3.8",

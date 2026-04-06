@@ -1,5 +1,19 @@
 # @gfed-medusa/mf-home
 
+## 1.6.0
+
+### Minor Changes
+
+- fad5528: Fresh cart implementation and injection of cart/horz components to cached response
+
+### Patch Changes
+
+- c3f0920: remove duplicated import of sf-lib-ui/styles.css
+- Updated dependencies [fad5528]
+- Updated dependencies [b095935]
+  - @gfed-medusa/sf-lib-common@3.4.0
+  - @gfed-medusa/sf-lib-ui@1.3.0
+
 ## 1.5.6
 
 ### Patch Changes
