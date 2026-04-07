@@ -67,6 +67,7 @@
     "@medusajs/types": "^2.12.1",
     "@medusajs/ui": "^4.0.29",
     "@radix-ui/react-accordion": "^1.2.1",
+    "algoliasearch": "^5.49.1",
     "isomorphic-dompurify": "^2.34.0",
     "lodash": "^4.17.21",
     "next": "^15.3.8",

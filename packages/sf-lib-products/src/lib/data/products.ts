@@ -1,5 +1,9 @@
 'use server';
 
+import { unstable_cache } from 'next/cache';
+
+import { type SearchClient, algoliasearch } from 'algoliasearch';
+
 import type { StorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import {
   createServerApolloClient,
@@ -37,11 +41,225 @@ export type BrowseProductsListParams = {
   id?: string[];
 };
 
+type DirectAlgoliaBrowseHit = {
+  objectID?: string;
+  id?: string;
+  title?: string | null;
+  handle?: string | null;
+  thumbnail?: string | null;
+  price_amount?: number | null;
+  original_price_amount?: number | null;
+  currency_code?: string | null;
+};
+
+type DirectAlgoliaBrowseResponse = {
+  nbHits?: number;
+  nbPages?: number;
+  hits?: DirectAlgoliaBrowseHit[];
+};
+
 const BROWSE_SORT_BY: Record<SortOptions, BrowseProductsSort> = {
   created_at: BrowseProductsSort.Latest,
   price_asc: BrowseProductsSort.PriceAsc,
   price_desc: BrowseProductsSort.PriceDesc,
 };
+
+const DIRECT_ALGOLIA_SORT_SUFFIX: Record<SortOptions, string> = {
+  created_at: '',
+  price_asc: '_price_asc',
+  price_desc: '_price_desc',
+};
+
+const DIRECT_ALGOLIA_ATTRIBUTES_TO_RETRIEVE = [
+  'id',
+  'title',
+  'handle',
+  'thumbnail',
+  'price_amount',
+  'original_price_amount',
+  'currency_code',
+];
+
+const DIRECT_ALGOLIA_PLP_REVALIDATE_SECONDS = 30;
+
+const isTruthyFlag = (value?: string) =>
+  ['1', 'true', 'yes', 'on'].includes(value?.trim().toLowerCase() ?? '');
+
+const shouldUseDirectAlgoliaPlp = () =>
+  isTruthyFlag(process.env.USE_DIRECT_ALGOLIA_PLP);
+
+const sanitizeAlgoliaMarketKey = (marketKey: string) =>
+  marketKey.replace(/[^a-zA-Z0-9_-]/g, '_');
+
+type DirectAlgoliaBrowseConfig = {
+  appId: string;
+  apiKey: string;
+  browseIndexBaseName: string;
+};
+
+let directAlgoliaBrowseConfigCache: DirectAlgoliaBrowseConfig | null = null;
+let directAlgoliaBrowseClientCache: SearchClient | null = null;
+let directAlgoliaBrowseClientKey: string | null = null;
+
+const resolveAlgoliaBrowseConfig = () => {
+  if (directAlgoliaBrowseConfigCache) {
+    return directAlgoliaBrowseConfigCache;
+  }
+
+  const appId = process.env.ALGOLIA_APP_ID;
+  const apiKey = process.env.ALGOLIA_SEARCH_KEY;
+  const browseIndexBaseName =
+    process.env.ALGOLIA_PRODUCT_BROWSE_INDEX_NAME ??
+    (process.env.ALGOLIA_PRODUCT_INDEX_NAME
+      ? `${process.env.ALGOLIA_PRODUCT_INDEX_NAME}_browse`
+      : undefined);
+
+  if (!appId || !apiKey || !browseIndexBaseName) {
+    throw new Error(
+      'Missing Algolia PLP configuration. Set ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY, and ALGOLIA_PRODUCT_INDEX_NAME or ALGOLIA_PRODUCT_BROWSE_INDEX_NAME.'
+    );
+  }
+
+  directAlgoliaBrowseConfigCache = {
+    appId,
+    apiKey,
+    browseIndexBaseName,
+  };
+
+  return directAlgoliaBrowseConfigCache;
+};
+
+const getDirectAlgoliaBrowseClient = () => {
+  const { appId, apiKey } = resolveAlgoliaBrowseConfig();
+  const clientKey = `${appId}:${apiKey}`;
+
+  if (
+    !directAlgoliaBrowseClientCache ||
+    directAlgoliaBrowseClientKey !== clientKey
+  ) {
+    directAlgoliaBrowseClientCache = algoliasearch(appId, apiKey);
+    directAlgoliaBrowseClientKey = clientKey;
+  }
+
+  return directAlgoliaBrowseClientCache;
+};
+
+const getDirectAlgoliaBrowseIndexName = (
+  browseIndexBaseName: string,
+  regionId: string,
+  sortBy: SortOptions
+) =>
+  `${browseIndexBaseName}_${sanitizeAlgoliaMarketKey(regionId)}${
+    DIRECT_ALGOLIA_SORT_SUFFIX[sortBy]
+  }`;
+
+const mapDirectAlgoliaHit = (
+  hit: DirectAlgoliaBrowseHit
+): BrowseProductsListItem | null => {
+  const id = hit.id ?? hit.objectID;
+  const handle = hit.handle?.trim();
+
+  if (!id || !handle) {
+    return null;
+  }
+
+  return {
+    __typename: 'BrowseProductHit',
+    id,
+    title: hit.title ?? null,
+    handle,
+    thumbnail: hit.thumbnail ?? null,
+    priceAmount: hit.price_amount ?? null,
+    originalPriceAmount: hit.original_price_amount ?? null,
+    currencyCode: hit.currency_code ?? null,
+  };
+};
+
+const fetchDirectAlgoliaBrowseProductsUncached = async ({
+  regionId,
+  sortBy,
+  limit,
+  page,
+  filters,
+}: {
+  regionId: string;
+  sortBy: SortOptions;
+  limit: number;
+  page: number;
+  filters?: string;
+}): Promise<{
+  products: BrowseProductsListItem[];
+  total: number;
+  totalPages: number;
+}> => {
+  const { browseIndexBaseName } = resolveAlgoliaBrowseConfig();
+  const client = getDirectAlgoliaBrowseClient();
+  const indexName = getDirectAlgoliaBrowseIndexName(
+    browseIndexBaseName,
+    regionId,
+    sortBy
+  );
+
+  const data = (await client.searchSingleIndex<DirectAlgoliaBrowseHit>({
+    indexName,
+    searchParams: {
+      query: '',
+      hitsPerPage: limit,
+      page,
+      attributesToRetrieve: DIRECT_ALGOLIA_ATTRIBUTES_TO_RETRIEVE,
+      ...(filters && { filters }),
+    },
+  })) as DirectAlgoliaBrowseResponse;
+  const products = (data.hits ?? [])
+    .map(mapDirectAlgoliaHit)
+    .filter((hit): hit is BrowseProductsListItem => Boolean(hit));
+
+  return {
+    products,
+    total: data.nbHits ?? 0,
+    totalPages: data.nbPages ?? 0,
+  };
+};
+
+const fetchDirectAlgoliaBrowseProductsCached = unstable_cache(
+  async (
+    regionId: string,
+    sortBy: SortOptions,
+    limit: number,
+    page: number,
+    filters: string | null
+  ) =>
+    fetchDirectAlgoliaBrowseProductsUncached({
+      regionId,
+      sortBy,
+      limit,
+      page,
+      filters: filters ?? undefined,
+    }),
+  ['direct-algolia-plp'],
+  { revalidate: DIRECT_ALGOLIA_PLP_REVALIDATE_SECONDS }
+);
+
+const fetchDirectAlgoliaBrowseProducts = async ({
+  regionId,
+  sortBy,
+  limit,
+  page,
+  filters,
+}: {
+  regionId: string;
+  sortBy: SortOptions;
+  limit: number;
+  page: number;
+  filters?: string;
+}) =>
+  fetchDirectAlgoliaBrowseProductsCached(
+    regionId,
+    sortBy,
+    limit,
+    page,
+    filters ?? null
+  );
 
 const buildFacetFilter = (attribute: string, values?: string[]) => {
   if (!values?.length) {
@@ -261,8 +479,48 @@ export const listProductsWithSort = async (
 }> => {
   const limit = queryParams?.limit || 12;
   const zeroBasedPage = Math.max(page - 1, 0);
-  const apolloClient = createServerApolloClient(ctx.cookieHeader ?? '');
   const region = await getRegion(countryCode, ctx).catch(() => null);
+  const filters = buildBrowseFilters(queryParams);
+
+  if (shouldUseDirectAlgoliaPlp()) {
+    if (!region?.id) {
+      return {
+        response: { products: [], count: 0 },
+        nextPage: null,
+        queryParams,
+      };
+    }
+
+    try {
+      const data = await fetchDirectAlgoliaBrowseProducts({
+        regionId: region.id,
+        sortBy,
+        limit,
+        page: zeroBasedPage,
+        filters,
+      });
+
+      return {
+        response: {
+          products: data.products,
+          count: data.total,
+        },
+        nextPage:
+          zeroBasedPage + 1 < data.totalPages ? zeroBasedPage + 1 : null,
+        queryParams,
+      };
+    } catch (error) {
+      console.error('Error fetching browse products from Algolia:', error);
+
+      return {
+        response: { products: [], count: 0 },
+        nextPage: null,
+        queryParams,
+      };
+    }
+  }
+
+  const apolloClient = createServerApolloClient(ctx.cookieHeader ?? '');
 
   try {
     const data = await graphqlFetch<
@@ -277,7 +535,7 @@ export const listProductsWithSort = async (
           sort: BROWSE_SORT_BY[sortBy],
           hitsPerPage: limit,
           page: zeroBasedPage,
-          filters: buildBrowseFilters(queryParams),
+          filters,
         },
       },
       apolloClient
