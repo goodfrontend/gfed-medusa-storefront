@@ -1,21 +1,15 @@
-import { ProductPreview } from '@gfed-medusa/sf-lib-common/components/product-preview';
 import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
 
+import { BrowseProductPreview } from '@/components/browse-product-preview';
 import { Pagination } from '@/components/pagination';
 import { SortOptions } from '@/components/refinement-list/sort-products';
-import { listProductsWithSort } from '@/lib/data/products';
-import { getRegion } from '@/lib/data/regions';
+import {
+  type BrowseProductsListParams,
+  listProductsWithSort,
+} from '@/lib/data/products';
 
 const PRODUCT_LIMIT = 12;
 const LCP_CANDIDATE_COUNT = 4;
-
-type PaginatedProductsParams = {
-  limit: number;
-  collection_id?: string[];
-  category_id?: string[];
-  id?: string[];
-  order?: string;
-};
 
 export default async function PaginatedProducts({
   sortBy,
@@ -33,7 +27,7 @@ export default async function PaginatedProducts({
   countryCode: string;
 }) {
   const ctx = await resolveNextContext();
-  const queryParams: PaginatedProductsParams = {
+  const queryParams: BrowseProductsListParams = {
     limit: 12,
   };
 
@@ -47,16 +41,6 @@ export default async function PaginatedProducts({
 
   if (productsIds) {
     queryParams['id'] = productsIds;
-  }
-
-  if (sortBy === 'created_at') {
-    queryParams['order'] = '-created_at';
-  }
-
-  const region = await getRegion(countryCode, ctx);
-
-  if (!region) {
-    return null;
   }
 
   const {
@@ -84,7 +68,7 @@ export default async function PaginatedProducts({
 
           return (
             <li key={p.id}>
-              <ProductPreview
+              <BrowseProductPreview
                 product={p}
                 imagePriority={isLcpCandidate}
                 imageFetchPriority={isLcpCandidate ? 'high' : undefined}

@@ -247,3 +247,15 @@ export const PRODUCT_HIT_FRAGMENT = gql`
     thumbnail
   }
 `;
+
+export const BROWSE_PRODUCT_HIT_FRAGMENT = gql`
+  fragment BrowseProductHit on BrowseProductHit {
+    id
+    title
+    handle
+    thumbnail
+    priceAmount
+    originalPriceAmount
+    currencyCode
+  }
+`;
