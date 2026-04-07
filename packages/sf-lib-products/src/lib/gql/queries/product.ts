@@ -228,10 +228,7 @@ export const BROWSE_PRODUCTS_QUERY = gql`
       facets: $facets
     ) {
       total
-      page
       totalPages
-      hitsPerPage
-      params
       items {
         ...BrowseProductHit
       }

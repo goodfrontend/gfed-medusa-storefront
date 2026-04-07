@@ -1656,10 +1656,7 @@ export type BrowseProductsQuery = {
   browseProducts: {
     __typename?: 'BrowseProducts';
     total: number;
-    page: number;
     totalPages: number;
-    hitsPerPage: number;
-    params: string;
     items: Array<
       { __typename?: 'BrowseProductHit' } & BrowseProductHitFragment
     >;
@@ -9202,10 +9199,7 @@ export const BrowseProductsDocument = {
               kind: 'SelectionSet',
               selections: [
                 { kind: 'Field', name: { kind: 'Name', value: 'total' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'page' } },
                 { kind: 'Field', name: { kind: 'Name', value: 'totalPages' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'hitsPerPage' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'params' } },
                 {
                   kind: 'Field',
                   name: { kind: 'Name', value: 'items' },
