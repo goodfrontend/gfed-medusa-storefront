@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-products
 
+## 1.7.0
+
+### Minor Changes
+
+- 29cba77: use Algolia in PLP
+
 ## 1.6.3
 
 ### Patch Changes
