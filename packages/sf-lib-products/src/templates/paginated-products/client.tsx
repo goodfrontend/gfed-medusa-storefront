@@ -348,7 +348,7 @@ export default function PaginatedProductsClient({
   return (
     <>
       <ul
-        className="small:grid-cols-3 medium:grid-cols-4 grid w-full grid-cols-2 gap-x-6 gap-y-8"
+        className="grid w-full grid-cols-[repeat(auto-fit,_minmax(min(100%,_max(10rem,_calc((100%_-_4.5rem)_/_4))),_1fr))] gap-x-6 gap-y-8"
         data-testid="products-list"
       >
         {products.map((product, index) => {
