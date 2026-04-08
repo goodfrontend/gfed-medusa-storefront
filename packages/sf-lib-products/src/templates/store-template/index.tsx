@@ -15,7 +15,6 @@ const StoreTemplate = ({
   page?: string;
   countryCode: string;
 }) => {
-  const pageNumber = page ? parseInt(page) : 1;
   const sort = sortBy || 'created_at';
 
   return (
@@ -36,7 +35,7 @@ const StoreTemplate = ({
         <Suspense fallback={<SkeletonProductGrid />}>
           <PaginatedProducts
             sortBy={sort}
-            page={pageNumber}
+            page={page}
             countryCode={countryCode}
           />
         </Suspense>

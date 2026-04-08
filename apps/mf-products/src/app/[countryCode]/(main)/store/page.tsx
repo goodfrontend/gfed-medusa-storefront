@@ -5,16 +5,19 @@ import type { SortOptions } from '@gfed-medusa/sf-lib-products/types/index';
 
 export const metadata: Metadata = {
   title: 'Store',
-  description: 'Explore all of our products at JustGood Store. Find the best deals and latest arrivals.',
+  description:
+    'Explore all of our products at JustGood Store. Find the best deals and latest arrivals.',
   openGraph: {
     title: 'Store | JustGood Store',
-    description: 'Explore all of our products at JustGood Store. Find the best deals and latest arrivals.',
+    description:
+      'Explore all of our products at JustGood Store. Find the best deals and latest arrivals.',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Store | JustGood Store',
-    description: 'Explore all of our products at JustGood Store. Find the best deals and latest arrivals.',
+    description:
+      'Explore all of our products at JustGood Store. Find the best deals and latest arrivals.',
   },
 };
 

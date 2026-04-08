@@ -56,7 +56,6 @@ export default async function CollectionPage(props: Props) {
     notFound();
   }
 
-  const pageNumber = page ? parseInt(page) : 1;
   const sort = sortBy || 'created_at';
 
   return (
@@ -77,7 +76,7 @@ export default async function CollectionPage(props: Props) {
         <Suspense fallback={<SkeletonProductGrid />}>
           <PaginatedProducts
             sortBy={sort}
-            page={pageNumber}
+            page={page}
             collectionId={collection.id}
             countryCode={params.countryCode}
           />
