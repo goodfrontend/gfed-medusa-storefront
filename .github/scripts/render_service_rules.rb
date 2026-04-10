@@ -15,6 +15,7 @@ STORE_VERSION = 1
 ACTIONS = %w[suspend resume].freeze
 SCHEDULE_TYPES = %w[immediate scheduled recurring window_scheduled window_recurring].freeze
 WINDOW_SCHEDULE_TYPES = %w[window_scheduled window_recurring].freeze
+SERVICE_GROUP_ALIASES = %w[smoke qa].freeze
 
 def abort_with(message)
   warn(message)
@@ -39,43 +40,59 @@ def save_json(path, data)
   File.write(path, JSON.pretty_generate(data) + "\n")
 end
 
-def load_available_services(render_file)
+def load_service_catalog(render_file)
   yaml = YAML.safe_load(File.read(render_file), permitted_classes: [], aliases: false)
   unless yaml.is_a?(Hash)
     abort_with("Invalid #{render_file}: expected a top-level mapping.")
   end
 
-  services = Array(yaml["projects"]).flat_map do |project|
-    Array(project["environments"]).flat_map do |environment|
-      Array(environment["services"]).map do |service|
+  services = []
+  aliases = Hash.new { |hash, key| hash[key] = [] }
+
+  Array(yaml["projects"]).each do |project|
+    Array(project["environments"]).each do |environment|
+      environment_name = environment["name"].to_s.strip.downcase
+      environment_services = Array(environment["services"]).map do |service|
         service["name"].to_s.strip
       end
+
+      services.concat(environment_services)
+      next unless SERVICE_GROUP_ALIASES.include?(environment_name)
+
+      aliases[environment_name].concat(environment_services)
     end
   end
 
   services = services.reject(&:empty?).uniq
   abort_with("No services were found in #{render_file}.") if services.empty?
 
-  services
+  {
+    "services" => services,
+    "aliases" => aliases.transform_values { |names| names.reject(&:empty?).uniq },
+  }
 rescue Psych::Exception => e
   abort_with("Unable to parse #{render_file}: #{e.message}")
 end
 
-def resolve_services(input, available_services)
+def resolve_services(input, available_services, aliases = {})
   raw = input.to_s.strip
   return available_services.dup if raw.empty? || raw.casecmp("all").zero?
 
   selected = raw.split(/[\n,]+/).map(&:strip).reject(&:empty?).uniq
   abort_with("services must be a comma-separated list or 'all'.") if selected.empty?
 
-  unknown = selected - available_services
+  expanded = selected.flat_map do |entry|
+    aliases.fetch(entry.downcase, [entry])
+  end.uniq
+
+  unknown = expanded - available_services
   unless unknown.empty?
     abort_with(
       "Unknown services: #{unknown.join(', ')}. Available services: #{available_services.join(', ')}."
     )
   end
 
-  selected
+  expanded
 end
 
 def normalize_rule_id(rule_name)
@@ -331,9 +348,12 @@ def command_configure(render_file, store_file, output_file)
   abort_with("schedule_type must be one of: #{SCHEDULE_TYPES.join(', ')}.") unless SCHEDULE_TYPES.include?(schedule_type)
 
   now_utc = Time.now.utc
-  available_services = load_available_services(render_file)
+  service_catalog = load_service_catalog(render_file)
+  available_services = service_catalog.fetch("services")
+  service_aliases = service_catalog.fetch("aliases")
   store = load_store(store_file)
   store["available_services"] = available_services
+  store["service_aliases"] = service_aliases
   store["updated_at_utc"] = now_utc.iso8601
   store["updated_by"] = actor
 
@@ -380,7 +400,7 @@ def command_configure(render_file, store_file, output_file)
     return
   end
 
-  selected_services = resolve_services(services_input, available_services)
+  selected_services = resolve_services(services_input, available_services, service_aliases)
 
   if schedule_type == "immediate"
     result = {
