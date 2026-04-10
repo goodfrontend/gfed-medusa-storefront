@@ -20,9 +20,11 @@ const AccountLayout: React.FC<AccountLayoutProps> = ({
   return (
     <div className="small:py-12 flex-1" data-testid="account-page">
       <div className="content-container mx-auto flex h-full max-w-5xl flex-1 flex-col bg-white">
-        <div className="small:grid-cols-[240px_1fr] grid grid-cols-1 py-12">
-          <div>{customer && <AccountNav bffBaseUrl={bffBaseUrl} />}</div>
-          <div className="flex-1">{children}</div>
+        <div className="small:grid-cols-[240px_minmax(0,1fr)] small:gap-12 small:py-12 grid grid-cols-1 gap-8 py-8">
+          <div className="min-w-0">
+            {customer && <AccountNav bffBaseUrl={bffBaseUrl} />}
+          </div>
+          <div className="min-w-0 flex-1">{children}</div>
         </div>
         <div className="small:flex-row small:border-t flex flex-col items-end justify-between gap-8 border-gray-200 py-12">
           <div>
