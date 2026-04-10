@@ -88,7 +88,9 @@ const AccountNavLink = ({
   const { countryCode }: { countryCode: string } = useParams();
 
   const activeRoute = route.split(countryCode)[1];
-  const active = activeRoute === href || activeRoute?.startsWith(`${href}/`);
+  const active =
+    activeRoute === href ||
+    (href !== '/account' && activeRoute?.startsWith(`${href}/`));
 
   if (active) {
     return (
