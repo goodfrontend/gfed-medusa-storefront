@@ -3,7 +3,6 @@
 import { useParams, usePathname } from 'next/navigation';
 
 import { LocalizedClientLink } from '@gfed-medusa/sf-lib-common/components/localized-client-link';
-import { clx } from '@medusajs/ui';
 
 const AccountNav = ({ bffBaseUrl }: { bffBaseUrl: string }) => {
   const route = usePathname();
@@ -13,13 +12,13 @@ const AccountNav = ({ bffBaseUrl }: { bffBaseUrl: string }) => {
   };
 
   return (
-    <div className="small:block" data-testid="account-nav">
+    <div className="small:block w-full" data-testid="account-nav">
       <div>
-        <div className="pb-4">
-          <h3 className="text-base-semi">Account</h3>
+        <div className="small:pb-4 pb-3">
+          <h3 className="text-large-semi">Account</h3>
         </div>
         <div className="text-base-regular">
-          <ul className="mb-0 flex flex-col items-start justify-start gap-y-4">
+          <ul className="no-scrollbar small:mx-0 small:grid small:grid-cols-1 small:gap-y-4 small:overflow-visible small:px-0 small:pb-0 flex snap-x snap-mandatory gap-4 overflow-x-auto pb-2">
             <li>
               <AccountNavLink
                 href="/account"
@@ -56,10 +55,11 @@ const AccountNav = ({ bffBaseUrl }: { bffBaseUrl: string }) => {
                 Orders
               </AccountNavLink>
             </li>
-            <li className="text-grey-700">
+            <li className="small:shrink shrink-0 snap-start">
               <button
                 type="button"
                 onClick={handleLogout}
+                className="text-ui-fg-subtle hover:text-ui-fg-base cursor-pointer whitespace-nowrap underline-offset-4 transition-colors"
                 data-testid="logout-button"
               >
                 Log out
@@ -87,13 +87,25 @@ const AccountNavLink = ({
 }: AccountNavLinkProps) => {
   const { countryCode }: { countryCode: string } = useParams();
 
-  const active = route.split(countryCode)[1] === href;
+  const activeRoute = route.split(countryCode)[1];
+  const active = activeRoute === href || activeRoute?.startsWith(`${href}/`);
+
+  if (active) {
+    return (
+      <span
+        className="text-ui-fg-base block shrink-0 snap-start font-semibold whitespace-nowrap underline underline-offset-4"
+        data-testid={dataTestId}
+        aria-current="page"
+      >
+        {children}
+      </span>
+    );
+  }
+
   return (
     <LocalizedClientLink
       href={href}
-      className={clx('text-ui-fg-subtle hover:text-ui-fg-base', {
-        'text-ui-fg-base font-semibold': active,
-      })}
+      className="text-ui-fg-subtle hover:text-ui-fg-base block shrink-0 snap-start whitespace-nowrap underline-offset-4 transition-colors"
       data-testid={dataTestId}
     >
       {children}
