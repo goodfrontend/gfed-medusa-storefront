@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-gateway
 
+## 1.4.0
+
+### Minor Changes
+
+- 1fc7fb8: Refactor pdp product price to be SSRd
+
 ## 1.3.0
 
 ### Minor Changes
