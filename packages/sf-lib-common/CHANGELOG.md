@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-common
 
+## 3.5.0
+
+### Minor Changes
+
+- 1fc7fb8: Refactor pdp product price to be SSRd
+
 ## 3.4.0
 
 ### Minor Changes

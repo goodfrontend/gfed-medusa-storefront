@@ -1,5 +1,17 @@
 # @gfed-medusa/mf-horz-components
 
+## 1.7.0
+
+### Minor Changes
+
+- 1fc7fb8: Refactor pdp product price to be SSRd
+
+### Patch Changes
+
+- Updated dependencies [1fc7fb8]
+  - @gfed-medusa/sf-lib-products@1.8.0
+  - @gfed-medusa/sf-lib-common@3.5.0
+
 ## 1.6.0
 
 ### Minor Changes
