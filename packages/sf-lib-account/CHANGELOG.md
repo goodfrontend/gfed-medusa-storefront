@@ -1,5 +1,17 @@
 # @gfed-medusa/sf-lib-account
 
+## 2.2.0
+
+### Minor Changes
+
+- 5ba1331: correct active state highlighting in account nav
+- 9c7170b: improve mobile account navigation layout
+
+### Patch Changes
+
+- Updated dependencies [d28c667]
+  - @gfed-medusa/sf-lib-common@3.5.1
+
 ## 2.1.5
 
 ### Patch Changes

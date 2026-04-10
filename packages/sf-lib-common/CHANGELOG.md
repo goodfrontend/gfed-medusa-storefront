@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-common
 
+## 3.5.1
+
+### Patch Changes
+
+- d28c667: update PLP pagination UI and product card styling
+
 ## 3.5.0
 
 ### Minor Changes
