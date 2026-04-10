@@ -71,7 +71,7 @@ const BrowseProductPreview = ({
         />
         <div className="txt-compact-medium mt-4 flex min-w-0 flex-col items-start gap-y-1 text-left">
           <Text
-            className="text-ui-fg-subtle w-full min-w-0 break-words whitespace-normal"
+            className="text-ui-fg-subtle w-full min-w-0 overflow-hidden break-words whitespace-normal [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2]"
             data-testid="product-title"
           >
             {product.title}
