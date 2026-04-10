@@ -10,6 +10,12 @@ import type { BrowseProductHitFragment } from '@/types/graphql';
 
 const LCP_CANDIDATE_COUNT = 4;
 
+const normalizePage = (page?: string | null) => {
+  const parsedPage = Number.parseInt(page ?? '1', 10);
+
+  return Number.isFinite(parsedPage) ? Math.max(parsedPage, 1) : 1;
+};
+
 type PaginatedProductsClientProps = {
   initialProducts: BrowseProductHitFragment[];
   initialTotalItems: number;
@@ -147,6 +153,8 @@ export default function PaginatedProductsClient({
   countryCode,
 }: PaginatedProductsClientProps) {
   const initialLoadedCount = initialProducts.length;
+  const [requestedPageFromUrl, setRequestedPageFromUrl] =
+    useState(initialTargetPage);
   const [products, setProducts] = useState(initialProducts);
   const [totalItems, setTotalItems] = useState(initialTotalItems);
   const [currentPage, setCurrentPage] = useState(
@@ -177,6 +185,24 @@ export default function PaginatedProductsClient({
   useEffect(() => {
     currentPageRef.current = currentPage;
   }, [currentPage]);
+
+  useEffect(() => {
+    const syncRequestedPageFromUrl = () => {
+      setRequestedPageFromUrl(
+        normalizePage(new URL(window.location.href).searchParams.get('page'))
+      );
+    };
+
+    syncRequestedPageFromUrl();
+
+    window.addEventListener('popstate', syncRequestedPageFromUrl);
+    window.addEventListener('pageshow', syncRequestedPageFromUrl);
+
+    return () => {
+      window.removeEventListener('popstate', syncRequestedPageFromUrl);
+      window.removeEventListener('pageshow', syncRequestedPageFromUrl);
+    };
+  }, [initialTargetPage]);
 
   useEffect(() => {
     if (!pendingScrollProductId) {
@@ -273,7 +299,7 @@ export default function PaginatedProductsClient({
   };
 
   useEffect(() => {
-    const targetPage = Math.min(initialTargetPage, totalPages);
+    const targetPage = Math.min(requestedPageFromUrl, totalPages);
 
     if (
       totalPages === 0 ||
@@ -339,8 +365,8 @@ export default function PaginatedProductsClient({
     collectionId,
     countryCode,
     initialLoadedCount,
-    initialTargetPage,
     productsIds,
+    requestedPageFromUrl,
     sortBy,
     totalPages,
   ]);
