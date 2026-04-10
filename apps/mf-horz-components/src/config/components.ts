@@ -14,11 +14,15 @@ import type {
 import { Cart } from '../components/cart';
 import { Footer } from '../components/footer';
 import { Header } from '../components/header';
+import { ProductPrice } from '../components/product-price';
 
 export interface ComponentDefinition {
   name: string;
   component: ComponentType<any>;
-  getData: (ctx?: StorefrontContext) => Promise<any>;
+  getData: (
+    ctx?: StorefrontContext,
+    request?: { storefrontUrl?: string }
+  ) => Promise<any>;
   elementTag: string;
   dataVariable: string;
 }
@@ -126,6 +130,89 @@ export const COMPONENT_REGISTRY: ComponentDefinition[] = [
     },
     elementTag: 'mfe-footer',
     dataVariable: '__FOOTER_DATA__',
+  },
+  {
+    name: 'product-price',
+    component: ProductPrice,
+    // This component expects per-page props via the element `data-props` attribute.
+    // Keep `getData` for parity with other horizontal components.
+    getData: async (ctx?: StorefrontContext, request?: { storefrontUrl?: string }) => {
+      const storefrontUrl = request?.storefrontUrl;
+      if (!storefrontUrl) {
+        return { price: null, showFromPrefix: true };
+      }
+
+      let pathname = '';
+      try {
+        pathname = new URL(storefrontUrl).pathname;
+      } catch {
+        return { price: null, showFromPrefix: true };
+      }
+
+      const segments = pathname.split('/').filter(Boolean);
+      const countryCode = segments[0] && segments[0].length === 2 ? segments[0] : '';
+      const productsIndex = segments.indexOf('products');
+      const handle = productsIndex >= 0 ? segments[productsIndex + 1] ?? '' : '';
+
+      if (!countryCode || !handle) {
+        return { price: null, showFromPrefix: true };
+      }
+
+      const [{ graphqlFetch }, { getRegion }, { GET_PRODUCT_CONTENT_BY_HANDLE_QUERY }, { getPricesForVariant, getProductPrice }] =
+        await Promise.all([
+          import('@gfed-medusa/sf-lib-common/lib/gql/apollo-client'),
+          import('@gfed-medusa/sf-lib-common/lib/data/regions'),
+          import('@gfed-medusa/sf-lib-products/lib/gql/queries/product'),
+          import('@gfed-medusa/sf-lib-common/lib/utils/get-product-price'),
+        ]);
+
+      const region = await getRegion(countryCode, ctx as StorefrontContext);
+      if (!region?.id) {
+        return { price: null, showFromPrefix: true };
+      }
+
+      const data = await graphqlFetch<any, any>({
+        query: GET_PRODUCT_CONTENT_BY_HANDLE_QUERY,
+        variables: {
+          handle,
+          region_id: region.id,
+          limit: 1,
+        },
+      }).catch(() => null);
+
+      const product = data?.products?.products?.[0] ?? null;
+      if (!product) {
+        return { price: null, showFromPrefix: true };
+      }
+
+      const priceInfo = getProductPrice({ product });
+      const cheapestPrice = priceInfo?.cheapestPrice ?? null;
+
+      const pricesByVariantId = (product.variants ?? []).reduce(
+        (acc: Record<string, any>, variant: any) => {
+          if (!variant?.id) {
+            return acc;
+          }
+
+          const price = getPricesForVariant(variant);
+          if (!price) {
+            return acc;
+          }
+
+          acc[variant.id] = price;
+          return acc;
+        },
+        {}
+      );
+
+      return {
+        cheapestPrice,
+        pricesByVariantId,
+        showFromPrefix: true,
+      };
+    },
+    elementTag: 'mfe-product-price',
+    dataVariable: '__PRODUCT_PRICE_DATA__',
   },
 ];
 

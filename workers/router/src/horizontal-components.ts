@@ -46,6 +46,10 @@ function getComponentRequestHeaders(request: Request): Record<string, string> {
     headers['Cookie'] = cookie;
   }
 
+  // Forward the full host URL so horizontal components can derive
+  // request-scoped params (e.g. PDP handle/countryCode) for SSR getData.
+  headers['X-Storefront-Url'] = request.url;
+
   return headers;
 }
 

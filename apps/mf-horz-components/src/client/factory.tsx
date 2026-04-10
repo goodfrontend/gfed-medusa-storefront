@@ -1,4 +1,4 @@
-import { hydrateRoot } from 'react-dom/client';
+import { createRoot, hydrateRoot } from 'react-dom/client';
 
 import {
   COMPONENT_REGISTRY,
@@ -11,12 +11,37 @@ export function createHorizontalComponentElement(
   const { component: Component, dataVariable, elementTag } = definition;
 
   class HorizontalComponentElement extends HTMLElement {
-    connectedCallback() {
-      if (this.getAttribute('mounted') === 'true') return;
-      this.setAttribute('mounted', 'true');
+    static get observedAttributes() {
+      return ['data-props'];
+    }
 
+    private root: ReturnType<typeof createRoot> | null = null;
+    private isHydrated: boolean = false;
+    private mounted: boolean = false;
+
+    private getServerData() {
       // @ts-expect-error -- dynamic data
-      const serverData = window[dataVariable];
+      return window[dataVariable] ?? {};
+    }
+
+    private getOverrides() {
+      const raw = this.getAttribute('data-props');
+      if (!raw) {
+        return {};
+      }
+
+      try {
+        const parsed = JSON.parse(raw);
+        return parsed && typeof parsed === 'object' ? parsed : {};
+      } catch {
+        return {};
+      }
+    }
+
+    connectedCallback() {
+      if (this.mounted) return;
+      this.mounted = true;
+      this.setAttribute('mounted', 'true');
 
       let shadowRoot = this.shadowRoot;
       if (!shadowRoot) shadowRoot = this.attachShadow({ mode: 'open' });
@@ -24,7 +49,48 @@ export function createHorizontalComponentElement(
       const container = shadowRoot.querySelector(`#root-${elementTag}`);
       if (!container) return;
 
-      hydrateRoot(container, <Component {...(serverData ?? {})} />);
+      const serverData = this.getServerData();
+      const overrides = this.getOverrides();
+
+      const props = {
+        ...serverData,
+        ...overrides,
+      };
+
+      this.root = hydrateRoot(container, <Component {...props} />);
+      this.isHydrated = true;
+    }
+
+    attributeChangedCallback(
+      name: string,
+      oldValue: string | null,
+      newValue: string | null
+    ) {
+      if (name !== 'data-props' || oldValue === newValue || !this.mounted) {
+        return;
+      }
+
+      const serverData = this.getServerData();
+      const overrides = this.getOverrides();
+
+      const newProps = {
+        ...serverData,
+        ...overrides,
+      };
+
+      const container = this.shadowRoot?.querySelector(`#root-${elementTag}`);
+      if (!container || !this.root) return;
+
+      if (this.isHydrated) {
+        this.isHydrated = false;
+        container.innerHTML = '';
+      }
+
+      if (!this.root) {
+        this.root = createRoot(container);
+      }
+
+      this.root.render(<Component {...newProps} />);
     }
   }
 
