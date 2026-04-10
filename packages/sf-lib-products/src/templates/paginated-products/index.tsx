@@ -1,15 +1,21 @@
 import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
 
-import { BrowseProductPreview } from '@/components/browse-product-preview';
-import { Pagination } from '@/components/pagination';
 import { SortOptions } from '@/components/refinement-list/sort-products';
 import {
   type BrowseProductsListParams,
   listProductsWithSort,
 } from '@/lib/data/products';
 
+import PaginatedProductsClient from './client';
+
 const PRODUCT_LIMIT = 12;
-const LCP_CANDIDATE_COUNT = 4;
+
+const normalizePage = (page?: number | string) => {
+  const parsedPage =
+    typeof page === 'number' ? page : Number.parseInt(page ?? '1', 10);
+
+  return Number.isFinite(parsedPage) ? Math.max(parsedPage, 1) : 1;
+};
 
 export default async function PaginatedProducts({
   sortBy,
@@ -20,15 +26,16 @@ export default async function PaginatedProducts({
   countryCode,
 }: {
   sortBy?: SortOptions;
-  page: number;
+  page?: number | string;
   collectionId?: string;
   categoryId?: string;
   productsIds?: string[];
   countryCode: string;
 }) {
   const ctx = await resolveNextContext();
+  const requestedPage = normalizePage(page);
   const queryParams: BrowseProductsListParams = {
-    limit: 12,
+    limit: PRODUCT_LIMIT,
   };
 
   if (collectionId) {
@@ -47,7 +54,7 @@ export default async function PaginatedProducts({
     response: { products, count },
   } = await listProductsWithSort(
     {
-      page,
+      page: 1,
       queryParams,
       sortBy,
       countryCode,
@@ -55,35 +62,25 @@ export default async function PaginatedProducts({
     ctx
   );
 
-  const totalPages = Math.ceil(count / PRODUCT_LIMIT);
-
   return (
-    <>
-      <ul
-        className="small:grid-cols-3 medium:grid-cols-4 grid w-full grid-cols-2 gap-x-6 gap-y-8"
-        data-testid="products-list"
-      >
-        {products.map((p, index) => {
-          const isLcpCandidate = index < LCP_CANDIDATE_COUNT;
-
-          return (
-            <li key={p.id}>
-              <BrowseProductPreview
-                product={p}
-                imagePriority={isLcpCandidate}
-                imageFetchPriority={isLcpCandidate ? 'high' : undefined}
-              />
-            </li>
-          );
-        })}
-      </ul>
-      {totalPages > 1 && (
-        <Pagination
-          data-testid="product-pagination"
-          page={page}
-          totalPages={totalPages}
-        />
-      )}
-    </>
+    <PaginatedProductsClient
+      key={[
+        countryCode,
+        sortBy ?? 'created_at',
+        collectionId ?? '',
+        categoryId ?? '',
+        productsIds?.join(',') ?? '',
+        requestedPage,
+      ].join(':')}
+      initialProducts={products}
+      initialTotalItems={count}
+      initialTargetPage={requestedPage}
+      itemsPerPage={PRODUCT_LIMIT}
+      sortBy={sortBy}
+      collectionId={collectionId}
+      categoryId={categoryId}
+      productsIds={productsIds}
+      countryCode={countryCode}
+    />
   );
 }

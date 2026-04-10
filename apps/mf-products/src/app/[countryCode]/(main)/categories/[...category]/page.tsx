@@ -69,7 +69,6 @@ export default async function CategoryPage(props: Props) {
     notFound();
   }
 
-  const pageNumber = page ? parseInt(page) : 1;
   const sort = sortBy || 'created_at';
 
   return (
@@ -95,7 +94,7 @@ export default async function CategoryPage(props: Props) {
         <Suspense fallback={<SkeletonProductGrid />}>
           <PaginatedProducts
             sortBy={sort}
-            page={pageNumber}
+            page={page}
             categoryId={productCategory.id}
             countryCode={params.countryCode}
           />

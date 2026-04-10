@@ -21,7 +21,6 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
   thumbnail,
   images,
   size = 'small',
-  isFeatured,
   imagePriority = false,
   imageFetchPriority,
   className,
@@ -35,8 +34,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
         'rounded-large bg-ui-bg-subtle shadow-elevation-card-rest group-hover:shadow-elevation-card-hover relative w-full overflow-hidden p-4 transition-shadow duration-150 ease-in-out',
         className,
         {
-          'aspect-[11/14]': isFeatured,
-          'aspect-[9/16]': !isFeatured && size !== 'square',
+          'aspect-[29/34]': size !== 'square',
           'aspect-[1/1]': size === 'square',
           'w-[180px]': size === 'small',
           'w-[290px]': size === 'medium',

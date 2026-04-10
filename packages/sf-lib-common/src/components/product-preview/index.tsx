@@ -40,14 +40,14 @@ function ProductPreview({
           imagePriority={imagePriority}
           imageFetchPriority={imageFetchPriority}
         />
-        <div className="txt-compact-medium mt-4 flex items-start justify-between gap-x-4">
+        <div className="txt-compact-medium mt-4 flex min-w-0 flex-col items-start gap-y-1 text-left">
           <Text
-            className="text-ui-fg-subtle flex-1"
+            className="text-ui-fg-subtle w-full min-w-0 overflow-hidden break-words whitespace-normal [display:-webkit-box] [-webkit-box-orient:vertical] [-webkit-line-clamp:2]"
             data-testid="product-title"
           >
             {product.title}
           </Text>
-          <div className="flex shrink-0 items-start gap-x-2">
+          <div className="flex w-full min-w-0 flex-wrap items-baseline gap-x-2 gap-y-1 text-left">
             {cheapestPrice && <PreviewPrice price={cheapestPrice} />}
           </div>
         </div>
