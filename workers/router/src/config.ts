@@ -25,6 +25,12 @@ export const HORIZONTAL_COMPONENTS: HorizontalComponentConfig[] = [
     cacheable: false,
   },
   {
+    name: 'product-price',
+    elementTag: 'mfe-product-price',
+    dataVariable: '__PRODUCT_PRICE_DATA__',
+    cacheable: false,
+  },
+  {
     name: 'footer',
     elementTag: 'mfe-footer',
     dataVariable: '__FOOTER_DATA__',

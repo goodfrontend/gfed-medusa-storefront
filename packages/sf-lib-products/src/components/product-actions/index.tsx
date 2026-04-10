@@ -14,13 +14,12 @@ import { Button } from '@medusajs/ui';
 
 import OptionSelect from '@/components/product-actions/option-select';
 import { addToCart } from '@/lib/data/cart';
-import { useProductPrice } from '@/lib/hooks/use-product-price';
 import { useIntersection } from '@/lib/hooks/use-intersection';
+import { useProductPrice } from '@/lib/hooks/use-product-price';
 import { mergeProductPricing } from '@/lib/utils/merge-product-pricing';
 import { ProductActionsProduct } from '@/types';
 import { ProductVariant } from '@/types/graphql';
 
-import ProductPrice from '../product-price';
 import MobileActions from './mobile-actions';
 
 export type ProductActionsProps = {
@@ -201,7 +200,13 @@ export default function ProductActions({
           )}
         </div>
 
-        <ProductPrice product={pricedProduct} variant={selectedVariant} />
+        {/* @ts-expect-error -- Web Component */}
+        <mfe-product-price
+          data-props={JSON.stringify({
+            selectedVariantId: selectedVariant?.id ?? '',
+          })}
+          suppressHydrationWarning
+        />
 
         {status === AddToCartStatus.ERROR && (
           <ErrorMessage error="Failed adding product to cart. Please try again." />

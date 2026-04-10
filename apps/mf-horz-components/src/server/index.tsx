@@ -36,7 +36,9 @@ const loadComponentData = async (
   }
 
   const ctx = resolveContext(c);
-  const data = await component.getData(ctx);
+  const data = await component.getData(ctx, {
+    storefrontUrl: c.req.header('x-storefront-url') ?? undefined,
+  });
 
   return { component, data };
 };

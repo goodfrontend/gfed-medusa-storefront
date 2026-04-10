@@ -1,9 +1,8 @@
-import React, { Fragment, useMemo } from 'react';
+import React, { Fragment } from 'react';
 
 import { isEqual } from 'lodash';
 
 import useToggleState from '@gfed-medusa/sf-lib-common/lib/hooks/use-toggle-state';
-import { getProductPrice } from '@gfed-medusa/sf-lib-common/lib/utils/get-product-price';
 import { ChevronDown } from '@gfed-medusa/sf-lib-ui/icons/chevron-down';
 import { X } from '@gfed-medusa/sf-lib-ui/icons/x';
 import { Dialog, Transition } from '@headlessui/react';
@@ -54,20 +53,6 @@ const MobileActions: React.FC<MobileActionsProps> = ({
 }) => {
   const { state, open, close } = useToggleState();
 
-  const price = getProductPrice({
-    product,
-    variantId: variant?.id,
-  });
-
-  const selectedPrice = useMemo(() => {
-    if (!price) {
-      return null;
-    }
-    const { variantPrice, cheapestPrice } = price;
-
-    return (variant ? variantPrice : cheapestPrice) || null;
-  }, [price, variant]);
-
   const isSimple = isSimpleProduct(product);
   const handleUpdateOption = (optionId: string, value: string) => {
     updateOptions(optionId, value);
@@ -111,28 +96,13 @@ const MobileActions: React.FC<MobileActionsProps> = ({
               <span className="flex-1 text-left" data-testid="mobile-title">
                 {product.title}
               </span>
-              {selectedPrice ? (
-                <div className="text-ui-fg-base flex shrink-0 items-start gap-x-2 self-start">
-                  {selectedPrice.price_type === 'sale' && (
-                    <p>
-                      <span className="text-small-regular line-through">
-                        {selectedPrice.original_price}
-                      </span>
-                    </p>
-                  )}
-                  <span
-                    className={clx({
-                      'text-ui-fg-interactive':
-                        selectedPrice.price_type === 'sale',
-                    })}
-                  >
-                    {!variant && 'From '}
-                    {selectedPrice.calculated_price}
-                  </span>
-                </div>
-              ) : (
-                <div className="h-5 w-24 shrink-0 self-start animate-pulse bg-gray-100" />
-              )}
+              {/* @ts-expect-error -- Web Component */}
+              <mfe-product-price
+                data-props={JSON.stringify({
+                  selectedVariantId: variant?.id ?? '',
+                })}
+                suppressHydrationWarning
+              />
             </div>
             <div
               className={clx('grid w-full grid-cols-2 gap-x-4', {
