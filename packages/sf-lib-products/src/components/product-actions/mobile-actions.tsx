@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 
 import { isEqual } from 'lodash';
 
+import { WebComponent } from '@gfed-medusa/sf-lib-common/components/web-component';
 import useToggleState from '@gfed-medusa/sf-lib-common/lib/hooks/use-toggle-state';
 import { ChevronDown } from '@gfed-medusa/sf-lib-ui/icons/chevron-down';
 import { X } from '@gfed-medusa/sf-lib-ui/icons/x';
@@ -96,12 +97,11 @@ const MobileActions: React.FC<MobileActionsProps> = ({
               <span className="flex-1 text-left" data-testid="mobile-title">
                 {product.title}
               </span>
-              {/* @ts-expect-error -- Web Component */}
-              <mfe-product-price
+              <WebComponent
+                tag="mfe-product-price"
                 data-props={JSON.stringify({
                   selectedVariantId: variant?.id ?? '',
                 })}
-                suppressHydrationWarning
               />
             </div>
             <div

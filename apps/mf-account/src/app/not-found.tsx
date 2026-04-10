@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 
 import { InteractiveLink } from '@gfed-medusa/sf-lib-common/components/interactive-link';
+import { WebComponent } from '@gfed-medusa/sf-lib-common/components/web-component';
 import { Text } from '@medusajs/ui';
 
 export const metadata: Metadata = {
@@ -15,8 +16,7 @@ export const metadata: Metadata = {
 export default function NotFound() {
   return (
     <>
-      {/* @ts-expect-error -- Web Component */}
-      <mfe-header suppressHydrationWarning></mfe-header>
+      <WebComponent tag="mfe-header" />
       <div className="flex min-h-[calc(100vh-64px)] flex-col items-center justify-center gap-6 px-4 py-16">
         <div className="flex flex-col items-center gap-4 text-center">
           <p className="text-ui-fg-base text-6xl font-semibold">404</p>
@@ -30,8 +30,7 @@ export default function NotFound() {
           Go to Homepage
         </InteractiveLink>
       </div>
-      {/* @ts-expect-error -- Web Component */}
-      <mfe-footer suppressHydrationWarning></mfe-footer>
+      <WebComponent tag="mfe-footer" />
     </>
   );
 }

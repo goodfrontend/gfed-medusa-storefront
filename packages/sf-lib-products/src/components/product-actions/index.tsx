@@ -7,6 +7,7 @@ import { useParams } from 'next/navigation';
 import { isEqual } from 'lodash';
 
 import { ErrorMessage } from '@gfed-medusa/sf-lib-common/components/error-message';
+import { WebComponent } from '@gfed-medusa/sf-lib-common/components/web-component';
 import { mutateCart } from '@gfed-medusa/sf-lib-common/lib/hooks/use-cart';
 import { Divider } from '@gfed-medusa/sf-lib-ui/components/divider';
 import { HttpTypes } from '@medusajs/types';
@@ -200,12 +201,11 @@ export default function ProductActions({
           )}
         </div>
 
-        {/* @ts-expect-error -- Web Component */}
-        <mfe-product-price
+        <WebComponent
+          tag="mfe-product-price"
           data-props={JSON.stringify({
             selectedVariantId: selectedVariant?.id ?? '',
           })}
-          suppressHydrationWarning
         />
 
         {status === AddToCartStatus.ERROR && (
