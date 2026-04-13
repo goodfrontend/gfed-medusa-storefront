@@ -1,5 +1,14 @@
 # @gfed-medusa/mf-products
 
+## 1.7.1
+
+### Patch Changes
+
+- d28c667: update PLP pagination UI and product card styling
+- Updated dependencies [d28c667]
+  - @gfed-medusa/sf-lib-products@1.8.1
+  - @gfed-medusa/sf-lib-common@3.5.1
+
 ## 1.7.0
 
 ### Minor Changes

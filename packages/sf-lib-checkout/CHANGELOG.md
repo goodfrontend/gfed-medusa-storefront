@@ -1,5 +1,13 @@
 # @gfed-medusa/sf-lib-checkout
 
+## 3.3.1
+
+### Patch Changes
+
+- d1bad1d: Adjust order confirmation skeleton loading
+- Updated dependencies [d28c667]
+  - @gfed-medusa/sf-lib-common@3.5.1
+
 ## 3.3.0
 
 ### Minor Changes
