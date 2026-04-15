@@ -3,11 +3,15 @@
 import { useParams, usePathname } from 'next/navigation';
 
 import { LocalizedClientLink } from '@gfed-medusa/sf-lib-common/components/localized-client-link';
+import { Modal } from '@gfed-medusa/sf-lib-common/components/modal';
+import useToggleState from '@gfed-medusa/sf-lib-common/lib/hooks/use-toggle-state';
+import { Button, Heading } from '@medusajs/ui';
 
 const AccountNav = ({ bffBaseUrl }: { bffBaseUrl: string }) => {
   const route = usePathname();
+  const { state, open, close } = useToggleState(false);
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     window.location.href = `${bffBaseUrl}/auth/logout`;
   };
 
@@ -58,7 +62,7 @@ const AccountNav = ({ bffBaseUrl }: { bffBaseUrl: string }) => {
             <li className="small:shrink shrink-0 snap-start">
               <button
                 type="button"
-                onClick={handleLogout}
+                onClick={open}
                 className="text-ui-fg-subtle hover:text-ui-fg-base cursor-pointer whitespace-nowrap underline-offset-4 transition-colors"
                 data-testid="logout-button"
               >
@@ -68,6 +72,39 @@ const AccountNav = ({ bffBaseUrl }: { bffBaseUrl: string }) => {
           </ul>
         </div>
       </div>
+
+      <Modal
+        isOpen={state}
+        close={close}
+        size="small"
+        data-testid="logout-confirmation-modal"
+        aria-label="Logout confirmation"
+      >
+        <Modal.Title>
+          <Heading className="mb-2">Log out</Heading>
+        </Modal.Title>
+        <Modal.Description>Are you sure you want to log out?</Modal.Description>
+        <Modal.Footer>
+          <div className="mt-6 flex gap-3">
+            <Button
+              variant="secondary"
+              onClick={close}
+              className="h-10 cursor-pointer"
+              data-testid="cancel-logout-button"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="danger"
+              onClick={handleLogout}
+              className="h-10 cursor-pointer"
+              data-testid="confirm-logout-button"
+            >
+              Log out
+            </Button>
+          </div>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };
