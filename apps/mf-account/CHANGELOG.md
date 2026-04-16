@@ -1,5 +1,22 @@
 # @gfed-medusa/mf-account
 
+## 1.10.0
+
+### Minor Changes
+
+- d06d2c8: Implement confirmation dialog modal for logout in account
+
+### Patch Changes
+
+- Updated dependencies [d1bad1d]
+- Updated dependencies [d06d2c8]
+- Updated dependencies [d28c667]
+- Updated dependencies [5ba1331]
+- Updated dependencies [9c7170b]
+  - @gfed-medusa/sf-lib-checkout@3.3.1
+  - @gfed-medusa/sf-lib-account@2.2.0
+  - @gfed-medusa/sf-lib-common@3.5.1
+
 ## 1.9.0
 
 ### Minor Changes
