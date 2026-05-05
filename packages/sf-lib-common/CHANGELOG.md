@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-common
 
+## 3.6.0
+
+### Minor Changes
+
+- 7363f3f: Content personalization implementation
+
 ## 3.5.1
 
 ### Patch Changes
