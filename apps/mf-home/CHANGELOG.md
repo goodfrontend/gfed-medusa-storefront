@@ -1,5 +1,16 @@
 # @gfed-medusa/mf-home
 
+## 1.8.0
+
+### Minor Changes
+
+- 7363f3f: Content personalization implementation
+
+### Patch Changes
+
+- Updated dependencies [7363f3f]
+  - @gfed-medusa/sf-lib-common@3.6.0
+
 ## 1.7.0
 
 ### Minor Changes
