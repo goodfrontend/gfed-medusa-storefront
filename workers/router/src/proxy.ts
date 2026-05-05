@@ -55,7 +55,8 @@ export async function proxyRequest(
     const transformedResponse = await injectHorizontalComponents(
       cachedResponse,
       componentResult.components ?? [],
-      config
+      config,
+      request
     );
 
     const newHeaders = new Headers(transformedResponse.headers);
@@ -118,7 +119,8 @@ export async function proxyRequest(
     const transformedResponse = await injectHorizontalComponents(
       response,
       componentResult.components ?? [],
-      config
+      config,
+      request
     );
 
     const newHeaders = new Headers(transformedResponse.headers);

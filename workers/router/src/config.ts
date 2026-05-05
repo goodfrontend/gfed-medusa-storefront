@@ -36,6 +36,13 @@ export const HORIZONTAL_COMPONENTS: HorizontalComponentConfig[] = [
     dataVariable: '__FOOTER_DATA__',
     cacheable: true,
   },
+  {
+    name: 'personalized-banner',
+    elementTag: 'mfe-personalized-banner',
+    dataVariable: '__PERSONALIZED_BANNER_DATA__',
+    cacheable: false,
+    injectionMode: 'replace',
+  },
 ];
 
 export const CACHE_TTL = {

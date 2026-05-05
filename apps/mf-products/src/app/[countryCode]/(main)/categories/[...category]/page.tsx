@@ -94,7 +94,7 @@ export default async function CategoryPage(props: Props) {
         <Suspense fallback={<SkeletonProductGrid />}>
           <PaginatedProducts
             sortBy={sort}
-            page={page}
+            page={Number(page)}
             categoryId={productCategory.id}
             countryCode={params.countryCode}
           />

@@ -215,12 +215,73 @@ export async function fetchAllComponentResources(
   return results;
 }
 
+const CATEGORY_SEGMENT_MAP: Record<string, string> = {
+  mens: 'mens',
+  men: 'mens',
+  womens: 'womens',
+  women: 'womens',
+};
+
+function getSegmentCookieScript(request: Request): string {
+  const cookieHeader = request.headers.get('Cookie') ?? '';
+
+  const url = new URL(request.url);
+  const pathSegments = url.pathname.split('/').filter(Boolean);
+  const catIdx = pathSegments.indexOf('categories');
+
+  let detectedSegment: string | null = null;
+
+  if (catIdx !== -1 && catIdx + 1 < pathSegments.length) {
+    const categoryHandle = pathSegments[catIdx + 1];
+    detectedSegment =
+      CATEGORY_SEGMENT_MAP[categoryHandle.toLowerCase()] ?? null;
+  }
+
+  if (!detectedSegment) {
+    return '';
+  }
+
+  if (cookieHeader.includes('_jg_segment=')) {
+    const match = cookieHeader.match(/_jg_segment=([^;]+)/);
+    if (match) {
+      try {
+        const existing = JSON.parse(decodeURIComponent(match[1]));
+        if (existing.interest === detectedSegment) {
+          return '';
+        }
+      } catch {}
+    }
+  }
+
+  const hostname = url.hostname;
+  const isProd =
+    hostname === 'justgood.win' || hostname.endsWith('.justgood.win');
+
+  const cookieValue = encodeURIComponent(
+    JSON.stringify({ interest: detectedSegment })
+  );
+  const maxAge = 60 * 60 * 24 * 7;
+
+  const cookieAttrs = isProd
+    ? `path=/;max-age=${maxAge};SameSite=none;secure;domain=.justgood.win`
+    : `path=/;max-age=${maxAge};SameSite=Lax`;
+
+  return `<script>
+(function() {
+  document.cookie = '_jg_segment=${cookieValue};${cookieAttrs}';
+})();
+</script>`;
+}
+
 export async function injectHorizontalComponents(
   hostResponse: Response,
   components: ComponentResources[],
-  config: AppConfig
+  config: AppConfig,
+  request?: Request
 ): Promise<Response> {
-  if (components.length === 0) {
+  const segmentScript = request ? getSegmentCookieScript(request) : '';
+
+  if (components.length === 0 && !segmentScript) {
     return hostResponse;
   }
 
@@ -261,7 +322,9 @@ export async function injectHorizontalComponents(
 
   let rewriter = new HTMLRewriter().on('head', {
     element(el) {
-      el.prepend(`${preloadTags}${bundleTag}${dataScripts}`, { html: true });
+      el.prepend(`${segmentScript}${preloadTags}${bundleTag}${dataScripts}`, {
+        html: true,
+      });
     },
   });
 
