@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 
 export const GET_HOME_BANNER_QUERY = gql`
-  query GetHomeBanner {
-    homeBanner {
+  query GetHomeBanner($audience: String, $segment: String) {
+    homeBanner(audience: $audience, segment: $segment) {
       _id
       _type
       eyebrow

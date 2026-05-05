@@ -14,7 +14,27 @@ import type {
 import { Cart } from '../components/cart';
 import { Footer } from '../components/footer';
 import { Header } from '../components/header';
+import { PersonalizedBanner } from '../components/personalized-banner';
 import { ProductPrice } from '../components/product-price';
+
+const AUDIENCE_ID = 'browsing-interest';
+
+function getSegmentFromCookie(
+  cookieHeader?: string
+): { audience: string; segment: string } | null {
+  if (!cookieHeader) return null;
+  const match = cookieHeader.match(/_jg_segment=([^;]+)/);
+  if (!match) return null;
+  try {
+    const parsed = JSON.parse(decodeURIComponent(match[1]));
+    if (parsed.interest) {
+      return { audience: AUDIENCE_ID, segment: parsed.interest };
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
 
 export interface ComponentDefinition {
   name: string;
@@ -136,7 +156,10 @@ export const COMPONENT_REGISTRY: ComponentDefinition[] = [
     component: ProductPrice,
     // This component expects per-page props via the element `data-props` attribute.
     // Keep `getData` for parity with other horizontal components.
-    getData: async (ctx?: StorefrontContext, request?: { storefrontUrl?: string }) => {
+    getData: async (
+      ctx?: StorefrontContext,
+      request?: { storefrontUrl?: string }
+    ) => {
       const storefrontUrl = request?.storefrontUrl;
       if (!storefrontUrl) {
         return { price: null, showFromPrefix: true };
@@ -150,21 +173,27 @@ export const COMPONENT_REGISTRY: ComponentDefinition[] = [
       }
 
       const segments = pathname.split('/').filter(Boolean);
-      const countryCode = segments[0] && segments[0].length === 2 ? segments[0] : '';
+      const countryCode =
+        segments[0] && segments[0].length === 2 ? segments[0] : '';
       const productsIndex = segments.indexOf('products');
-      const handle = productsIndex >= 0 ? segments[productsIndex + 1] ?? '' : '';
+      const handle =
+        productsIndex >= 0 ? (segments[productsIndex + 1] ?? '') : '';
 
       if (!countryCode || !handle) {
         return { price: null, showFromPrefix: true };
       }
 
-      const [{ graphqlFetch }, { getRegion }, { GET_PRODUCT_CONTENT_BY_HANDLE_QUERY }, { getPricesForVariant, getProductPrice }] =
-        await Promise.all([
-          import('@gfed-medusa/sf-lib-common/lib/gql/apollo-client'),
-          import('@gfed-medusa/sf-lib-common/lib/data/regions'),
-          import('@gfed-medusa/sf-lib-products/lib/gql/queries/product'),
-          import('@gfed-medusa/sf-lib-common/lib/utils/get-product-price'),
-        ]);
+      const [
+        { graphqlFetch },
+        { getRegion },
+        { GET_PRODUCT_CONTENT_BY_HANDLE_QUERY },
+        { getPricesForVariant, getProductPrice },
+      ] = await Promise.all([
+        import('@gfed-medusa/sf-lib-common/lib/gql/apollo-client'),
+        import('@gfed-medusa/sf-lib-common/lib/data/regions'),
+        import('@gfed-medusa/sf-lib-products/lib/gql/queries/product'),
+        import('@gfed-medusa/sf-lib-common/lib/utils/get-product-price'),
+      ]);
 
       const region = await getRegion(countryCode, ctx as StorefrontContext);
       if (!region?.id) {
@@ -213,6 +242,26 @@ export const COMPONENT_REGISTRY: ComponentDefinition[] = [
     },
     elementTag: 'mfe-product-price',
     dataVariable: '__PRODUCT_PRICE_DATA__',
+  },
+  {
+    name: 'personalized-banner',
+    component: PersonalizedBanner,
+    getData: async (ctx?: StorefrontContext) => {
+      const segment = getSegmentFromCookie(ctx?.cookieHeader);
+
+      const { getHomeBannerContent } =
+        await import('@gfed-medusa/sf-lib-common/lib/data/home-banner');
+
+      const bannerContent = await getHomeBannerContent(
+        segment
+          ? { audience: segment.audience, segment: segment.segment }
+          : undefined
+      );
+
+      return { bannerContent };
+    },
+    elementTag: 'mfe-personalized-banner',
+    dataVariable: '__PERSONALIZED_BANNER_DATA__',
   },
 ];
 

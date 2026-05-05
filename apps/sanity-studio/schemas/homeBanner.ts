@@ -21,9 +21,7 @@ const buildBannerLinkFields = () => [
       Rule.required().custom((value) => {
         if (!value) return true;
 
-        return /^(\/|https?:\/\/)/.test(value)
-          ? true
-          : linkValidationMessage;
+        return /^(\/|https?:\/\/)/.test(value) ? true : linkValidationMessage;
       }),
   }),
   defineField({
@@ -50,19 +48,19 @@ export default defineType({
     defineField({
       name: 'eyebrow',
       title: 'Eyebrow',
-      type: 'string',
+      type: 'audienceString',
       description: 'Small label above the title.',
     }),
     defineField({
       name: 'title',
       title: 'Title',
-      type: 'string',
+      type: 'audienceString',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'description',
       title: 'Description',
-      type: 'text',
+      type: 'audienceText',
       rows: 3,
     }),
     defineField({
@@ -88,7 +86,8 @@ export default defineType({
     defineField({
       name: 'secondaryBanners',
       title: 'Secondary banners',
-      description: 'Two smaller banners displayed below the main banner on desktop.',
+      description:
+        'Two smaller banners displayed below the main banner on desktop.',
       type: 'array',
       validation: (Rule) => Rule.max(2),
       of: [
@@ -100,13 +99,13 @@ export default defineType({
             defineField({
               name: 'title',
               title: 'Title',
-              type: 'string',
+              type: 'audienceString',
               validation: (Rule) => Rule.required(),
             }),
             defineField({
               name: 'description',
               title: 'Description',
-              type: 'text',
+              type: 'audienceText',
               rows: 3,
             }),
             buildShowPoweredByField(),
@@ -120,27 +119,18 @@ export default defineType({
             defineField({
               name: 'image',
               title: 'Background image',
-              type: 'image',
+              type: 'audienceImage',
               description: bannerImageGuidance,
               options: {
                 hotspot: true,
               },
-              fields: [
-                defineField({
-                  name: 'alt',
-                  title: 'Alt text',
-                  type: 'string',
-                  description:
-                    'Optional for decorative backgrounds, but useful if the image adds meaning.',
-                }),
-              ],
             }),
           ],
           preview: {
             select: {
-              title: 'title',
+              title: 'title.default',
               subtitle: 'button.label',
-              media: 'image',
+              media: 'image.default',
             },
           },
         }),
@@ -149,28 +139,19 @@ export default defineType({
     defineField({
       name: 'image',
       title: 'Image',
-      type: 'image',
-      description:
-        `Upload the sample at apps/mf-home/public/images/home-banner-sample.svg or replace it with your own artwork. ${bannerImageGuidance}`,
+      type: 'audienceImage',
+      description: `Upload the sample at apps/mf-home/public/images/home-banner-sample.svg or replace it with your own artwork. ${bannerImageGuidance}`,
       options: {
         hotspot: true,
       },
-      fields: [
-        defineField({
-          name: 'alt',
-          title: 'Alt text',
-          type: 'string',
-          validation: (Rule) => Rule.required(),
-        }),
-      ],
     }),
     buildShowPoweredByField(),
   ],
   preview: {
     select: {
-      title: 'title',
+      title: 'title.default',
       showPoweredBy: 'showPoweredBy',
-      media: 'image',
+      media: 'image.default',
     },
     prepare({
       title,
