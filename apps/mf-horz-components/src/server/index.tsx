@@ -53,6 +53,16 @@ app.get('/api/horz/context', async (c) => {
   });
 });
 
+app.get('/api/horz/contextual-banners', async (c) => {
+  const { getAllContextualBanners } = await import(
+    '@gfed-medusa/sf-lib-common/lib/data/contextual-banner'
+  );
+
+  const banners = await getAllContextualBanners();
+
+  return c.json(banners);
+});
+
 app.get('/api/horz/cart', async (c) => {
   const cartId = getCookie(c, '_medusa_cart_id');
 
