@@ -40,6 +40,22 @@ const structure = (S: StructureBuilder) =>
                 ),
             ])
         ),
+      S.listItem()
+        .title('Personalization')
+        .icon(CogIcon)
+        .child(
+          S.list()
+            .title('Personalization')
+            .items([
+              S.listItem()
+                .title('Contextual Banners')
+                .child(
+                  S.documentList()
+                    .title('Contextual Banners')
+                    .filter('_type == "contextualBanner"')
+                ),
+            ])
+        ),
     ]);
 
 export default structure;

@@ -222,6 +222,8 @@ const CATEGORY_SEGMENT_MAP: Record<string, string> = {
   women: 'womens',
 };
 
+const HISTORY_MAX_LENGTH = 20;
+
 function getSegmentCookieScript(request: Request): string {
   const cookieHeader = request.headers.get('Cookie') ?? '';
 
@@ -241,25 +243,39 @@ function getSegmentCookieScript(request: Request): string {
     return '';
   }
 
+  const hostname = url.hostname;
+  const isProd =
+    hostname === 'justgood.win' || hostname.endsWith('.justgood.win');
+
+  let cookieData: Record<string, unknown> = {
+    interest: detectedSegment,
+    history: [detectedSegment],
+  };
+
   if (cookieHeader.includes('_jg_segment=')) {
     const match = cookieHeader.match(/_jg_segment=([^;]+)/);
     if (match) {
       try {
         const existing = JSON.parse(decodeURIComponent(match[1]));
-        if (existing.interest === detectedSegment) {
-          return '';
-        }
-      } catch {}
+        const existingHistory: string[] = Array.isArray(existing.history)
+          ? existing.history
+          : [];
+        const updatedHistory = [...existingHistory, detectedSegment].slice(
+          -HISTORY_MAX_LENGTH
+        );
+
+        cookieData = {
+          ...existing,
+          interest: detectedSegment,
+          history: updatedHistory,
+        };
+      } catch {
+        cookieData = { interest: detectedSegment, history: [detectedSegment] };
+      }
     }
   }
 
-  const hostname = url.hostname;
-  const isProd =
-    hostname === 'justgood.win' || hostname.endsWith('.justgood.win');
-
-  const cookieValue = encodeURIComponent(
-    JSON.stringify({ interest: detectedSegment })
-  );
+  const cookieValue = encodeURIComponent(JSON.stringify(cookieData));
   const maxAge = 60 * 60 * 24 * 7;
 
   const cookieAttrs = isProd
@@ -281,7 +297,7 @@ export async function injectHorizontalComponents(
 ): Promise<Response> {
   const segmentScript = request ? getSegmentCookieScript(request) : '';
 
-  if (components.length === 0 && !segmentScript) {
+  if (components.length === 0 && !segmentScript && !request) {
     return hostResponse;
   }
 
@@ -322,9 +338,10 @@ export async function injectHorizontalComponents(
 
   let rewriter = new HTMLRewriter().on('head', {
     element(el) {
-      el.prepend(`${segmentScript}${preloadTags}${bundleTag}${dataScripts}`, {
-        html: true,
-      });
+      el.prepend(
+        `${segmentScript}${preloadTags}${bundleTag}${dataScripts}`,
+        { html: true }
+      );
     },
   });
 

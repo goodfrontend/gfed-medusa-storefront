@@ -43,6 +43,13 @@ export const HORIZONTAL_COMPONENTS: HorizontalComponentConfig[] = [
     cacheable: false,
     injectionMode: 'replace',
   },
+  {
+    name: 'contextual-banner',
+    elementTag: 'mfe-contextual-banner',
+    dataVariable: '__CONTEXTUAL_BANNER_DATA__',
+    cacheable: false,
+    injectionMode: 'replace',
+  },
 ];
 
 export const CACHE_TTL = {

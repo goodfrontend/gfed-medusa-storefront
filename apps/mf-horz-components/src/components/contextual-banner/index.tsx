@@ -23,17 +23,51 @@ function getDismissedTrigger(): string | null {
 
     if (!dismissed || typeof dismissed !== 'object') return null;
 
-    const { trigger, timestamp } = dismissed as Record<string, unknown>;
-    if (typeof trigger !== 'string' || typeof timestamp !== 'number') return null;
-
     const dismissCooldownMs = PERSONALIZATION_CONFIG.dismissCooldownMs;
-    if (Date.now() - timestamp < dismissCooldownMs) {
-      return trigger;
+    const dismissedMap = dismissed as Record<string, number>;
+
+    for (const [trigger, timestamp] of Object.entries(dismissedMap)) {
+      if (typeof timestamp !== 'number') continue;
+      if (Date.now() - timestamp < dismissCooldownMs) {
+        return trigger;
+      }
     }
   } catch {
     // Ignore parse errors
   }
   return null;
+}
+
+function cleanupExpiredDismissals() {
+  try {
+    const match = document.cookie.match(/_jg_segment=([^;]+)/);
+    if (!match) return;
+
+    const data = JSON.parse(decodeURIComponent(match[1]));
+    const dismissed = data?.signals?.dismissed;
+
+    if (!dismissed || typeof dismissed !== 'object') return;
+
+    const dismissCooldownMs = PERSONALIZATION_CONFIG.dismissCooldownMs;
+    const dismissedMap = dismissed as Record<string, number>;
+    const now = Date.now();
+    let hasChanges = false;
+
+    for (const [trigger, timestamp] of Object.entries(dismissedMap)) {
+      if (typeof timestamp !== 'number') continue;
+      if (now - timestamp >= dismissCooldownMs) {
+        delete dismissedMap[trigger];
+        hasChanges = true;
+      }
+    }
+
+    if (hasChanges) {
+      const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString();
+      document.cookie = `_jg_segment=${encodeURIComponent(JSON.stringify(data))};expires=${expires};path=/;SameSite=Lax`;
+    }
+  } catch {
+    // Ignore errors
+  }
 }
 
 function dismissBanner(trigger: string) {
@@ -131,6 +165,7 @@ export function ContextualBanner() {
   }, []);
 
   useEffect(() => {
+    cleanupExpiredDismissals();
     const dismissedTrigger = getDismissedTrigger();
 
     const getSignalsAndFetch = async () => {

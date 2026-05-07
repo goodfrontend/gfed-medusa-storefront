@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 
 import { Region } from '@gfed-medusa/sf-lib-common/types/graphql';
 
+import BehaviorTracker from '@/components/behavior-tracker';
 import ImageGallery from '@/components/image-gallery';
 import ProductActions from '@/components/product-actions';
 import ProductOnboardingCta from '@/components/product-onboarding-cta';
@@ -32,6 +33,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
 
   return (
     <>
+      <BehaviorTracker product={product} />
       {breadcrumbs && (
         <div className="content-container my-8">{breadcrumbs}</div>
       )}
