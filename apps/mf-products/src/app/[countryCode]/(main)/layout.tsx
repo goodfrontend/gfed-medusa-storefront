@@ -7,6 +7,7 @@ export default async function MainLayout(props: { children: React.ReactNode }) {
       <WebComponent tag="mfe-header">
         <WebComponent tag="mfe-cart" slot="cart" />
       </WebComponent>
+      <WebComponent tag="mfe-contextual-banner" />
       <main className="flex-1">{props.children}</main>
       <WebComponent tag="mfe-footer" />
     </div>

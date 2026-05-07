@@ -12,29 +12,16 @@ import type {
 } from '@gfed-medusa/sf-lib-common/types/graphql';
 
 import { Cart } from '../components/cart';
+import { ContextualBanner } from '../components/contextual-banner';
 import { Footer } from '../components/footer';
 import { Header } from '../components/header';
 import { PersonalizedBanner } from '../components/personalized-banner';
 import { ProductPrice } from '../components/product-price';
-
-const AUDIENCE_ID = 'browsing-interest';
-
-function getSegmentFromCookie(
-  cookieHeader?: string
-): { audience: string; segment: string } | null {
-  if (!cookieHeader) return null;
-  const match = cookieHeader.match(/_jg_segment=([^;]+)/);
-  if (!match) return null;
-  try {
-    const parsed = JSON.parse(decodeURIComponent(match[1]));
-    if (parsed.interest) {
-      return { audience: AUDIENCE_ID, segment: parsed.interest };
-    }
-    return null;
-  } catch {
-    return null;
-  }
-}
+import {
+  computePrimaryInterest,
+  getAudienceId,
+  getSegmentFromCookie,
+} from './utils/segment-utils';
 
 export interface ComponentDefinition {
   name: string;
@@ -154,8 +141,6 @@ export const COMPONENT_REGISTRY: ComponentDefinition[] = [
   {
     name: 'product-price',
     component: ProductPrice,
-    // This component expects per-page props via the element `data-props` attribute.
-    // Keep `getData` for parity with other horizontal components.
     getData: async (
       ctx?: StorefrontContext,
       request?: { storefrontUrl?: string }
@@ -244,21 +229,34 @@ export const COMPONENT_REGISTRY: ComponentDefinition[] = [
     dataVariable: '__PRODUCT_PRICE_DATA__',
   },
   {
+    name: 'contextual-banner',
+    component: ContextualBanner,
+    getData: async () => {
+      return {};
+    },
+    elementTag: 'mfe-contextual-banner',
+    dataVariable: '__CONTEXTUAL_BANNER_DATA__',
+  },
+  {
     name: 'personalized-banner',
     component: PersonalizedBanner,
     getData: async (ctx?: StorefrontContext) => {
-      const segment = getSegmentFromCookie(ctx?.cookieHeader);
+      const rawSegment = getSegmentFromCookie(ctx?.cookieHeader);
 
       const { getHomeBannerContent } =
         await import('@gfed-medusa/sf-lib-common/lib/data/home-banner');
 
+      const { interest, confidence } = rawSegment
+        ? computePrimaryInterest(rawSegment.history ?? [rawSegment.interest ?? ''])
+        : { interest: '', confidence: 0 };
+
       const bannerContent = await getHomeBannerContent(
-        segment
-          ? { audience: segment.audience, segment: segment.segment }
+        interest
+          ? { audience: getAudienceId(), segment: interest }
           : undefined
       );
 
-      return { bannerContent };
+      return { bannerContent, confidence };
     },
     elementTag: 'mfe-personalized-banner',
     dataVariable: '__PERSONALIZED_BANNER_DATA__',
