@@ -1,0 +1,260 @@
+'use client';
+
+import { useCallback, useEffect, useState } from 'react';
+import { PERSONALIZATION_CONFIG } from '@gfed-medusa/sf-lib-common/lib/personalization/config';
+
+interface ContextualBannerData {
+  title: string;
+  description: string;
+  ctaLabel: string;
+  ctaHref: string;
+  trigger: string;
+  minPrice?: number;
+  priority: number;
+}
+
+function getDismissedTrigger(): string | null {
+  try {
+    const match = document.cookie.match(/_jg_segment=([^;]+)/);
+    if (!match) return null;
+
+    const data = JSON.parse(decodeURIComponent(match[1]));
+    const dismissed = data?.signals?.dismissed;
+
+    if (!dismissed || typeof dismissed !== 'object') return null;
+
+    const { trigger, timestamp } = dismissed as Record<string, unknown>;
+    if (typeof trigger !== 'string' || typeof timestamp !== 'number') return null;
+
+    const dismissCooldownMs = PERSONALIZATION_CONFIG.dismissCooldownMs;
+    if (Date.now() - timestamp < dismissCooldownMs) {
+      return trigger;
+    }
+  } catch {
+    // Ignore parse errors
+  }
+  return null;
+}
+
+function dismissBanner(trigger: string) {
+  try {
+    const match = document.cookie.match(/_jg_segment=([^;]+)/);
+    let data: Record<string, unknown> = { signals: {} };
+
+    if (match) {
+      try {
+        data = JSON.parse(decodeURIComponent(match[1]));
+      } catch {
+        data = { signals: {} };
+      }
+    }
+
+    if (!data.signals || typeof data.signals !== 'object') {
+      data.signals = {};
+    }
+
+    let dismissed: Record<string, number> = {};
+    const existing = (data.signals as Record<string, unknown>).dismissed;
+    if (existing && typeof existing === 'object' && !('trigger' in existing)) {
+      dismissed = existing as Record<string, number>;
+    }
+    dismissed[trigger] = Date.now();
+    (data.signals as Record<string, unknown>).dismissed = dismissed;
+
+    delete (data.signals as Record<string, unknown>)[trigger];
+
+    const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString();
+    document.cookie = `_jg_segment=${encodeURIComponent(JSON.stringify(data))};expires=${expires};path=/;SameSite=Lax`;
+  } catch {
+    // Ignore errors
+  }
+
+  const el = document.getElementById('contextual-banner');
+  if (el) el.remove();
+}
+
+function isTriggerDismissed(
+  signals: Record<string, unknown>,
+  trigger: string
+): boolean {
+  const dismissed = signals.dismissed;
+  if (!dismissed || typeof dismissed !== 'object') return false;
+
+  const timestamp = (dismissed as Record<string, number>)[trigger];
+  if (typeof timestamp !== 'number') return false;
+
+  const dismissCooldownMs = PERSONALIZATION_CONFIG.dismissCooldownMs;
+  return Date.now() - timestamp < dismissCooldownMs;
+}
+
+function findMatchingBanner(
+  banners: ContextualBannerData[],
+  signals: Record<string, unknown>,
+  dismissedTrigger: string | null
+): ContextualBannerData | null {
+  const matchingBanners: ContextualBannerData[] = [];
+
+  for (const banner of banners) {
+    if (isTriggerDismissed(signals, banner.trigger)) continue;
+
+    const signalValue = signals[banner.trigger];
+    if (!signalValue) continue;
+
+    if (banner.minPrice) {
+      const price =
+        typeof signalValue === 'object' && signalValue !== null
+          ? (signalValue as Record<string, unknown>).price
+          : signalValue;
+
+      if (typeof price !== 'number' || price < banner.minPrice) {
+        continue;
+      }
+    }
+
+    matchingBanners.push(banner);
+  }
+
+  if (matchingBanners.length === 0) return null;
+
+  matchingBanners.sort((a, b) => b.priority - a.priority);
+  return matchingBanners[0];
+}
+
+export function ContextualBanner() {
+  const [bannerData, setBannerData] = useState<ContextualBannerData | null>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  const handleDismiss = useCallback((trigger: string) => {
+    dismissBanner(trigger);
+    setBannerData(null);
+    setIsVisible(false);
+  }, []);
+
+  useEffect(() => {
+    const dismissedTrigger = getDismissedTrigger();
+
+    const getSignalsAndFetch = async () => {
+      let signals: Record<string, unknown> = {};
+      try {
+        const match = document.cookie.match(/_jg_segment=([^;]+)/);
+        if (match) {
+          const data = JSON.parse(decodeURIComponent(match[1]));
+          signals = (data?.signals as Record<string, unknown>) ?? {};
+        }
+      } catch {
+        signals = {};
+      }
+
+      if (Object.keys(signals).length === 0) {
+        return;
+      }
+
+      try {
+        const response = await fetch('/api/horz/contextual-banners');
+        if (!response.ok) return;
+
+        const banners: ContextualBannerData[] = await response.json();
+        const matchingBanner = findMatchingBanner(banners, signals, dismissedTrigger);
+
+        if (matchingBanner) {
+          setBannerData(matchingBanner);
+          setIsVisible(true);
+        }
+      } catch {
+        // Ignore fetch errors
+      }
+    };
+
+    getSignalsAndFetch();
+
+    const timer = setTimeout(() => {
+      setIsVisible(false);
+    }, PERSONALIZATION_CONFIG.bannerAutoDismissMs);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (!isVisible || !bannerData) {
+    return null;
+  }
+
+  return (
+    <div
+      id="contextual-banner"
+      style={{
+        position: 'fixed',
+        bottom: '16px',
+        right: '16px',
+        zIndex: 99999,
+        maxWidth: '520px',
+        minWidth: '360px',
+        background: '#fff',
+        boxShadow:
+          '0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)',
+        borderRadius: '0.5rem',
+        padding: '20px',
+        border: '1px solid #e5e7eb',
+        fontFamily: 'system-ui, sans-serif',
+      }}
+    >
+      <button
+        onClick={() => handleDismiss(bannerData.trigger)}
+        aria-label="Dismiss banner"
+        style={{
+          position: 'absolute',
+          top: '8px',
+          right: '8px',
+          background: 'transparent',
+          border: 'none',
+          cursor: 'pointer',
+          fontSize: '24px',
+          color: '#6b7280',
+          padding: '4px 8px',
+          lineHeight: '1',
+          borderRadius: '4px',
+          transition: 'background-color 0.2s, color 0.2s',
+        }}
+        onMouseOver={(e) => {
+          e.currentTarget.style.backgroundColor = '#f3f4f6';
+          e.currentTarget.style.color = '#374151';
+        }}
+        onMouseOut={(e) => {
+          e.currentTarget.style.backgroundColor = 'transparent';
+          e.currentTarget.style.color = '#6b7280';
+        }}
+      >
+        ×
+      </button>
+      <h3
+        style={{
+          fontWeight: 600,
+          fontSize: '18px',
+          margin: '0',
+          color: '#111827',
+        }}
+      >
+        {bannerData.title}
+      </h3>
+      <p
+        style={{
+          fontSize: '14px',
+          color: '#6b7280',
+          margin: '8px 0',
+        }}
+      >
+        {bannerData.description}
+      </p>
+      <a
+        href={bannerData.ctaHref}
+        onClick={() => handleDismiss(bannerData.trigger)}
+        style={{
+          fontSize: '14px',
+          color: '#2563eb',
+          textDecoration: 'none',
+        }}
+      >
+        {bannerData.ctaLabel} →
+      </a>
+    </div>
+  );
+}
