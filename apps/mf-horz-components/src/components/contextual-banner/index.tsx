@@ -1,8 +1,12 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
-import Cookies from 'js-cookie';
 import { PERSONALIZATION_CONFIG } from '@gfed-medusa/sf-lib-common/lib/personalization/config';
+import {
+  SegmentData,
+  getSegmentCookie,
+  setSegmentCookie,
+} from '@gfed-medusa/sf-lib-common/lib/personalization/behavior-tracker';
 
 interface ContextualBannerData {
   title: string;
@@ -14,26 +18,9 @@ interface ContextualBannerData {
   priority: number;
 }
 
-const SIGNAL_COOKIE = '_jg_segment';
-const isProd = process.env.NODE_ENV === 'production';
-
-const cookieOptions: Cookies.CookieAttributes = isProd
-  ? { path: '/', sameSite: 'none', secure: true, domain: '.justgood.win' }
-  : { path: '/', sameSite: 'lax' };
-
-function getSegmentData(): Record<string, unknown> {
-  const value = Cookies.get(SIGNAL_COOKIE);
-  if (!value) return {};
-  try {
-    return JSON.parse(decodeURIComponent(value));
-  } catch {
-    return {};
-  }
-}
-
 function getActiveDismissedTrigger(): string | null {
   try {
-    const data = getSegmentData();
+    const data = getSegmentCookie();
     const dismissed = data?.signals?.dismissed;
 
     if (!dismissed || typeof dismissed !== 'object') return null;
@@ -52,10 +39,10 @@ function getActiveDismissedTrigger(): string | null {
   return null;
 }
 
-function cleanupExpiredDismissals(data: Record<string, unknown>): void {
+function cleanupExpiredDismissals(data: SegmentData): void {
   if (!data.signals || typeof data.signals !== 'object') return;
 
-  const dismissed = (data.signals as Record<string, unknown>).dismissed;
+  const dismissed = data.signals.dismissed as Record<string, number> | undefined;
   if (!dismissed || typeof dismissed !== 'object') return;
 
   const dismissCooldownMs = PERSONALIZATION_CONFIG.dismissCooldownMs;
@@ -68,35 +55,30 @@ function cleanupExpiredDismissals(data: Record<string, unknown>): void {
     }
   }
 
-  (data.signals as Record<string, unknown>).dismissed = updatedDismissed;
+  data.signals.dismissed = updatedDismissed;
 }
 
 function dismissBanner(trigger: string) {
   try {
-    let data = getSegmentData();
-    if (Object.keys(data).length === 0) {
-      data = { signals: {} };
-    }
+    const data = getSegmentCookie();
 
-    if (!data.signals || typeof data.signals !== 'object') {
+    if (!data.signals) {
       data.signals = {};
     }
 
+    const signals = data.signals as Record<string, unknown>;
+
     let dismissed: Record<string, number> = {};
-    const existing = (data.signals as Record<string, unknown>).dismissed;
+    const existing = signals.dismissed as Record<string, number> | undefined;
     if (existing && typeof existing === 'object' && !('trigger' in existing)) {
-      dismissed = existing as Record<string, number>;
+      dismissed = existing;
     }
     dismissed[trigger] = Date.now();
-    (data.signals as Record<string, unknown>).dismissed = dismissed;
+    signals.dismissed = dismissed;
 
-    delete (data.signals as Record<string, unknown>)[trigger];
+    delete signals[trigger];
 
-    Cookies.set(
-      SIGNAL_COOKIE,
-      encodeURIComponent(JSON.stringify(data)),
-      { ...cookieOptions, expires: 7 }
-    );
+    setSegmentCookie(data);
   } catch {
     // Ignore errors
   }
@@ -166,7 +148,7 @@ export function ContextualBanner() {
     const dismissedTrigger = getActiveDismissedTrigger();
 
     const getSignalsAndFetch = async () => {
-      let data = getSegmentData();
+      let data = getSegmentCookie();
 
       if (Object.keys(data).length === 0) {
         return;
@@ -177,6 +159,7 @@ export function ContextualBanner() {
       }
 
       cleanupExpiredDismissals(data);
+      setSegmentCookie(data);
 
       const signals = (data.signals as Record<string, unknown>) ?? {};
 
