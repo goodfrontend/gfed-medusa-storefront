@@ -6,6 +6,14 @@ import {
   PERSONALIZATION_CONFIG,
   getSegmentIdFromCollection,
 } from '@gfed-medusa/sf-lib-common/lib/personalization/config';
+
+function buildCookieAttrs(): string {
+  const maxAge = 60 * 60 * 24 * 7;
+  if (process.env.NODE_ENV === 'production') {
+    return `path=/;max-age=${maxAge};SameSite=none;secure;domain=.justgood.win`;
+  }
+  return `path=/;max-age=${maxAge};SameSite=Lax`;
+}
 import { useStorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import { Product } from '@/types/graphql';
 
@@ -70,8 +78,7 @@ function emitSignal(type: string, payload?: unknown) {
 
   (data.signals as Record<string, unknown>)[type] = payload ?? true;
 
-  const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString();
-  document.cookie = `_jg_segment=${encodeURIComponent(JSON.stringify(data))};expires=${expires};path=/;SameSite=Lax`;
+  document.cookie = `_jg_segment=${encodeURIComponent(JSON.stringify(data))};${buildCookieAttrs()}`;
 }
 
 const REPEAT_CATEGORY_THRESHOLD = 3;
@@ -104,8 +111,7 @@ function trackRepeatedCategoryView(segment: string) {
       emitSignal('repeated-category-view', { segment, count: newCount });
     }
 
-    const cookieExpires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString();
-    document.cookie = `_jg_segment=${encodeURIComponent(JSON.stringify(data))};expires=${cookieExpires};path=/;SameSite=Lax`;
+    document.cookie = `_jg_segment=${encodeURIComponent(JSON.stringify(data))};${buildCookieAttrs()}`;
   } catch {
     // Ignore
   }
@@ -133,8 +139,7 @@ function addHistoryToCookie(segment: string): void {
     );
     data.history = history;
 
-    const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString();
-    document.cookie = `_jg_segment=${encodeURIComponent(JSON.stringify(data))};expires=${expires};path=/;SameSite=Lax`;
+    document.cookie = `_jg_segment=${encodeURIComponent(JSON.stringify(data))};${buildCookieAttrs()}`;
   } catch {
   }
 }

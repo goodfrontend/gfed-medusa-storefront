@@ -1,3 +1,5 @@
+import { PERSONALIZATION_CONFIG } from './config';
+
 export interface SegmentData {
   interest?: string;
   history?: string[];
@@ -5,6 +7,14 @@ export interface SegmentData {
 }
 
 const SIGNAL_COOKIE = '_jg_segment';
+
+function buildCookieAttrs(): string {
+  const maxAge = 60 * 60 * 24 * 7;
+  if (process.env.NODE_ENV === 'production') {
+    return `path=/;max-age=${maxAge};SameSite=none;secure;domain=.justgood.win`;
+  }
+  return `path=/;max-age=${maxAge};SameSite=Lax`;
+}
 
 export function getSegmentCookie(): SegmentData {
   const match = document.cookie.match(/_jg_segment=([^;]+)/);
@@ -17,8 +27,7 @@ export function getSegmentCookie(): SegmentData {
 }
 
 export function setSegmentCookie(data: SegmentData) {
-  const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString();
-  document.cookie = `_jg_segment=${encodeURIComponent(JSON.stringify(data))};expires=${expires};path=/;SameSite=Lax`;
+  document.cookie = `${SIGNAL_COOKIE}=${encodeURIComponent(JSON.stringify(data))};${buildCookieAttrs()}`;
 }
 
 export function emitSignal(type: string, payload?: unknown) {

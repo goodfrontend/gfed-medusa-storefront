@@ -13,6 +13,14 @@ interface ContextualBannerData {
   priority: number;
 }
 
+function buildCookieAttrs(): string {
+  const maxAge = 60 * 60 * 24 * 7;
+  if (process.env.NODE_ENV === 'production') {
+    return `path=/;max-age=${maxAge};SameSite=none;secure;domain=.justgood.win`;
+  }
+  return `path=/;max-age=${maxAge};SameSite=Lax`;
+}
+
 function getDismissedTrigger(): string | null {
   try {
     const match = document.cookie.match(/_jg_segment=([^;]+)/);
@@ -62,8 +70,7 @@ function cleanupExpiredDismissals() {
     }
 
     if (hasChanges) {
-      const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString();
-      document.cookie = `_jg_segment=${encodeURIComponent(JSON.stringify(data))};expires=${expires};path=/;SameSite=Lax`;
+      document.cookie = `_jg_segment=${encodeURIComponent(JSON.stringify(data))};${buildCookieAttrs()}`;
     }
   } catch {
     // Ignore errors
@@ -97,8 +104,7 @@ function dismissBanner(trigger: string) {
 
     delete (data.signals as Record<string, unknown>)[trigger];
 
-    const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString();
-    document.cookie = `_jg_segment=${encodeURIComponent(JSON.stringify(data))};expires=${expires};path=/;SameSite=Lax`;
+    document.cookie = `_jg_segment=${encodeURIComponent(JSON.stringify(data))};${buildCookieAttrs()}`;
   } catch {
     // Ignore errors
   }
