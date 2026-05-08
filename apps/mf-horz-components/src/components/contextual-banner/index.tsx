@@ -1,6 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import Cookies from 'js-cookie';
 import { PERSONALIZATION_CONFIG } from '@gfed-medusa/sf-lib-common/lib/personalization/config';
 
 interface ContextualBannerData {
@@ -13,12 +14,26 @@ interface ContextualBannerData {
   priority: number;
 }
 
+const SIGNAL_COOKIE = '_jg_segment';
+const isProd = process.env.NODE_ENV === 'production';
+
+const cookieOptions: Cookies.CookieAttributes = isProd
+  ? { path: '/', sameSite: 'none', secure: true, domain: '.justgood.win' }
+  : { path: '/', sameSite: 'lax' };
+
+function getSegmentData(): Record<string, unknown> {
+  const value = Cookies.get(SIGNAL_COOKIE);
+  if (!value) return {};
+  try {
+    return JSON.parse(decodeURIComponent(value));
+  } catch {
+    return {};
+  }
+}
+
 function getDismissedTrigger(): string | null {
   try {
-    const match = document.cookie.match(/_jg_segment=([^;]+)/);
-    if (!match) return null;
-
-    const data = JSON.parse(decodeURIComponent(match[1]));
+    const data = getSegmentData();
     const dismissed = data?.signals?.dismissed;
 
     if (!dismissed || typeof dismissed !== 'object') return null;
@@ -38,15 +53,9 @@ function getDismissedTrigger(): string | null {
 
 function dismissBanner(trigger: string) {
   try {
-    const match = document.cookie.match(/_jg_segment=([^;]+)/);
-    let data: Record<string, unknown> = { signals: {} };
-
-    if (match) {
-      try {
-        data = JSON.parse(decodeURIComponent(match[1]));
-      } catch {
-        data = { signals: {} };
-      }
+    let data = getSegmentData();
+    if (Object.keys(data).length === 0) {
+      data = { signals: {} };
     }
 
     if (!data.signals || typeof data.signals !== 'object') {
@@ -63,8 +72,11 @@ function dismissBanner(trigger: string) {
 
     delete (data.signals as Record<string, unknown>)[trigger];
 
-    const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString();
-    document.cookie = `_jg_segment=${encodeURIComponent(JSON.stringify(data))};expires=${expires};path=/;SameSite=Lax`;
+    Cookies.set(
+      SIGNAL_COOKIE,
+      encodeURIComponent(JSON.stringify(data)),
+      { ...cookieOptions, expires: 7 }
+    );
   } catch {
     // Ignore errors
   }
@@ -136,11 +148,8 @@ export function ContextualBanner() {
     const getSignalsAndFetch = async () => {
       let signals: Record<string, unknown> = {};
       try {
-        const match = document.cookie.match(/_jg_segment=([^;]+)/);
-        if (match) {
-          const data = JSON.parse(decodeURIComponent(match[1]));
-          signals = (data?.signals as Record<string, unknown>) ?? {};
-        }
+        const data = getSegmentData();
+        signals = (data?.signals as Record<string, unknown>) ?? {};
       } catch {
         signals = {};
       }

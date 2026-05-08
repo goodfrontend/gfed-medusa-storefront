@@ -1,3 +1,5 @@
+import Cookies from 'js-cookie';
+
 export interface SegmentData {
   interest?: string;
   history?: string[];
@@ -6,19 +8,29 @@ export interface SegmentData {
 
 const SIGNAL_COOKIE = '_jg_segment';
 
+const isProd = process.env.NODE_ENV === 'production';
+
+const cookieOptions: Cookies.CookieAttributes = isProd
+  ? { path: '/', sameSite: 'none', secure: true, domain: '.justgood.win' }
+  : { path: '/', sameSite: 'lax' };
+
 export function getSegmentCookie(): SegmentData {
-  const match = document.cookie.match(/_jg_segment=([^;]+)/);
-  if (!match || !match[1]) return {};
+  const value = Cookies.get(SIGNAL_COOKIE);
+  if (!value) return {};
   try {
-    return JSON.parse(decodeURIComponent(match[1]));
+    return JSON.parse(decodeURIComponent(value));
   } catch {
     return {};
   }
 }
 
 export function setSegmentCookie(data: SegmentData) {
-  const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString();
-  document.cookie = `_jg_segment=${encodeURIComponent(JSON.stringify(data))};expires=${expires};path=/;SameSite=Lax`;
+  const expires = 7;
+  Cookies.set(
+    SIGNAL_COOKIE,
+    encodeURIComponent(JSON.stringify(data)),
+    { ...cookieOptions, expires }
+  );
 }
 
 export function emitSignal(type: string, payload?: unknown) {
