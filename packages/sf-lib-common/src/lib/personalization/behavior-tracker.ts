@@ -18,7 +18,7 @@ export function getSegmentCookie(): SegmentData {
   const value = Cookies.get(SIGNAL_COOKIE);
   if (!value) return {};
   try {
-    return JSON.parse(decodeURIComponent(value));
+    return JSON.parse(value);
   } catch {
     return {};
   }
@@ -28,18 +28,20 @@ export function setSegmentCookie(data: SegmentData) {
   const expires = 7;
   Cookies.set(
     SIGNAL_COOKIE,
-    encodeURIComponent(JSON.stringify(data)),
+    JSON.stringify(data),
     { ...cookieOptions, expires }
   );
 }
 
 export function emitSignal(type: string, payload?: unknown) {
   const data = getSegmentCookie();
-  if (!data.signals) {
-    data.signals = {};
-  }
-  data.signals[type] = payload ?? true;
-  setSegmentCookie(data);
+  const updated: SegmentData = {
+    interest: data.interest,
+    history: data.history,
+    signals: data.signals ?? {},
+  };
+  updated.signals![type] = payload ?? true;
+  setSegmentCookie(updated);
 }
 
 export function getSignal(type: string): unknown {
@@ -54,6 +56,10 @@ export function getAllSignals(): Record<string, unknown> {
 
 export function clearSignals() {
   const data = getSegmentCookie();
-  data.signals = {};
-  setSegmentCookie(data);
+  const updated: SegmentData = {
+    interest: data.interest,
+    history: data.history,
+    signals: {},
+  };
+  setSegmentCookie(updated);
 }

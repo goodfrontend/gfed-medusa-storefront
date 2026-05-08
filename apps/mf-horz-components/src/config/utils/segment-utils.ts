@@ -14,7 +14,7 @@ export function getSegmentFromCookie(
   const match = cookieHeader.match(/_jg_segment=([^;]+)/);
   if (!match) return null;
   try {
-    return JSON.parse(decodeURIComponent(match[1]));
+    return JSON.parse(match[1]);
   } catch {
     return null;
   }
