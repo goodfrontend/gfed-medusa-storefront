@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-common
 
+## 3.7.3
+
+### Patch Changes
+
+- f06b662: Fix compat
+
 ## 3.6.0
 
 ### Minor Changes

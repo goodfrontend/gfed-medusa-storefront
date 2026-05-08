@@ -58,7 +58,7 @@ function emitSignal(type: string, payload?: unknown) {
 
   if (match) {
     try {
-      data = JSON.parse(decodeURIComponent(match[1]));
+      data = JSON.parse(decodeURIComponent(match[1] as string));
     } catch {
       data = {};
     }
@@ -83,7 +83,7 @@ function trackRepeatedCategoryView(segment: string) {
 
     if (match) {
       try {
-        data = JSON.parse(decodeURIComponent(match[1]));
+        data = JSON.parse(decodeURIComponent(match[1] as string));
       } catch {
         data = {};
       }
@@ -118,7 +118,7 @@ function addHistoryToCookie(segment: string): void {
 
     if (match) {
       try {
-        data = JSON.parse(decodeURIComponent(match[1]));
+        data = JSON.parse(decodeURIComponent(match[1] as string));
       } catch {
         data = {};
       }
