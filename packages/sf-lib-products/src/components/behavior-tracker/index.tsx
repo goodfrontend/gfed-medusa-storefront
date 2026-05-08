@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
+import Cookies from 'js-cookie';
 
 import {
   PERSONALIZATION_CONFIG,
@@ -12,6 +13,13 @@ import { Product } from '@/types/graphql';
 const PDP_HESITATION_MS = PERSONALIZATION_CONFIG.pdpHesitationMs;
 const HIGH_SCROLL_THRESHOLD = PERSONALIZATION_CONFIG.highScrollThreshold;
 const PRICE_THRESHOLD_USD = PERSONALIZATION_CONFIG.priceThresholdUsd;
+
+const SIGNAL_COOKIE = '_jg_segment';
+const isProd = process.env.NODE_ENV === 'production';
+
+const cookieOptions: Cookies.CookieAttributes = isProd
+  ? { path: '/', sameSite: 'none', secure: true, domain: '.justgood.win' }
+  : { path: '/', sameSite: 'lax' };
 
 function getScrollPercentage(): number {
   const scrollTop = window.scrollY;
@@ -52,41 +60,38 @@ function throttle<T extends (...args: unknown[]) => void>(
   }) as T;
 }
 
-function emitSignal(type: string, payload?: unknown) {
-  const match = document.cookie.match(/_jg_segment=([^;]+)/);
-  let data: Record<string, unknown> = {};
-
-  if (match) {
-    try {
-      data = JSON.parse(decodeURIComponent(match[1]));
-    } catch {
-      data = {};
-    }
+function getSegmentData(): Record<string, unknown> {
+  const value = Cookies.get(SIGNAL_COOKIE);
+  if (!value) return {};
+  try {
+    return JSON.parse(decodeURIComponent(value));
+  } catch {
+    return {};
   }
+}
 
+function emitSignal(type: string, payload?: unknown) {
+  const data = getSegmentData();
   if (!data.signals || typeof data.signals !== 'object') {
     data.signals = {};
   }
 
   (data.signals as Record<string, unknown>)[type] = payload ?? true;
 
-  const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString();
-  document.cookie = `_jg_segment=${encodeURIComponent(JSON.stringify(data))};expires=${expires};path=/;SameSite=Lax`;
+  Cookies.set(
+    SIGNAL_COOKIE,
+    encodeURIComponent(JSON.stringify(data)),
+    { ...cookieOptions, expires: 7 }
+  );
 }
 
 const REPEAT_CATEGORY_THRESHOLD = 3;
 
 function trackRepeatedCategoryView(segment: string) {
   try {
-    const match = document.cookie.match(/_jg_segment=([^;]+)/);
-    let data: Record<string, unknown> = { signals: {} };
-
-    if (match) {
-      try {
-        data = JSON.parse(decodeURIComponent(match[1]));
-      } catch {
-        data = {};
-      }
+    let data = getSegmentData();
+    if (Object.keys(data).length === 0) {
+      data = { signals: {} };
     }
 
     if (!data.signals || typeof data.signals !== 'object') {
@@ -104,8 +109,11 @@ function trackRepeatedCategoryView(segment: string) {
       emitSignal('repeated-category-view', { segment, count: newCount });
     }
 
-    const cookieExpires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString();
-    document.cookie = `_jg_segment=${encodeURIComponent(JSON.stringify(data))};expires=${cookieExpires};path=/;SameSite=Lax`;
+    Cookies.set(
+      SIGNAL_COOKIE,
+      encodeURIComponent(JSON.stringify(data)),
+      { ...cookieOptions, expires: 7 }
+    );
   } catch {
     // Ignore
   }
@@ -113,15 +121,9 @@ function trackRepeatedCategoryView(segment: string) {
 
 function addHistoryToCookie(segment: string): void {
   try {
-    const match = document.cookie.match(/_jg_segment=([^;]+)/);
-    let data: Record<string, unknown> = { history: [] };
-
-    if (match) {
-      try {
-        data = JSON.parse(decodeURIComponent(match[1]));
-      } catch {
-        data = {};
-      }
+    let data = getSegmentData();
+    if (Object.keys(data).length === 0) {
+      data = { history: [] };
     }
 
     if (!data.history || !Array.isArray(data.history)) {
@@ -133,8 +135,11 @@ function addHistoryToCookie(segment: string): void {
     );
     data.history = history;
 
-    const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toUTCString();
-    document.cookie = `_jg_segment=${encodeURIComponent(JSON.stringify(data))};expires=${expires};path=/;SameSite=Lax`;
+    Cookies.set(
+      SIGNAL_COOKIE,
+      encodeURIComponent(JSON.stringify(data)),
+      { ...cookieOptions, expires: 7 }
+    );
   } catch {
   }
 }
