@@ -64,7 +64,7 @@ function getSegmentData(): Record<string, unknown> {
   const value = Cookies.get(SIGNAL_COOKIE);
   if (!value) return {};
   try {
-    return JSON.parse(decodeURIComponent(value));
+    return JSON.parse(value);
   } catch {
     return {};
   }
@@ -72,15 +72,16 @@ function getSegmentData(): Record<string, unknown> {
 
 function emitSignal(type: string, payload?: unknown) {
   const data = getSegmentData();
-  if (!data.signals || typeof data.signals !== 'object') {
-    data.signals = {};
-  }
-
-  (data.signals as Record<string, unknown>)[type] = payload ?? true;
+  const updated: Record<string, unknown> = {
+    interest: data.interest,
+    history: data.history as string[] | undefined,
+    signals: (data.signals as Record<string, unknown>) ?? {},
+  };
+  (updated.signals as Record<string, unknown>)[type] = payload ?? true;
 
   Cookies.set(
     SIGNAL_COOKIE,
-    encodeURIComponent(JSON.stringify(data)),
+    JSON.stringify(updated),
     { ...cookieOptions, expires: 7 }
   );
 }
@@ -111,7 +112,7 @@ function trackRepeatedCategoryView(segment: string) {
 
     Cookies.set(
       SIGNAL_COOKIE,
-      encodeURIComponent(JSON.stringify(data)),
+      JSON.stringify(data),
       { ...cookieOptions, expires: 7 }
     );
   } catch {
@@ -137,7 +138,7 @@ function addHistoryToCookie(segment: string): void {
 
     Cookies.set(
       SIGNAL_COOKIE,
-      encodeURIComponent(JSON.stringify(data)),
+      JSON.stringify(data),
       { ...cookieOptions, expires: 7 }
     );
   } catch {

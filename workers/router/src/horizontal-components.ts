@@ -256,7 +256,7 @@ function getSegmentCookieScript(request: Request): string {
     const match = cookieHeader.match(/_jg_segment=([^;]+)/);
     if (match) {
       try {
-        const existing = JSON.parse(decodeURIComponent(match[1]));
+        const existing = JSON.parse(match[1]);
         const existingHistory: string[] = Array.isArray(existing.history)
           ? existing.history
           : [];
@@ -275,7 +275,7 @@ function getSegmentCookieScript(request: Request): string {
     }
   }
 
-  const cookieValue = encodeURIComponent(JSON.stringify(cookieData));
+  const cookieValue = JSON.stringify(cookieData);
   const maxAge = 60 * 60 * 24 * 7;
 
   const cookieAttrs = isProd
