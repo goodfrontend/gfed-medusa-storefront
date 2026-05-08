@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-gateway
 
+## 1.6.0
+
+### Minor Changes
+
+- 55cd953: Content Personalization Phase 2
+
 ## 1.5.0
 
 ### Minor Changes

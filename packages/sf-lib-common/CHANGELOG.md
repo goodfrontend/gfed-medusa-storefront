@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-common
 
+## 3.7.0
+
+### Minor Changes
+
+- 55cd953: Content Personalization Phase 2
+
 ## 3.6.0
 
 ### Minor Changes

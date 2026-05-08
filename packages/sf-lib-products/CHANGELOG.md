@@ -1,5 +1,16 @@
 # @gfed-medusa/sf-lib-products
 
+## 1.9.0
+
+### Minor Changes
+
+- 55cd953: Content Personalization Phase 2
+
+### Patch Changes
+
+- Updated dependencies [55cd953]
+  - @gfed-medusa/sf-lib-common@3.7.0
+
 ## 1.8.1
 
 ### Patch Changes
