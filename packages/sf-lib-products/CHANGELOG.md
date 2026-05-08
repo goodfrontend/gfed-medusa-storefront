@@ -1,5 +1,13 @@
 # @gfed-medusa/sf-lib-products
 
+## 1.9.4
+
+### Patch Changes
+
+- 6d1e0ee: Fix cookie attributes of jg_segment cookie
+- Updated dependencies [6d1e0ee]
+  - @gfed-medusa/sf-lib-common@3.7.4
+
 ## 1.9.3
 
 ### Patch Changes
