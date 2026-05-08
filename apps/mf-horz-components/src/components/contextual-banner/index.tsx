@@ -31,24 +31,44 @@ function getSegmentData(): Record<string, unknown> {
   }
 }
 
-function getDismissedTrigger(): string | null {
+function getActiveDismissedTrigger(): string | null {
   try {
     const data = getSegmentData();
     const dismissed = data?.signals?.dismissed;
 
     if (!dismissed || typeof dismissed !== 'object') return null;
 
-    const { trigger, timestamp } = dismissed as Record<string, unknown>;
-    if (typeof trigger !== 'string' || typeof timestamp !== 'number') return null;
-
     const dismissCooldownMs = PERSONALIZATION_CONFIG.dismissCooldownMs;
-    if (Date.now() - timestamp < dismissCooldownMs) {
-      return trigger;
+    const now = Date.now();
+
+    for (const [trigger, timestamp] of Object.entries(dismissed)) {
+      if (typeof timestamp === 'number' && now - timestamp < dismissCooldownMs) {
+        return trigger;
+      }
     }
   } catch {
     // Ignore parse errors
   }
   return null;
+}
+
+function cleanupExpiredDismissals(data: Record<string, unknown>): void {
+  if (!data.signals || typeof data.signals !== 'object') return;
+
+  const dismissed = (data.signals as Record<string, unknown>).dismissed;
+  if (!dismissed || typeof dismissed !== 'object') return;
+
+  const dismissCooldownMs = PERSONALIZATION_CONFIG.dismissCooldownMs;
+  const now = Date.now();
+  const updatedDismissed: Record<string, number> = {};
+
+  for (const [trigger, timestamp] of Object.entries(dismissed)) {
+    if (typeof timestamp === 'number' && now - timestamp < dismissCooldownMs) {
+      updatedDismissed[trigger] = timestamp;
+    }
+  }
+
+  (data.signals as Record<string, unknown>).dismissed = updatedDismissed;
 }
 
 function dismissBanner(trigger: string) {
@@ -143,16 +163,22 @@ export function ContextualBanner() {
   }, []);
 
   useEffect(() => {
-    const dismissedTrigger = getDismissedTrigger();
+    const dismissedTrigger = getActiveDismissedTrigger();
 
     const getSignalsAndFetch = async () => {
-      let signals: Record<string, unknown> = {};
-      try {
-        const data = getSegmentData();
-        signals = (data?.signals as Record<string, unknown>) ?? {};
-      } catch {
-        signals = {};
+      let data = getSegmentData();
+
+      if (Object.keys(data).length === 0) {
+        return;
       }
+
+      if (!data.signals || typeof data.signals !== 'object') {
+        data.signals = {};
+      }
+
+      cleanupExpiredDismissals(data);
+
+      const signals = (data.signals as Record<string, unknown>) ?? {};
 
       if (Object.keys(signals).length === 0) {
         return;
