@@ -1,5 +1,14 @@
 # @gfed-medusa/mf-products
 
+## 1.8.1
+
+### Patch Changes
+
+- f06b662: Fix compat
+- Updated dependencies [f06b662]
+  - @gfed-medusa/sf-lib-products@1.9.3
+  - @gfed-medusa/sf-lib-common@3.7.3
+
 ## 1.8.0
 
 ### Minor Changes

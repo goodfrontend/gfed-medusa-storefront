@@ -1,5 +1,13 @@
 # @gfed-medusa/mf-account
 
+## 1.10.1
+
+### Patch Changes
+
+- f06b662: Fix compat
+- Updated dependencies [f06b662]
+  - @gfed-medusa/sf-lib-common@3.7.3
+
 ## 1.10.0
 
 ### Minor Changes
