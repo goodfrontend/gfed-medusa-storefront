@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-gateway
 
+## 1.6.1
+
+### Patch Changes
+
+- dc7cb97: Fixed the jg_segment cookie by removing double URL-encoding and ensuring signals are preserved when updating the cookie on category visits.
+
 ## 1.6.0
 
 ### Minor Changes
