@@ -1,5 +1,13 @@
 # @gfed-medusa/sf-lib-products
 
+## 1.9.1
+
+### Patch Changes
+
+- dc7cb97: Fixed the jg_segment cookie by removing double URL-encoding and ensuring signals are preserved when updating the cookie on category visits.
+- Updated dependencies [dc7cb97]
+  - @gfed-medusa/sf-lib-common@3.7.1
+
 ## 1.9.0
 
 ### Minor Changes
