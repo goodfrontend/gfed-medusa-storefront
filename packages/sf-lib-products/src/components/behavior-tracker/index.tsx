@@ -6,14 +6,10 @@ import {
   PERSONALIZATION_CONFIG,
   getSegmentIdFromCollection,
 } from '@gfed-medusa/sf-lib-common/lib/personalization/config';
-
-function buildCookieAttrs(): string {
-  const maxAge = 60 * 60 * 24 * 7;
-  if (process.env.NODE_ENV === 'production') {
-    return `path=/;max-age=${maxAge};SameSite=none;secure;domain=.justgood.win`;
-  }
-  return `path=/;max-age=${maxAge};SameSite=Lax`;
-}
+import {
+  getSegmentCookie,
+  setSegmentCookie,
+} from '@gfed-medusa/sf-lib-common/lib/personalization/behavior-tracker';
 import { useStorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
 import { Product } from '@/types/graphql';
 
@@ -61,16 +57,7 @@ function throttle<T extends (...args: unknown[]) => void>(
 }
 
 function emitSignal(type: string, payload?: unknown) {
-  const match = document.cookie.match(/_jg_segment=([^;]+)/);
-  let data: Record<string, unknown> = {};
-
-  if (match) {
-    try {
-      data = JSON.parse(decodeURIComponent(match[1] as string));
-    } catch {
-      data = {};
-    }
-  }
+  const data = getSegmentCookie();
 
   if (!data.signals || typeof data.signals !== 'object') {
     data.signals = {};
@@ -78,23 +65,14 @@ function emitSignal(type: string, payload?: unknown) {
 
   (data.signals as Record<string, unknown>)[type] = payload ?? true;
 
-  document.cookie = `_jg_segment=${encodeURIComponent(JSON.stringify(data))};${buildCookieAttrs()}`;
+  setSegmentCookie(data);
 }
 
 const REPEAT_CATEGORY_THRESHOLD = 3;
 
 function trackRepeatedCategoryView(segment: string) {
   try {
-    const match = document.cookie.match(/_jg_segment=([^;]+)/);
-    let data: Record<string, unknown> = { signals: {} };
-
-    if (match) {
-      try {
-        data = JSON.parse(decodeURIComponent(match[1] as string));
-      } catch {
-        data = {};
-      }
-    }
+    const data = getSegmentCookie();
 
     if (!data.signals || typeof data.signals !== 'object') {
       data.signals = {};
@@ -111,7 +89,7 @@ function trackRepeatedCategoryView(segment: string) {
       emitSignal('repeated-category-view', { segment, count: newCount });
     }
 
-    document.cookie = `_jg_segment=${encodeURIComponent(JSON.stringify(data))};${buildCookieAttrs()}`;
+    setSegmentCookie(data);
   } catch {
     // Ignore
   }
@@ -119,16 +97,7 @@ function trackRepeatedCategoryView(segment: string) {
 
 function addHistoryToCookie(segment: string): void {
   try {
-    const match = document.cookie.match(/_jg_segment=([^;]+)/);
-    let data: Record<string, unknown> = { history: [] };
-
-    if (match) {
-      try {
-        data = JSON.parse(decodeURIComponent(match[1] as string));
-      } catch {
-        data = {};
-      }
-    }
+    const data = getSegmentCookie();
 
     if (!data.history || !Array.isArray(data.history)) {
       data.history = [];
@@ -139,7 +108,7 @@ function addHistoryToCookie(segment: string): void {
     );
     data.history = history;
 
-    document.cookie = `_jg_segment=${encodeURIComponent(JSON.stringify(data))};${buildCookieAttrs()}`;
+    setSegmentCookie(data);
   } catch {
   }
 }

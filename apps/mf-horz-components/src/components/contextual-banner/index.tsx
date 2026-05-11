@@ -2,6 +2,10 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { PERSONALIZATION_CONFIG } from '@gfed-medusa/sf-lib-common/lib/personalization/config';
+import {
+  getSegmentCookie,
+  setSegmentCookie,
+} from '@gfed-medusa/sf-lib-common/lib/personalization/behavior-tracker';
 
 interface ContextualBannerData {
   title: string;
@@ -13,20 +17,9 @@ interface ContextualBannerData {
   priority: number;
 }
 
-function buildCookieAttrs(): string {
-  const maxAge = 60 * 60 * 24 * 7;
-  if (process.env.NODE_ENV === 'production') {
-    return `path=/;max-age=${maxAge};SameSite=none;secure;domain=.justgood.win`;
-  }
-  return `path=/;max-age=${maxAge};SameSite=Lax`;
-}
-
 function getDismissedTrigger(): string | null {
   try {
-    const match = document.cookie.match(/_jg_segment=([^;]+)/);
-    if (!match) return null;
-
-    const data = JSON.parse(decodeURIComponent(match[1]));
+    const data = getSegmentCookie();
     const dismissed = data?.signals?.dismissed;
 
     if (!dismissed || typeof dismissed !== 'object') return null;
@@ -48,10 +41,7 @@ function getDismissedTrigger(): string | null {
 
 function cleanupExpiredDismissals() {
   try {
-    const match = document.cookie.match(/_jg_segment=([^;]+)/);
-    if (!match) return;
-
-    const data = JSON.parse(decodeURIComponent(match[1]));
+    const data = getSegmentCookie();
     const dismissed = data?.signals?.dismissed;
 
     if (!dismissed || typeof dismissed !== 'object') return;
@@ -70,7 +60,7 @@ function cleanupExpiredDismissals() {
     }
 
     if (hasChanges) {
-      document.cookie = `_jg_segment=${encodeURIComponent(JSON.stringify(data))};${buildCookieAttrs()}`;
+      setSegmentCookie(data);
     }
   } catch {
     // Ignore errors
@@ -79,16 +69,7 @@ function cleanupExpiredDismissals() {
 
 function dismissBanner(trigger: string) {
   try {
-    const match = document.cookie.match(/_jg_segment=([^;]+)/);
-    let data: Record<string, unknown> = { signals: {} };
-
-    if (match) {
-      try {
-        data = JSON.parse(decodeURIComponent(match[1]));
-      } catch {
-        data = { signals: {} };
-      }
-    }
+    const data = getSegmentCookie();
 
     if (!data.signals || typeof data.signals !== 'object') {
       data.signals = {};
@@ -104,7 +85,7 @@ function dismissBanner(trigger: string) {
 
     delete (data.signals as Record<string, unknown>)[trigger];
 
-    document.cookie = `_jg_segment=${encodeURIComponent(JSON.stringify(data))};${buildCookieAttrs()}`;
+    setSegmentCookie(data);
   } catch {
     // Ignore errors
   }
