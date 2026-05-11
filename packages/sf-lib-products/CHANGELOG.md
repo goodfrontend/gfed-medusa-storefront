@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-products
 
+## 1.9.5
+
+### Patch Changes
+
+- 8327e1d: Make updating jg_segment cookie in a single source of truth
+
 ## 1.9.4
 
 ### Patch Changes
