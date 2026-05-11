@@ -1,5 +1,13 @@
 # @gfed-medusa/mf-horz-components
 
+## 1.8.3
+
+### Patch Changes
+
+- 8327e1d: Make updating jg_segment cookie in a single source of truth
+- Updated dependencies [8327e1d]
+  - @gfed-medusa/sf-lib-products@1.9.5
+
 ## 1.8.2
 
 ### Patch Changes
