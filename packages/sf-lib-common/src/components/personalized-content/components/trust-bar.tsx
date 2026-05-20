@@ -1,6 +1,6 @@
 'use client';
 
-import Image from 'next/image';
+import { getImageKitUrl } from '../../../lib/utils/imagekit';
 
 interface BadgeIcon {
   asset?: { url?: string };
@@ -38,8 +38,8 @@ export function TrustBar({ badges, message }: TrustBarProps) {
               className="text-ui-fg-muted inline-flex items-center gap-x-1.5 text-xs font-medium uppercase tracking-wide"
             >
               {iconUrl && (
-                <Image
-                  src={iconUrl}
+                <img
+                  src={getImageKitUrl(iconUrl, { width: 20, height: 20 })}
                   alt=""
                   aria-hidden="true"
                   width={20}

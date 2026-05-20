@@ -1,8 +1,8 @@
 'use client';
 
-import Image from 'next/image';
 import { Button, Heading, Text } from '@medusajs/ui';
 
+import { getImageKitUrl } from '../../../lib/utils/imagekit';
 import { LocalizedClientLink } from '../../localized-client-link';
 
 interface HeroBannerProps {
@@ -48,14 +48,12 @@ export function HeroBanner({ headline, subheadline, image, imageUrl, cta, badge,
   return (
     <section className="border-ui-border-base relative isolate overflow-hidden border-b">
       {bannerImage && (
-        <Image
-          src={bannerImage}
+        <img
+          src={getImageKitUrl(bannerImage, { width: 1920, quality: 80 })}
           alt=""
           aria-hidden="true"
+          fetchPriority="high"
           className="absolute inset-0 h-full w-full object-cover"
-          fill
-          sizes="100vw"
-          priority
         />
       )}
       {bannerImage && (
