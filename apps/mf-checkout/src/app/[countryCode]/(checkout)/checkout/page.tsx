@@ -1,12 +1,14 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
+import { sendSignal } from '@gfed-medusa/sf-lib-common/lib/data/personalization';
 import PaymentWrapper from '@gfed-medusa/sf-lib-checkout/components/payment-wrapper';
 import { retrieveCart } from '@gfed-medusa/sf-lib-checkout/lib/data/cart';
 import CheckoutForm from '@gfed-medusa/sf-lib-checkout/templates/checkout-form';
 import CheckoutSummary from '@gfed-medusa/sf-lib-checkout/templates/checkout-summary';
 import { retrieveCustomer } from '@gfed-medusa/sf-lib-common/lib/data/customer';
 import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
+import { WebComponent } from '@gfed-medusa/sf-lib-common/components/web-component';
 
 export const metadata: Metadata = {
   title: 'Checkout',
@@ -35,12 +37,17 @@ export default async function Checkout() {
 
   const customer = await retrieveCustomer(ctx);
 
+  void sendSignal('CHECKOUT_START', ctx, { cartValue: cart.total ?? undefined }, undefined, customer?.id);
+
   return (
-    <div className="content-container small:grid-cols-[1fr_416px] grid grid-cols-1 gap-x-40 py-12">
-      <PaymentWrapper stripeKey={stripeKey}>
-        <CheckoutForm cart={cart} customer={customer} />
-      </PaymentWrapper>
-      <CheckoutSummary cart={cart} />
-    </div>
+    <>
+      <WebComponent tag="mfe-personalized-checkout" />
+      <div className="content-container small:grid-cols-[1fr_416px] grid grid-cols-1 gap-x-40 py-12">
+        <PaymentWrapper stripeKey={stripeKey}>
+          <CheckoutForm cart={cart} customer={customer} />
+        </PaymentWrapper>
+        <CheckoutSummary cart={cart} />
+      </div>
+    </>
   );
 }
