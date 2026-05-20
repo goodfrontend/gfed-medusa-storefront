@@ -388,7 +388,6 @@ export default function PaginatedProductsClient({
             >
               <BrowseProductPreview
                 product={product}
-                imagePriority={isLcpCandidate}
                 imageFetchPriority={isLcpCandidate ? 'high' : undefined}
               />
             </li>
