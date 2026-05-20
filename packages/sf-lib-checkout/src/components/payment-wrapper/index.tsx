@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { Stripe, loadStripe } from '@stripe/stripe-js';
 
@@ -29,6 +29,28 @@ const PaymentWrapper: React.FC<PaymentWrapperProps> = ({
   children,
 }) => {
   const stripePromise = stripeKey ? getStripePromise(stripeKey) : null;
+
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      try {
+        navigator.sendBeacon(
+          '/api/checkout/graphql',
+          JSON.stringify({
+            query: `mutation SendSignal($input: SignalInput!) { sendSignal(input: $input) { success } }`,
+            variables: {
+              input: {
+                type: 'CHECKOUT_ABANDON',
+                timestamp: Date.now(),
+              },
+            },
+          })
+        );
+      } catch {}
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, []);
 
   if (stripePromise) {
     return (
