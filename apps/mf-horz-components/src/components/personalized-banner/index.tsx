@@ -4,6 +4,7 @@ import {
   HomeBannerContent,
   SecondaryBannerContent,
 } from '@gfed-medusa/sf-lib-common/types/cms';
+import { getImageKitUrl } from '@gfed-medusa/sf-lib-common/lib/utils/imagekit';
 import { Button, Heading } from '@medusajs/ui';
 
 import { Link } from '../link';
@@ -110,7 +111,7 @@ function PersonalizedBanner({ bannerContent }: PersonalizedBannerProps) {
         <div className="bg-ui-bg-subtle relative isolate overflow-hidden">
           {imageUrl && (
             <img
-              src={imageUrl}
+              src={getImageKitUrl(imageUrl, { width: 1920, quality: 80 })}
               alt=""
               aria-hidden="true"
               className="absolute inset-0 h-full w-full object-cover"
@@ -173,7 +174,7 @@ function PersonalizedBanner({ bannerContent }: PersonalizedBannerProps) {
               >
                 {banner.image?.asset?.url && (
                   <img
-                    src={banner.image.asset.url}
+                    src={getImageKitUrl(banner.image.asset.url, { width: 800, quality: 80 })}
                     alt=""
                     aria-hidden="true"
                     className="absolute inset-0 h-full w-full object-cover"
