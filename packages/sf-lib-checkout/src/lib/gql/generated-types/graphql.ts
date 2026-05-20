@@ -95,6 +95,48 @@ export type AuthPayload = {
   token: Scalars['String']['output'];
 };
 
+export type BannerButton = {
+  __typename?: 'BannerButton';
+  href?: Maybe<Scalars['String']['output']>;
+  label?: Maybe<Scalars['String']['output']>;
+  openInNewTab?: Maybe<Scalars['Boolean']['output']>;
+};
+
+export type BrowseProductHit = {
+  __typename?: 'BrowseProductHit';
+  categoryHandles: Array<Scalars['String']['output']>;
+  categoryIds: Array<Scalars['String']['output']>;
+  collectionHandle?: Maybe<Scalars['String']['output']>;
+  collectionId?: Maybe<Scalars['String']['output']>;
+  currencyCode?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  displayOriginalPrice?: Maybe<Scalars['String']['output']>;
+  displayPrice?: Maybe<Scalars['String']['output']>;
+  handle: Scalars['String']['output'];
+  id: Scalars['ID']['output'];
+  isSellable: Scalars['Boolean']['output'];
+  originalPriceAmount?: Maybe<Scalars['Float']['output']>;
+  priceAmount?: Maybe<Scalars['Float']['output']>;
+  thumbnail?: Maybe<Scalars['String']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+};
+
+export type BrowseProducts = {
+  __typename?: 'BrowseProducts';
+  hitsPerPage: Scalars['Int']['output'];
+  items: Array<BrowseProductHit>;
+  page: Scalars['Int']['output'];
+  params: Scalars['String']['output'];
+  total: Scalars['Int']['output'];
+  totalPages: Scalars['Int']['output'];
+};
+
+export enum BrowseProductsSort {
+  Latest = 'LATEST',
+  PriceAsc = 'PRICE_ASC',
+  PriceDesc = 'PRICE_DESC',
+}
+
 export enum CacheControlScope {
   Private = 'PRIVATE',
   Public = 'PUBLIC',
@@ -163,6 +205,24 @@ export type CompleteCartResponse =
   | CompleteCartErrorResult
   | CompleteCartOrderResult;
 
+export type ConversionInput = {
+  amount: Scalars['Float']['input'];
+  checkoutSignalId?: InputMaybe<Scalars['String']['input']>;
+  currency: Scalars['String']['input'];
+  deviceId: Scalars['String']['input'];
+  items?: InputMaybe<Array<ConversionLineItemInput>>;
+  orderId: Scalars['String']['input'];
+  userId?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type ConversionLineItemInput = {
+  category?: InputMaybe<Scalars['String']['input']>;
+  price: Scalars['Float']['input'];
+  productId: Scalars['String']['input'];
+  quantity: Scalars['Int']['input'];
+  variantId?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type Country = {
   __typename?: 'Country';
   displayName?: Maybe<Scalars['String']['output']>;
@@ -218,11 +278,25 @@ export type CustomerAddress = {
   province?: Maybe<Scalars['String']['output']>;
 };
 
+export type DecisionReasoning = {
+  __typename?: 'DecisionReasoning';
+  confidence: Scalars['Float']['output'];
+  factors: Array<Scalars['String']['output']>;
+  intent: Scalars['String']['output'];
+  modelVersion: Scalars['String']['output'];
+};
+
 export type DeleteCustomerAddressResult = {
   __typename?: 'DeleteCustomerAddressResult';
   deleted: Scalars['Boolean']['output'];
   id: Scalars['ID']['output'];
 };
+
+export enum EngagementLevel {
+  High = 'HIGH',
+  Low = 'LOW',
+  Medium = 'MEDIUM',
+}
 
 export type Footer = {
   __typename?: 'Footer';
@@ -233,6 +307,33 @@ export type Footer = {
   social?: Maybe<Array<SocialLink>>;
   storeName?: Maybe<Scalars['String']['output']>;
 };
+
+export type HomeBanner = {
+  __typename?: 'HomeBanner';
+  _id: Scalars['ID']['output'];
+  _type: Scalars['String']['output'];
+  buttons?: Maybe<Array<BannerButton>>;
+  description?: Maybe<Scalars['String']['output']>;
+  eyebrow?: Maybe<Scalars['String']['output']>;
+  image?: Maybe<SanityImage>;
+  secondaryBanners?: Maybe<Array<SecondaryBanner>>;
+  showPoweredBy?: Maybe<Scalars['Boolean']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+};
+
+export type IntentSignals = {
+  __typename?: 'IntentSignals';
+  cartToPurchaseRate: Scalars['Float']['output'];
+  researchDepth: Scalars['Float']['output'];
+  returnRate: Scalars['Float']['output'];
+};
+
+export enum LifecycleStage {
+  Frequent = 'FREQUENT',
+  Loyal = 'LOYAL',
+  New = 'NEW',
+  Returning = 'RETURNING',
+}
 
 export type LineItem = {
   __typename?: 'LineItem';
@@ -275,6 +376,8 @@ export type Mutation = {
   logout: Scalars['Boolean']['output'];
   register: AuthPayload;
   requestOrderTransfer?: Maybe<OrderTransferResult>;
+  sendSignal: SendSignalResponse;
+  submitConversion: Scalars['Boolean']['output'];
   transferCart?: Maybe<Cart>;
   updateCart?: Maybe<Cart>;
   updateCustomer: Customer;
@@ -349,6 +452,14 @@ export type Mutation_RegisterArgs = {
 
 export type Mutation_RequestOrderTransferArgs = {
   orderId: Scalars['ID']['input'];
+};
+
+export type Mutation_SendSignalArgs = {
+  input: SignalInput;
+};
+
+export type Mutation_SubmitConversionArgs = {
+  input: ConversionInput;
 };
 
 export type Mutation_TransferCartArgs = {
@@ -428,6 +539,7 @@ export type PartialRichText = {
 export type Payment = {
   __typename?: 'Payment';
   amount: Scalars['Int']['output'];
+  cardLast4?: Maybe<Scalars['String']['output']>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
   currencyCode: Scalars['String']['output'];
   data?: Maybe<Scalars['JSON']['output']>;
@@ -486,6 +598,24 @@ export enum PaymentStatus {
   Voided = 'voided',
 }
 
+export type PersonalizationResult = {
+  __typename?: 'PersonalizationResult';
+  cacheKey: Scalars['String']['output'];
+  components: Array<PersonalizedComponent>;
+  reasoning: DecisionReasoning;
+  servedAt: Scalars['String']['output'];
+};
+
+export type PersonalizedComponent = {
+  __typename?: 'PersonalizedComponent';
+  component: Scalars['String']['output'];
+  contentId?: Maybe<Scalars['String']['output']>;
+  priority: Scalars['Int']['output'];
+  propsOverrides?: Maybe<Scalars['JSON']['output']>;
+  reasoning: Scalars['String']['output'];
+  score: Scalars['Float']['output'];
+};
+
 export type Price = {
   __typename?: 'Price';
   amount?: Maybe<Scalars['Float']['output']>;
@@ -500,8 +630,16 @@ export type PriceRule = {
   value: Scalars['String']['output'];
 };
 
+export type PriceSensitivity = {
+  __typename?: 'PriceSensitivity';
+  avgViewedPrice: Scalars['Float']['output'];
+  dealClickRate: Scalars['Float']['output'];
+  score: Scalars['Float']['output'];
+};
+
 export type Product = {
   __typename?: 'Product';
+  categories?: Maybe<Array<ProductCategory>>;
   collection?: Maybe<Collection>;
   collectionId?: Maybe<Scalars['String']['output']>;
   createdAt: Scalars['DateTime']['output'];
@@ -582,6 +720,7 @@ export type ProductTag = {
 export type ProductVariant = {
   __typename?: 'ProductVariant';
   allowBackorder?: Maybe<Scalars['Boolean']['output']>;
+  calculatedPrice?: Maybe<Price>;
   id: Scalars['ID']['output'];
   inventoryQuantity?: Maybe<Scalars['Int']['output']>;
   manageInventory?: Maybe<Scalars['Boolean']['output']>;
@@ -611,14 +750,19 @@ export type Promotion = {
 export type Query = {
   __typename?: 'Query';
   _empty?: Maybe<Scalars['String']['output']>;
+  browseProducts: BrowseProducts;
   cart?: Maybe<Cart>;
   collection?: Maybe<Collection>;
   collections: Array<Collection>;
+  /** Debug: current rule-based intent classification. */
+  debugIntent: DecisionReasoning;
   footer?: Maybe<Footer>;
+  homeBanner?: Maybe<HomeBanner>;
   me?: Maybe<Customer>;
   order?: Maybe<Order>;
   orders?: Maybe<OrderListResponse>;
   paymentProviders: Array<PaymentProviders>;
+  personalize: PersonalizationResult;
   product?: Maybe<Product>;
   productCategories: Array<ProductCategory>;
   productCategory?: Maybe<ProductCategory>;
@@ -627,10 +771,21 @@ export type Query = {
   regions: Array<Region>;
   searchProducts: SearchProducts;
   shippingOptions?: Maybe<Array<Maybe<ShippingOption>>>;
+  userProfile: UserProfile;
+};
+
+export type Query_BrowseProductsArgs = {
+  countryCode?: InputMaybe<Scalars['String']['input']>;
+  facets?: InputMaybe<Array<Scalars['String']['input']>>;
+  filters?: InputMaybe<Scalars['String']['input']>;
+  hitsPerPage?: InputMaybe<Scalars['Int']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  regionId?: InputMaybe<Scalars['String']['input']>;
+  sort?: InputMaybe<BrowseProductsSort>;
 };
 
 export type Query_CartArgs = {
-  id: Scalars['ID']['input'];
+  id: Scalars['String']['input'];
 };
 
 export type Query_CollectionArgs = {
@@ -641,6 +796,16 @@ export type Query_CollectionsArgs = {
   handle?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type Query_DebugIntentArgs = {
+  deviceId: Scalars['String']['input'];
+  userId?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type Query_HomeBannerArgs = {
+  audience?: InputMaybe<Scalars['String']['input']>;
+  segment?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Query_OrderArgs = {
@@ -654,6 +819,12 @@ export type Query_OrdersArgs = {
 
 export type Query_PaymentProvidersArgs = {
   regionId: Scalars['ID']['input'];
+};
+
+export type Query_PersonalizeArgs = {
+  deviceId: Scalars['String']['input'];
+  input: SurfaceContext;
+  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Query_ProductArgs = {
@@ -684,6 +855,7 @@ export type Query_ProductsArgs = {
   is_giftcard?: InputMaybe<Scalars['Boolean']['input']>;
   limit?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
+  order?: InputMaybe<Scalars['String']['input']>;
   q?: InputMaybe<Scalars['String']['input']>;
   region_id?: InputMaybe<Scalars['String']['input']>;
   tag_id?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
@@ -706,6 +878,11 @@ export type Query_ShippingOptionsArgs = {
   cartId: Scalars['ID']['input'];
 };
 
+export type Query_UserProfileArgs = {
+  deviceId: Scalars['String']['input'];
+  userId?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type Region = {
   __typename?: 'Region';
   countries?: Maybe<Array<Maybe<Country>>>;
@@ -723,6 +900,17 @@ export type RegisterCustomerInput = {
   phone?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type SanityImage = {
+  __typename?: 'SanityImage';
+  alt?: Maybe<Scalars['String']['output']>;
+  asset?: Maybe<SanityImageAsset>;
+};
+
+export type SanityImageAsset = {
+  __typename?: 'SanityImageAsset';
+  url?: Maybe<Scalars['String']['output']>;
+};
+
 export type SearchProducts = {
   __typename?: 'SearchProducts';
   hitsPerPage: Scalars['Int']['output'];
@@ -732,6 +920,21 @@ export type SearchProducts = {
   query: Scalars['String']['output'];
   total: Scalars['Int']['output'];
   totalPages: Scalars['Int']['output'];
+};
+
+export type SecondaryBanner = {
+  __typename?: 'SecondaryBanner';
+  button?: Maybe<BannerButton>;
+  description?: Maybe<Scalars['String']['output']>;
+  image?: Maybe<SanityImage>;
+  showPoweredBy?: Maybe<Scalars['Boolean']['output']>;
+  title?: Maybe<Scalars['String']['output']>;
+};
+
+export type SendSignalResponse = {
+  __typename?: 'SendSignalResponse';
+  profileUpdated: Scalars['Boolean']['output'];
+  success: Scalars['Boolean']['output'];
 };
 
 export type ServiceZone = {
@@ -784,6 +987,43 @@ export type ShippingOptionPrice = {
   priceRules?: Maybe<Array<Maybe<PriceRule>>>;
 };
 
+export type SignalInput = {
+  deviceId?: InputMaybe<Scalars['String']['input']>;
+  payload?: InputMaybe<Scalars['JSON']['input']>;
+  /** Unix epoch milliseconds */
+  timestamp?: InputMaybe<Scalars['Float']['input']>;
+  type: SignalType;
+  url?: InputMaybe<Scalars['String']['input']>;
+  userId?: InputMaybe<Scalars['String']['input']>;
+};
+
+export enum SignalType {
+  CartAdd = 'CART_ADD',
+  CartRemove = 'CART_REMOVE',
+  CartUpdateQuantity = 'CART_UPDATE_QUANTITY',
+  CheckoutAbandon = 'CHECKOUT_ABANDON',
+  CheckoutStart = 'CHECKOUT_START',
+  ExitIntent = 'EXIT_INTENT',
+  FilterApplied = 'FILTER_APPLIED',
+  ImageZoom = 'IMAGE_ZOOM',
+  PageView = 'PAGE_VIEW',
+  ProductHover = 'PRODUCT_HOVER',
+  ProductView = 'PRODUCT_VIEW',
+  QuickViewOpen = 'QUICK_VIEW_OPEN',
+  ReturnPolicyView = 'RETURN_POLICY_VIEW',
+  ReviewsView = 'REVIEWS_VIEW',
+  ScrollDepth = 'SCROLL_DEPTH',
+  SearchQuery = 'SEARCH_QUERY',
+  SearchRefine = 'SEARCH_REFINE',
+  SearchResultClick = 'SEARCH_RESULT_CLICK',
+  SecurityInfoView = 'SECURITY_INFO_VIEW',
+  SizeGuideView = 'SIZE_GUIDE_VIEW',
+  SortChanged = 'SORT_CHANGED',
+  TabSwitch = 'TAB_SWITCH',
+  TimeOnPage = 'TIME_ON_PAGE',
+  TrustBadgeClick = 'TRUST_BADGE_CLICK',
+}
+
 export type SocialLink = {
   __typename?: 'SocialLink';
   text: Scalars['String']['output'];
@@ -795,6 +1035,16 @@ export type StoreLineItemDeleteResponse = {
   deleted: Scalars['Boolean']['output'];
   id: Scalars['ID']['output'];
   object?: Maybe<Scalars['String']['output']>;
+};
+
+export type SurfaceContext = {
+  cartValue?: InputMaybe<Scalars['Float']['input']>;
+  category?: InputMaybe<Scalars['String']['input']>;
+  page: Scalars['String']['input'];
+  price?: InputMaybe<Scalars['Float']['input']>;
+  productId?: InputMaybe<Scalars['String']['input']>;
+  searchQuery?: InputMaybe<Scalars['String']['input']>;
+  surface: Scalars['String']['input'];
 };
 
 export type UpdateCartInput = {
@@ -826,6 +1076,20 @@ export type UpdateCustomerInput = {
 
 export type UpdateLineItemInput = {
   quantity: Scalars['Int']['input'];
+};
+
+export type UserProfile = {
+  __typename?: 'UserProfile';
+  categoryAffinity: Scalars['JSON']['output'];
+  deviceId: Scalars['String']['output'];
+  engagementLevel: EngagementLevel;
+  firstSeen: Scalars['Float']['output'];
+  intentSignals: IntentSignals;
+  lastSeen: Scalars['Float']['output'];
+  lifecycleStage: LifecycleStage;
+  priceSensitivity: PriceSensitivity;
+  sessionCount: Scalars['Int']['output'];
+  userId?: Maybe<Scalars['String']['output']>;
 };
 
 export type CartItemFieldsFragment = {
@@ -1322,7 +1586,7 @@ export type InitiatePaymentSessionMutation = {
 };
 
 export type GetCartQueryVariables = Exact<{
-  id: Scalars['ID']['input'];
+  id: Scalars['String']['input'];
 }>;
 
 export type GetCartQuery = {
@@ -1443,6 +1707,7 @@ export type OrderFieldsFragment = {
       amount: number;
       currencyCode: string;
       providerId: string;
+      cardLast4?: string | null;
       createdAt?: any | null;
     } | null> | null;
   } | null> | null;
@@ -3026,6 +3291,10 @@ export const OrderFieldsFragmentDoc = {
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'providerId' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'cardLast4' },
                       },
                       {
                         kind: 'Field',
@@ -6907,7 +7176,10 @@ export const GetCartDocument = {
           variable: { kind: 'Variable', name: { kind: 'Name', value: 'id' } },
           type: {
             kind: 'NonNullType',
-            type: { kind: 'NamedType', name: { kind: 'Name', value: 'ID' } },
+            type: {
+              kind: 'NamedType',
+              name: { kind: 'Name', value: 'String' },
+            },
           },
         },
       ],
@@ -7670,6 +7942,10 @@ export const GetOrderDocument = {
                       },
                       {
                         kind: 'Field',
+                        name: { kind: 'Name', value: 'cardLast4' },
+                      },
+                      {
+                        kind: 'Field',
                         name: { kind: 'Name', value: 'createdAt' },
                       },
                     ],
@@ -7925,6 +8201,10 @@ export const GetOrdersDocument = {
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'providerId' },
+                      },
+                      {
+                        kind: 'Field',
+                        name: { kind: 'Name', value: 'cardLast4' },
                       },
                       {
                         kind: 'Field',
