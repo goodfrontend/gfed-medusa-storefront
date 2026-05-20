@@ -4,10 +4,10 @@ const EXTERNAL_STORAGES = [
 ];
 
 export function getImageKitUrl(
-  src: string,
+  src?: string | null,
   options?: { width?: number; height?: number; quality?: number }
-): string {
-  if (!src) return src;
+): string | undefined {
+  if (!src) return undefined;
 
   const publicEndpoint = 'https://ik.imagekit.io/94rjnwlop';
   const normalizedEndpoint = publicEndpoint.replace(/\/$/, '');

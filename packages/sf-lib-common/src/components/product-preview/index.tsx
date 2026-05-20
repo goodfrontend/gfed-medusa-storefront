@@ -15,14 +15,12 @@ export type ProductPreviewProduct = Pick<
 export type ProductPreviewProps = {
   product: ProductPreviewProduct;
   isFeatured?: boolean;
-  imagePriority?: boolean;
   imageFetchPriority?: 'auto' | 'high' | 'low';
 };
 
 function ProductPreview({
   product,
   isFeatured,
-  imagePriority = false,
   imageFetchPriority,
 }: ProductPreviewProps) {
   const { cheapestPrice } = getProductPrice({
@@ -37,7 +35,6 @@ function ProductPreview({
           images={product.images}
           size="full"
           isFeatured={isFeatured}
-          imagePriority={imagePriority}
           imageFetchPriority={imageFetchPriority}
         />
         <div className="txt-compact-medium mt-4 flex min-w-0 flex-col items-start gap-y-1 text-left">

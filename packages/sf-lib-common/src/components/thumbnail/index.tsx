@@ -1,7 +1,6 @@
 import React from 'react';
 
-import Image from 'next/image';
-
+import { getImageKitUrl } from '../../lib/utils/imagekit';
 import { PlaceholderImage } from '@gfed-medusa/sf-lib-ui/icons/placeholder-image';
 import { Container, clx } from '@medusajs/ui';
 
@@ -11,7 +10,6 @@ type ThumbnailProps = {
   images?: any[] | null;
   size?: 'small' | 'medium' | 'large' | 'full' | 'square';
   isFeatured?: boolean;
-  imagePriority?: boolean;
   imageFetchPriority?: 'auto' | 'high' | 'low';
   className?: string;
   'data-testid'?: string;
@@ -21,7 +19,6 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
   thumbnail,
   images,
   size = 'small',
-  imagePriority = false,
   imageFetchPriority,
   className,
   'data-testid': dataTestid,
@@ -47,7 +44,6 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
       <ImageOrPlaceholder
         image={initialImage}
         size={size}
-        imagePriority={imagePriority}
         imageFetchPriority={imageFetchPriority}
       />
     </Container>
@@ -57,23 +53,18 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
 const ImageOrPlaceholder = ({
   image,
   size,
-  imagePriority,
   imageFetchPriority,
 }: Pick<
   ThumbnailProps,
-  'size' | 'imagePriority' | 'imageFetchPriority'
+  'size' | 'imageFetchPriority'
 > & { image?: string }) => {
   return image ? (
-    <Image
-      src={image}
+    <img
+      src={getImageKitUrl(image, { width: 800, quality: 40 })}
       alt="Thumbnail"
       className="absolute inset-0 object-cover object-center"
       draggable={false}
-      priority={imagePriority}
       {...(imageFetchPriority ? { fetchPriority: imageFetchPriority } : {})}
-      quality={40}
-      sizes="(max-width: 576px) 280px, (max-width: 768px) 360px, (max-width: 992px) 480px, 800px"
-      fill
     />
   ) : (
     <div className="absolute inset-0 flex h-full w-full items-center justify-center">
