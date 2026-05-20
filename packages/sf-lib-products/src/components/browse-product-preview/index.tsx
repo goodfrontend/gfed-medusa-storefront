@@ -15,7 +15,6 @@ import type { BrowseProductHitFragment } from '@/types/graphql';
 type BrowseProductPreviewProps = {
   product: BrowseProductHitFragment;
   isFeatured?: boolean;
-  imagePriority?: boolean;
   imageFetchPriority?: 'auto' | 'high' | 'low';
 };
 
@@ -57,7 +56,6 @@ const getBrowseProductPrice = (
 const BrowseProductPreview = ({
   product,
   isFeatured,
-  imagePriority = false,
   imageFetchPriority,
 }: BrowseProductPreviewProps) => {
   const price = getBrowseProductPrice(product);
@@ -79,7 +77,6 @@ const BrowseProductPreview = ({
           images={[]}
           size="full"
           isFeatured={isFeatured}
-          imagePriority={imagePriority}
           imageFetchPriority={imageFetchPriority}
         />
         <div className="txt-compact-medium mt-4 flex min-w-0 flex-col items-start gap-y-1 text-left">
