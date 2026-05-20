@@ -48,11 +48,53 @@ const structure = (S: StructureBuilder) =>
             .title('Personalization')
             .items([
               S.listItem()
-                .title('Contextual Banners')
+                .title('Hero Banners')
                 .child(
                   S.documentList()
-                    .title('Contextual Banners')
-                    .filter('_type == "contextualBanner"')
+                    .title('Hero Banners')
+                    .filter('_type == "heroBanner"')
+                ),
+              S.listItem()
+                .title('Promotional Banners')
+                .child(
+                  S.documentList()
+                    .title('Promotional Banners')
+                    .filter('_type == "promotionalBanner"')
+                ),
+              S.listItem()
+                .title('Trust Badges')
+                .child(
+                  S.documentList()
+                    .title('Trust Badges')
+                    .filter('_type == "trustBadge"')
+                ),
+              S.listItem()
+                .title('Category Tiles')
+                .child(
+                  S.documentList()
+                    .title('Category Tiles')
+                    .filter('_type == "categoryTile"')
+                ),
+              S.listItem()
+                .title('Social Proof')
+                .child(
+                  S.documentList()
+                    .title('Social Proof')
+                    .filter('_type == "socialProof"')
+                ),
+              S.listItem()
+                .title('Email Captures')
+                .child(
+                  S.documentList()
+                    .title('Email Captures')
+                    .filter('_type == "emailCapture"')
+                ),
+              S.listItem()
+                .title('Urgency Banners')
+                .child(
+                  S.documentList()
+                    .title('Urgency Banners')
+                    .filter('_type == "urgencyBanner"')
                 ),
             ])
         ),
