@@ -6,11 +6,14 @@ const BFF_URL =
 export async function POST(req: NextRequest) {
   const bodyText = await req.text();
 
+  const bffApiKey = req.headers.get('x-bff-api-key');
+
   const bffRes = await fetch(BFF_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       cookie: req.headers.get('cookie') || '',
+      ...(bffApiKey ? { 'x-bff-api-key': bffApiKey } : {}),
     },
     body: bodyText,
     credentials: 'include',

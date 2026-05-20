@@ -38,6 +38,11 @@ export const ORDER_FRAGMENT = gql`
           handle
           thumbnail
           createdAt
+          categories {
+            id
+            name
+            handle
+          }
         }
       }
     }

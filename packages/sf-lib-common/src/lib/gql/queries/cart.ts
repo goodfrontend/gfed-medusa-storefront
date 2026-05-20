@@ -3,7 +3,7 @@ import { gql } from '@apollo/client';
 import { CART_FRAGMENT } from '../fragments/cart';
 
 export const GET_CART_QUERY = gql`
-  query GetCart($id: ID!) {
+  query GetCart($id: String!) {
     cart(id: $id) {
       ...CartFields
     }
