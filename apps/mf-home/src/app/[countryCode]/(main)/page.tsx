@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 
+import { WebComponent } from '@gfed-medusa/sf-lib-common/components/web-component';
 import { FeaturedCategoryRail } from '../../../components/featured-category-rail';
 import { getFeaturedCategories } from '../../../lib/data/featured-categories';
 
@@ -39,6 +40,7 @@ export default async function Home({ params }: Props) {
 
   return (
     <div>
+      <WebComponent tag="mfe-personalized-homepage-hero" />
       <ul className="flex flex-col gap-x-6">
         {featuredCategories.map(({ category, products, title }) => (
           <li key={category.id}>
