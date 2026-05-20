@@ -1,8 +1,12 @@
+'use client';
+
 import { LocalizedClientLink } from '@gfed-medusa/sf-lib-common/components/localized-client-link';
 import { PreviewPrice } from '@gfed-medusa/sf-lib-common/components/preview-price';
 import { Thumbnail } from '@gfed-medusa/sf-lib-common/components/thumbnail';
 import { getPercentageDiff } from '@gfed-medusa/sf-lib-common/lib/utils/get-percentage-diff';
 import { convertToLocale } from '@gfed-medusa/sf-lib-common/lib/utils/money';
+import { sendClientSignal } from '@gfed-medusa/sf-lib-common/lib/personalization/client-signal';
+import { SignalType } from '@gfed-medusa/sf-lib-common/types/graphql';
 import type { VariantPrice } from '@gfed-medusa/sf-lib-common/types/prices';
 import { Text } from '@medusajs/ui';
 
@@ -59,7 +63,16 @@ const BrowseProductPreview = ({
   const price = getBrowseProductPrice(product);
 
   return (
-    <LocalizedClientLink href={`/products/${product.handle}`} className="group">
+    <LocalizedClientLink
+      href={`/products/${product.handle}`}
+      className="group"
+      onClick={() => {
+        void sendClientSignal(SignalType.SearchResultClick, {
+          productId: product.id,
+          productHandle: product.handle,
+        });
+      }}
+    >
       <div data-testid="product-wrapper">
         <Thumbnail
           thumbnail={product.thumbnail}

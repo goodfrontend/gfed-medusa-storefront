@@ -2,6 +2,8 @@
 
 import { FilterRadioGroup } from '@gfed-medusa/sf-lib-ui/components/filter-radio-group';
 import NativeSelect from '@gfed-medusa/sf-lib-ui/components/native-select';
+import { sendClientSignal } from '@gfed-medusa/sf-lib-common/lib/personalization/client-signal';
+import { SignalType } from '@gfed-medusa/sf-lib-common/types/graphql';
 
 export type SortOptions = 'price_asc' | 'price_desc' | 'created_at';
 
@@ -35,6 +37,7 @@ const SortProducts = ({
 }: SortProductsProps) => {
   const handleChange = (value: SortOptions) => {
     setQueryParams('sortBy', value);
+    void sendClientSignal(SignalType.SortChanged, { sortBy: value });
   };
 
   if (variant === 'dropdown') {
