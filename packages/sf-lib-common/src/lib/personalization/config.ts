@@ -17,7 +17,7 @@ export interface PersonalizationConfig {
   dismissCooldownMs: number;
   bannerAutoDismissMs: number;
   historyMaxLength: number;
-  priceThresholdUsd: number;
+  priceThreshold: number;
   pdpHesitationMs: number;
   highScrollThreshold: number;
 }
@@ -52,7 +52,7 @@ export const PERSONALIZATION_CONFIG: PersonalizationConfig = {
   dismissCooldownMs: 60 * 60 * 1000,
   bannerAutoDismissMs: 30_000,
   historyMaxLength: 20,
-  priceThresholdUsd: 200,
+  priceThreshold: 80,
   pdpHesitationMs: 30_000,
   highScrollThreshold: 0.8,
 };

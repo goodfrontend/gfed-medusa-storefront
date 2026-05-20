@@ -42,15 +42,25 @@ const apolloClient = new ApolloClient({
  * @returns Server-side Apollo client
  */
 export function createServerApolloClient(cookieHeader?: string) {
+  const bffApiKey = process.env.BFF_API_KEY;
+
   const authLink = new ApolloLink((operation, forward) => {
+    const headers: Record<string, string> = {};
+
     if (cookieHeader) {
+      headers.Cookie = cookieHeader;
+    }
+
+    if (bffApiKey) {
+      headers['x-bff-api-key'] = bffApiKey;
+    }
+
+    if (Object.keys(headers).length > 0) {
       operation.setContext({
         http: {
           includeCredentials: true,
         },
-        headers: {
-          Cookie: cookieHeader,
-        },
+        headers,
       });
     }
 
