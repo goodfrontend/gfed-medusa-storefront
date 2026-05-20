@@ -15,7 +15,7 @@ import { Product } from '@/types/graphql';
 
 const PDP_HESITATION_MS = PERSONALIZATION_CONFIG.pdpHesitationMs;
 const HIGH_SCROLL_THRESHOLD = PERSONALIZATION_CONFIG.highScrollThreshold;
-const PRICE_THRESHOLD_USD = PERSONALIZATION_CONFIG.priceThresholdUsd;
+const PRICE_THRESHOLD = PERSONALIZATION_CONFIG.priceThreshold;
 
 function getScrollPercentage(): number {
   const scrollTop = window.scrollY;
@@ -140,7 +140,7 @@ export function BehaviorTracker({ product }: BehaviorTrackerProps) {
     const productPrice = getCheapestVariantPrice(product);
     const hasCart = Boolean(cartId);
 
-    if (productPrice && productPrice >= PRICE_THRESHOLD_USD && !hasCart) {
+    if (productPrice && productPrice >= PRICE_THRESHOLD && !hasCart) {
       hesitationTimeoutRef.current = setTimeout(() => {
         emitSignal('pdp-hesitation', {
           productId: product.id,
