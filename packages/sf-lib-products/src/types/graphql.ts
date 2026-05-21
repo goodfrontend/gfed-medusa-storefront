@@ -670,6 +670,7 @@ export type ProductCategory = {
   name: Scalars['String']['output'];
   parentCategory?: Maybe<ProductCategory>;
   products?: Maybe<ProductList>;
+  thumbnail?: Maybe<Scalars['String']['output']>;
 };
 
 export type ProductHit = {
@@ -1284,6 +1285,7 @@ export type ProductCategoryFragment = {
   name: string;
   description?: string | null;
   handle: string;
+  thumbnail?: string | null;
 };
 
 export type ProductCollectionFragment = {
@@ -2767,6 +2769,7 @@ export const ProductCategoryFragmentDoc = {
           { kind: 'Field', name: { kind: 'Name', value: 'name' } },
           { kind: 'Field', name: { kind: 'Name', value: 'description' } },
           { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'thumbnail' } },
         ],
       },
     },
@@ -8676,6 +8679,7 @@ export const GetProductCategoryDocument = {
           { kind: 'Field', name: { kind: 'Name', value: 'name' } },
           { kind: 'Field', name: { kind: 'Name', value: 'description' } },
           { kind: 'Field', name: { kind: 'Name', value: 'handle' } },
+          { kind: 'Field', name: { kind: 'Name', value: 'thumbnail' } },
         ],
       },
     },
