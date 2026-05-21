@@ -90,6 +90,7 @@ export const PRODUCT_CATEGORY_FRAGMENT = gql`
     name
     description
     handle
+    thumbnail
   }
 `;
 
