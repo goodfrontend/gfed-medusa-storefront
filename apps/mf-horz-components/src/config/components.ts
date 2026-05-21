@@ -24,6 +24,7 @@ import {
 } from './utils/segment-utils';
 import {
   deriveSurfaceContext,
+  SurfaceContext,
 } from './utils/derive-surface-context';
 import {
   getDeviceIdFromCookieHeader,
@@ -301,27 +302,41 @@ function createPersonalizedSurfaceComponent(surface: string, elementTag: string)
       const storefrontUrl = request?.storefrontUrl;
       if (!storefrontUrl) return { components: [] };
 
-      const url = new URL(storefrontUrl);
-      const deviceId = getDeviceIdFromCookieHeader(ctx?.cookieHeader);
+      let url: URL;
+      try {
+        url = new URL(storefrontUrl);
+      } catch {
+        return { components: [] };
+      }
+
+      if (!ctx) return { components: [] };
+      const deviceId = getDeviceIdFromCookieHeader(ctx.cookieHeader);
       if (!deviceId) return { components: [] };
 
-      const customer = await getCachedCustomer(ctx as StorefrontContext);
+      const customer = await getCachedCustomer(ctx);
       const userId = customer?.id;
 
-      const context = await deriveSurfaceContext(surface, url, ctx);
+      let context: SurfaceContext;
+      try {
+        context = await deriveSurfaceContext(surface, url, ctx);
+      } catch (e) {
+        console.error('[createPersonalizedSurfaceComponent] Failed to derive surface context:', e);
+        return { components: [] };
+      }
+
       const personalization = await getPersonalization(
         surface,
         url.pathname,
         deviceId,
-        ctx as StorefrontContext,
+        ctx,
         Object.keys(context).length > 0 ? context : undefined,
         userId
-      );
+      ).catch(() => null);
 
-      void sendPageViewSignal(surface, ctx as StorefrontContext, context, userId);
+      void sendPageViewSignal(surface, ctx, context, userId);
 
       if (surface === 'product_detail' && context.productId) {
-        void sendSignal('PRODUCT_VIEW', ctx as StorefrontContext, {
+        void sendSignal('PRODUCT_VIEW', ctx, {
           productId: context.productId,
           category: context.category,
           ...(context.price != null ? { price: context.price } : {}),
@@ -329,116 +344,6 @@ function createPersonalizedSurfaceComponent(surface: string, elementTag: string)
       }
 
       const components = personalization?.components ?? [];
-
-      // Resolve productIds to full product data via the PLP API
-      if (components.length > 0) {
-        const componentsWithProductIds = components.filter(
-          (c) =>
-            c.propsOverrides?.productIds &&
-            Array.isArray(c.propsOverrides.productIds) &&
-            (c.propsOverrides.productIds as string[]).length > 0
-        );
-
-        if (componentsWithProductIds.length > 0) {
-          // Collect all unique product IDs across components
-          const allProductIds = [
-            ...new Set(
-              componentsWithProductIds.flatMap(
-                (c) => c.propsOverrides.productIds as string[]
-              )
-            ),
-          ];
-          const truncatedIds = allProductIds.slice(0, 50);
-          if (allProductIds.length > 50) {
-            console.warn('[createPersonalizedSurfaceComponent] Truncated product IDs from', allProductIds.length, 'to 50 for surface', surface);
-          }
-
-          // Extract countryCode from the URL pathname
-          const segments = url.pathname.split('/').filter(Boolean);
-          const countryCode =
-            segments[0]?.length === 2 ? segments[0] : '';
-
-          if (!countryCode) {
-            console.warn('[createPersonalizedSurfaceComponent] Empty countryCode, skipping product resolution');
-          } else if (truncatedIds.length > 0) {
-            const plpUrl = `${url.origin}/api/products/plp?countryCode=${encodeURIComponent(countryCode)}&${truncatedIds.map((id) => `productId=${encodeURIComponent(id)}`).join('&')}`;
-
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 5000);
-            try {
-              const response = await fetch(plpUrl, {
-                headers: {
-                  cookie: ctx?.cookieHeader ?? '',
-                },
-                signal: controller.signal,
-              });
-              clearTimeout(timeoutId);
-
-              if (response.ok) {
-                type ProductHit = {
-                  id: string;
-                  title?: string | null;
-                  handle: string;
-                  thumbnail?: string | null;
-                  priceAmount?: number | null;
-                  currencyCode?: string | null;
-                  originalPriceAmount?: number | null;
-                };
-
-                const result = await response.json() as { products?: ProductHit[] };
-                const products = result.products ?? [];
-
-                const mappedProducts = products.map((hit) => ({
-                  id: hit.id,
-                  title: hit.title ?? '',
-                  handle: hit.handle,
-                  thumbnail: hit.thumbnail,
-                  images: hit.thumbnail ? [{ id: hit.id, url: hit.thumbnail }] : [],
-                  variants: hit.priceAmount != null ? [{
-                    id: `${hit.id}-variant`,
-                    price: {
-                      amount: hit.priceAmount,
-                      currencyCode: hit.currencyCode ?? 'USD',
-                      priceType: hit.originalPriceAmount ? 'sale' : 'default',
-                    },
-                    ...(hit.originalPriceAmount != null ? {
-                      originalPrice: {
-                        amount: hit.originalPriceAmount,
-                        currencyCode: hit.currencyCode ?? 'USD',
-                        priceType: 'default',
-                      },
-                    } : {}),
-                  }] : [],
-                }));
-
-                const enrichedComponents = components.map((comp) => {
-                  const productIds = comp.propsOverrides?.productIds as string[] | undefined;
-                  if (!productIds || productIds.length === 0) return comp;
-                  const resolved = mappedProducts.filter((p) => productIds.includes(p.id));
-                  if (resolved.length < productIds.length) {
-                    console.warn('[createPersonalizedSurfaceComponent] Could not resolve', productIds.length - resolved.length, 'of', productIds.length, 'product IDs for surface', surface);
-                  }
-                  if (resolved.length === 0) return comp;
-                  return {
-                    ...comp,
-                    propsOverrides: {
-                      ...comp.propsOverrides,
-                      products: resolved,
-                    },
-                  };
-                });
-
-                return { components: enrichedComponents };
-              } else {
-                console.warn('[createPersonalizedSurfaceComponent] PLP fetch failed with status', response.status, 'for surface', surface);
-              }
-            } catch (error) {
-              clearTimeout(timeoutId);
-              console.error('[createPersonalizedSurfaceComponent] Failed to resolve product IDs:', error);
-            }
-          }
-        }
-      }
 
       return { components };
     },
