@@ -1,9 +1,5 @@
 export { HeroBanner } from './hero-banner';
-export { ProductCarousel } from './product-carousel';
 export { TrustBar } from './trust-bar';
-export { CategoryGrid } from './category-grid';
 export { SocialProofBanner } from './social-proof-banner';
-export { ReviewCarousel } from './review-carousel';
-export { UpsellBlock } from './upsell-block';
 export { EmailCapture } from './email-capture';
 export { UrgencyBanner } from './urgency-banner';
