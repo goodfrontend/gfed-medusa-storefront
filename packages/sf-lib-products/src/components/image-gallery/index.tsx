@@ -1,14 +1,19 @@
+'use client';
+
 import Image from 'next/image';
 
 import { Container } from '@medusajs/ui';
 
+import { sendClientSignal } from '@gfed-medusa/sf-lib-common/lib/personalization/client-signal';
+import { SignalType } from '@gfed-medusa/sf-lib-common/types/graphql';
 import { ProductImage } from '@/types/graphql';
 
 type ImageGalleryProps = {
   images: ProductImage[];
+  productId: string;
 };
 
-const ImageGallery = ({ images }: ImageGalleryProps) => {
+const ImageGallery = ({ images, productId }: ImageGalleryProps) => {
   return (
     <div className="relative flex items-start">
       <div className="small:mx-16 flex flex-1 flex-col gap-y-4">
@@ -32,6 +37,12 @@ const ImageGallery = ({ images }: ImageGalleryProps) => {
                     objectFit: 'cover',
                   }}
                   {...(index === 0 ? { fetchPriority: 'high' } : {})}
+                  onClick={() => {
+                    void sendClientSignal(SignalType.ImageZoom, {
+                      productId,
+                      imageUrl: image.url,
+                    });
+                  }}
                 />
               )}
             </Container>

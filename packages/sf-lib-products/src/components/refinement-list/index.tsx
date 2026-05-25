@@ -6,6 +6,9 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 
 import { clx } from '@medusajs/ui';
 
+import { sendClientSignal } from '@gfed-medusa/sf-lib-common/lib/personalization/client-signal';
+import { SignalType } from '@gfed-medusa/sf-lib-common/types/graphql';
+
 import SortProducts, { SortOptions } from './sort-products';
 
 type RefinementListProps = {
@@ -39,6 +42,11 @@ const RefinementList = ({
 
   const setQueryParams = (name: string, value: string) => {
     const query = createQueryString(name, value);
+
+    if (name !== 'sortBy') {
+      void sendClientSignal(SignalType.FilterApplied, { filterName: name, filterValue: value });
+    }
+
     router.push(`${pathname}?${query}`);
   };
 
