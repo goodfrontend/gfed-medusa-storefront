@@ -32,6 +32,9 @@ import { GET_CART_QUERY } from '@/lib/gql/queries/cart';
 
 import { getRegion } from './regions';
 import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
+import { sendSignal } from '@gfed-medusa/sf-lib-common/lib/data/personalization';
+import { SignalType } from '@gfed-medusa/sf-lib-common/types/graphql';
+import { retrieveCustomer } from '@gfed-medusa/sf-lib-common/lib/data/customer';
 
 export const retrieveCart = async (
   cartId: string,
@@ -186,6 +189,12 @@ export const addToCart = async (
       } catch {
         // Not in Next.js environment
       }
+
+      // Send cart add signal for personalization
+      const cartUserId = ctx.cookieHeader?.includes('_medusa_jwt=')
+        ? (await retrieveCustomer(ctx).catch(() => null))?.id
+        : undefined;
+      void sendSignal(SignalType.CartAdd, ctx, { variantId, quantity }, undefined, cartUserId);
     }
 
     return lineItem;

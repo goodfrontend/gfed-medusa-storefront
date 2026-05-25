@@ -4,6 +4,8 @@ import React, { useEffect } from 'react';
 
 import { Stripe, loadStripe } from '@stripe/stripe-js';
 
+import { getDeviceId } from '@gfed-medusa/sf-lib-common/lib/personalization/device-id';
+
 import StripeWrapper from './stripe-wrapper';
 
 type PaymentWrapperProps = {
@@ -33,17 +35,26 @@ const PaymentWrapper: React.FC<PaymentWrapperProps> = ({
   useEffect(() => {
     const handleBeforeUnload = () => {
       try {
+        const deviceId = getDeviceId();
+        if (!deviceId) return;
         navigator.sendBeacon(
           '/api/checkout/graphql',
-          JSON.stringify({
-            query: `mutation SendSignal($input: SignalInput!) { sendSignal(input: $input) { success } }`,
-            variables: {
-              input: {
-                type: 'CHECKOUT_ABANDON',
-                timestamp: Date.now(),
-              },
-            },
-          })
+          new Blob(
+            [
+              JSON.stringify({
+                query: `mutation SendSignal($input: SignalInput!) { sendSignal(input: $input) { success } }`,
+                variables: {
+                  input: {
+                    deviceId,
+                    type: 'CHECKOUT_ABANDON',
+                    url: window.location.href,
+                    timestamp: Date.now(),
+                  },
+                },
+              }),
+            ],
+            { type: 'application/json' }
+          )
         );
       } catch {}
     };

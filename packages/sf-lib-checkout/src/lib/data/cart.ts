@@ -287,6 +287,11 @@ export const updateLineItem = async (
 
       const fulfillmentCacheTag = getCacheTag('fulfillment', ctx);
       revalidateTag(fulfillmentCacheTag);
+
+      const cartUserId = ctx.cookieHeader?.includes('_medusa_jwt=')
+        ? (await retrieveCustomer(ctx).catch(() => null))?.id
+        : undefined;
+      void sendSignal(SignalType.CartUpdateQuantity, ctx, { lineId, quantity }, undefined, cartUserId);
     }
 
     return lineItem;
