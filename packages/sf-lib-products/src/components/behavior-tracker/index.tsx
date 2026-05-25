@@ -2,6 +2,9 @@
 
 import { useEffect, useRef } from 'react';
 
+import { sendClientSignal } from '@gfed-medusa/sf-lib-common/lib/personalization/client-signal';
+import { SignalType } from '@gfed-medusa/sf-lib-common/types/graphql';
+
 import {
   PERSONALIZATION_CONFIG,
   getSegmentIdFromCollection,
@@ -11,6 +14,7 @@ import {
   setSegmentCookie,
 } from '@gfed-medusa/sf-lib-common/lib/personalization/behavior-tracker';
 import { useStorefrontContext } from '@gfed-medusa/sf-lib-common/lib/data/context';
+import { useTimeOnPage } from '@gfed-medusa/sf-lib-common/lib/hooks/use-time-on-page';
 import { Product } from '@/types/graphql';
 
 const PDP_HESITATION_MS = PERSONALIZATION_CONFIG.pdpHesitationMs;
@@ -125,6 +129,10 @@ export function BehaviorTracker({ product }: BehaviorTrackerProps) {
   const scrollHandlerRef = useRef<(() => void) | null>(null);
   const scrollTrackedRef = useRef(false);
   const historyTrackedRef = useRef(false);
+  const firedDepthRef = useRef<Set<number>>(new Set());
+  const exitIntentFiredRef = useRef(false);
+
+  useTimeOnPage('pdp', Boolean(product?.id));
 
   useEffect(() => {
     if (!product?.id) return;
@@ -151,6 +159,20 @@ export function BehaviorTracker({ product }: BehaviorTrackerProps) {
 
     const handleScroll = throttle(() => {
       if (scrollTrackedRef.current) return;
+
+      // SCROLL_DEPTH analytics signal
+      const scrollPct = Math.round(getScrollPercentage() * 100);
+      const depthThresholds = [25, 50, 75, 90];
+      for (const threshold of depthThresholds) {
+        if (scrollPct >= threshold && !firedDepthRef.current.has(threshold)) {
+          firedDepthRef.current.add(threshold);
+          void sendClientSignal(SignalType.ScrollDepth, {
+            depth: threshold,
+            page: window.location.pathname,
+          });
+        }
+      }
+
       if (getScrollPercentage() >= HIGH_SCROLL_THRESHOLD && !hasCart) {
         scrollTrackedRef.current = true;
         emitSignal('high-scroll-no-action', {
@@ -175,6 +197,19 @@ export function BehaviorTracker({ product }: BehaviorTrackerProps) {
       scrollTrackedRef.current = false;
     };
   }, [product, cartId]);
+
+  useEffect(() => {
+    const handleMouseLeave = (e: MouseEvent) => {
+      if (e.clientY <= 0 && !exitIntentFiredRef.current) {
+        exitIntentFiredRef.current = true;
+        void sendClientSignal(SignalType.ExitIntent, {
+          page: window.location.pathname,
+        });
+      }
+    };
+    document.documentElement.addEventListener('mouseleave', handleMouseLeave);
+    return () => document.documentElement.removeEventListener('mouseleave', handleMouseLeave);
+  }, []);
 
   return null;
 }

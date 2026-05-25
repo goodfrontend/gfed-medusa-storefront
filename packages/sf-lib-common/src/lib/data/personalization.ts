@@ -45,7 +45,8 @@ export async function sendSignal(
       apolloClient
     );
     return true;
-  } catch {
+  } catch (error) {
+    console.warn('[sendSignal] Failed to send signal:', type, error);
     return false;
   }
 }
