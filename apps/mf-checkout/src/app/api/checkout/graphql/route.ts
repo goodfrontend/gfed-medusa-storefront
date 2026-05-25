@@ -24,11 +24,15 @@ export async function OPTIONS() {
 export async function POST(req: NextRequest) {
   const bodyText = await req.text();
 
+  // Use incoming API key if present (server-originated requests), otherwise inject from env
+  const bffApiKey = req.headers.get('x-bff-api-key') || process.env.BFF_API_KEY;
+
   const bffRes = await fetch(BFF_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       cookie: req.headers.get('cookie') || '',
+      ...(bffApiKey ? { 'x-bff-api-key': bffApiKey } : {}),
     },
     body: bodyText,
     credentials: 'include',

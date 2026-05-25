@@ -6,7 +6,8 @@ const BFF_URL =
 export async function POST(req: NextRequest) {
   const bodyText = await req.text();
 
-  const bffApiKey = req.headers.get('x-bff-api-key');
+  // Use incoming API key if present (server-originated requests), otherwise inject from env
+  const bffApiKey = req.headers.get('x-bff-api-key') || process.env.BFF_API_KEY;
 
   const bffRes = await fetch(BFF_URL, {
     method: 'POST',
