@@ -21,6 +21,10 @@ import { PopularSearches } from './popular-searches';
 import { RecentSearches } from './recent-searches';
 import { useRecentSearches } from './use-recent-searches';
 
+import { sendClientSignal } from '@gfed-medusa/sf-lib-common/lib/personalization/client-signal';
+import { getDeviceId } from '@gfed-medusa/sf-lib-common/lib/personalization/device-id';
+import { SignalType } from '@gfed-medusa/sf-lib-common/types/graphql';
+
 function SearchDialog({
   isOpen,
   onClose,
@@ -282,6 +286,7 @@ const SearchBox = ({
 }: SearchBoxProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const queryHook = useCallback(
     (q: string, search: (value: string) => void) => {
@@ -305,14 +310,56 @@ const SearchBox = ({
     }
   }, []);
 
+  // Cleanup debounce timer on unmount
+  useEffect(() => {
+    return () => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    };
+  }, []);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
     refine(e.target.value);
+
+    // Debounced SEARCH_REFINE signal for query refinement
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    debounceTimerRef.current = setTimeout(() => {
+      if (e.target.value.trim()) {
+        void sendClientSignal(SignalType.SearchRefine, { query: e.target.value.trim() });
+      }
+    }, 800);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter' && inputValue.trim()) {
       onSave(inputValue.trim());
+      const query = inputValue.trim();
+      // Fire SEARCH_QUERY on Enter key press
+      try {
+        const dId = getDeviceId();
+        if (dId) {
+          navigator.sendBeacon(
+            '/api/graphql',
+            new Blob(
+              [
+                JSON.stringify({
+                  query: `mutation SendSignal($input: SignalInput!) { sendSignal(input: $input) { success } }`,
+                  variables: {
+                    input: {
+                      deviceId: dId,
+                      type: 'SEARCH_QUERY',
+                      payload: { query },
+                      url: window.location.href,
+                      timestamp: Date.now(),
+                    },
+                  },
+                }),
+              ],
+              { type: 'application/json' }
+            )
+          );
+        }
+      } catch {}
     }
   };
 
@@ -391,6 +438,17 @@ const SearchResults = ({
     },
     [setInputValue, refine]
   );
+
+  const signaledQueryRef = useRef('');
+
+  useEffect(() => {
+    if (status === 'idle' && query.trim().length > 0) {
+      if (signaledQueryRef.current !== query.trim()) {
+        signaledQueryRef.current = query.trim();
+        void sendClientSignal(SignalType.SearchQuery, { query: query.trim() });
+      }
+    }
+  }, [status, query]);
 
   if (isPending) {
     return null;
@@ -508,7 +566,41 @@ const Hit = ({ hit, onSave, query }: HitProps) => {
         href={`/products/${hit.handle}`}
         className="absolute right-0 top-0 h-full w-full"
         aria-label={`View Product: ${hit.title}`}
-        onClick={() => onSave(query)}
+        onClick={() => {
+          onSave(query);
+          // sendBeacon for reliability during navigation
+          try {
+            const dId = getDeviceId();
+            if (dId) {
+              navigator.sendBeacon(
+                '/api/graphql',
+                new Blob(
+                  [
+                    JSON.stringify({
+                      query: `mutation SendSignal($input: SignalInput!) { sendSignal(input: $input) { success } }`,
+                      variables: {
+                        input: {
+                          deviceId: dId,
+                          type: 'SEARCH_RESULT_CLICK',
+                          payload: {
+                            productId: hit.id ?? hit.objectID,
+                            productHandle: hit.handle,
+                            query,
+                          },
+                          url: window.location.href,
+                          timestamp: Date.now(),
+                        },
+                      },
+                    }),
+                  ],
+                  { type: 'application/json' }
+                )
+              );
+            }
+          } catch {
+            // sendBeacon fallback silently fails
+          }
+        }}
       />
     </div>
   );
