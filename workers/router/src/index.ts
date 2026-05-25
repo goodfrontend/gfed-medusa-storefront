@@ -29,28 +29,7 @@ export default {
 
       // Page-aware filtering for personalized components
       if (c.name.startsWith('personalized-')) {
-        if (targetOrigin === config.HOME) {
-          return (
-            c.name === 'personalized-banner' ||
-            c.name === 'personalized-homepage-hero'
-          );
-        }
-        if (targetOrigin === config.PRODUCTS) {
-          const isDetail = isProductDetailPage(url.pathname);
-          const isCategory = url.pathname.includes('/categories/');
-          if (c.name === 'personalized-product-detail') return isDetail;
-          if (c.name === 'personalized-category-page') return isCategory;
-          if (c.name === 'personalized-search-results') return !isDetail && !isCategory;
-          return false;
-        }
-        if (targetOrigin === config.CHECKOUT) {
-          return (
-            c.name === 'personalized-checkout' ||
-            c.name === 'personalized-cart-page'
-          );
-        }
-        // ACCOUNT or unknown targets — exclude all personalized components
-        return false;
+        return targetOrigin === config.HOME;
       }
 
       return true;
