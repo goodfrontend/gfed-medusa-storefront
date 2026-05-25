@@ -1,6 +1,5 @@
 import { Metadata } from 'next';
 
-import { WebComponent } from '@gfed-medusa/sf-lib-common/components/web-component';
 import StoreTemplate from '@gfed-medusa/sf-lib-products/templates/store-template';
 import type { SortOptions } from '@gfed-medusa/sf-lib-products/types/index';
 
@@ -39,7 +38,6 @@ export default async function StorePage(props: Params) {
 
   return (
     <>
-      <WebComponent tag="mfe-personalized-search-results" />
       <StoreTemplate
         sortBy={sortBy}
         page={page}
