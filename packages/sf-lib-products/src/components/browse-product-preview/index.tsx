@@ -1,5 +1,9 @@
 'use client';
 
+import { useRef } from 'react';
+
+import { useSearchParams } from 'next/navigation';
+
 import { LocalizedClientLink } from '@gfed-medusa/sf-lib-common/components/localized-client-link';
 import { PreviewPrice } from '@gfed-medusa/sf-lib-common/components/preview-price';
 import { Thumbnail } from '@gfed-medusa/sf-lib-common/components/thumbnail';
@@ -59,19 +63,34 @@ const BrowseProductPreview = ({
   imageFetchPriority,
 }: BrowseProductPreviewProps) => {
   const price = getBrowseProductPrice(product);
+  const hoveredRef = useRef(false);
+  const searchParams = useSearchParams();
+  const query = searchParams?.get('q') ?? '';
 
   return (
     <LocalizedClientLink
-      href={`/products/${product.handle}`}
+      href={`/products/${product.handle ?? ''}`}
       className="group"
       onClick={() => {
         void sendClientSignal(SignalType.SearchResultClick, {
-          productId: product.id,
-          productHandle: product.handle,
+          productId: product.id ?? '',
+          productHandle: product.handle ?? '',
+          query,
         });
       }}
     >
-      <div data-testid="product-wrapper">
+      <div
+        data-testid="product-wrapper"
+        onMouseEnter={() => {
+          if (!hoveredRef.current) {
+            hoveredRef.current = true;
+            void sendClientSignal(SignalType.ProductHover, {
+              productId: product.id ?? '',
+              productHandle: product.handle ?? '',
+            });
+          }
+        }}
+      >
         <Thumbnail
           thumbnail={product.thumbnail}
           images={[]}

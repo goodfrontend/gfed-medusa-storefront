@@ -1,9 +1,13 @@
 'use client';
 
+import { useEffect, useRef, useState } from 'react';
+
 import { Back } from '@gfed-medusa/sf-lib-ui/icons/back';
 import { FastDelivery } from '@gfed-medusa/sf-lib-ui/icons/fast-delivery';
 import { Refresh } from '@gfed-medusa/sf-lib-ui/icons/refresh';
 
+import { sendClientSignal } from '@gfed-medusa/sf-lib-common/lib/personalization/client-signal';
+import { SignalType } from '@gfed-medusa/sf-lib-common/types/graphql';
 import { Product } from '@/types/graphql';
 
 import Accordion from './accordion';
@@ -13,6 +17,10 @@ type ProductTabsProps = {
 };
 
 const ProductTabs = ({ product }: ProductTabsProps) => {
+  const hasSentReviewsViewRef = useRef(false);
+  const productId = product.id;
+  const [openTabValues, setOpenTabValues] = useState<string[]>([]);
+
   const tabs = [
     {
       label: 'Product Information',
@@ -24,9 +32,33 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
     },
   ];
 
+  // Fire REVIEWS_VIEW and RETURN_POLICY_VIEW when the
+  // "Shipping & Returns" tab is open — whether initially
+  // (via defaultValue) or via user interaction.
+  useEffect(() => {
+    if (
+      openTabValues.includes('Shipping & Returns') &&
+      !hasSentReviewsViewRef.current
+    ) {
+      hasSentReviewsViewRef.current = true;
+      void sendClientSignal(SignalType.ReviewsView, { productId });
+      void sendClientSignal(SignalType.ReturnPolicyView, { productId });
+    }
+  }, [openTabValues, productId]);
+
   return (
     <div className="w-full">
-      <Accordion type="multiple">
+      <Accordion
+        type="multiple"
+        value={openTabValues}
+        onValueChange={(values: string[]) => {
+          setOpenTabValues(values);
+          void sendClientSignal(SignalType.TabSwitch, {
+            activeTabs: values,
+            productId,
+          });
+        }}
+      >
         {tabs.map((tab, i) => (
           <Accordion.Item
             key={i}

@@ -46,7 +46,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
           <ProductTabs product={product} />
         </div>
         <div className="relative block w-full">
-          <ImageGallery images={product?.images || []} />
+          <ImageGallery images={product?.images || []} productId={product.id} />
         </div>
         <div className="small:sticky small:top-48 small:max-w-[300px] small:py-0 flex w-full flex-col gap-y-12 py-8">
           <ProductOnboardingCta />
