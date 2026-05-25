@@ -8,8 +8,6 @@ import SkeletonProductGrid from '@gfed-medusa/sf-lib-products/components/skeleto
 import { getCategoryByHandle } from '@gfed-medusa/sf-lib-products/lib/data/categories';
 import PaginatedProducts from '@gfed-medusa/sf-lib-products/templates/paginated-products';
 import type { SortOptions } from '@gfed-medusa/sf-lib-products/types/index';
-import { WebComponent } from '@gfed-medusa/sf-lib-common/components/web-component';
-
 type Props = {
   params: Promise<{ category: string[]; countryCode: string }>;
   searchParams: Promise<{
@@ -77,7 +75,6 @@ export default async function CategoryPage(props: Props) {
       className="content-container small:grid-cols-[250px_minmax(0,1fr)] small:gap-x-6 small:gap-y-0 grid grid-cols-1 gap-y-6 py-6"
       data-testid="category-container"
     >
-      <WebComponent tag="mfe-personalized-category-page" />
       <div className="small:contents flex flex-wrap items-center justify-between gap-x-8 gap-y-8">
         <div className="text-2xl-semi small:col-start-2 small:mb-8 min-w-[16rem] flex-1">
           <h1 data-testid="category-page-title">{productCategory.name}</h1>
