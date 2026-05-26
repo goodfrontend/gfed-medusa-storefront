@@ -286,6 +286,11 @@ export const COMPONENT_REGISTRY: ComponentDefinition[] = [
 
 const SURFACE_TAGS = [
   { surface: 'homepage_hero', tag: 'mfe-personalized-homepage-hero' },
+  { surface: 'search_results', tag: 'mfe-personalized-search-results' },
+  { surface: 'product_detail', tag: 'mfe-personalized-product-detail' },
+  { surface: 'category_page', tag: 'mfe-personalized-category-page' },
+  { surface: 'checkout', tag: 'mfe-personalized-checkout' },
+  { surface: 'cart_page', tag: 'mfe-personalized-cart-page' },
 ] as const;
 
 function createPersonalizedSurfaceComponent(surface: string, elementTag: string): ComponentDefinition {
