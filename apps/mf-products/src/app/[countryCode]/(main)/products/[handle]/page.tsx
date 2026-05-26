@@ -13,6 +13,7 @@ import type {
   GetProductContentByHandleQueryVariables,
   Product,
 } from '@gfed-medusa/sf-lib-products/types/graphql';
+import { WebComponent } from '@gfed-medusa/sf-lib-common/components/web-component';
 export type Props = {
   params: Promise<{ countryCode: string; handle: string }>;
 };
@@ -101,6 +102,7 @@ export default async function ProductPage({ params }: Props) {
         region={region}
         countryCode={countryCode}
       />
+      <WebComponent tag="mfe-personalized-product-detail" />
     </>
   );
 }

@@ -50,6 +50,41 @@ export const HORIZONTAL_COMPONENTS: HorizontalComponentConfig[] = [
     cacheable: false,
     injectionMode: 'replace',
   },
+  {
+    name: 'personalized-search-results',
+    elementTag: 'mfe-personalized-search-results',
+    dataVariable: '__PERSONALIZED_SEARCH_RESULTS__',
+    cacheable: false,
+    injectionMode: 'replace',
+  },
+  {
+    name: 'personalized-product-detail',
+    elementTag: 'mfe-personalized-product-detail',
+    dataVariable: '__PERSONALIZED_PRODUCT_DETAIL__',
+    cacheable: false,
+    injectionMode: 'replace',
+  },
+  {
+    name: 'personalized-category-page',
+    elementTag: 'mfe-personalized-category-page',
+    dataVariable: '__PERSONALIZED_CATEGORY_PAGE__',
+    cacheable: false,
+    injectionMode: 'replace',
+  },
+  {
+    name: 'personalized-checkout',
+    elementTag: 'mfe-personalized-checkout',
+    dataVariable: '__PERSONALIZED_CHECKOUT__',
+    cacheable: false,
+    injectionMode: 'replace',
+  },
+  {
+    name: 'personalized-cart-page',
+    elementTag: 'mfe-personalized-cart-page',
+    dataVariable: '__PERSONALIZED_CART_PAGE__',
+    cacheable: false,
+    injectionMode: 'replace',
+  },
 ];
 
 export const CACHE_TTL = {

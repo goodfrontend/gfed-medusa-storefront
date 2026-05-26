@@ -33,7 +33,7 @@ export async function deriveSurfaceContext(
         '@gfed-medusa/sf-lib-common/lib/gql/queries/product-personalization'
       );
 
-      type ProductResult = { products: { products: Array<{ id: string; categories: Array<{ handle: string }>; variants: Array<{ id: string; calculatedPrice: { calculatedAmount: number } }> }> } };
+      type ProductResult = { products: { products: Array<{ id: string; variants: Array<{ id: string; calculatedPrice: { calculatedAmount: number } }> }> } };
       const data = await graphqlFetch<ProductResult, { handle: string }>({
         query: GET_PRODUCT_BY_HANDLE_FOR_PERSONALIZATION,
         variables: { handle },
@@ -42,7 +42,6 @@ export async function deriveSurfaceContext(
       const product = data?.products?.products?.[0];
       if (product) {
         context.productId = product.id;
-        context.category = product.categories?.[0]?.handle ?? undefined;
         const firstVariant = product.variants?.[0];
         if (firstVariant?.calculatedPrice?.calculatedAmount != null) {
           context.price = firstVariant.calculatedPrice.calculatedAmount / 100;

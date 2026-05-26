@@ -5,9 +5,6 @@ export const GET_PRODUCT_BY_HANDLE_FOR_PERSONALIZATION = gql`
     products(handle: $handle, limit: 1) {
       products {
         id
-        categories {
-          handle
-        }
         variants {
           id
           calculatedPrice {

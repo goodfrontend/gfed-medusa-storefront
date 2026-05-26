@@ -8,6 +8,7 @@ import CheckoutForm from '@gfed-medusa/sf-lib-checkout/templates/checkout-form';
 import CheckoutSummary from '@gfed-medusa/sf-lib-checkout/templates/checkout-summary';
 import { retrieveCustomer } from '@gfed-medusa/sf-lib-common/lib/data/customer';
 import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
+import { WebComponent } from '@gfed-medusa/sf-lib-common/components/web-component';
 export const metadata: Metadata = {
   title: 'Checkout',
   description: 'Complete your purchase securely.',
@@ -45,6 +46,7 @@ export default async function Checkout() {
         </PaymentWrapper>
         <CheckoutSummary cart={cart} />
       </div>
+      <WebComponent tag="mfe-personalized-checkout" />
     </>
   );
 }
