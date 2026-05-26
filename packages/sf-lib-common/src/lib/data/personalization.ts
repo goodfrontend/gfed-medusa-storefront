@@ -144,10 +144,11 @@ export async function getPersonalization(
 interface ConversionInput {
   deviceId: string;
   userId?: string;
+  checkoutSignalId?: string;
   orderId: string;
   amount: number;
   currency: string;
-  items?: Array<{ productId: string; quantity: number; price: number; category?: string }>;
+  items?: Array<{ productId: string; variantId?: string; quantity: number; price: number; category?: string }>;
 }
 
 export async function submitConversion(
@@ -167,7 +168,8 @@ export async function submitConversion(
       apolloClient
     );
     return true;
-  } catch {
+  } catch (error) {
+    console.error('[submitConversion] Failed:', error);
     return false;
   }
 }

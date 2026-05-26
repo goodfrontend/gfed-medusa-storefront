@@ -3,6 +3,8 @@ import { SEND_SIGNAL_MUTATION } from '@/lib/personalization/personalization-gql'
 import { getDeviceId } from '@/lib/personalization/device-id';
 import type { SignalInput, SignalType } from '@/types/graphql';
 
+const USER_ID_FETCH_TIMEOUT_MS = 3_000;
+
 // Module-level cache for the resolved customer ID
 // userIdChecked tracks whether we've attempted resolution
 let resolvedUserId: string | undefined;
@@ -13,20 +15,30 @@ let userIdChecked = false;
  * Resolves the current user's ID by fetching /api/horz/customer.
  * Results are cached module-globally so the endpoint is only called once
  * per page session (the cache resets on module reload / page refresh).
+ *
+ * Uses AbortController with a 3-second timeout so that signals are never
+ * blocked if the endpoint is unresponsive.
  */
 async function resolveUserId(): Promise<string | undefined> {
   if (userIdChecked) return resolvedUserId;
   if (userIdPromise) return userIdPromise;
 
   userIdPromise = (async () => {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), USER_ID_FETCH_TIMEOUT_MS);
     try {
-      const res = await fetch('/api/horz/customer', { credentials: 'include' });
+      const res = await fetch('/api/horz/customer', {
+        credentials: 'include',
+        signal: controller.signal,
+      });
       if (res.ok) {
         const data = await res.json();
         resolvedUserId = data?.customer?.id ?? undefined;
       }
     } catch {
-      // Network error — resolvedUserId stays undefined
+      // Network error or timeout — resolvedUserId stays undefined
+    } finally {
+      clearTimeout(timeoutId);
     }
     userIdChecked = true;
     userIdPromise = null;

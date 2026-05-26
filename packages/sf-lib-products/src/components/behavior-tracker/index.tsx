@@ -146,6 +146,13 @@ export function BehaviorTracker({ product }: BehaviorTrackerProps) {
     }
 
     const productPrice = getCheapestVariantPrice(product);
+    void sendClientSignal(SignalType.ProductView, {
+      productId: product.id,
+      productHandle: product.handle,
+      category: collectionHandle,
+      price: productPrice,
+    });
+
     const hasCart = Boolean(cartId);
 
     if (productPrice && productPrice >= PRICE_THRESHOLD && !hasCart) {
@@ -158,9 +165,7 @@ export function BehaviorTracker({ product }: BehaviorTrackerProps) {
     }
 
     const handleScroll = throttle(() => {
-      if (scrollTrackedRef.current) return;
-
-      // SCROLL_DEPTH analytics signal
+      // SCROLL_DEPTH analytics signal — always runs independently
       const scrollPct = Math.round(getScrollPercentage() * 100);
       const depthThresholds = [25, 50, 75, 90];
       for (const threshold of depthThresholds) {
@@ -173,7 +178,7 @@ export function BehaviorTracker({ product }: BehaviorTrackerProps) {
         }
       }
 
-      if (getScrollPercentage() >= HIGH_SCROLL_THRESHOLD && !hasCart) {
+      if (getScrollPercentage() >= HIGH_SCROLL_THRESHOLD && !hasCart && !scrollTrackedRef.current) {
         scrollTrackedRef.current = true;
         emitSignal('high-scroll-no-action', {
           productId: product.id,
