@@ -4,7 +4,6 @@ import { notFound } from 'next/navigation';
 import { retrieveOrder } from '@gfed-medusa/sf-lib-checkout/lib/data/orders';
 import OrderCompletedTemplate from '@gfed-medusa/sf-lib-checkout/templates/order-completed-template';
 import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
-import { retrieveCustomer } from '@gfed-medusa/sf-lib-common/lib/data/customer';
 import {
   getDeviceIdFromCookieHeader,
   submitConversion,
@@ -33,10 +32,8 @@ export default async function OrderConfirmedPage(props: Props) {
 
   const deviceId = getDeviceIdFromCookieHeader(ctx.cookieHeader);
   if (deviceId) {
-    const userId = ctx.cookieHeader?.includes('_medusa_jwt=')
-      ? (await retrieveCustomer(ctx).catch(() => null))?.id
-      : undefined;
-    submitConversion(
+    const userId = order.customerId || undefined;
+    const converted = await submitConversion(
       {
         deviceId,
         userId,
@@ -44,14 +41,18 @@ export default async function OrderConfirmedPage(props: Props) {
         amount: order.total,
         currency: order.currencyCode,
         items: order.items?.map((item: any) => ({
-          productId: item.variant?.product_id ?? item.variant?.product?.id ?? '',
+          productId: item.variant?.product?.id ?? '',
+          variantId: item.variant?.id,
           quantity: item.quantity,
-          price: item.unit_price / 100,
+          price: item.unitPrice ?? 0,
           category: item.variant?.product?.categories?.[0]?.handle ?? undefined,
         })),
       },
       ctx
     );
+    if (!converted) {
+      console.error('[OrderConfirmed] submitConversion failed for order:', order.id);
+    }
   }
 
   return <OrderCompletedTemplate order={order} />;
