@@ -30,27 +30,4 @@ export function setSegmentCookie(data: SegmentData) {
   document.cookie = `${SIGNAL_COOKIE}=${encodeURIComponent(JSON.stringify(data))};${buildCookieAttrs()}`;
 }
 
-export function emitSignal(type: string, payload?: unknown) {
-  const data = getSegmentCookie();
-  if (!data.signals) {
-    data.signals = {};
-  }
-  data.signals[type] = payload ?? true;
-  setSegmentCookie(data);
-}
 
-export function getSignal(type: string): unknown {
-  const data = getSegmentCookie();
-  return data.signals?.[type];
-}
-
-export function getAllSignals(): Record<string, unknown> {
-  const data = getSegmentCookie();
-  return data.signals ?? {};
-}
-
-export function clearSignals() {
-  const data = getSegmentCookie();
-  data.signals = {};
-  setSegmentCookie(data);
-}

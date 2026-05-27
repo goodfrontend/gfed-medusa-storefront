@@ -57,16 +57,6 @@ export const PERSONALIZATION_CONFIG: PersonalizationConfig = {
   highScrollThreshold: 0.8,
 };
 
-export function getSegmentIdFromCategory(categoryHandle: string): string | null {
-  const normalized = categoryHandle.toLowerCase().replace(/[-_\s]/g, '');
-  for (const segment of PERSONALIZATION_CONFIG.segments) {
-    if (segment.categoryHandles.includes(normalized)) {
-      return segment.id;
-    }
-  }
-  return null;
-}
-
 export function getSegmentIdFromCollection(collectionHandle: string | undefined): string | null {
   if (!collectionHandle) return null;
   const normalized = collectionHandle.toLowerCase().replace(/[-_\s]/g, '');
@@ -78,14 +68,3 @@ export function getSegmentIdFromCollection(collectionHandle: string | undefined)
   return null;
 }
 
-export function getAllSegmentIds(): string[] {
-  return PERSONALIZATION_CONFIG.segments.map((s) => s.id);
-}
-
-export function getSignalDefinition(signalId: string): SignalDefinition | undefined {
-  return PERSONALIZATION_CONFIG.signals.find((s) => s.id === signalId);
-}
-
-export function getAllSignalIds(): string[] {
-  return PERSONALIZATION_CONFIG.signals.map((s) => s.id);
-}

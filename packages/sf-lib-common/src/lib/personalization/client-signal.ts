@@ -87,7 +87,7 @@ export async function sendClientSignal(
   const input: SignalInput = {
     deviceId,
     type,
-    payload: payload ?? undefined,
+    payload,
     url: typeof window !== 'undefined' ? window.location.href : undefined,
     timestamp: Date.now(),
   };

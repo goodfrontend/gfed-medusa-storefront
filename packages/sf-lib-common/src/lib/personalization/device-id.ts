@@ -28,8 +28,4 @@ export function getDeviceId(): string {
   return id;
 }
 
-export function getDeviceIdCookieString(): string {
-  if (typeof document === 'undefined') return '';
-  const match = document.cookie.match(new RegExp(`${DEVICE_ID_COOKIE}=([^;]+)`));
-  return match ? match[0] : '';
-}
+

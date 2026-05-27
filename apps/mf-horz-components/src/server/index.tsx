@@ -13,7 +13,6 @@ import { getComponent } from '../config/components';
 
 const app = new Hono();
 
-// TODO(fcasibu): whitelist origin
 app.use(cors());
 app.use(compress());
 
