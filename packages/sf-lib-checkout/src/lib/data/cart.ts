@@ -370,7 +370,6 @@ export const setShippingMethod = async (
       },
     });
 
-    console.log('addShippingMethod result:', JSON.stringify(result, null, 2));
     const updatedCart = result?.addShippingMethod;
 
     if (updatedCart) {
@@ -452,49 +451,6 @@ export const applyPromotions = async (
   }
 };
 
-export async function applyGiftCard(code: string) {
-  //   const cartId = getCartId()
-  //   if (!cartId) return "No cartId cookie found"
-  //   try {
-  //     await updateCart(cartId, { gift_cards: [{ code }] }).then(() => {
-  //       revalidateTag("cart")
-  //     })
-  //   } catch (error: any) {
-  //     throw error
-  //   }
-}
-
-export async function removeDiscount(code: string) {
-  // const cartId = getCartId()
-  // if (!cartId) return "No cartId cookie found"
-  // try {
-  //   await deleteDiscount(cartId, code)
-  //   revalidateTag("cart")
-  // } catch (error: any) {
-  //   throw error
-  // }
-}
-
-export async function removeGiftCard(
-  codeToRemove: string,
-  giftCards: any[]
-  // giftCards: GiftCard[]
-) {
-  //   const cartId = getCartId()
-  //   if (!cartId) return "No cartId cookie found"
-  //   try {
-  //     await updateCart(cartId, {
-  //       gift_cards: [...giftCards]
-  //         .filter((gc) => gc.code !== codeToRemove)
-  //         .map((gc) => ({ code: gc.code })),
-  //     }).then(() => {
-  //       revalidateTag("cart")
-  //     })
-  //   } catch (error: any) {
-  //     throw error
-  //   }
-}
-
 export async function submitPromotionForm(
   currentState: unknown,
   formData: FormData,
@@ -508,7 +464,6 @@ export async function submitPromotionForm(
   }
 }
 
-// TODO: Pass a POJO instead of a form entity here
 export async function setAddresses(
   currentState: unknown,
   formData: FormData,

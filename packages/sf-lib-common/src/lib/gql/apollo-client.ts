@@ -104,7 +104,6 @@ export async function graphqlFetch<
 
     return data;
   } catch (error: any) {
-    // TODO - Better error handling
     throw new Error(error.message || 'GraphQL error');
   }
 }
@@ -126,7 +125,6 @@ export async function graphqlMutation<
 
     return data;
   } catch (error: any) {
-    // TODO - Better error handling
     throw new Error(error.message || 'GraphQL error');
   }
 }
