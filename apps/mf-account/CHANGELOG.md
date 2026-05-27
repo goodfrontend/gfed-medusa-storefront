@@ -1,5 +1,18 @@
 # @gfed-medusa/mf-account
 
+## 1.11.0
+
+### Minor Changes
+
+- 479fd52: Content Personalization with AI
+
+### Patch Changes
+
+- Updated dependencies [479fd52]
+  - @gfed-medusa/sf-lib-checkout@3.4.0
+  - @gfed-medusa/sf-lib-account@2.3.0
+  - @gfed-medusa/sf-lib-common@3.8.0
+
 ## 1.10.1
 
 ### Patch Changes

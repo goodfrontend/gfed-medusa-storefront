@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-common
 
+## 3.8.0
+
+### Minor Changes
+
+- 479fd52: Content Personalization with AI
+
 ## 3.7.4
 
 ### Patch Changes

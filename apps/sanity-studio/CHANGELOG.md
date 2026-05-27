@@ -1,5 +1,11 @@
 # sanity-studio
 
+## 1.2.0
+
+### Minor Changes
+
+- 479fd52: Content Personalization with AI
+
 ## 1.1.0
 
 ### Minor Changes
