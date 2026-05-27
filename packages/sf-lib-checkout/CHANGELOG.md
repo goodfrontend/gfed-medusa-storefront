@@ -1,5 +1,16 @@
 # @gfed-medusa/sf-lib-checkout
 
+## 3.4.0
+
+### Minor Changes
+
+- 479fd52: Content Personalization with AI
+
+### Patch Changes
+
+- Updated dependencies [479fd52]
+  - @gfed-medusa/sf-lib-common@3.8.0
+
 ## 3.3.1
 
 ### Patch Changes

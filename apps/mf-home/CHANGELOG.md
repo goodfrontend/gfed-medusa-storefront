@@ -1,5 +1,16 @@
 # @gfed-medusa/mf-home
 
+## 1.9.0
+
+### Minor Changes
+
+- 479fd52: Content Personalization with AI
+
+### Patch Changes
+
+- Updated dependencies [479fd52]
+  - @gfed-medusa/sf-lib-common@3.8.0
+
 ## 1.8.1
 
 ### Patch Changes

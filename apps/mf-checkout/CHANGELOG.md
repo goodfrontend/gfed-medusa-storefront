@@ -1,5 +1,17 @@
 # @gfed-medusa/mf-checkout
 
+## 1.8.0
+
+### Minor Changes
+
+- 479fd52: Content Personalization with AI
+
+### Patch Changes
+
+- Updated dependencies [479fd52]
+  - @gfed-medusa/sf-lib-checkout@3.4.0
+  - @gfed-medusa/sf-lib-common@3.8.0
+
 ## 1.7.1
 
 ### Patch Changes

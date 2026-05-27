@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-gateway
 
+## 1.6.0
+
+### Minor Changes
+
+- 479fd52: Content Personalization with AI
+
 ## 1.5.0
 
 ### Minor Changes

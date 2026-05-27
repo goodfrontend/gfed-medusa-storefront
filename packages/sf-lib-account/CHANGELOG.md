@@ -1,5 +1,16 @@
 # @gfed-medusa/sf-lib-account
 
+## 2.3.0
+
+### Minor Changes
+
+- 479fd52: Content Personalization with AI
+
+### Patch Changes
+
+- Updated dependencies [479fd52]
+  - @gfed-medusa/sf-lib-common@3.8.0
+
 ## 2.2.0
 
 ### Minor Changes
