@@ -1,5 +1,13 @@
 # @gfed-medusa/mf-account
 
+## 1.11.1
+
+### Patch Changes
+
+- 3b6308c: Minor refactor based on BFF changes.
+- Updated dependencies [3b6308c]
+  - @gfed-medusa/sf-lib-common@3.8.1
+
 ## 1.11.0
 
 ### Minor Changes

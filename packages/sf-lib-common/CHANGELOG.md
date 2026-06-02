@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-common
 
+## 3.8.1
+
+### Patch Changes
+
+- 3b6308c: Minor refactor based on BFF changes.
+
 ## 3.8.0
 
 ### Minor Changes
