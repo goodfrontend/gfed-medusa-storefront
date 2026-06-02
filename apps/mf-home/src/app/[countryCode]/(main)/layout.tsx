@@ -22,7 +22,6 @@ export default async function PageLayout(props: { children: React.ReactNode }) {
       <WebComponent tag="mfe-header">
         <WebComponent tag="mfe-cart" slot="cart" />
       </WebComponent>
-      <WebComponent tag="mfe-personalized-banner" />
       {customer && cart && (
         <CartMismatchBanner customer={customer} cart={cart as Cart} />
       )}

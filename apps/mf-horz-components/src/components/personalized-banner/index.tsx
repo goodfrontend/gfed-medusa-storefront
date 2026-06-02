@@ -1,23 +1,31 @@
 'use client';
 
-import {
-  HomeBannerContent,
-  SecondaryBannerContent,
-} from '@gfed-medusa/sf-lib-common/types/cms';
 import { getImageKitUrl } from '@gfed-medusa/sf-lib-common/lib/utils/imagekit';
 import { Button, Heading } from '@medusajs/ui';
 
 import { Link } from '../link';
 
-interface PersonalizedBannerProps {
-  bannerContent?: HomeBannerContent | null;
-}
-
 const SANITY_CMS_URL = 'https://www.sanity.io/';
 
-function hasContent(
-  banner: SecondaryBannerContent | null | undefined
-): boolean {
+interface SecondaryBanner {
+  title?: string;
+  description?: string;
+  image?: { asset?: { url?: string } };
+  button?: { label?: string; href?: string; openInNewTab?: boolean };
+  showPoweredBy?: boolean;
+}
+
+interface PersonalizedBannerProps {
+  title?: string;
+  eyebrow?: string;
+  description?: string;
+  image?: { asset?: { url?: string } };
+  buttons?: { label?: string; href?: string; openInNewTab?: boolean }[];
+  secondaryBanners?: SecondaryBanner[];
+  showPoweredBy?: boolean;
+}
+
+function hasContent(banner: SecondaryBanner | null | undefined): boolean {
   if (!banner) return false;
   return Boolean(
     banner.title ||
@@ -80,17 +88,21 @@ function BannerButton({
   );
 }
 
-function PersonalizedBanner({ bannerContent }: PersonalizedBannerProps) {
+function PersonalizedBanner({
+  title,
+  eyebrow,
+  description,
+  image,
+  buttons,
+  secondaryBanners,
+  showPoweredBy,
+}: PersonalizedBannerProps) {
   const mainButtons =
-    bannerContent?.buttons?.filter((b) => b.label && b.href).slice(0, 2) ?? [];
-  const secondaryBanners =
-    bannerContent?.secondaryBanners?.filter(hasContent).slice(0, 2) ?? [];
+    buttons?.filter((b) => b.label && b.href).slice(0, 2) ?? [];
+  const visibleSecondaryBanners =
+    secondaryBanners?.filter(hasContent).slice(0, 2) ?? [];
 
-  const title = bannerContent?.title;
-  const eyebrow = bannerContent?.eyebrow;
-  const description = bannerContent?.description;
-  const showPoweredBy = bannerContent?.showPoweredBy;
-  const imageUrl = bannerContent?.image?.asset?.url;
+  const imageUrl = image?.asset?.url;
   const hasMainContent = Boolean(
     imageUrl ||
     eyebrow ||
@@ -99,7 +111,7 @@ function PersonalizedBanner({ bannerContent }: PersonalizedBannerProps) {
     showPoweredBy ||
     mainButtons.length
   );
-  const hasSecondaryContent = secondaryBanners.length > 0;
+  const hasSecondaryContent = visibleSecondaryBanners.length > 0;
 
   if (!hasMainContent && !hasSecondaryContent) {
     return null;
@@ -167,7 +179,7 @@ function PersonalizedBanner({ bannerContent }: PersonalizedBannerProps) {
       {hasSecondaryContent && (
         <div className="content-container py-6 md:py-8">
           <div className="grid gap-4 md:grid-cols-2">
-            {secondaryBanners.map((banner, index) => (
+            {visibleSecondaryBanners.map((banner, index) => (
               <article
                 key={`${banner.title || 'secondary-banner'}-${index}`}
                 className="bg-ui-bg-subtle border-ui-border-base relative isolate flex h-full min-h-[220px] flex-col justify-end overflow-hidden rounded-2xl border p-5 sm:min-h-[240px] sm:p-6 md:min-h-[clamp(240px,calc((100vw-4rem)*9/32),387px)] lg:p-8"

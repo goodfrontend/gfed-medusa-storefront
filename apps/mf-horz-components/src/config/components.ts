@@ -14,14 +14,8 @@ import type {
 import { Cart } from '../components/cart';
 import { Footer } from '../components/footer';
 import { Header } from '../components/header';
-import { PersonalizedBanner } from '../components/personalized-banner';
 import { PersonalizedSurface } from '../components/personalized-surface';
 import { ProductPrice } from '../components/product-price';
-import {
-  computePrimaryInterest,
-  getAudienceId,
-  getSegmentFromCookie,
-} from './utils/segment-utils';
 import {
   deriveSurfaceContext,
   SurfaceContext,
@@ -256,36 +250,12 @@ export const COMPONENT_REGISTRY: ComponentDefinition[] = [
     elementTag: 'mfe-product-price',
     dataVariable: '__PRODUCT_PRICE_DATA__',
   },
-  {
-    name: 'personalized-banner',
-    component: PersonalizedBanner,
-    getData: async (ctx?: StorefrontContext) => {
-      const rawSegment = getSegmentFromCookie(ctx?.cookieHeader);
-
-      const { getHomeBannerContent } =
-        await import('@gfed-medusa/sf-lib-common/lib/data/home-banner');
-
-      const { interest, confidence } = rawSegment
-        ? computePrimaryInterest(rawSegment.history ?? [rawSegment.interest ?? ''])
-        : { interest: '', confidence: 0 };
-
-      const bannerContent = await getHomeBannerContent(
-        interest
-          ? { audience: getAudienceId(), segment: interest }
-          : undefined
-      );
-
-      return { bannerContent, confidence };
-    },
-    elementTag: 'mfe-personalized-banner',
-    dataVariable: '__PERSONALIZED_BANNER_DATA__',
-  },
 
   // Personalization surfaces (worker-driven, always fresh)
 ];
 
 const SURFACE_TAGS = [
-  { surface: 'homepage_hero', tag: 'mfe-personalized-homepage-hero' },
+  { surface: 'homepage', tag: 'mfe-personalized-homepage' },
   { surface: 'search_results', tag: 'mfe-personalized-search-results' },
   { surface: 'product_detail', tag: 'mfe-personalized-product-detail' },
   { surface: 'category_page', tag: 'mfe-personalized-category-page' },

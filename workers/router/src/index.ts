@@ -30,10 +30,7 @@ export default {
       // Page-aware filtering for personalized components
       if (c.name.startsWith('personalized-')) {
         if (targetOrigin === config.HOME) {
-          return (
-            c.name === 'personalized-banner' ||
-            c.name === 'personalized-homepage-hero'
-          );
+          return c.name === 'personalized-homepage';
         }
         if (targetOrigin === config.PRODUCTS) {
           const isDetail = isProductDetailPage(url.pathname);

@@ -1,8 +1,10 @@
 import type { ComponentType } from 'react';
+import { FeaturedCategoryRail, HeroBanner } from '@gfed-medusa/sf-lib-common/components/personalized-content/components';
 
-import { HeroBanner } from '@gfed-medusa/sf-lib-common/components/personalized-content/components';
+import { PersonalizedBanner } from '../personalized-banner';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const serverComponentMap: Record<string, ComponentType<any>> = {
   HeroBanner,
+  FeaturedCategoryRail,
+  PersonalizedBanner,
 };

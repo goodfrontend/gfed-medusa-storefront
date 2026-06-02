@@ -8,31 +8,31 @@ export default defineType({
     defineField({
       name: 'title',
       title: 'Title',
-      type: 'audienceString',
+      type: 'string',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'headline',
       title: 'Headline',
-      type: 'audienceString',
+      type: 'string',
       description: 'Large headline text. Falls back to title if empty.',
     }),
     defineField({
       name: 'subheadline',
       title: 'Subheadline',
-      type: 'audienceText',
+      type: 'text',
       rows: 2,
     }),
     defineField({
       name: 'badge',
       title: 'Badge',
-      type: 'audienceString',
+      type: 'string',
       description: 'Small label displayed above the headline (e.g., "New Arrival").',
     }),
     defineField({
       name: 'image',
       title: 'Image',
-      type: 'audienceImage',
+      type: 'image',
       options: { hotspot: true },
     }),
     defineField({
@@ -48,10 +48,10 @@ export default defineType({
       name: 'surface',
       title: 'Surface',
       type: 'string',
-      description: 'Which page surface this banner targets (e.g., homepage_hero). Leave empty for all.',
+      description: 'Which page surface this banner targets (e.g., homepage). Leave empty for all.',
       options: {
         list: [
-          { title: 'Homepage Hero', value: 'homepage_hero' },
+          { title: 'Homepage', value: 'homepage' },
           { title: 'All Surfaces', value: '' },
         ],
       },
@@ -65,8 +65,8 @@ export default defineType({
   ],
   preview: {
     select: {
-      title: 'title.default',
-      media: 'image.default',
+      title: 'title',
+      media: 'image',
     },
   },
 });
