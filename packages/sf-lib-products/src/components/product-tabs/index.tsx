@@ -32,9 +32,9 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
     },
   ];
 
-  // Fire REVIEWS_VIEW and RETURN_POLICY_VIEW when the
-  // "Shipping & Returns" tab is open — whether initially
-  // (via defaultValue) or via user interaction.
+  // Fire REVIEWS_VIEW when the "Shipping & Returns" tab is
+  // open — whether initially (via defaultValue) or via user
+  // interaction.
   useEffect(() => {
     if (
       openTabValues.includes('Shipping & Returns') &&
@@ -42,7 +42,6 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
     ) {
       hasSentReviewsViewRef.current = true;
       void sendClientSignal(SignalType.ReviewsView, { productId });
-      void sendClientSignal(SignalType.ReturnPolicyView, { productId });
     }
   }, [openTabValues, productId]);
 
