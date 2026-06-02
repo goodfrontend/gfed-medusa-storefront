@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-gateway
 
+## 1.7.0
+
+### Minor Changes
+
+- e1d8f3e: Implement full homepage personalization
+
 ## 1.6.0
 
 ### Minor Changes

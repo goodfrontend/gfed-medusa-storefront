@@ -1,5 +1,11 @@
 # sanity-studio
 
+## 1.3.0
+
+### Minor Changes
+
+- e1d8f3e: Implement full homepage personalization
+
 ## 1.2.0
 
 ### Minor Changes
