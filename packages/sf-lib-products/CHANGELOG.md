@@ -1,5 +1,16 @@
 # @gfed-medusa/sf-lib-products
 
+## 1.11.0
+
+### Minor Changes
+
+- e1d8f3e: Implement full homepage personalization
+
+### Patch Changes
+
+- Updated dependencies [e1d8f3e]
+  - @gfed-medusa/sf-lib-common@3.9.0
+
 ## 1.10.1
 
 ### Patch Changes

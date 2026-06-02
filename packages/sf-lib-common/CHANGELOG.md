@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-common
 
+## 3.9.0
+
+### Minor Changes
+
+- e1d8f3e: Implement full homepage personalization
+
 ## 3.8.1
 
 ### Patch Changes
