@@ -48,19 +48,19 @@ export default defineType({
     defineField({
       name: 'eyebrow',
       title: 'Eyebrow',
-      type: 'audienceString',
+      type: 'string',
       description: 'Small label above the title.',
     }),
     defineField({
       name: 'title',
       title: 'Title',
-      type: 'audienceString',
+      type: 'string',
       validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'description',
       title: 'Description',
-      type: 'audienceText',
+      type: 'text',
       rows: 3,
     }),
     defineField({
@@ -99,13 +99,13 @@ export default defineType({
             defineField({
               name: 'title',
               title: 'Title',
-              type: 'audienceString',
+              type: 'string',
               validation: (Rule) => Rule.required(),
             }),
             defineField({
               name: 'description',
               title: 'Description',
-              type: 'audienceText',
+              type: 'text',
               rows: 3,
             }),
             buildShowPoweredByField(),
@@ -119,7 +119,7 @@ export default defineType({
             defineField({
               name: 'image',
               title: 'Background image',
-              type: 'audienceImage',
+              type: 'image',
               description: bannerImageGuidance,
               options: {
                 hotspot: true,
@@ -128,9 +128,9 @@ export default defineType({
           ],
           preview: {
             select: {
-              title: 'title.default',
+              title: 'title',
               subtitle: 'button.label',
-              media: 'image.default',
+              media: 'image',
             },
           },
         }),
@@ -139,7 +139,7 @@ export default defineType({
     defineField({
       name: 'image',
       title: 'Image',
-      type: 'audienceImage',
+      type: 'image',
       description: `Upload the sample at apps/mf-home/public/images/home-banner-sample.svg or replace it with your own artwork. ${bannerImageGuidance}`,
       options: {
         hotspot: true,
@@ -149,9 +149,9 @@ export default defineType({
   ],
   preview: {
     select: {
-      title: 'title.default',
+      title: 'title',
       showPoweredBy: 'showPoweredBy',
-      media: 'image.default',
+      media: 'image',
     },
     prepare({
       title,

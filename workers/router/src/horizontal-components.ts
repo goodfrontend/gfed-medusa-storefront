@@ -215,89 +215,14 @@ export async function fetchAllComponentResources(
   return results;
 }
 
-const CATEGORY_SEGMENT_MAP: Record<string, string> = {
-  mens: 'mens',
-  men: 'mens',
-  womens: 'womens',
-  women: 'womens',
-};
-
-const HISTORY_MAX_LENGTH = 20;
-
-function getSegmentCookieScript(request: Request): string {
-  const cookieHeader = request.headers.get('Cookie') ?? '';
-
-  const url = new URL(request.url);
-  const pathSegments = url.pathname.split('/').filter(Boolean);
-  const catIdx = pathSegments.indexOf('categories');
-
-  let detectedSegment: string | null = null;
-
-  if (catIdx !== -1 && catIdx + 1 < pathSegments.length) {
-    const categoryHandle = pathSegments[catIdx + 1];
-    detectedSegment =
-      CATEGORY_SEGMENT_MAP[categoryHandle.toLowerCase()] ?? null;
-  }
-
-  if (!detectedSegment) {
-    return '';
-  }
-
-  const hostname = url.hostname;
-  const isProd =
-    hostname === 'justgood.win' || hostname.endsWith('.justgood.win');
-
-  let cookieData: Record<string, unknown> = {
-    interest: detectedSegment,
-    history: [detectedSegment],
-  };
-
-  if (cookieHeader.includes('_jg_segment=')) {
-    const match = cookieHeader.match(/_jg_segment=([^;]+)/);
-    if (match) {
-      try {
-        const existing = JSON.parse(decodeURIComponent(match[1]));
-        const existingHistory: string[] = Array.isArray(existing.history)
-          ? existing.history
-          : [];
-        const updatedHistory = [...existingHistory, detectedSegment].slice(
-          -HISTORY_MAX_LENGTH
-        );
-
-        cookieData = {
-          ...existing,
-          interest: detectedSegment,
-          history: updatedHistory,
-        };
-      } catch {
-        cookieData = { interest: detectedSegment, history: [detectedSegment] };
-      }
-    }
-  }
-
-  const cookieValue = encodeURIComponent(JSON.stringify(cookieData));
-  const maxAge = 60 * 60 * 24 * 7;
-
-  const cookieAttrs = isProd
-    ? `path=/;max-age=${maxAge};SameSite=none;secure;domain=.justgood.win`
-    : `path=/;max-age=${maxAge};SameSite=Lax`;
-
-  return `<script>
-(function() {
-  document.cookie = '_jg_segment=${cookieValue};${cookieAttrs}';
-})();
-</script>`;
-}
-
 export async function injectHorizontalComponents(
   hostResponse: Response,
   components: ComponentResources[],
   config: AppConfig,
   request?: Request
 ): Promise<Response> {
-  const segmentScript = request ? getSegmentCookieScript(request) : '';
 
-  if (components.length === 0 && !segmentScript && !request) {
+  if (components.length === 0 && !request) {
     return hostResponse;
   }
 
@@ -339,7 +264,7 @@ export async function injectHorizontalComponents(
   let rewriter = new HTMLRewriter().on('head', {
     element(el) {
       el.prepend(
-        `${segmentScript}${preloadTags}${bundleTag}${dataScripts}`,
+        `${preloadTags}${bundleTag}${dataScripts}`,
         { html: true }
       );
     },

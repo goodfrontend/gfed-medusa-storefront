@@ -1,7 +1,6 @@
 import type { PersonalizedComponent } from '@gfed-medusa/sf-lib-common/lib/data/personalization';
 
 import { serverComponentMap } from './component-map';
-import { resolveProps } from './resolve-props';
 
 interface PersonalizedSurfaceProps {
   components: PersonalizedComponent[];
@@ -20,7 +19,7 @@ export function PersonalizedSurface({ components }: PersonalizedSurfaceProps) {
         return (
           <Component
             key={`${c.component}-${c.contentId ?? c.priority}`}
-            {...resolveProps(c.propsOverrides)}
+            {...c.propsOverrides}
           />
         );
       })}

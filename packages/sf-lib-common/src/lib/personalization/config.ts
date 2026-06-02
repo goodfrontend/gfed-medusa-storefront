@@ -1,10 +1,3 @@
-export interface SegmentDefinition {
-  id: string;
-  label: string;
-  categoryHandles: string[];
-  collectionHandles: string[];
-}
-
 export interface SignalDefinition {
   id: string;
   description: string;
@@ -12,7 +5,6 @@ export interface SignalDefinition {
 }
 
 export interface PersonalizationConfig {
-  segments: SegmentDefinition[];
   signals: SignalDefinition[];
   dismissCooldownMs: number;
   bannerAutoDismissMs: number;
@@ -23,20 +15,6 @@ export interface PersonalizationConfig {
 }
 
 export const PERSONALIZATION_CONFIG: PersonalizationConfig = {
-  segments: [
-    {
-      id: 'mens',
-      label: "Men's",
-      categoryHandles: ['mens', 'men', 'mens-collection', 'menswear', 'menstwo'],
-      collectionHandles: ['mens', 'men', 'mens-collection', 'menswear', 'menstwo'],
-    },
-    {
-      id: 'womens',
-      label: "Women's",
-      categoryHandles: ['womens', 'women', 'womens-collection', 'womenswear', 'womenstwo'],
-      collectionHandles: ['womens', 'women', 'womens-collection', 'womenswear', 'womenstwo'],
-    },
-  ],
   signals: [
     {
       id: 'pdp-hesitation',
@@ -56,15 +34,3 @@ export const PERSONALIZATION_CONFIG: PersonalizationConfig = {
   pdpHesitationMs: 30_000,
   highScrollThreshold: 0.8,
 };
-
-export function getSegmentIdFromCollection(collectionHandle: string | undefined): string | null {
-  if (!collectionHandle) return null;
-  const normalized = collectionHandle.toLowerCase().replace(/[-_\s]/g, '');
-  for (const segment of PERSONALIZATION_CONFIG.segments) {
-    if (segment.collectionHandles.includes(normalized)) {
-      return segment.id;
-    }
-  }
-  return null;
-}
-

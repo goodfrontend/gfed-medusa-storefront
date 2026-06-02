@@ -77,7 +77,7 @@ export async function deriveSurfaceContext(
       return context;
     }
 
-    case 'homepage_hero':
+    case 'homepage':
     default:
       return context;
   }
