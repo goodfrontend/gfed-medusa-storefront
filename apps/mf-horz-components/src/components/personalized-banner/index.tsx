@@ -11,6 +11,7 @@ interface SecondaryBanner {
   title?: string;
   description?: string;
   image?: { asset?: { url?: string } };
+  imageUrl?: string;
   button?: { label?: string; href?: string; openInNewTab?: boolean };
   showPoweredBy?: boolean;
 }
@@ -20,6 +21,7 @@ interface PersonalizedBannerProps {
   eyebrow?: string;
   description?: string;
   image?: { asset?: { url?: string } };
+  imageUrl?: string;
   buttons?: { label?: string; href?: string; openInNewTab?: boolean }[];
   secondaryBanners?: SecondaryBanner[];
   showPoweredBy?: boolean;
@@ -30,6 +32,7 @@ function hasContent(banner: SecondaryBanner | null | undefined): boolean {
   return Boolean(
     banner.title ||
     banner.description ||
+    banner.imageUrl ||
     banner.image?.asset?.url ||
     banner.showPoweredBy ||
     (banner.button?.label && banner.button?.href)
@@ -93,6 +96,7 @@ function PersonalizedBanner({
   eyebrow,
   description,
   image,
+  imageUrl: imageUrlProp,
   buttons,
   secondaryBanners,
   showPoweredBy,
@@ -102,7 +106,7 @@ function PersonalizedBanner({
   const visibleSecondaryBanners =
     secondaryBanners?.filter(hasContent).slice(0, 2) ?? [];
 
-  const imageUrl = image?.asset?.url;
+  const imageUrl = imageUrlProp ?? image?.asset?.url;
   const hasMainContent = Boolean(
     imageUrl ||
     eyebrow ||
@@ -184,7 +188,15 @@ function PersonalizedBanner({
                 key={`${banner.title || 'secondary-banner'}-${index}`}
                 className="bg-ui-bg-subtle border-ui-border-base relative isolate flex h-full min-h-[220px] flex-col justify-end overflow-hidden rounded-2xl border p-5 sm:min-h-[240px] sm:p-6 md:min-h-[clamp(240px,calc((100vw-4rem)*9/32),387px)] lg:p-8"
               >
-                {banner.image?.asset?.url && (
+                {banner.imageUrl && (
+                  <img
+                    src={getImageKitUrl(banner.imageUrl, { width: 800, quality: 80 })}
+                    alt=""
+                    aria-hidden="true"
+                    className="absolute inset-0 h-full w-full object-cover"
+                  />
+                )}
+                {!banner.imageUrl && banner.image?.asset?.url && (
                   <img
                     src={getImageKitUrl(banner.image.asset.url, { width: 800, quality: 80 })}
                     alt=""
