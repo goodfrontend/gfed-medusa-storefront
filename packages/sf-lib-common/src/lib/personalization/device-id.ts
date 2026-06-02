@@ -22,9 +22,8 @@ function generateUUID(): string {
 export function getDeviceId(): string {
   if (typeof document === 'undefined') return '';
   const match = document.cookie.match(new RegExp(`${DEVICE_ID_COOKIE}=([^;]+)`));
-  if (match && match[1]) return decodeURIComponent(match[1]);
-  const id = generateUUID();
-  document.cookie = `${DEVICE_ID_COOKIE}=${encodeURIComponent(id)};${buildCookieAttrs(90)}`;
+  const id = match?.[1] ? decodeURIComponent(match[1]) : generateUUID();
+  document.cookie = `${DEVICE_ID_COOKIE}=${encodeURIComponent(id)};${buildCookieAttrs(400)}`;
   return id;
 }
 

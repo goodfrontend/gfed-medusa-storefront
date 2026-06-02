@@ -148,6 +148,7 @@ export function BehaviorTracker({ product }: BehaviorTrackerProps) {
     const productPrice = getCheapestVariantPrice(product);
     void sendClientSignal(SignalType.ProductView, {
       productId: product.id,
+      productName: product.title,
       productHandle: product.handle,
       category: collectionHandle,
       price: productPrice,
