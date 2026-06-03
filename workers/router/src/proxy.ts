@@ -106,8 +106,12 @@ export async function proxyRequest(
 
     const clonedResponse = response.clone();
     if (cacheTtl !== null && request.method === 'GET' && response.ok) {
+      const existingContentType = response.headers.get('content-type');
       const cacheHeaders = new Headers();
       cacheHeaders.set('Cache-Control', `public, max-age=${cacheTtl}`);
+      if (existingContentType) {
+        cacheHeaders.set('content-type', existingContentType);
+      }
       const responseToCache = new Response(clonedResponse.body, {
         status: clonedResponse.status,
         statusText: clonedResponse.statusText,
