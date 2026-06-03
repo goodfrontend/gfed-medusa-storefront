@@ -16,8 +16,8 @@ export const SUBMIT_CONVERSION_MUTATION = gql`
 `;
 
 export const PERSONALIZE_QUERY = gql`
-  query Personalize($input: SurfaceContext!, $deviceId: String!, $userId: String) {
-    personalize(input: $input, deviceId: $deviceId, userId: $userId) {
+  query Personalize($input: SurfaceContext!, $deviceId: String!) {
+    personalize(input: $input, deviceId: $deviceId) {
       components {
         component
         contentId

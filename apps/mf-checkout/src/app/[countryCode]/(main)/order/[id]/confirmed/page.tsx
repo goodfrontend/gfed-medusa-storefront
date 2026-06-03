@@ -32,11 +32,9 @@ export default async function OrderConfirmedPage(props: Props) {
 
   const deviceId = getDeviceIdFromCookieHeader(ctx.cookieHeader);
   if (deviceId) {
-    const userId = order.customerId || undefined;
     const converted = await submitConversion(
       {
         deviceId,
-        userId,
         orderId: order.id,
         amount: order.total,
         currency: order.currencyCode,

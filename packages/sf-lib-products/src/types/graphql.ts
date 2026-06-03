@@ -832,7 +832,6 @@ export type Query_CollectionsArgs = {
 
 export type Query_DebugIntentArgs = {
   deviceId: Scalars['String']['input'];
-  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Query_HomeBannerArgs = {
@@ -856,7 +855,6 @@ export type Query_PaymentProvidersArgs = {
 export type Query_PersonalizeArgs = {
   deviceId: Scalars['String']['input'];
   input: SurfaceContext;
-  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Query_ProductArgs = {
@@ -912,7 +910,6 @@ export type Query_ShippingOptionsArgs = {
 
 export type Query_UserProfileArgs = {
   deviceId: Scalars['String']['input'];
-  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Region = {
@@ -1032,7 +1029,6 @@ export type SignalInput = {
   timestamp?: InputMaybe<Scalars['Float']['input']>;
   type: SignalType;
   url?: InputMaybe<Scalars['String']['input']>;
-  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export enum SignalType {

@@ -20,7 +20,6 @@ import {
 } from '@/lib/gql/apollo-client';
 import { sendSignal } from '@gfed-medusa/sf-lib-common/lib/data/personalization';
 import { SignalType } from '@gfed-medusa/sf-lib-common/types/graphql';
-import { retrieveCustomer } from '@gfed-medusa/sf-lib-common/lib/data/customer';
 import {
   AddShippingMethodMutation,
   AddShippingMethodMutationVariables,
@@ -238,10 +237,7 @@ export const addToCart = async ({
       const fulfillmentCacheTag = getCacheTag('fulfillment', ctx);
       revalidateTag(fulfillmentCacheTag);
 
-      const cartUserId = ctx.cookieHeader?.includes('_medusa_jwt=')
-        ? (await retrieveCustomer(ctx).catch(() => null))?.id
-        : undefined;
-      void sendSignal(SignalType.CartAdd, ctx, { variantId, quantity }, undefined, cartUserId);
+      void sendSignal(SignalType.CartAdd, ctx, { variantId, quantity });
     }
 
     return lineItem;
@@ -288,10 +284,7 @@ export const updateLineItem = async (
       const fulfillmentCacheTag = getCacheTag('fulfillment', ctx);
       revalidateTag(fulfillmentCacheTag);
 
-      const cartUserId = ctx.cookieHeader?.includes('_medusa_jwt=')
-        ? (await retrieveCustomer(ctx).catch(() => null))?.id
-        : undefined;
-      void sendSignal(SignalType.CartUpdateQuantity, ctx, { lineId, quantity }, undefined, cartUserId);
+      void sendSignal(SignalType.CartUpdateQuantity, ctx, { lineId, quantity });
     }
 
     return lineItem;
@@ -336,10 +329,7 @@ export const deleteLineItem = async (
       const fulfillmentCacheTag = getCacheTag('fulfillment', ctx);
       revalidateTag(fulfillmentCacheTag);
 
-      const cartUserId = ctx.cookieHeader?.includes('_medusa_jwt=')
-        ? (await retrieveCustomer(ctx).catch(() => null))?.id
-        : undefined;
-      void sendSignal(SignalType.CartRemove, ctx, { lineId }, undefined, cartUserId);
+      void sendSignal(SignalType.CartRemove, ctx, { lineId });
     }
 
     return deletedLineItem;
