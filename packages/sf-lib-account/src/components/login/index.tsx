@@ -5,7 +5,6 @@ import { ErrorMessage } from '@gfed-medusa/sf-lib-common/components/error-messag
 import { SubmitButton } from '@gfed-medusa/sf-lib-common/components/submit-button';
 import { MedusaInput } from '@gfed-medusa/sf-lib-ui/components/medusa-input';
 
-import { invalidateUserId } from '@gfed-medusa/sf-lib-common/lib/personalization/client-signal';
 import { postLogin } from '@/lib/data/customer';
 import { LOGIN_MUTATION } from '@/lib/gql/mutations/customer';
 import { LoginMutation } from '@/types/graphql';
@@ -41,9 +40,6 @@ const Login = ({ setCurrentView }: Props) => {
 
       await postLogin(token);
 
-      // Invalidate the cached userId so subsequent personalization
-      // signals pick up the newly authenticated user.
-      invalidateUserId();
     } catch (err) {
       console.error('An error occurred during logging in', err);
     }

@@ -20,7 +20,6 @@ export async function sendSignal(
   ctx: StorefrontContext,
   payload?: Record<string, unknown>,
   url?: string,
-  userId?: string
 ): Promise<boolean> {
   const deviceId = getDeviceIdFromCookieHeader(ctx.cookieHeader);
 
@@ -33,7 +32,6 @@ export async function sendSignal(
         variables: {
           input: {
             deviceId,
-            ...(userId ? { userId } : {}),
             type,
             payload: payload ?? {},
             url: url ?? '',
@@ -54,9 +52,8 @@ export function sendPageViewSignal(
   surface: string,
   ctx: StorefrontContext,
   payload?: Record<string, unknown>,
-  userId?: string
 ): Promise<boolean> {
-  return sendSignal('PAGE_VIEW', ctx, { ...payload, surface }, undefined, userId);
+  return sendSignal('PAGE_VIEW', ctx, { ...payload, surface });
 }
 
 export interface PersonalizedComponent {
@@ -96,7 +93,6 @@ type PersonalizeQueryVariables = {
     searchQuery?: string;
   };
   deviceId: string;
-  userId?: string;
 };
 
 export async function getPersonalization(
@@ -110,7 +106,6 @@ export async function getPersonalization(
     category?: string;
     searchQuery?: string;
   },
-  userId?: string
 ): Promise<PersonalizationResult | null> {
   const apolloClient = createServerApolloClient(ctx.cookieHeader);
 
@@ -125,7 +120,6 @@ export async function getPersonalization(
             ...context,
           },
           deviceId,
-          ...(userId ? { userId } : {}),
         },
       },
       apolloClient
@@ -140,7 +134,6 @@ export async function getPersonalization(
 
 interface ConversionInput {
   deviceId: string;
-  userId?: string;
   checkoutSignalId?: string;
   orderId: string;
   amount: number;

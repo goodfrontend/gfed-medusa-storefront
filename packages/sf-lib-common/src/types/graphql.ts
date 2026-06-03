@@ -205,6 +205,18 @@ export type CompleteCartResponse =
   | CompleteCartErrorResult
   | CompleteCartOrderResult;
 
+export type ContextualBanner = {
+  __typename?: 'ContextualBanner';
+  ctaHref: Scalars['String']['output'];
+  ctaLabel?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  isActive: Scalars['Boolean']['output'];
+  minPrice?: Maybe<Scalars['Float']['output']>;
+  priority: Scalars['Int']['output'];
+  title: Scalars['String']['output'];
+  trigger: Scalars['String']['output'];
+};
+
 export type ConversionInput = {
   amount: Scalars['Float']['input'];
   checkoutSignalId?: InputMaybe<Scalars['String']['input']>;
@@ -244,6 +256,16 @@ export type CreateCartInput = {
 export type CreateLineItemInput = {
   quantity: Scalars['Int']['input'];
   variantId: Scalars['String']['input'];
+};
+
+export type CurrentSession = {
+  __typename?: 'CurrentSession';
+  cartAdds: Scalars['Int']['output'];
+  firstCategory?: Maybe<Scalars['String']['output']>;
+  productViews: Array<Scalars['String']['output']>;
+  searches: Array<Scalars['String']['output']>;
+  signalCount: Scalars['Int']['output'];
+  startedAt: Scalars['Float']['output'];
 };
 
 export type Customer = {
@@ -323,9 +345,8 @@ export type HomeBanner = {
 
 export type IntentSignals = {
   __typename?: 'IntentSignals';
-  cartToPurchaseRate: Scalars['Float']['output'];
+  checkoutConversion: Scalars['Float']['output'];
   researchDepth: Scalars['Float']['output'];
-  returnRate: Scalars['Float']['output'];
 };
 
 export enum LifecycleStage {
@@ -740,6 +761,15 @@ export type ProductVariantOption = {
   value: Scalars['String']['output'];
 };
 
+export type ProductViewEntry = {
+  __typename?: 'ProductViewEntry';
+  category: Scalars['String']['output'];
+  price?: Maybe<Scalars['Float']['output']>;
+  productId: Scalars['String']['output'];
+  productName: Scalars['String']['output'];
+  timestamp: Scalars['Float']['output'];
+};
+
 export type Promotion = {
   __typename?: 'Promotion';
   applicationMethod?: Maybe<ApplicationMethod>;
@@ -755,6 +785,7 @@ export type Query = {
   cart?: Maybe<Cart>;
   collection?: Maybe<Collection>;
   collections: Array<Collection>;
+  contextualBanners: Array<ContextualBanner>;
   /** Debug: current rule-based intent classification. */
   debugIntent: DecisionReasoning;
   footer?: Maybe<Footer>;
@@ -801,7 +832,6 @@ export type Query_CollectionsArgs = {
 
 export type Query_DebugIntentArgs = {
   deviceId: Scalars['String']['input'];
-  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Query_HomeBannerArgs = {
@@ -825,7 +855,6 @@ export type Query_PaymentProvidersArgs = {
 export type Query_PersonalizeArgs = {
   deviceId: Scalars['String']['input'];
   input: SurfaceContext;
-  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Query_ProductArgs = {
@@ -881,7 +910,6 @@ export type Query_ShippingOptionsArgs = {
 
 export type Query_UserProfileArgs = {
   deviceId: Scalars['String']['input'];
-  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Region = {
@@ -910,6 +938,12 @@ export type SanityImage = {
 export type SanityImageAsset = {
   __typename?: 'SanityImageAsset';
   url?: Maybe<Scalars['String']['output']>;
+};
+
+export type SearchHistoryEntry = {
+  __typename?: 'SearchHistoryEntry';
+  query: Scalars['String']['output'];
+  timestamp: Scalars['Float']['output'];
 };
 
 export type SearchProducts = {
@@ -995,7 +1029,6 @@ export type SignalInput = {
   timestamp?: InputMaybe<Scalars['Float']['input']>;
   type: SignalType;
   url?: InputMaybe<Scalars['String']['input']>;
-  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export enum SignalType {
@@ -1081,15 +1114,25 @@ export type UpdateLineItemInput = {
 
 export type UserProfile = {
   __typename?: 'UserProfile';
+  averageOrderValue?: Maybe<Scalars['Float']['output']>;
+  cartActivity?: Maybe<Scalars['Int']['output']>;
   categoryAffinity: Scalars['JSON']['output'];
+  currentSession?: Maybe<CurrentSession>;
   deviceId: Scalars['String']['output'];
   engagementLevel: EngagementLevel;
   firstSeen: Scalars['Float']['output'];
+  hesitationCount?: Maybe<Scalars['Int']['output']>;
   intentSignals: IntentSignals;
+  lastPurchaseDate?: Maybe<Scalars['Float']['output']>;
   lastSeen: Scalars['Float']['output'];
+  lastSignalTimestamp?: Maybe<Scalars['Float']['output']>;
   lifecycleStage: LifecycleStage;
+  orderCount?: Maybe<Scalars['Int']['output']>;
   priceSensitivity: PriceSensitivity;
+  recentProducts?: Maybe<Array<ProductViewEntry>>;
+  searchHistory?: Maybe<Array<SearchHistoryEntry>>;
   sessionCount: Scalars['Int']['output'];
+  totalSpent?: Maybe<Scalars['Float']['output']>;
   userId?: Maybe<Scalars['String']['output']>;
 };
 
@@ -1514,52 +1557,6 @@ export type GetFooterDataQuery = {
   } | null;
 };
 
-export type GetHomeBannerQueryVariables = Exact<{
-  audience?: InputMaybe<Scalars['String']['input']>;
-  segment?: InputMaybe<Scalars['String']['input']>;
-}>;
-
-export type GetHomeBannerQuery = {
-  __typename?: 'Query';
-  homeBanner?: {
-    __typename?: 'HomeBanner';
-    _id: string;
-    _type: string;
-    eyebrow?: string | null;
-    title?: string | null;
-    description?: string | null;
-    showPoweredBy?: boolean | null;
-    buttons?: Array<{
-      __typename?: 'BannerButton';
-      label?: string | null;
-      href?: string | null;
-      openInNewTab?: boolean | null;
-    }> | null;
-    secondaryBanners?: Array<{
-      __typename?: 'SecondaryBanner';
-      title?: string | null;
-      description?: string | null;
-      showPoweredBy?: boolean | null;
-      image?: {
-        __typename?: 'SanityImage';
-        alt?: string | null;
-        asset?: { __typename?: 'SanityImageAsset'; url?: string | null } | null;
-      } | null;
-      button?: {
-        __typename?: 'BannerButton';
-        label?: string | null;
-        href?: string | null;
-        openInNewTab?: boolean | null;
-      } | null;
-    }> | null;
-    image?: {
-      __typename?: 'SanityImage';
-      alt?: string | null;
-      asset?: { __typename?: 'SanityImageAsset'; url?: string | null } | null;
-    } | null;
-  } | null;
-};
-
 export type OrderFieldsFragment = {
   __typename?: 'Order';
   id: string;
@@ -1686,10 +1683,6 @@ export type GetProductByHandleForPersonalizationQuery = {
     products?: Array<{
       __typename?: 'Product';
       id: string;
-      categories?: Array<{
-        __typename?: 'ProductCategory';
-        handle: string;
-      }> | null;
       variants?: Array<{
         __typename?: 'ProductVariant';
         id: string;
@@ -6028,178 +6021,6 @@ export const GetFooterDataDocument = {
     },
   ],
 } as unknown as DocumentNode<GetFooterDataQuery, GetFooterDataQueryVariables>;
-export const GetHomeBannerDocument = {
-  kind: 'Document',
-  definitions: [
-    {
-      kind: 'OperationDefinition',
-      operation: 'query',
-      name: { kind: 'Name', value: 'GetHomeBanner' },
-      variableDefinitions: [
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'audience' },
-          },
-          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
-        },
-        {
-          kind: 'VariableDefinition',
-          variable: {
-            kind: 'Variable',
-            name: { kind: 'Name', value: 'segment' },
-          },
-          type: { kind: 'NamedType', name: { kind: 'Name', value: 'String' } },
-        },
-      ],
-      selectionSet: {
-        kind: 'SelectionSet',
-        selections: [
-          {
-            kind: 'Field',
-            name: { kind: 'Name', value: 'homeBanner' },
-            arguments: [
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'audience' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'audience' },
-                },
-              },
-              {
-                kind: 'Argument',
-                name: { kind: 'Name', value: 'segment' },
-                value: {
-                  kind: 'Variable',
-                  name: { kind: 'Name', value: 'segment' },
-                },
-              },
-            ],
-            selectionSet: {
-              kind: 'SelectionSet',
-              selections: [
-                { kind: 'Field', name: { kind: 'Name', value: '_id' } },
-                { kind: 'Field', name: { kind: 'Name', value: '_type' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'eyebrow' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-                { kind: 'Field', name: { kind: 'Name', value: 'description' } },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'showPoweredBy' },
-                },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'buttons' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'label' } },
-                      { kind: 'Field', name: { kind: 'Name', value: 'href' } },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'openInNewTab' },
-                      },
-                    ],
-                  },
-                },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'secondaryBanners' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'title' } },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'description' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'showPoweredBy' },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'image' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'alt' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'asset' },
-                              selectionSet: {
-                                kind: 'SelectionSet',
-                                selections: [
-                                  {
-                                    kind: 'Field',
-                                    name: { kind: 'Name', value: 'url' },
-                                  },
-                                ],
-                              },
-                            },
-                          ],
-                        },
-                      },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'button' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'label' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'href' },
-                            },
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'openInNewTab' },
-                            },
-                          ],
-                        },
-                      },
-                    ],
-                  },
-                },
-                {
-                  kind: 'Field',
-                  name: { kind: 'Name', value: 'image' },
-                  selectionSet: {
-                    kind: 'SelectionSet',
-                    selections: [
-                      { kind: 'Field', name: { kind: 'Name', value: 'alt' } },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'asset' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'url' },
-                            },
-                          ],
-                        },
-                      },
-                    ],
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-} as unknown as DocumentNode<GetHomeBannerQuery, GetHomeBannerQueryVariables>;
 export const GetOrderDocument = {
   kind: 'Document',
   definitions: [
@@ -6792,19 +6613,6 @@ export const GetProductByHandleForPersonalizationDocument = {
                     kind: 'SelectionSet',
                     selections: [
                       { kind: 'Field', name: { kind: 'Name', value: 'id' } },
-                      {
-                        kind: 'Field',
-                        name: { kind: 'Name', value: 'categories' },
-                        selectionSet: {
-                          kind: 'SelectionSet',
-                          selections: [
-                            {
-                              kind: 'Field',
-                              name: { kind: 'Name', value: 'handle' },
-                            },
-                          ],
-                        },
-                      },
                       {
                         kind: 'Field',
                         name: { kind: 'Name', value: 'variants' },

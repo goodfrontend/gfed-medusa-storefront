@@ -1,13 +1,12 @@
 'use client';
 
-import { useEffect, useActionState } from 'react';
+import { useActionState } from 'react';
 
 import { ErrorMessage } from '@gfed-medusa/sf-lib-common/components/error-message';
 import { LocalizedClientLink } from '@gfed-medusa/sf-lib-common/components/localized-client-link';
 import { SubmitButton } from '@gfed-medusa/sf-lib-common/components/submit-button';
 import { MedusaInput } from '@gfed-medusa/sf-lib-ui/components/medusa-input';
 
-import { invalidateUserId } from '@gfed-medusa/sf-lib-common/lib/personalization/client-signal';
 import { signup } from '@/lib/data/customer';
 
 import { LOGIN_VIEW } from '../login-template/login-template';
@@ -19,13 +18,7 @@ type Props = {
 const Register = ({ setCurrentView }: Props) => {
   const [state, formAction, isPending] = useActionState(signup, null);
 
-  // Invalidate the cached userId after successful registration so
-  // subsequent personalization signals pick up the new user.
-  useEffect(() => {
-    if (state?.status === 'success') {
-      invalidateUserId();
-    }
-  }, [state]);
+
 
   return (
     <div

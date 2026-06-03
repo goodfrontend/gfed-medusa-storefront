@@ -36,7 +36,7 @@ export default async function Checkout() {
 
   const customer = await retrieveCustomer(ctx);
 
-  void sendSignal('CHECKOUT_START', ctx, { cartValue: cart.total ?? undefined }, undefined, customer?.id);
+  void sendSignal('CHECKOUT_START', ctx, { cartValue: cart.total ?? undefined });
 
   return (
     <>

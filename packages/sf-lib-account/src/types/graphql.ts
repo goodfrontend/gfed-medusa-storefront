@@ -205,6 +205,18 @@ export type CompleteCartResponse =
   | CompleteCartErrorResult
   | CompleteCartOrderResult;
 
+export type ContextualBanner = {
+  __typename?: 'ContextualBanner';
+  ctaHref: Scalars['String']['output'];
+  ctaLabel?: Maybe<Scalars['String']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  isActive: Scalars['Boolean']['output'];
+  minPrice?: Maybe<Scalars['Float']['output']>;
+  priority: Scalars['Int']['output'];
+  title: Scalars['String']['output'];
+  trigger: Scalars['String']['output'];
+};
+
 export type ConversionInput = {
   amount: Scalars['Float']['input'];
   checkoutSignalId?: InputMaybe<Scalars['String']['input']>;
@@ -244,6 +256,16 @@ export type CreateCartInput = {
 export type CreateLineItemInput = {
   quantity: Scalars['Int']['input'];
   variantId: Scalars['String']['input'];
+};
+
+export type CurrentSession = {
+  __typename?: 'CurrentSession';
+  cartAdds: Scalars['Int']['output'];
+  firstCategory?: Maybe<Scalars['String']['output']>;
+  productViews: Array<Scalars['String']['output']>;
+  searches: Array<Scalars['String']['output']>;
+  signalCount: Scalars['Int']['output'];
+  startedAt: Scalars['Float']['output'];
 };
 
 export type Customer = {
@@ -323,9 +345,8 @@ export type HomeBanner = {
 
 export type IntentSignals = {
   __typename?: 'IntentSignals';
-  cartToPurchaseRate: Scalars['Float']['output'];
+  checkoutConversion: Scalars['Float']['output'];
   researchDepth: Scalars['Float']['output'];
-  returnRate: Scalars['Float']['output'];
 };
 
 export enum LifecycleStage {
@@ -670,6 +691,7 @@ export type ProductCategory = {
   name: Scalars['String']['output'];
   parentCategory?: Maybe<ProductCategory>;
   products?: Maybe<ProductList>;
+  thumbnail?: Maybe<Scalars['String']['output']>;
 };
 
 export type ProductHit = {
@@ -739,6 +761,15 @@ export type ProductVariantOption = {
   value: Scalars['String']['output'];
 };
 
+export type ProductViewEntry = {
+  __typename?: 'ProductViewEntry';
+  category: Scalars['String']['output'];
+  price?: Maybe<Scalars['Float']['output']>;
+  productId: Scalars['String']['output'];
+  productName: Scalars['String']['output'];
+  timestamp: Scalars['Float']['output'];
+};
+
 export type Promotion = {
   __typename?: 'Promotion';
   applicationMethod?: Maybe<ApplicationMethod>;
@@ -754,6 +785,7 @@ export type Query = {
   cart?: Maybe<Cart>;
   collection?: Maybe<Collection>;
   collections: Array<Collection>;
+  contextualBanners: Array<ContextualBanner>;
   /** Debug: current rule-based intent classification. */
   debugIntent: DecisionReasoning;
   footer?: Maybe<Footer>;
@@ -800,7 +832,6 @@ export type Query_CollectionsArgs = {
 
 export type Query_DebugIntentArgs = {
   deviceId: Scalars['String']['input'];
-  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Query_HomeBannerArgs = {
@@ -824,7 +855,6 @@ export type Query_PaymentProvidersArgs = {
 export type Query_PersonalizeArgs = {
   deviceId: Scalars['String']['input'];
   input: SurfaceContext;
-  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Query_ProductArgs = {
@@ -880,7 +910,6 @@ export type Query_ShippingOptionsArgs = {
 
 export type Query_UserProfileArgs = {
   deviceId: Scalars['String']['input'];
-  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Region = {
@@ -909,6 +938,12 @@ export type SanityImage = {
 export type SanityImageAsset = {
   __typename?: 'SanityImageAsset';
   url?: Maybe<Scalars['String']['output']>;
+};
+
+export type SearchHistoryEntry = {
+  __typename?: 'SearchHistoryEntry';
+  query: Scalars['String']['output'];
+  timestamp: Scalars['Float']['output'];
 };
 
 export type SearchProducts = {
@@ -994,7 +1029,6 @@ export type SignalInput = {
   timestamp?: InputMaybe<Scalars['Float']['input']>;
   type: SignalType;
   url?: InputMaybe<Scalars['String']['input']>;
-  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export enum SignalType {
@@ -1080,15 +1114,25 @@ export type UpdateLineItemInput = {
 
 export type UserProfile = {
   __typename?: 'UserProfile';
+  averageOrderValue?: Maybe<Scalars['Float']['output']>;
+  cartActivity?: Maybe<Scalars['Int']['output']>;
   categoryAffinity: Scalars['JSON']['output'];
+  currentSession?: Maybe<CurrentSession>;
   deviceId: Scalars['String']['output'];
   engagementLevel: EngagementLevel;
   firstSeen: Scalars['Float']['output'];
+  hesitationCount?: Maybe<Scalars['Int']['output']>;
   intentSignals: IntentSignals;
+  lastPurchaseDate?: Maybe<Scalars['Float']['output']>;
   lastSeen: Scalars['Float']['output'];
+  lastSignalTimestamp?: Maybe<Scalars['Float']['output']>;
   lifecycleStage: LifecycleStage;
+  orderCount?: Maybe<Scalars['Int']['output']>;
   priceSensitivity: PriceSensitivity;
+  recentProducts?: Maybe<Array<ProductViewEntry>>;
+  searchHistory?: Maybe<Array<SearchHistoryEntry>>;
   sessionCount: Scalars['Int']['output'];
+  totalSpent?: Maybe<Scalars['Float']['output']>;
   userId?: Maybe<Scalars['String']['output']>;
 };
 

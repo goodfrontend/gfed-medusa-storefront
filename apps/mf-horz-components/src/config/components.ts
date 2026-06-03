@@ -25,24 +25,6 @@ import {
   getPersonalization,
   sendPageViewSignal,
 } from '@gfed-medusa/sf-lib-common/lib/data/personalization';
-import { retrieveCustomer } from '@gfed-medusa/sf-lib-common/lib/data/customer';
-import type { Customer } from '@gfed-medusa/sf-lib-common/types/graphql';
-
-const customerCache = new Map<string, Promise<Customer | null>>();
-
-function getCachedCustomer(ctx: StorefrontContext): Promise<Customer | null> {
-  const cookieHeader = ctx.cookieHeader ?? '';
-  if (!cookieHeader || !cookieHeader.includes('_medusa_jwt=')) {
-    return Promise.resolve(null);
-  }
-  let promise = customerCache.get(cookieHeader);
-  if (!promise) {
-    promise = retrieveCustomer(ctx as StorefrontContext).catch(() => null);
-    customerCache.set(cookieHeader, promise);
-  }
-  return promise;
-}
-
 export interface ComponentDefinition {
   name: string;
   component: ComponentType<any>;
@@ -282,9 +264,6 @@ function createPersonalizedSurfaceComponent(surface: string, elementTag: string)
       const deviceId = getDeviceIdFromCookieHeader(ctx.cookieHeader);
       if (!deviceId) return { components: [] };
 
-      const customer = await getCachedCustomer(ctx);
-      const userId = customer?.id;
-
       let context: SurfaceContext;
       try {
         context = await deriveSurfaceContext(surface, url, ctx);
@@ -299,10 +278,9 @@ function createPersonalizedSurfaceComponent(surface: string, elementTag: string)
         deviceId,
         ctx,
         Object.keys(context).length > 0 ? context : undefined,
-        userId
       ).catch(() => null);
 
-      void sendPageViewSignal(surface, ctx, context, userId);
+      void sendPageViewSignal(surface, ctx, context);
 
       const components = personalization?.components ?? [];
 
