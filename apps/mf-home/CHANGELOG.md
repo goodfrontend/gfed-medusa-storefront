@@ -1,5 +1,16 @@
 # @gfed-medusa/mf-home
 
+## 1.11.0
+
+### Minor Changes
+
+- 59b232b: Make jg_device_id cookie be set in server
+
+### Patch Changes
+
+- Updated dependencies [59b232b]
+  - @gfed-medusa/sf-lib-common@3.10.0
+
 ## 1.10.0
 
 ### Minor Changes

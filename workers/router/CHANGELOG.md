@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-gateway
 
+## 1.8.0
+
+### Minor Changes
+
+- 59b232b: Make jg_device_id cookie be set in server
+
 ## 1.7.0
 
 ### Minor Changes
