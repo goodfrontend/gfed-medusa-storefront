@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-common
 
+## 3.11.0
+
+### Minor Changes
+
+- b9de764: Removed user id in personalization system
+
 ## 3.10.0
 
 ### Minor Changes
