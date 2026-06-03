@@ -80,6 +80,14 @@ export const HORIZONTAL_COMPONENTS: HorizontalComponentConfig[] = [
   },
 ];
 
+export function buildDeviceIdCookie(deviceId: string, isProd: boolean): string {
+  const maxAge = 400 * 24 * 60 * 60;
+  const attrs = isProd
+    ? `path=/;max-age=${maxAge};SameSite=none;secure;domain=.justgood.win`
+    : `path=/;max-age=${maxAge};SameSite=Lax`;
+  return `_jg_device_id=${encodeURIComponent(deviceId)};${attrs}`;
+}
+
 export const CACHE_TTL = {
   /** Immutable static assets (1 year) */
   STATIC: 31536000,
