@@ -1,6 +1,6 @@
 {
   "name": "@gfed-medusa/mf-account",
-  "version": "1.13.0",
+  "version": "1.14.0",
   "type": "module",
   "private": true,
   "description": "Account MFE from Medusa V2 Next.js starter",
@@ -17,9 +17,9 @@
   "dependencies": {
     "@apollo/client": "^4.0.4",
     "@headlessui/react": "^2.2.0",
-    "@gfed-medusa/sf-lib-account": "^2.3.0",
-    "@gfed-medusa/sf-lib-checkout": "^3.4.0",
-    "@gfed-medusa/sf-lib-common": "^3.10.0",
+    "@gfed-medusa/sf-lib-account": "^2.4.0",
+    "@gfed-medusa/sf-lib-checkout": "^3.5.0",
+    "@gfed-medusa/sf-lib-common": "^3.11.0",
     "@gfed-medusa/sf-lib-home": "^1.2.5",
     "@gfed-medusa/sf-lib-ui": "^1.3.0",
     "@medusajs/icons": "2.10.3",

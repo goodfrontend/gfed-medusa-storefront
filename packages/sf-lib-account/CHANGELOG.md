@@ -1,5 +1,16 @@
 # @gfed-medusa/sf-lib-account
 
+## 2.4.0
+
+### Minor Changes
+
+- b9de764: Removed user id in personalization system
+
+### Patch Changes
+
+- Updated dependencies [b9de764]
+  - @gfed-medusa/sf-lib-common@3.11.0
+
 ## 2.3.0
 
 ### Minor Changes
