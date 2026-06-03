@@ -23,7 +23,6 @@ export async function sendSignal(
   userId?: string
 ): Promise<boolean> {
   const deviceId = getDeviceIdFromCookieHeader(ctx.cookieHeader);
-  if (!deviceId) return false;
 
   const apolloClient = createServerApolloClient(ctx.cookieHeader);
 
@@ -113,8 +112,6 @@ export async function getPersonalization(
   },
   userId?: string
 ): Promise<PersonalizationResult | null> {
-  if (!deviceId) return null;
-
   const apolloClient = createServerApolloClient(ctx.cookieHeader);
 
   try {
