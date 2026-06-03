@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-common
 
+## 3.10.0
+
+### Minor Changes
+
+- 59b232b: Make jg_device_id cookie be set in server
+
 ## 3.9.0
 
 ### Minor Changes
