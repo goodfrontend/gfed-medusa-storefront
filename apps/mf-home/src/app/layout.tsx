@@ -7,8 +7,6 @@ import { ApolloClientProvider } from '@gfed-medusa/sf-lib-common/lib/context/apo
 import { getBaseURL } from '@gfed-medusa/sf-lib-common/lib/utils/env';
 import { resolveNextContext } from '@gfed-medusa/sf-lib-common/lib/data/next-context';
 import { StorefrontProvider } from '@gfed-medusa/sf-lib-common/lib/data/context';
-import { DeviceIdSetter } from '@gfed-medusa/sf-lib-common/components/device-id-setter';
-
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
   title: {
@@ -34,7 +32,6 @@ export default async function RootLayout({
         <main>
           <ApolloClientProvider>
             <StorefrontProvider value={ctx}>
-              <DeviceIdSetter />
               {children}
             </StorefrontProvider>
           </ApolloClientProvider>
