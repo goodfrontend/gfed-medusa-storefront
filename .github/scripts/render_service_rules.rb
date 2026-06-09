@@ -15,7 +15,7 @@ STORE_VERSION = 1
 ACTIONS = %w[suspend resume].freeze
 SCHEDULE_TYPES = %w[immediate scheduled recurring window_scheduled window_recurring].freeze
 WINDOW_SCHEDULE_TYPES = %w[window_scheduled window_recurring].freeze
-SERVICE_GROUP_ALIASES = %w[smoke qa].freeze
+SERVICE_SCOPE_SHORTHANDS = %w[smoke qa].freeze
 
 def abort_with(message)
   warn(message)
@@ -40,49 +40,50 @@ def save_json(path, data)
   File.write(path, JSON.pretty_generate(data) + "\n")
 end
 
-def load_service_catalog(render_file)
+def load_available_services(render_file)
   yaml = YAML.safe_load(File.read(render_file), permitted_classes: [], aliases: false)
   unless yaml.is_a?(Hash)
     abort_with("Invalid #{render_file}: expected a top-level mapping.")
   end
 
-  services = []
-  aliases = Hash.new { |hash, key| hash[key] = [] }
-
-  Array(yaml["projects"]).each do |project|
-    Array(project["environments"]).each do |environment|
-      environment_name = environment["name"].to_s.strip.downcase
-      environment_services = Array(environment["services"]).map do |service|
+  services = Array(yaml["projects"]).flat_map do |project|
+    Array(project["environments"]).flat_map do |environment|
+      Array(environment["services"]).map do |service|
         service["name"].to_s.strip
       end
-
-      services.concat(environment_services)
-      next unless SERVICE_GROUP_ALIASES.include?(environment_name)
-
-      aliases[environment_name].concat(environment_services)
     end
   end
 
   services = services.reject(&:empty?).uniq
   abort_with("No services were found in #{render_file}.") if services.empty?
 
-  {
-    "services" => services,
-    "aliases" => aliases.transform_values { |names| names.reject(&:empty?).uniq },
-  }
+  services
 rescue Psych::Exception => e
   abort_with("Unable to parse #{render_file}: #{e.message}")
 end
 
-def resolve_services(input, available_services, aliases = {})
+def service_scope_shorthand_map(available_services)
+  SERVICE_SCOPE_SHORTHANDS.each_with_object({}) do |scope, map|
+    scoped_services = available_services.select { |service| service.end_with?("-#{scope}") }
+    map[scope] = scoped_services unless scoped_services.empty?
+  end
+end
+
+def supported_service_scope_inputs(available_services)
+  scope_inputs = ["all"] + service_scope_shorthand_map(available_services).keys
+  scope_inputs.map { |value| "'#{value}'" }.join(", ")
+end
+
+def resolve_services(input, available_services)
   raw = input.to_s.strip
   return available_services.dup if raw.empty? || raw.casecmp("all").zero?
 
   selected = raw.split(/[\n,]+/).map(&:strip).reject(&:empty?).uniq
-  abort_with("services must be a comma-separated list or 'all'.") if selected.empty?
+  abort_with("services must be a comma-separated list or one of #{supported_service_scope_inputs(available_services)}.") if selected.empty?
 
-  expanded = selected.flat_map do |entry|
-    aliases.fetch(entry.downcase, [entry])
+  shorthand_map = service_scope_shorthand_map(available_services)
+  expanded = selected.flat_map do |service|
+    shorthand_map.fetch(service.downcase, [service])
   end.uniq
 
   unknown = expanded - available_services
@@ -230,8 +231,7 @@ def build_cron_spec(cron_expression, input_name:)
   }
 end
 
-def cron_matches?(cron_expression, timezone, now_utc)
-  spec = build_cron_spec(cron_expression, input_name: "cron")
+def cron_spec_matches?(spec, timezone, now_utc)
   local_time = with_timezone(timezone) { now_utc.getlocal }
 
   minute_match = spec["minute_values"].include?(local_time.min)
@@ -252,6 +252,28 @@ def cron_matches?(cron_expression, timezone, now_utc)
     end
 
   minute_match && hour_match && month_match && day_match
+end
+
+def cron_matches?(cron_expression, timezone, now_utc)
+  spec = build_cron_spec(cron_expression, input_name: "cron")
+  cron_spec_matches?(spec, timezone, now_utc)
+end
+
+def next_cron_match_epoch(cron_expression, timezone, after_utc)
+  spec = build_cron_spec(cron_expression, input_name: "cron")
+  start_epoch = after_utc.to_i
+  remainder = start_epoch % 300
+  candidate_epoch = remainder.zero? ? start_epoch + 300 : start_epoch + (300 - remainder)
+  max_iterations = 8640
+
+  max_iterations.times do
+    candidate_utc = Time.at(candidate_epoch).utc
+    return candidate_epoch if cron_spec_matches?(spec, timezone, candidate_utc)
+
+    candidate_epoch += 300
+  end
+
+  nil
 end
 
 def recurring_run_key(timezone, now_utc)
@@ -307,7 +329,7 @@ def reset_schedule_fields!(rule)
   end
 end
 
-def due_rule(rule_id:, rule_name:, action:, schedule_type:, timezone:, services:, run_key:, boundary: nil, cron: nil)
+def due_rule(rule_id:, rule_name:, action:, schedule_type:, timezone:, services:, run_key:, boundary: nil, cron: nil, next_epochs: [])
   payload = {
     "rule_id" => rule_id,
     "rule_name" => rule_name,
@@ -319,6 +341,7 @@ def due_rule(rule_id:, rule_name:, action:, schedule_type:, timezone:, services:
   }
   payload["boundary"] = boundary unless boundary.nil?
   payload["cron"] = cron unless cron.nil?
+  payload["next_epochs"] = next_epochs unless next_epochs.empty?
   payload
 end
 
@@ -348,12 +371,9 @@ def command_configure(render_file, store_file, output_file)
   abort_with("schedule_type must be one of: #{SCHEDULE_TYPES.join(', ')}.") unless SCHEDULE_TYPES.include?(schedule_type)
 
   now_utc = Time.now.utc
-  service_catalog = load_service_catalog(render_file)
-  available_services = service_catalog.fetch("services")
-  service_aliases = service_catalog.fetch("aliases")
+  available_services = load_available_services(render_file)
   store = load_store(store_file)
   store["available_services"] = available_services
-  store["service_aliases"] = service_aliases
   store["updated_at_utc"] = now_utc.iso8601
   store["updated_by"] = actor
 
@@ -400,7 +420,7 @@ def command_configure(render_file, store_file, output_file)
     return
   end
 
-  selected_services = resolve_services(services_input, available_services, service_aliases)
+  selected_services = resolve_services(services_input, available_services)
 
   if schedule_type == "immediate"
     result = {
@@ -478,6 +498,9 @@ def command_configure(render_file, store_file, output_file)
     rule["run_at_epoch"] = nil
     rule["last_run_key"] = nil
 
+    next_epoch = next_cron_match_epoch(cron_spec["raw"], timezone, now_utc)
+    watcher_epochs << next_epoch unless next_epoch.nil?
+
     summary << "Action: #{action}"
     summary << "Recurring cron: #{cron_spec['raw']}"
     summary << "Cron resolution: 5-minute reconciler"
@@ -517,6 +540,11 @@ def command_configure(render_file, store_file, output_file)
     rule["window_end_cron"] = end_spec["raw"]
     rule["last_window_start_run_key"] = nil
     rule["last_window_end_run_key"] = nil
+
+    next_start_epoch = next_cron_match_epoch(start_spec["raw"], timezone, now_utc)
+    next_end_epoch = next_cron_match_epoch(end_spec["raw"], timezone, now_utc)
+    watcher_epochs << next_start_epoch unless next_start_epoch.nil?
+    watcher_epochs << next_end_epoch unless next_end_epoch.nil?
 
     summary << "Window start action: #{action}"
     summary << "Window end action: #{rule['end_action']}"
@@ -600,6 +628,8 @@ def command_plan(store_file, output_file)
       run_key = recurring_run_key(timezone, now_utc)
       next if rule["last_run_key"] == run_key
 
+      next_epoch = next_cron_match_epoch(cron, timezone, now_utc)
+
       due_rules << due_rule(
         rule_id: rule_id,
         rule_name: rule_name,
@@ -609,6 +639,7 @@ def command_plan(store_file, output_file)
         services: services,
         run_key: run_key,
         cron: cron,
+        next_epochs: [next_epoch].compact,
       )
       summary << "Due recurring rule: #{rule_name} (#{rule_id})"
     when "window_scheduled"
@@ -662,6 +693,9 @@ def command_plan(store_file, output_file)
       run_key = recurring_run_key(timezone, now_utc)
 
       if cron_matches?(start_cron, timezone, now_utc) && rule["last_window_start_run_key"] != run_key
+        next_start_epoch = next_cron_match_epoch(start_cron, timezone, now_utc)
+        next_end_epoch = next_cron_match_epoch(end_cron, timezone, now_utc)
+
         due_rules << due_rule(
           rule_id: rule_id,
           rule_name: rule_name,
@@ -672,11 +706,15 @@ def command_plan(store_file, output_file)
           run_key: run_key,
           boundary: "start",
           cron: start_cron,
+          next_epochs: [next_start_epoch, next_end_epoch].compact,
         )
         summary << "Due recurring window start: #{rule_name} (#{rule_id})"
       end
 
       if cron_matches?(end_cron, timezone, now_utc) && rule["last_window_end_run_key"] != run_key
+        next_start_epoch = next_cron_match_epoch(start_cron, timezone, now_utc)
+        next_end_epoch = next_cron_match_epoch(end_cron, timezone, now_utc)
+
         due_rules << due_rule(
           rule_id: rule_id,
           rule_name: rule_name,
@@ -687,6 +725,7 @@ def command_plan(store_file, output_file)
           run_key: run_key,
           boundary: "end",
           cron: end_cron,
+          next_epochs: [next_start_epoch, next_end_epoch].compact,
         )
         summary << "Due recurring window end: #{rule_name} (#{rule_id})"
       end
@@ -730,7 +769,9 @@ def command_record(store_file, rule_id)
 
   case rule["schedule_type"]
   when "recurring"
-    rule["last_run_key"] = run_key unless run_key.empty?
+    if status == "success"
+      rule["last_run_key"] = run_key unless run_key.empty?
+    end
   when "scheduled"
     if status == "success"
       rule["enabled"] = false
@@ -739,9 +780,13 @@ def command_record(store_file, rule_id)
   when "window_recurring"
     case boundary
     when "start"
-      rule["last_window_start_run_key"] = run_key unless run_key.empty?
+      if status == "success"
+        rule["last_window_start_run_key"] = run_key unless run_key.empty?
+      end
     when "end"
-      rule["last_window_end_run_key"] = run_key unless run_key.empty?
+      if status == "success"
+        rule["last_window_end_run_key"] = run_key unless run_key.empty?
+      end
     else
       abort_with("RULE_BOUNDARY must be start or end for window_recurring rules.")
     end
