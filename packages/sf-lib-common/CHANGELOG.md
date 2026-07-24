@@ -1,5 +1,11 @@
 # @gfed-medusa/sf-lib-common
 
+## 3.12.0
+
+### Minor Changes
+
+- 02d6ec3: Implementation of adk agent
+
 ## 3.11.0
 
 ### Minor Changes
