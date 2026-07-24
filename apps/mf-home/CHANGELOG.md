@@ -1,5 +1,16 @@
 # @gfed-medusa/mf-home
 
+## 1.13.0
+
+### Minor Changes
+
+- 02d6ec3: Implementation of adk agent
+
+### Patch Changes
+
+- Updated dependencies [02d6ec3]
+  - @gfed-medusa/sf-lib-common@3.12.0
+
 ## 1.12.0
 
 ### Minor Changes

@@ -1,5 +1,16 @@
 # @gfed-medusa/mf-account
 
+## 1.15.0
+
+### Minor Changes
+
+- 02d6ec3: Implementation of adk agent
+
+### Patch Changes
+
+- Updated dependencies [02d6ec3]
+  - @gfed-medusa/sf-lib-common@3.12.0
+
 ## 1.14.0
 
 ### Minor Changes
