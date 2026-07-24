@@ -1,5 +1,5 @@
 import { graphqlMutation } from '@/lib/gql/apollo-client';
-import { SEND_SIGNAL_MUTATION } from '@/lib/personalization/personalization-gql';
+import { ADK_SEND_SIGNAL_MUTATION, SEND_SIGNAL_MUTATION } from '@/lib/personalization/personalization-gql';
 import { getDeviceId } from '@/lib/personalization/device-id';
 import type { SignalInput, SignalType } from '@/types/graphql';
 
@@ -66,6 +66,61 @@ export async function sendClientSignal(
     return true;
   } catch (fetchError) {
     console.warn('[sendClientSignal] Fetch fallback also failed:', type, fetchError);
+    return false;
+  }
+}
+
+export async function sendAdkClientSignal(
+  type: SignalType,
+  payload?: Record<string, unknown>,
+): Promise<boolean> {
+  const deviceId = getDeviceId();
+  if (!deviceId) return false;
+
+  const input: SignalInput = {
+    deviceId,
+    type,
+    payload,
+    url: typeof window !== 'undefined' ? window.location.href : undefined,
+    timestamp: Date.now(),
+  };
+
+  try {
+    await graphqlMutation({
+      mutation: ADK_SEND_SIGNAL_MUTATION,
+      variables: { input },
+    });
+    return true;
+  } catch (apolloError) {
+    console.warn(
+      '[sendAdkClientSignal] Apollo mutation failed, trying fetch fallback:',
+      type,
+      apolloError
+    );
+  }
+
+  try {
+    const res = await fetch('/api/graphql', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        query: `mutation AdkSendSignal($input: SignalInput!) { adkSendSignal(input: $input) { success } }`,
+        variables: { input },
+      }),
+    });
+    if (!res.ok) {
+      console.warn(
+        '[sendAdkClientSignal] Fetch fallback failed:',
+        type,
+        res.status,
+        res.statusText
+      );
+      return false;
+    }
+    return true;
+  } catch (fetchError) {
+    console.warn('[sendAdkClientSignal] Fetch fallback also failed:', type, fetchError);
     return false;
   }
 }

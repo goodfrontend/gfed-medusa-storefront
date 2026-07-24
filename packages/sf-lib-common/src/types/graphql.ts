@@ -384,6 +384,8 @@ export type Mutation = {
   acceptOrderTransfer?: Maybe<OrderTransferResult>;
   addCustomerAddress: Customer;
   addShippingMethod?: Maybe<Cart>;
+  /** Send signal to ADK Pub/Sub pipeline (parallel path to existing sendSignal) */
+  adkSendSignal: SendSignalResponse;
   applyPromotions?: Maybe<Cart>;
   calculateShippingOptionPrice?: Maybe<ShippingOption>;
   completeCart?: Maybe<CompleteCartResponse>;
@@ -418,6 +420,10 @@ export type Mutation_AddCustomerAddressArgs = {
 export type Mutation_AddShippingMethodArgs = {
   cartId: Scalars['ID']['input'];
   optionId: Scalars['ID']['input'];
+};
+
+export type Mutation_AdkSendSignalArgs = {
+  input: SignalInput;
 };
 
 export type Mutation_ApplyPromotionsArgs = {
@@ -781,6 +787,12 @@ export type Promotion = {
 export type Query = {
   __typename?: 'Query';
   _empty?: Maybe<Scalars['String']['output']>;
+  /** Debug intent classification (parallel path to existing debugIntent query) */
+  adkDebugIntent: DecisionReasoning;
+  /** Personalize using the ADK Agent (parallel path to existing personalize query) */
+  adkPersonalize: PersonalizationResult;
+  /** Get user profile (parallel path to existing userProfile query) */
+  adkUserProfile: UserProfile;
   browseProducts: BrowseProducts;
   cart?: Maybe<Cart>;
   collection?: Maybe<Collection>;
@@ -804,6 +816,19 @@ export type Query = {
   searchProducts: SearchProducts;
   shippingOptions?: Maybe<Array<Maybe<ShippingOption>>>;
   userProfile: UserProfile;
+};
+
+export type Query_AdkDebugIntentArgs = {
+  deviceId: Scalars['String']['input'];
+};
+
+export type Query_AdkPersonalizeArgs = {
+  deviceId: Scalars['String']['input'];
+  input: SurfaceContext;
+};
+
+export type Query_AdkUserProfileArgs = {
+  deviceId: Scalars['String']['input'];
 };
 
 export type Query_BrowseProductsArgs = {

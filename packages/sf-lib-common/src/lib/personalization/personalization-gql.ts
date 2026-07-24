@@ -15,6 +15,15 @@ export const SUBMIT_CONVERSION_MUTATION = gql`
   }
 `;
 
+export const ADK_SEND_SIGNAL_MUTATION = gql`
+  mutation AdkSendSignal($input: SignalInput!) {
+    adkSendSignal(input: $input) {
+      success
+      profileUpdated
+    }
+  }
+`;
+
 export const PERSONALIZE_QUERY = gql`
   query Personalize($input: SurfaceContext!, $deviceId: String!) {
     personalize(input: $input, deviceId: $deviceId) {
@@ -38,3 +47,26 @@ export const PERSONALIZE_QUERY = gql`
   }
 `;
 
+
+export const ADK_PERSONALIZE_QUERY = gql`
+  query AdkPersonalize($input: SurfaceContext!, $deviceId: String!) {
+    adkPersonalize(input: $input, deviceId: $deviceId) {
+      components {
+        component
+        contentId
+        propsOverrides
+        priority
+        reasoning
+        score
+      }
+      reasoning {
+        intent
+        confidence
+        factors
+        modelVersion
+      }
+      cacheKey
+      servedAt
+    }
+  }
+`;

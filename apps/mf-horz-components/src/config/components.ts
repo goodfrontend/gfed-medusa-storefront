@@ -22,8 +22,8 @@ import {
 } from './utils/derive-surface-context';
 import {
   getDeviceIdFromCookieHeader,
-  getPersonalization,
-  sendPageViewSignal,
+  getAdkPersonalization,
+  sendAdkPageViewSignal,
 } from '@gfed-medusa/sf-lib-common/lib/data/personalization';
 export interface ComponentDefinition {
   name: string;
@@ -272,7 +272,7 @@ function createPersonalizedSurfaceComponent(surface: string, elementTag: string)
         return { components: [] };
       }
 
-      const personalization = await getPersonalization(
+      const personalization = await getAdkPersonalization(
         surface,
         url.pathname,
         deviceId,
@@ -280,7 +280,7 @@ function createPersonalizedSurfaceComponent(surface: string, elementTag: string)
         Object.keys(context).length > 0 ? context : undefined,
       ).catch(() => null);
 
-      void sendPageViewSignal(surface, ctx, context);
+      void sendAdkPageViewSignal(surface, ctx, context);
 
       const components = personalization?.components ?? [];
 
