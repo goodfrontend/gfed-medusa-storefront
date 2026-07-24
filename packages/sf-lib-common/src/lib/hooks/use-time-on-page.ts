@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { sendClientSignal } from '../personalization/client-signal';
+import { sendAdkClientSignal } from '../personalization/client-signal';
 import { SignalType } from '../../types/graphql';
 
 const DEFAULT_THRESHOLDS_SEC = [15, 30, 60, 120, 180] as const;
@@ -30,7 +30,7 @@ export function useTimeOnPage(
       setTimeout(() => {
         if (!firedRef.current.has(seconds)) {
           firedRef.current.add(seconds);
-          void sendClientSignal(SignalType.TimeOnPage, {
+          void sendAdkClientSignal(SignalType.TimeOnPage, {
             surface: pageSurface,
             seconds,
           });

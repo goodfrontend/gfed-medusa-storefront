@@ -1,6 +1,8 @@
 import { createServerApolloClient, graphqlFetch, graphqlMutation } from '@/lib/gql/apollo-client';
 
 import {
+  ADK_PERSONALIZE_QUERY,
+  ADK_SEND_SIGNAL_MUTATION,
   PERSONALIZE_QUERY,
   SEND_SIGNAL_MUTATION,
   SUBMIT_CONVERSION_MUTATION,
@@ -56,6 +58,46 @@ export function sendPageViewSignal(
   return sendSignal('PAGE_VIEW', ctx, { ...payload, surface });
 }
 
+export async function sendAdkSignal(
+  type: string,
+  ctx: StorefrontContext,
+  payload?: Record<string, unknown>,
+  url?: string,
+): Promise<boolean> {
+  const deviceId = getDeviceIdFromCookieHeader(ctx.cookieHeader);
+  const apolloClient = createServerApolloClient(ctx.cookieHeader);
+
+  try {
+    await graphqlMutation<Record<string, unknown>, { input: Record<string, unknown> }>(
+      {
+        mutation: ADK_SEND_SIGNAL_MUTATION,
+        variables: {
+          input: {
+            deviceId,
+            type,
+            payload: payload ?? {},
+            url: url ?? '',
+            timestamp: Date.now(),
+          },
+        },
+      },
+      apolloClient
+    );
+    return true;
+  } catch (error) {
+    console.warn('[sendAdkSignal] Failed to send signal:', type, error);
+    return false;
+  }
+}
+
+export function sendAdkPageViewSignal(
+  surface: string,
+  ctx: StorefrontContext,
+  payload?: Record<string, unknown>,
+): Promise<boolean> {
+  return sendAdkSignal('PAGE_VIEW', ctx, { ...payload, surface });
+}
+
 export interface PersonalizedComponent {
   component: string;
   contentId: string | null;
@@ -95,6 +137,10 @@ type PersonalizeQueryVariables = {
   deviceId: string;
 };
 
+type AdkPersonalizeQueryResult = {
+  adkPersonalize: PersonalizationResult;
+};
+
 export async function getPersonalization(
   surface: string,
   page: string,
@@ -128,6 +174,43 @@ export async function getPersonalization(
     return data?.personalize ?? null;
   } catch (error) {
     console.error('[getPersonalization]', error);
+    return null;
+  }
+}
+
+export async function getAdkPersonalization(
+  surface: string,
+  page: string,
+  deviceId: string,
+  ctx: StorefrontContext,
+  context?: {
+    productId?: string;
+    cartValue?: number;
+    category?: string;
+    searchQuery?: string;
+  },
+): Promise<PersonalizationResult | null> {
+  const apolloClient = createServerApolloClient(ctx.cookieHeader);
+
+  try {
+    const data = await graphqlFetch<AdkPersonalizeQueryResult, PersonalizeQueryVariables>(
+      {
+        query: ADK_PERSONALIZE_QUERY,
+        variables: {
+          input: {
+            surface,
+            page,
+            ...context,
+          },
+          deviceId,
+        },
+      },
+      apolloClient
+    );
+
+    return data?.adkPersonalize ?? null;
+  } catch (error) {
+    console.error('[getAdkPersonalization]', error);
     return null;
   }
 }
